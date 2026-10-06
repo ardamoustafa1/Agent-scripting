@@ -1,0 +1,10 @@
+CREATE TABLE ai_usage (tenant_id uuid NOT NULL REFERENCES tenants(id), month date NOT NULL, tokens bigint NOT NULL DEFAULT 0 CHECK(tokens>=0), micro_usd bigint NOT NULL DEFAULT 0 CHECK(micro_usd>=0), calls integer NOT NULL DEFAULT 0, pending integer NOT NULL DEFAULT 0, PRIMARY KEY(tenant_id,month));
+CREATE TABLE ai_calls (id uuid PRIMARY KEY, tenant_id uuid NOT NULL REFERENCES tenants(id), request_id uuid NOT NULL, actor_id uuid NOT NULL, month date NOT NULL, task varchar(32) NOT NULL, model varchar(120) NOT NULL, input_hash char(64) NOT NULL, state varchar(16) NOT NULL DEFAULT 'reserved', reserved_tokens bigint NOT NULL, reserved_micro_usd bigint NOT NULL, input_tokens integer, output_tokens integer, created_at timestamptz NOT NULL DEFAULT now(), finished_at timestamptz, UNIQUE(tenant_id,request_id));
+CREATE INDEX ai_calls_created ON ai_calls(tenant_id,created_at);
+ALTER TABLE ai_usage ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ai_usage FORCE ROW LEVEL SECURITY;
+ALTER TABLE ai_calls ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ai_calls FORCE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation ON ai_usage USING(tenant_id=NULLIF(current_setting('app.tenant_id',true),'')::uuid) WITH CHECK(tenant_id=NULLIF(current_setting('app.tenant_id',true),'')::uuid);
+CREATE POLICY tenant_isolation ON ai_calls USING(tenant_id=NULLIF(current_setting('app.tenant_id',true),'')::uuid) WITH CHECK(tenant_id=NULLIF(current_setting('app.tenant_id',true),'')::uuid);
+GRANT SELECT,INSERT,UPDATE ON ai_usage,ai_calls TO verbis_app;

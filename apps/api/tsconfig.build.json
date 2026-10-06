@@ -1,0 +1,36 @@
+{
+  "extends": "@verbis/config-ts/nest.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.spec.ts"],
+  "references": [
+    {
+      "path": "../../packages/shared-types/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/sdk-connector/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/authz/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/script-schema/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/core-runtime/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/components/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/collaboration/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/observability/tsconfig.build.json"
+    }
+  ]
+}

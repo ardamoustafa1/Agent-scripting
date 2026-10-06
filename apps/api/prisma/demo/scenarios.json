@@ -1,0 +1,56 @@
+{
+  "tenantSlug": "verbis-demo",
+  "connectorId": "019c0000-0000-7000-8000-000000000002",
+  "scenarios": [
+    {
+      "key": "credit-card-sale",
+      "input": {
+        "channel": "voice",
+        "direction": "outbound",
+        "agentPlatformUserId": "demo-agent-1",
+        "queue": "demo-creditcardsales",
+        "attributes": { "customerId": "DEMO-CUSTOMER-001" },
+        "autoConnect": true
+      },
+      "actions": ["hold", "resume", "wrapup", "end"]
+    },
+    {
+      "key": "tariff-upgrade",
+      "input": {
+        "channel": "voice",
+        "direction": "inbound",
+        "agentPlatformUserId": "demo-agent-1",
+        "queue": "demo-telecomtariffchange",
+        "attributes": { "customerId": "DEMO-CUSTOMER-002" },
+        "autoConnect": true
+      },
+      "actions": ["wrapup", "end"]
+    },
+    {
+      "key": "collections",
+      "input": {
+        "channel": "voice",
+        "direction": "outbound",
+        "agentPlatformUserId": "demo-agent-1",
+        "queue": "demo-collections",
+        "attributes": { "customerId": "DEMO-CUSTOMER-003", "accountId": "DEMO-ACCOUNT-003" },
+        "autoConnect": true
+      },
+      "actions": ["wrapup", "end"]
+    },
+    {
+      "key": "survey",
+      "input": {
+        "channel": "voice",
+        "direction": "inbound",
+        "agentPlatformUserId": "demo-agent-1",
+        "queue": "demo-survey",
+        "attributes": { "customerId": "DEMO-CUSTOMER-004" },
+        "autoConnect": true
+      },
+      "actions": ["wrapup", "end"]
+    }
+  ],
+  "mappingScenarios": ["success", "empty", "failure", "slow"],
+  "notes": "Synthetic fixtures only. Use the authorized simulator UI/API; JSON is not a launch grant."
+}

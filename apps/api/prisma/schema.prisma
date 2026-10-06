@@ -1,0 +1,1654 @@
+// Verbis core schema (docs/DOMAIN.md, ADR-0003, ADR-0011).
+//
+// Conventions for tenant-owned tables:
+//   id (UUIDv7) · tenant_id · created_at/created_by · updated_at/updated_by · deleted_at (soft delete)
+//   · version (optimistic locking). Unique keys are partial (`WHERE deleted_at IS NULL`).
+// Exceptions (documented in ADR-0011): append-only tables (audit_events, session_events) have no
+// update/delete/version columns; infrastructure tables (outbox_events, processed_events,
+// idempotency_keys, analytics_event_counts) carry only what their mechanics need.
+// Row-Level Security policies, roles, functions and triggers live in raw SQL migrations.
+
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  moduleFormat    = "esm"
+  previewFeatures = ["partialIndexes"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum TenantStatus {
+  provisioning
+  active
+  suspended
+  deleting
+
+  @@map("tenant_status")
+}
+
+enum UserStatus {
+  invited
+  active
+  suspended
+  deprovisioned
+
+  @@map("user_status")
+}
+
+enum IdpProtocol {
+  oidc
+  saml
+
+  @@map("idp_protocol")
+}
+
+enum IdpStatus {
+  draft
+  active
+  disabled
+
+  @@map("idp_status")
+}
+
+enum CampaignStatus {
+  draft
+  active
+  paused
+  archived
+
+  @@map("campaign_status")
+}
+
+enum ChannelType {
+  voice
+  chat
+  email
+  sms
+  whatsapp
+  social
+  video
+  callback
+
+  @@map("channel_type")
+}
+
+enum ScriptStatus {
+  draft
+  active
+  archived
+
+  @@map("script_status")
+}
+
+enum ScriptVersionState {
+  draft
+  in_review
+  approved
+  published
+  retired
+
+  @@map("script_version_state")
+}
+
+enum DocumentEncoding {
+  json
+  gzip
+
+  @@map("document_encoding")
+}
+
+enum DataSourceProtocol {
+  rest
+  soap
+  graphql
+
+  @@map("datasource_protocol")
+}
+
+enum SecretKind {
+  password
+  api_key
+  oauth_client
+  certificate
+  generic
+
+  @@map("secret_kind")
+}
+
+enum ConnectorAdapter {
+  genesys_cloud
+  genesys_engage
+  avaya_aes
+  avaya_axp
+  avaya_aacc
+  amazon_connect
+  cisco
+  nice_cxone
+  five9
+  generic
+
+  @@map("connector_adapter")
+}
+
+enum ConnectorStatus {
+  draft
+  active
+  disabled
+  error
+
+  @@map("connector_status")
+}
+
+enum InteractionDirection {
+  inbound
+  outbound
+
+  @@map("interaction_direction")
+}
+
+enum SessionState {
+  paused
+  launching
+  active
+  wrapup
+  completed
+  abandoned
+  expired
+
+  @@map("session_state")
+}
+
+enum AuditOutcome {
+  success
+  denied
+  failure
+
+  @@map("audit_outcome")
+}
+
+enum OutboxStatus {
+  pending
+  published
+  dead
+
+  @@map("outbox_status")
+}
+
+enum IdempotencyState {
+  in_progress
+  completed
+
+  @@map("idempotency_state")
+}
+
+// ─── Identity & access ────────────────────────────────────────────────────────
+
+model Tenant {
+  id         String       @id @default(uuid(7)) @db.Uuid
+  slug       String
+  name       String
+  region     String
+  status     TenantStatus @default(provisioning)
+  /// Default locale/theme, session timeouts, retention, allowed CORS origins and egress hosts.
+  settings   Json         @default("{}")
+  dataKeyRef String?      @map("data_key_ref")
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy  String       @default("system") @map("created_by") @db.VarChar(128)
+  updatedAt  DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy  String       @default("system") @map("updated_by") @db.VarChar(128)
+  deletedAt  DateTime?    @map("deleted_at") @db.Timestamptz(3)
+  version    Int          @default(1)
+
+  users                   User[]
+  roles                   Role[]
+  userRoles               UserRole[]
+  identityProviders       IdentityProvider[]
+  campaigns               Campaign[]
+  scripts                 Script[]
+  scriptVersions          ScriptVersion[]
+  screens                 Screen[]
+  components              Component[]
+  flows                   Flow[]
+  variables               Variable[]
+  dataSources             DataSource[]
+  secrets                 Secret[]
+  assignments             Assignment[]
+  channels                Channel[]
+  connectors              Connector[]
+  interactions            Interaction[]
+  sessions                Session[]
+  sessionEvents           SessionEvent[]
+  outcomes                Outcome[]
+  auditEvents             AuditEvent[]
+  auditChainHeads         AuditChainHead[]
+  auditCheckpoints        AuditCheckpoint[]
+  auditArchives           AuditArchive[]
+  siemDestinations        SiemDestination[]
+  versionReviews          ScriptVersionReview[]
+  sharedScreens           SharedScreen[]
+  sharedScreenVersions    SharedScreenVersion[]
+  screenLinks             ScriptScreenLink[]
+  templates               Template[]
+  campaignMappings        CampaignExternalMapping[]
+  siemCursors             SiemCursor[]
+  sessionChainHeads       SessionChainHead[]
+  outboxEvents            OutboxEvent[]
+  processedEvents         ProcessedEvent[]
+  idempotencyKeys         IdempotencyKey[]
+  analyticsCounts         AnalyticsEventCount[]
+  userIdentities          UserIdentity[]
+  groups                  Group[]
+  groupMembers            GroupMember[]
+  idpDomains              IdentityProviderDomain[]
+  scimTokens              ScimToken[]
+  serviceClients          ServiceClient[]
+  localCredentials        LocalCredential[]
+  launchIntents           LaunchIntent[]
+  launchTrustedIssuers    LaunchTrustedIssuer[]
+  authoringThreads        AuthoringThread[]
+  collaborationSnapshots  CollaborationSnapshot[]
+  scheduledReleases       ScheduledRelease[]
+  adminPrivacyRequests    AdminPrivacyRequest[]
+  aiCalls                 AiCall[]
+  aiUsages                AiUsage[]
+  analyticsErasedSessions AnalyticsErasedSession[]
+  analyticsFacts          AnalyticsFact[]
+  analyticsSchedules      AnalyticsSchedule[]
+
+  @@unique([slug], map: "tenants_slug_key")
+  @@map("tenants")
+}
+
+model User {
+  id            String     @id @default(uuid(7)) @db.Uuid
+  tenantId      String     @map("tenant_id") @db.Uuid
+  /// IdP subject / SCIM externalId.
+  externalId    String?    @map("external_id")
+  /// @pii
+  email         String
+  /// @pii
+  displayName   String     @map("display_name")
+  status        UserStatus @default(invited)
+  locale        String     @default("tr")
+  /// Platform identities (e.g. Genesys userId) that bind launches to this user.
+  ctiIdentities Json       @default("[]") @map("cti_identities")
+  lastLoginAt   DateTime?  @map("last_login_at") @db.Timestamptz(3)
+  createdAt     DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy     String     @map("created_by") @db.VarChar(128)
+  updatedAt     DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy     String     @map("updated_by") @db.VarChar(128)
+  deletedAt     DateTime?  @map("deleted_at") @db.Timestamptz(3)
+  version       Int        @default(1)
+
+  tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  roles              UserRole[]
+  sessions           Session[]
+  identities         UserIdentity[]
+  groups             GroupMember[]
+  localCredential    LocalCredential?
+  launchIntents      LaunchIntent[]
+  scheduledReleases  ScheduledRelease[]
+  analyticsSchedules AnalyticsSchedule[]
+
+  @@unique([tenantId, email], map: "users_tenant_email_active_key", where: raw("deleted_at IS NULL"))
+  @@unique([tenantId, externalId], map: "users_tenant_external_id_active_key", where: raw("deleted_at IS NULL AND external_id IS NOT NULL"))
+  @@index([tenantId, createdAt, id])
+  @@map("users")
+}
+
+model Role {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  tenantId    String    @map("tenant_id") @db.Uuid
+  name        String
+  description String?
+  /// `action:subject` pairs, e.g. `publish:Script`.
+  permissions String[]
+  /// CASL rule definitions of a custom role (`@verbis/authz` RuleDefinition[]); system roles use code.
+  rules       Json      @default("[]")
+  isSystem    Boolean   @default(false) @map("is_system")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy   String    @map("created_by") @db.VarChar(128)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy   String    @map("updated_by") @db.VarChar(128)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version     Int       @default(1)
+
+  tenant Tenant     @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  users  UserRole[]
+
+  @@unique([tenantId, name], map: "roles_tenant_name_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, createdAt, id])
+  @@map("roles")
+}
+
+model UserRole {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  roleId    String    @map("role_id") @db.Uuid
+  /// `manual` (admin API), `claims:<idpId>` (SSO login mapping) or `scim:<idpId>` (SCIM groups).
+  source    String    @default("manual") @db.VarChar(64)
+  /// ABAC scope of this assignment: `{campaignIds?, teamIds?, siteIds?}` (ids or `"*"`).
+  scope     Json      @default("{}")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy String    @map("created_by") @db.VarChar(128)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy String    @map("updated_by") @db.VarChar(128)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version   Int       @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId, source], map: "user_roles_user_role_source_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, userId])
+  @@index([tenantId, roleId])
+  @@map("user_roles")
+}
+
+model IdentityProvider {
+  id              String      @id @default(uuid(7)) @db.Uuid
+  tenantId        String      @map("tenant_id") @db.Uuid
+  protocol        IdpProtocol
+  displayName     String      @map("display_name")
+  /// OIDC/SAML settings. Secrets are referenced (`clientSecretRef`), never inlined.
+  config          Json        @default("{}")
+  domainHints     String[]    @map("domain_hints")
+  jitProvisioning Boolean     @default(false) @map("jit_provisioning")
+  scimEnabled     Boolean     @default(false) @map("scim_enabled")
+  status          IdpStatus   @default(draft)
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       String      @map("created_by") @db.VarChar(128)
+  updatedAt       DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy       String      @map("updated_by") @db.VarChar(128)
+  deletedAt       DateTime?   @map("deleted_at") @db.Timestamptz(3)
+  version         Int         @default(1)
+
+  tenant     Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  identities UserIdentity[]
+  domains    IdentityProviderDomain[]
+  scimTokens ScimToken[]
+  groups     Group[]
+
+  @@index([tenantId, createdAt, id])
+  @@map("identity_providers")
+}
+
+/// Link between a Verbis user and an IdP subject (OIDC `sub` / SAML NameID).
+model UserIdentity {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  tenantId    String    @map("tenant_id") @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  idpId       String    @map("idp_id") @db.Uuid
+  /// IdP subject; opaque, not shown in UIs.
+  subject     String    @db.VarChar(512)
+  lastLoginAt DateTime? @map("last_login_at") @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy   String    @map("created_by") @db.VarChar(128)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy   String    @map("updated_by") @db.VarChar(128)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version     Int       @default(1)
+
+  tenant Tenant           @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  idp    IdentityProvider @relation(fields: [idpId], references: [id], onDelete: Restrict)
+
+  @@unique([tenantId, idpId, subject], map: "user_identities_idp_subject_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, userId])
+  @@map("user_identities")
+}
+
+/// Email domain claimed by an IdP for home-realm discovery; unique across all tenants.
+model IdentityProviderDomain {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  idpId     String    @map("idp_id") @db.Uuid
+  /// Lower-case DNS name.
+  domain    String    @db.VarChar(253)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy String    @map("created_by") @db.VarChar(128)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy String    @map("updated_by") @db.VarChar(128)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version   Int       @default(1)
+
+  tenant Tenant           @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  idp    IdentityProvider @relation(fields: [idpId], references: [id], onDelete: Restrict)
+
+  @@unique([domain], map: "identity_provider_domains_domain_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, idpId])
+  @@map("identity_provider_domains")
+}
+
+/// Group provisioned by SCIM (or referenced by role-mapping rules).
+model Group {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  tenantId    String    @map("tenant_id") @db.Uuid
+  idpId       String?   @map("idp_id") @db.Uuid
+  externalId  String?   @map("external_id")
+  displayName String    @map("display_name")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy   String    @map("created_by") @db.VarChar(128)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy   String    @map("updated_by") @db.VarChar(128)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version     Int       @default(1)
+
+  tenant  Tenant            @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  idp     IdentityProvider? @relation(fields: [idpId], references: [id], onDelete: Restrict)
+  members GroupMember[]
+
+  @@unique([tenantId, displayName], map: "groups_tenant_display_name_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, createdAt, id])
+  @@map("groups")
+}
+
+model GroupMember {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  groupId   String    @map("group_id") @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy String    @map("created_by") @db.VarChar(128)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy String    @map("updated_by") @db.VarChar(128)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version   Int       @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId], map: "group_members_group_user_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, userId])
+  @@map("group_members")
+}
+
+/// SCIM 2.0 bearer credential (SECURITY §5.4). Only the SHA-256 of the token is stored.
+model ScimToken {
+  id         String    @id @default(uuid(7)) @db.Uuid
+  tenantId   String    @map("tenant_id") @db.Uuid
+  idpId      String    @map("idp_id") @db.Uuid
+  /// @secret SHA-256 (hex) of the high-entropy token.
+  tokenHash  String    @map("token_hash") @db.Char(64)
+  /// First characters of the token, for identification in UIs.
+  prefix     String    @db.VarChar(16)
+  expiresAt  DateTime? @map("expires_at") @db.Timestamptz(3)
+  lastUsedAt DateTime? @map("last_used_at") @db.Timestamptz(3)
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy  String    @map("created_by") @db.VarChar(128)
+  updatedAt  DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy  String    @map("updated_by") @db.VarChar(128)
+  deletedAt  DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version    Int       @default(1)
+
+  tenant Tenant           @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  idp    IdentityProvider @relation(fields: [idpId], references: [id], onDelete: Restrict)
+
+  @@unique([tokenHash], map: "scim_tokens_token_hash_key")
+  @@index([tenantId, idpId])
+  @@map("scim_tokens")
+}
+
+enum ServiceClientAuthMethod {
+  client_secret_basic
+  client_secret_post
+  tls_client_auth
+
+  @@map("service_client_auth_method")
+}
+
+enum ServiceClientStatus {
+  active
+  disabled
+
+  @@map("service_client_status")
+}
+
+/// OAuth 2.0 client-credentials client for service-to-service calls (connectors).
+model ServiceClient {
+  id                    String                  @id @default(uuid(7)) @db.Uuid
+  tenantId              String                  @map("tenant_id") @db.Uuid
+  name                  String
+  authMethod            ServiceClientAuthMethod @map("auth_method")
+  /// @secret SHA-256 (hex) of the high-entropy client secret (secret-based methods).
+  secretHash            String?                 @map("secret_hash") @db.Char(64)
+  /// RFC 8705 `x5t#S256` of the bound client certificate (tls_client_auth, or optional binding).
+  certificateThumbprint String?                 @map("certificate_thumbprint") @db.VarChar(64)
+  /// Permissions this client may request, `action:Subject`.
+  scopes                String[]
+  status                ServiceClientStatus     @default(active)
+  lastUsedAt            DateTime?               @map("last_used_at") @db.Timestamptz(3)
+  createdAt             DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy             String                  @map("created_by") @db.VarChar(128)
+  updatedAt             DateTime                @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy             String                  @map("updated_by") @db.VarChar(128)
+  deletedAt             DateTime?               @map("deleted_at") @db.Timestamptz(3)
+  version               Int                     @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@unique([tenantId, name], map: "service_clients_tenant_name_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, createdAt, id])
+  @@map("service_clients")
+}
+
+enum LocalCredentialStatus {
+  pending_mfa
+  active
+  disabled
+
+  @@map("local_credential_status")
+}
+
+/// Break-glass local administrator credential: argon2id password + mandatory TOTP.
+model LocalCredential {
+  id             String                @id @default(uuid(7)) @db.Uuid
+  tenantId       String                @map("tenant_id") @db.Uuid
+  userId         String                @map("user_id") @db.Uuid
+  /// @secret argon2id PHC string.
+  passwordHash   String                @map("password_hash")
+  /// @secret AES-256-GCM sealed TOTP seed.
+  totpSecret     String                @map("totp_secret")
+  /// Last accepted TOTP time step (replay protection).
+  totpLastStep   BigInt?               @map("totp_last_step")
+  status         LocalCredentialStatus @default(pending_mfa)
+  failedAttempts Int                   @default(0) @map("failed_attempts")
+  lockedUntil    DateTime?             @map("locked_until") @db.Timestamptz(3)
+  lastUsedAt     DateTime?             @map("last_used_at") @db.Timestamptz(3)
+  createdAt      DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy      String                @map("created_by") @db.VarChar(128)
+  updatedAt      DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy      String                @map("updated_by") @db.VarChar(128)
+  deletedAt      DateTime?             @map("deleted_at") @db.Timestamptz(3)
+  version        Int                   @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId], map: "local_credentials_user_key")
+  @@index([tenantId, createdAt, id])
+  @@map("local_credentials")
+}
+
+// ─── Routing ──────────────────────────────────────────────────────────────────
+
+model Campaign {
+  id            String         @id @default(uuid(7)) @db.Uuid
+  tenantId      String         @map("tenant_id") @db.Uuid
+  name          String
+  description   String?
+  status        CampaignStatus @default(draft)
+  /// Stable business code (A-Z0-9_-), unique per tenant.
+  code          String?        @db.VarChar(64)
+  defaultLocale String         @default("tr") @map("default_locale")
+  locales       String[]       @default([])
+  /// {timezone, weekly: {mon: [{from, to}]…}, holidays: [YYYY-MM-DD]}
+  workingHours  Json?          @map("working_hours")
+  /// [{code, label, category, requiresNote, subCodes}]
+  outcomeSet    Json           @default("[]") @map("outcome_set")
+  channels      ChannelType[]
+  queues        String[]
+  startsAt      DateTime?      @map("starts_at") @db.Timestamptz(3)
+  endsAt        DateTime?      @map("ends_at") @db.Timestamptz(3)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy     String         @map("created_by") @db.VarChar(128)
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy     String         @map("updated_by") @db.VarChar(128)
+  deletedAt     DateTime?      @map("deleted_at") @db.Timestamptz(3)
+  version       Int            @default(1)
+
+  tenant       Tenant                    @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  assignments  Assignment[]
+  interactions Interaction[]
+  mappings     CampaignExternalMapping[]
+
+  @@unique([tenantId, code], map: "campaigns_tenant_code_key", where: raw("deleted_at IS NULL AND code IS NOT NULL"))
+  @@unique([tenantId, name], map: "campaigns_tenant_name_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, createdAt, id])
+  @@index([tenantId, name, id])
+  @@map("campaigns")
+}
+
+model Assignment {
+  id              String    @id @default(uuid(7)) @db.Uuid
+  tenantId        String    @map("tenant_id") @db.Uuid
+  scriptId        String    @map("script_id") @db.Uuid
+  campaignId      String    @map("campaign_id") @db.Uuid
+  /// Lower wins.
+  priority        Int       @default(100)
+  validFrom       DateTime? @map("valid_from") @db.Timestamptz(3)
+  validTo         DateTime? @map("valid_to") @db.Timestamptz(3)
+  /// No-code predicate (SCRIPT_MODEL §6 format).
+  rule            Json?
+  pinnedVersionId String?   @map("pinned_version_id") @db.Uuid
+  /// pinned | latestPublished
+  versionPolicy   String    @default("latestPublished") @map("version_policy")
+  /// {channels, locales, queues, skills, segments}; empty = any. `rule` is the expression.
+  conditions      Json      @default("{}")
+  /// A/B variants: [{key, weight (basis points), pinnedVersionId?}]
+  abTest          Json?     @map("ab_test")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       String    @map("created_by") @db.VarChar(128)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy       String    @map("updated_by") @db.VarChar(128)
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version         Int       @default(1)
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  script        Script         @relation(fields: [scriptId], references: [id], onDelete: Restrict)
+  campaign      Campaign       @relation(fields: [campaignId], references: [id], onDelete: Restrict)
+  pinnedVersion ScriptVersion? @relation(fields: [pinnedVersionId], references: [id], onDelete: Restrict)
+  sessions      Session[]
+
+  @@index([tenantId, campaignId, priority])
+  @@index([tenantId, createdAt, id])
+  @@map("assignments")
+}
+
+// ─── Authoring ────────────────────────────────────────────────────────────────
+
+model Script {
+  id               String       @id @default(uuid(7)) @db.Uuid
+  tenantId         String       @map("tenant_id") @db.Uuid
+  name             String
+  description      String?
+  status           ScriptStatus @default(draft)
+  tags             String[]
+  currentVersionId String?      @map("current_version_id") @db.Uuid
+  /// Overrides tenants.settings.authoring.approval.
+  approvalPolicy   Json?        @map("approval_policy")
+  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy        String       @map("created_by") @db.VarChar(128)
+  updatedAt        DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy        String       @map("updated_by") @db.VarChar(128)
+  deletedAt        DateTime?    @map("deleted_at") @db.Timestamptz(3)
+  version          Int          @default(1)
+
+  tenant            Tenant             @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  versions          ScriptVersion[]
+  assignments       Assignment[]
+  scheduledReleases ScheduledRelease[]
+
+  @@unique([tenantId, name], map: "scripts_tenant_name_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, createdAt, id])
+  @@index([tenantId, name, id])
+  @@map("scripts")
+}
+
+model ScriptVersion {
+  id                 String             @id @default(uuid(7)) @db.Uuid
+  tenantId           String             @map("tenant_id") @db.Uuid
+  scriptId           String             @map("script_id") @db.Uuid
+  number             Int
+  state              ScriptVersionState @default(draft)
+  schemaVersion      String             @map("schema_version")
+  /// Script document (JSONB). Null when stored compressed in `documentCompressed`.
+  document           Json?
+  /// gzip of the canonical JSON for large documents (ADR-0011).
+  documentCompressed Bytes?             @map("document_compressed")
+  documentEncoding   DocumentEncoding   @default(json) @map("document_encoding")
+  /// Uncompressed UTF-8 size in bytes.
+  documentSize       Int                @map("document_size")
+  /// SHA-256 (hex) of the canonical JSON.
+  checksum           String
+  publishedAt        DateTime?          @map("published_at") @db.Timestamptz(3)
+  publishedBy        String?            @map("published_by") @db.VarChar(128)
+  /// Semantic version, set on submit (unique per script).
+  semver             String?            @db.VarChar(64)
+  changeNote         String?            @map("change_note")
+  submittedAt        DateTime?          @map("submitted_at") @db.Timestamptz(3)
+  submittedBy        String?            @map("submitted_by") @db.VarChar(128)
+  approvedAt         DateTime?          @map("approved_at") @db.Timestamptz(3)
+  retiredAt          DateTime?          @map("retired_at") @db.Timestamptz(3)
+  retiredBy          String?            @map("retired_by") @db.VarChar(128)
+  /// Increments on every submit; reviews count only for the current round.
+  reviewRound        Int                @default(0) @map("review_round")
+  /// Provenance of imported versions (.verbis package).
+  source             Json?
+  createdAt          DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy          String             @map("created_by") @db.VarChar(128)
+  updatedAt          DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy          String             @map("updated_by") @db.VarChar(128)
+  deletedAt          DateTime?          @map("deleted_at") @db.Timestamptz(3)
+  version            Int                @default(1)
+
+  tenant                 Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  script                 Script                  @relation(fields: [scriptId], references: [id], onDelete: Restrict)
+  screens                Screen[]
+  flows                  Flow[]
+  variables              Variable[]
+  assignments            Assignment[]
+  sessions               Session[]
+  reviews                ScriptVersionReview[]
+  screenLinks            ScriptScreenLink[]
+  authoringThreads       AuthoringThread[]
+  collaborationSnapshots CollaborationSnapshot[]
+
+  @@unique([scriptId, number], map: "script_versions_script_number_key")
+  @@unique([scriptId, semver], map: "script_versions_script_semver_key", where: raw("semver IS NOT NULL AND deleted_at IS NULL"))
+  @@index([tenantId, scriptId, number])
+  @@map("script_versions")
+}
+
+/// Read model projected from ScriptVersion.document (pages) for querying and diff.
+model Screen {
+  id              String    @id @default(uuid(7)) @db.Uuid
+  tenantId        String    @map("tenant_id") @db.Uuid
+  scriptVersionId String    @map("script_version_id") @db.Uuid
+  key             String
+  title           String?
+  layoutRoot      Json      @map("layout_root")
+  entry           Boolean   @default(false)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       String    @map("created_by") @db.VarChar(128)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy       String    @map("updated_by") @db.VarChar(128)
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version         Int       @default(1)
+
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  scriptVersion ScriptVersion @relation(fields: [scriptVersionId], references: [id], onDelete: Cascade)
+  components    Component[]
+
+  @@unique([scriptVersionId, key], map: "screens_version_key")
+  @@index([tenantId, createdAt, id])
+  @@map("screens")
+}
+
+/// Read model: one row per layout node.
+model Component {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  screenId  String    @map("screen_id") @db.Uuid
+  key       String
+  type      String
+  props     Json      @default("{}")
+  bindings  Json      @default("[]")
+  events    Json      @default("{}")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy String    @map("created_by") @db.VarChar(128)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy String    @map("updated_by") @db.VarChar(128)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version   Int       @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  screen Screen @relation(fields: [screenId], references: [id], onDelete: Cascade)
+
+  @@unique([screenId, key], map: "components_screen_key")
+  @@index([tenantId, type])
+  @@map("components")
+}
+
+/// Read model projected from the document's flow and subflows.
+model Flow {
+  id              String    @id @default(uuid(7)) @db.Uuid
+  tenantId        String    @map("tenant_id") @db.Uuid
+  scriptVersionId String    @map("script_version_id") @db.Uuid
+  key             String
+  nodes           Json
+  edges           Json
+  /// Start node id, or a richer trigger definition in later schema versions.
+  trigger         Json?
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       String    @map("created_by") @db.VarChar(128)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy       String    @map("updated_by") @db.VarChar(128)
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version         Int       @default(1)
+
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  scriptVersion ScriptVersion @relation(fields: [scriptVersionId], references: [id], onDelete: Cascade)
+
+  @@unique([scriptVersionId, key], map: "flows_version_key")
+  @@map("flows")
+}
+
+/// Read model projected from the document's variables.
+model Variable {
+  id              String    @id @default(uuid(7)) @db.Uuid
+  tenantId        String    @map("tenant_id") @db.Uuid
+  scriptVersionId String    @map("script_version_id") @db.Uuid
+  name            String
+  type            String
+  scope           String
+  classification  String
+  defaultValue    Json?     @map("default_value")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       String    @map("created_by") @db.VarChar(128)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy       String    @map("updated_by") @db.VarChar(128)
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version         Int       @default(1)
+
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  scriptVersion ScriptVersion @relation(fields: [scriptVersionId], references: [id], onDelete: Cascade)
+
+  @@unique([scriptVersionId, name], map: "variables_version_name")
+  @@index([tenantId, classification])
+  @@map("variables")
+}
+
+// ─── Integration ──────────────────────────────────────────────────────────────
+
+model DataSource {
+  id         String             @id @default(uuid(7)) @db.Uuid
+  tenantId   String             @map("tenant_id") @db.Uuid
+  key        String
+  protocol   DataSourceProtocol
+  /// Endpoint template, method/operation, auth strategy, schemas. Credentials only as secretRefs.
+  definition Json               @default("{}")
+  secretRefs String[]           @map("secret_refs") @db.Uuid
+  policy     Json               @default("{}")
+  createdAt  DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy  String             @map("created_by") @db.VarChar(128)
+  updatedAt  DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy  String             @map("updated_by") @db.VarChar(128)
+  deletedAt  DateTime?          @map("deleted_at") @db.Timestamptz(3)
+  version    Int                @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@unique([tenantId, key], map: "data_sources_tenant_key_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, createdAt, id])
+  @@map("data_sources")
+}
+
+model Secret {
+  id         String     @id @default(uuid(7)) @db.Uuid
+  tenantId   String     @map("tenant_id") @db.Uuid
+  name       String
+  kind       SecretKind
+  /// @secret Envelope-encrypted value. Omitted from every query by default (PrismaService).
+  ciphertext Bytes
+  keyVersion Int        @default(1) @map("key_version")
+  rotatedAt  DateTime?  @map("rotated_at") @db.Timestamptz(3)
+  lastUsedAt DateTime?  @map("last_used_at") @db.Timestamptz(3)
+  createdAt  DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy  String     @map("created_by") @db.VarChar(128)
+  updatedAt  DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy  String     @map("updated_by") @db.VarChar(128)
+  deletedAt  DateTime?  @map("deleted_at") @db.Timestamptz(3)
+  version    Int        @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@unique([tenantId, name], map: "secrets_tenant_name_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, createdAt, id])
+  @@map("secrets")
+}
+
+model Channel {
+  id        String      @id @default(uuid(7)) @db.Uuid
+  tenantId  String      @map("tenant_id") @db.Uuid
+  type      ChannelType
+  provider  String
+  /// Capabilities (hold, transfer, attachments, …) and provider settings.
+  config    Json        @default("{}")
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy String      @map("created_by") @db.VarChar(128)
+  updatedAt DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy String      @map("updated_by") @db.VarChar(128)
+  deletedAt DateTime?   @map("deleted_at") @db.Timestamptz(3)
+  version   Int         @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@index([tenantId, createdAt, id])
+  @@map("channels")
+}
+
+model Connector {
+  id          String           @id @default(uuid(7)) @db.Uuid
+  tenantId    String           @map("tenant_id") @db.Uuid
+  adapterType ConnectorAdapter @map("adapter_type")
+  platform    String
+  config      Json             @default("{}")
+  secretRefs  String[]         @map("secret_refs") @db.Uuid
+  health      Json             @default("{}")
+  status      ConnectorStatus  @default(draft)
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy   String           @map("created_by") @db.VarChar(128)
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy   String           @map("updated_by") @db.VarChar(128)
+  deletedAt   DateTime?        @map("deleted_at") @db.Timestamptz(3)
+  version     Int              @default(1)
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  interactions  Interaction[]
+  launchIntents LaunchIntent[]
+
+  @@index([tenantId, createdAt, id])
+  @@map("connectors")
+}
+
+// ─── Runtime ──────────────────────────────────────────────────────────────────
+
+model Interaction {
+  platform     String               @default("generic") @db.VarChar(64)
+  status       String               @default("alerting") @db.VarChar(32)
+  agentId      String?              @map("agent_id") @db.Uuid
+  id           String               @id @default(uuid(7)) @db.Uuid
+  tenantId     String               @map("tenant_id") @db.Uuid
+  externalId   String               @map("external_id")
+  channelType  ChannelType          @map("channel_type")
+  connectorId  String?              @map("connector_id") @db.Uuid
+  direction    InteractionDirection
+  queue        String?
+  campaignId   String?              @map("campaign_id") @db.Uuid
+  startedAt    DateTime             @map("started_at") @db.Timestamptz(3)
+  endedAt      DateTime?            @map("ended_at") @db.Timestamptz(3)
+  /// @pii
+  participants Json                 @default("[]")
+  /// @pii Platform attributes (ani/dnis, attached data).
+  attributes   Json                 @default("{}")
+  createdAt    DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy    String               @map("created_by") @db.VarChar(128)
+  updatedAt    DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy    String               @map("updated_by") @db.VarChar(128)
+  deletedAt    DateTime?            @map("deleted_at") @db.Timestamptz(3)
+  version      Int                  @default(1)
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  connector     Connector?     @relation(fields: [connectorId], references: [id], onDelete: SetNull)
+  campaign      Campaign?      @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  sessions      Session[]
+  launchIntents LaunchIntent[]
+
+  @@unique([tenantId, connectorId, externalId], map: "interactions_connector_external_key")
+  @@index([tenantId, createdAt, id])
+  @@map("interactions")
+}
+
+model Session {
+  /// `interaction` (secure launch) or `preview` (designer test run; never a real interaction).
+  kind            String       @default("interaction") @db.VarChar(16)
+  sequence        Int          @default(0)
+  teamId          String?      @map("team_id") @db.Uuid
+  writerHash      String?      @map("writer_hash") @db.VarChar(64)
+  writerTabId     String?      @map("writer_tab_id") @db.Uuid
+  writerBffId     String?      @map("writer_bff_id") @db.Uuid
+  writerUntil     DateTime?    @map("writer_until") @db.Timestamptz(3)
+  expiresAt       DateTime?    @map("expires_at") @db.Timestamptz(3)
+  id              String       @id @default(uuid(7)) @db.Uuid
+  tenantId        String       @map("tenant_id") @db.Uuid
+  interactionId   String?      @map("interaction_id") @db.Uuid
+  userId          String       @map("user_id") @db.Uuid
+  scriptVersionId String       @map("script_version_id") @db.Uuid
+  assignmentId    String?      @map("assignment_id") @db.Uuid
+  state           SessionState @default(launching)
+  startedAt       DateTime     @default(now()) @map("started_at") @db.Timestamptz(3)
+  endedAt         DateTime?    @map("ended_at") @db.Timestamptz(3)
+  /// Classification-filtered variable snapshot (no pci).
+  variables       Json         @default("{}")
+  decisionTrace   Json?        @map("decision_trace")
+  /// Checksum of the pinned script version document.
+  checksum        String
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       String       @map("created_by") @db.VarChar(128)
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy       String       @map("updated_by") @db.VarChar(128)
+  deletedAt       DateTime?    @map("deleted_at") @db.Timestamptz(3)
+  version         Int          @default(1)
+
+  tenant        Tenant            @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  interaction   Interaction?      @relation(fields: [interactionId], references: [id], onDelete: SetNull)
+  user          User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  scriptVersion ScriptVersion     @relation(fields: [scriptVersionId], references: [id], onDelete: Restrict)
+  assignment    Assignment?       @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+  events        SessionEvent[]
+  chainHead     SessionChainHead?
+  outcome       Outcome?
+  launchIntents LaunchIntent[]
+
+  @@index([tenantId, createdAt, id])
+  @@index([tenantId, userId, state])
+  @@index([tenantId, expiresAt], map: "sessions_runtime_expiry", where: raw("(deleted_at IS NULL)"))
+  @@map("sessions")
+}
+
+/// Append-only (no UPDATE/DELETE; trigger-enforced).
+/// Runtime session stream: append-only, hash-chained per session, partitioned by `recorded_at`.
+model SessionEvent {
+  id         String   @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  sessionId  String   @map("session_id") @db.Uuid
+  seq        Int
+  type       String
+  /// Redacted per variable classification before insert.
+  payload    Json     @default("{}")
+  actorId    String?  @map("actor_id") @db.VarChar(128)
+  pageId     String?  @map("page_id")
+  occurredAt DateTime @map("occurred_at") @db.Timestamptz(3)
+  recordedAt DateTime @map("recorded_at") @db.Timestamptz(3)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy  String   @map("created_by") @db.VarChar(128)
+  prevHash   String   @map("prev_hash") @db.Char(64)
+  hash       String   @db.Char(64)
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onUpdate: NoAction, map: "session_events_tenant_id_fkey1", onDelete: Restrict)
+  session Session @relation(fields: [sessionId], references: [id], onUpdate: NoAction, map: "session_events_session_id_fkey1", onDelete: Restrict)
+
+  @@id([sessionId, seq, recordedAt], map: "session_events_pkey")
+  @@unique([id, recordedAt], map: "session_events_id_key")
+  @@index([tenantId, occurredAt], map: "session_events_tenant_occurred_idx")
+  @@map("session_events")
+}
+
+model SessionChainHead {
+  sessionId  String    @id @map("session_id") @db.Uuid
+  tenantId   String    @map("tenant_id") @db.Uuid
+  seq        Int       @default(0)
+  hash       String    @db.Char(64)
+  recordedAt DateTime  @default(dbgenerated("'1970-01-01 00:00:00+00'::timestamp with time zone")) @map("recorded_at") @db.Timestamptz(3)
+  sealedAt   DateTime? @map("sealed_at") @db.Timestamptz(3)
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  session Session @relation(fields: [sessionId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+
+  @@index([tenantId, recordedAt], map: "session_chain_heads_tenant_recorded_idx")
+  @@map("session_chain_heads")
+}
+
+model Outcome {
+  sealedData String?   @map("sealed_data")
+  id         String    @id @default(uuid(7)) @db.Uuid
+  tenantId   String    @map("tenant_id") @db.Uuid
+  sessionId  String    @map("session_id") @db.Uuid
+  code       String
+  label      String?
+  subCodes   String[]  @map("sub_codes")
+  /// @pii
+  notes      String?
+  callbackAt DateTime? @map("callback_at") @db.Timestamptz(3)
+  recordedAt DateTime  @default(now()) @map("recorded_at") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy  String    @map("created_by") @db.VarChar(128)
+  updatedAt  DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy  String    @map("updated_by") @db.VarChar(128)
+  deletedAt  DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version    Int       @default(1)
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+
+  @@unique([sessionId], map: "outcomes_session_key")
+  @@index([tenantId, code, recordedAt])
+  @@map("outcomes")
+}
+
+// ─── Governance ───────────────────────────────────────────────────────────────
+
+/// Append-only, hash-chained per tenant (CLAUDE.md §6, DOMAIN AuditEvent).
+/// Append-only, hash-chained, partitioned monthly by `recorded_at` (ADR-0014; reviewed SQL).
+model AuditEvent {
+  /// ULID (hash v2); migrated v1 rows keep their UUID.
+  id            String                   @db.VarChar(36)
+  tenantId      String                   @map("tenant_id") @db.Uuid
+  seq           BigInt
+  hashVersion   Int                      @default(2) @map("hash_version") @db.SmallInt
+  action        String
+  /// user | system | apiClient | connector (`service` only on v1 rows).
+  actorType     String                   @map("actor_type")
+  actorId       String                   @map("actor_id") @db.VarChar(128)
+  /// displayName (@pii), ip (@pii), userAgent, sessionId.
+  actor         Json                     @default("{}")
+  targetType    String                   @map("target_type")
+  targetId      String                   @map("target_id")
+  targetName    String?                  @map("target_name")
+  outcome       AuditOutcome
+  reason        String?
+  /// Redacted snapshot diff or RFC 6902 patch.
+  diff          Json?
+  correlationId String                   @map("correlation_id")
+  interactionId String?                  @map("interaction_id")
+  metadata      Json                     @default("{}")
+  occurredAt    DateTime                 @map("occurred_at") @db.Timestamptz(3)
+  recordedAt    DateTime                 @map("recorded_at") @db.Timestamptz(3)
+  prevHash      String                   @map("prev_hash") @db.Char(64)
+  hash          String                   @db.Char(64)
+  search        Unsupported("tsvector")?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onUpdate: NoAction, map: "audit_events_tenant_id_fkey1", onDelete: Restrict)
+
+  @@id([tenantId, seq, recordedAt], map: "audit_events_pkey")
+  @@unique([id, recordedAt], map: "audit_events_id_key")
+  @@index([tenantId, occurredAt(sort: Desc)], map: "audit_events_tenant_occurred_idx")
+  @@index([tenantId, targetType, targetId], map: "audit_events_tenant_target_idx")
+  @@index([tenantId, actorType, actorId], map: "audit_events_tenant_actor_idx")
+  @@index([tenantId, action], map: "audit_events_tenant_action_idx")
+  @@index([tenantId, correlationId], map: "audit_events_tenant_correlation_idx")
+  @@map("audit_events")
+}
+
+/// Per-tenant chain head (row lock serializes appends). A cache: verification never trusts it.
+model AuditChainHead {
+  tenantId   String   @id @map("tenant_id") @db.Uuid
+  seq        BigInt   @default(0)
+  hash       String   @db.Char(64)
+  recordedAt DateTime @default(dbgenerated("'1970-01-01 00:00:00+00'::timestamp with time zone")) @map("recorded_at") @db.Timestamptz(3)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+
+  @@map("audit_chain_heads")
+}
+
+/// Ed25519-signed chain head (append-only).
+model AuditCheckpoint {
+  id                 String   @id @db.VarChar(26)
+  tenantId           String   @map("tenant_id") @db.Uuid
+  seq                BigInt
+  hash               String   @db.Char(64)
+  sessionHeadsDigest String   @map("session_heads_digest") @db.Char(64)
+  sessionHeadsCount  Int      @default(0) @map("session_heads_count")
+  prevCheckpointId   String?  @map("prev_checkpoint_id") @db.VarChar(26)
+  keyId              String   @map("key_id")
+  signature          String
+  signedAt           DateTime @map("signed_at") @db.Timestamptz(3)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+
+  @@unique([tenantId, seq], map: "audit_checkpoints_tenant_seq_key")
+  @@map("audit_checkpoints")
+}
+
+/// WORM archive registry (append-only): `uploaded` then `verified` rows per partition.
+model AuditArchive {
+  id            String   @id @db.VarChar(26)
+  tenantId      String   @map("tenant_id") @db.Uuid
+  stream        String
+  partitionName String   @map("partition_name")
+  fromSeq       BigInt?  @map("from_seq")
+  toSeq         BigInt?  @map("to_seq")
+  rowCount      BigInt   @map("row_count")
+  objectKey     String   @map("object_key")
+  sha256        String   @db.Char(64)
+  retainUntil   DateTime @map("retain_until") @db.Timestamptz(3)
+  status        String
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+
+  @@unique([tenantId, stream, partitionName, status], map: "audit_archives_unique")
+  @@map("audit_archives")
+}
+
+model SiemDestination {
+  id        String    @id @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  name      String
+  /// syslog | webhook | kafka
+  kind      String
+  /// rfc5424 | cef | json
+  format    String
+  /// Non-secret settings; secrets only via `secretRef`.
+  config    Json      @default("{}")
+  secretRef String?   @map("secret_ref")
+  enabled   Boolean   @default(true)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy String    @map("created_by") @db.VarChar(128)
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz(3)
+  updatedBy String    @map("updated_by") @db.VarChar(128)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version   Int       @default(1)
+
+  tenant Tenant      @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  cursor SiemCursor?
+
+  @@unique([tenantId, name], map: "siem_destinations_tenant_name_key", where: raw("deleted_at IS NULL"))
+  @@map("siem_destinations")
+}
+
+/// Ordered at-least-once delivery cursor per destination.
+model SiemCursor {
+  destinationId String    @id @map("destination_id") @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  lastSeq       BigInt    @default(0) @map("last_seq")
+  attempts      Int       @default(0)
+  nextAttemptAt DateTime  @default(now()) @map("next_attempt_at") @db.Timestamptz(3)
+  lastError     String?   @map("last_error")
+  deliveredAt   DateTime? @map("delivered_at") @db.Timestamptz(3)
+
+  destination SiemDestination @relation(fields: [destinationId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  tenant      Tenant          @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+
+  @@map("siem_cursors")
+}
+
+// ─── Infrastructure ───────────────────────────────────────────────────────────
+
+/// Transactional outbox: written in the same transaction as the domain change.
+model OutboxEvent {
+  id            String       @id @default(uuid(7)) @db.Uuid
+  tenantId      String       @map("tenant_id") @db.Uuid
+  aggregateType String       @map("aggregate_type")
+  aggregateId   String       @map("aggregate_id")
+  /// NATS subject, e.g. `verbis.campaigns.campaign.created.v1`.
+  eventType     String       @map("event_type")
+  payload       Json
+  /// correlationId, traceparent, actor.
+  headers       Json         @default("{}")
+  status        OutboxStatus @default(pending)
+  attempts      Int          @default(0)
+  availableAt   DateTime     @default(now()) @map("available_at") @db.Timestamptz(3)
+  lockedUntil   DateTime?    @map("locked_until") @db.Timestamptz(3)
+  publishedAt   DateTime?    @map("published_at") @db.Timestamptz(3)
+  lastError     String?      @map("last_error")
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy     String       @map("created_by") @db.VarChar(128)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@index([status, availableAt], map: "outbox_events_pending_idx", where: raw("status = 'pending'"))
+  @@index([tenantId, createdAt])
+  @@map("outbox_events")
+}
+
+/// Idempotent consumers: one row per (consumer, event) processed.
+model ProcessedEvent {
+  consumer    String
+  eventId     String   @map("event_id") @db.Uuid
+  tenantId    String   @map("tenant_id") @db.Uuid
+  processedAt DateTime @default(now()) @map("processed_at") @db.Timestamptz(3)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@id([consumer, eventId])
+  @@index([tenantId, processedAt])
+  @@map("processed_events")
+}
+
+/// Idempotency-Key records for POST requests (24h by default).
+model IdempotencyKey {
+  id              String           @id @default(uuid(7)) @db.Uuid
+  tenantId        String           @map("tenant_id") @db.Uuid
+  principalId     String           @map("principal_id") @db.VarChar(128)
+  key             String           @db.VarChar(255)
+  method          String           @db.VarChar(10)
+  path            String
+  requestHash     String           @map("request_hash")
+  state           IdempotencyState @default(in_progress)
+  responseStatus  Int?             @map("response_status")
+  responseBody    Json?            @map("response_body")
+  responseHeaders Json?            @map("response_headers")
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  expiresAt       DateTime         @map("expires_at") @db.Timestamptz(3)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@unique([tenantId, principalId, key], map: "idempotency_keys_scope_key")
+  @@index([expiresAt])
+  @@map("idempotency_keys")
+}
+
+/// Analytics read model fed by the idempotent domain-event consumer.
+model AnalyticsEventCount {
+  tenantId  String   @map("tenant_id") @db.Uuid
+  eventType String   @map("event_type")
+  day       DateTime @db.Date
+  count     Int      @default(0)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@id([tenantId, eventType, day])
+  @@map("analytics_event_counts")
+}
+
+/// Review trail of a script version (append-only).
+model ScriptVersionReview {
+  id              String   @id @db.Uuid
+  tenantId        String   @map("tenant_id") @db.Uuid
+  scriptVersionId String   @map("script_version_id") @db.Uuid
+  round           Int
+  reviewer        String   @db.VarChar(128)
+  /// approved | rejected | commented
+  decision        String
+  comment         String?
+  reason          String?
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  scriptVersion ScriptVersion @relation(fields: [scriptVersionId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+
+  @@unique([scriptVersionId, round, reviewer], map: "script_version_reviews_one_vote", where: raw("(decision = ANY (ARRAY['approved'::text, 'rejected'::text]))"))
+  @@index([tenantId, scriptVersionId, round], map: "script_version_reviews_version_idx")
+  @@map("script_version_reviews")
+}
+
+/// Reusable page group, versioned immutably (linked or copied into scripts).
+model SharedScreen {
+  id          String    @id @db.Uuid
+  tenantId    String    @map("tenant_id") @db.Uuid
+  key         String    @db.VarChar(64)
+  name        String
+  description String?
+  tags        String[]  @default([])
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy   String    @map("created_by") @db.VarChar(128)
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(3)
+  updatedBy   String    @map("updated_by") @db.VarChar(128)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version     Int       @default(1)
+
+  tenant   Tenant                @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  versions SharedScreenVersion[]
+  links    ScriptScreenLink[]
+
+  @@unique([tenantId, key], map: "shared_screens_tenant_key", where: raw("deleted_at IS NULL"))
+  @@map("shared_screens")
+}
+
+model SharedScreenVersion {
+  id             String   @id @db.Uuid
+  tenantId       String   @map("tenant_id") @db.Uuid
+  sharedScreenId String   @map("shared_screen_id") @db.Uuid
+  number         Int
+  semver         String   @db.VarChar(64)
+  changeNote     String?  @map("change_note")
+  /// {pages, variables, dataSources, i18n} fragment.
+  fragment       Json
+  checksum       String   @db.Char(64)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy      String   @map("created_by") @db.VarChar(128)
+
+  tenant       Tenant             @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  sharedScreen SharedScreen       @relation(fields: [sharedScreenId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  links        ScriptScreenLink[]
+
+  @@unique([sharedScreenId, number], map: "shared_screen_versions_number_key")
+  @@unique([sharedScreenId, semver], map: "shared_screen_versions_semver_key")
+  @@map("shared_screen_versions")
+}
+
+model ScriptScreenLink {
+  id                    String   @id @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  scriptVersionId       String   @map("script_version_id") @db.Uuid
+  sharedScreenId        String   @map("shared_screen_id") @db.Uuid
+  sharedScreenVersionId String   @map("shared_screen_version_id") @db.Uuid
+  /// linked | detached
+  mode                  String
+  pageIds               String[] @map("page_ids")
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy             String   @map("created_by") @db.VarChar(128)
+
+  tenant              Tenant              @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  scriptVersion       ScriptVersion       @relation(fields: [scriptVersionId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  sharedScreen        SharedScreen        @relation(fields: [sharedScreenId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  sharedScreenVersion SharedScreenVersion @relation(fields: [sharedScreenVersionId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+
+  @@unique([scriptVersionId, sharedScreenId], map: "script_screen_links_unique")
+  @@index([tenantId, sharedScreenId, mode], map: "script_screen_links_screen_idx")
+  @@map("script_screen_links")
+}
+
+model Template {
+  id              String    @id @db.Uuid
+  tenantId        String    @map("tenant_id") @db.Uuid
+  /// script | screen
+  kind            String
+  name            String
+  category        String    @db.VarChar(64)
+  description     String?
+  tags            String[]  @default([])
+  locale          String?   @db.VarChar(16)
+  document        Json
+  checksum        String    @db.Char(64)
+  sourceVersionId String?   @map("source_version_id") @db.Uuid
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       String    @map("created_by") @db.VarChar(128)
+  updatedAt       DateTime  @default(now()) @map("updated_at") @db.Timestamptz(3)
+  updatedBy       String    @map("updated_by") @db.VarChar(128)
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version         Int       @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+
+  @@unique([tenantId, kind, name], map: "templates_tenant_name_key", where: raw("deleted_at IS NULL"))
+  @@map("templates")
+}
+
+model CampaignExternalMapping {
+  id         String    @id @db.Uuid
+  tenantId   String    @map("tenant_id") @db.Uuid
+  campaignId String    @map("campaign_id") @db.Uuid
+  /// genesys-cloud | genesys-engage | avaya-aes | avaya-aacc | amazon-connect | cisco | nice | five9 | generic
+  platform   String    @db.VarChar(32)
+  /// queue | campaign | skill | vdn | routingPoint | flow …
+  kind       String    @db.VarChar(32)
+  externalId String    @map("external_id") @db.VarChar(256)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy  String    @map("created_by") @db.VarChar(128)
+  deletedAt  DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onUpdate: NoAction, onDelete: Restrict)
+
+  @@unique([tenantId, platform, kind, externalId], map: "campaign_external_mappings_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, campaignId], map: "campaign_external_mappings_campaign_idx")
+  @@map("campaign_external_mappings")
+}
+
+// ─── Secure launch (SECURITY §4) ──────────────────────────────────────────────
+
+enum LaunchIntentState {
+  pending
+  redeemed
+  expired
+  revoked
+
+  @@map("launch_intent_state")
+}
+
+/// Server-side authority for a launch. Only the SHA-256 of the opaque code is stored.
+model LaunchIntent {
+  id            String            @id @default(uuid(7)) @db.Uuid
+  tenantId      String            @map("tenant_id") @db.Uuid
+  userId        String            @map("user_id") @db.Uuid
+  interactionId String            @map("interaction_id") @db.Uuid
+  connectorId   String?           @map("connector_id") @db.Uuid
+  /// `s2s` | `embedded` | `jws`
+  flow          String            @db.VarChar(16)
+  codeHash      String            @unique(map: "launch_intents_code_hash_key") @map("code_hash") @db.VarChar(64)
+  /// External JWS `jti` (CTI-less flow) kept for forensics.
+  jti           String?           @db.VarChar(128)
+  state         LaunchIntentState @default(pending)
+  expiresAt     DateTime          @map("expires_at") @db.Timestamptz(3)
+  redeemedAt    DateTime?         @map("redeemed_at") @db.Timestamptz(3)
+  sessionId     String?           @map("session_id") @db.Uuid
+  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy     String            @map("created_by") @db.VarChar(128)
+  updatedAt     DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy     String            @map("updated_by") @db.VarChar(128)
+  version       Int               @default(1)
+  connectors    Connector?        @relation(fields: [connectorId], references: [id], onUpdate: NoAction)
+  interactions  Interaction       @relation(fields: [interactionId], references: [id], onUpdate: NoAction)
+  sessions      Session?          @relation(fields: [sessionId], references: [id], onUpdate: NoAction)
+  tenants       Tenant            @relation(fields: [tenantId], references: [id], onUpdate: NoAction)
+  users         User              @relation(fields: [userId], references: [id], onUpdate: NoAction)
+
+  @@unique([tenantId, jti], map: "launch_intents_tenant_jti_key", where: raw("(jti IS NOT NULL)"))
+  @@index([tenantId, userId, state])
+  @@index([tenantId, interactionId])
+  @@map("launch_intents")
+}
+
+/// Tenant-registered CTI-less launcher: verifies external JWS launch tokens (JWKS, rotated by kid).
+model LaunchTrustedIssuer {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  issuer    String    @db.VarChar(256)
+  /// Public JWKS (no private members). Several keys = rotation window.
+  jwks      Json
+  status    String    @default("active") @db.VarChar(16)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy String    @map("created_by") @db.VarChar(128)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy String    @map("updated_by") @db.VarChar(128)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version   Int       @default(1)
+  tenants   Tenant    @relation(fields: [tenantId], references: [id], onUpdate: NoAction)
+
+  @@unique([tenantId, issuer], map: "launch_trusted_issuers_tenant_issuer_key")
+  @@map("launch_trusted_issuers")
+}
+
+model AuthoringThread {
+  id              String        @id @default(uuid(7)) @db.Uuid
+  tenantId        String        @map("tenant_id") @db.Uuid
+  scriptVersionId String        @map("script_version_id") @db.Uuid
+  nodeId          String        @map("node_id") @db.VarChar(128)
+  resolved        Boolean       @default(false)
+  messages        Json          @default("[]")
+  version         Int           @default(1)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  script_versions ScriptVersion @relation(fields: [scriptVersionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tenants         Tenant        @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([tenantId, scriptVersionId], map: "authoring_threads_version_idx")
+  @@map("authoring_threads")
+}
+
+model CollaborationSnapshot {
+  id              String        @id @default(uuid(7)) @db.Uuid
+  tenantId        String        @map("tenant_id") @db.Uuid
+  scriptVersionId String        @map("script_version_id") @db.Uuid
+  state           Bytes
+  version         Int
+  updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  script_versions ScriptVersion @relation(fields: [scriptVersionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tenants         Tenant        @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([tenantId, scriptVersionId])
+  @@map("collaboration_snapshots")
+}
+
+model ScheduledRelease {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  tenantId    String    @map("tenant_id") @db.Uuid
+  scriptId    String    @map("script_id") @db.Uuid
+  number      Int
+  checksum    String    @db.Char(64)
+  requestedBy String    @map("requested_by") @db.Uuid
+  runAt       DateTime  @map("run_at") @db.Timestamptz(3)
+  state       String    @default("pending") @db.VarChar(16)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  completedAt DateTime? @map("completed_at") @db.Timestamptz(3)
+  users       User      @relation(fields: [requestedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  scripts     Script    @relation(fields: [scriptId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tenants     Tenant    @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([tenantId, scriptId], map: "scheduled_releases_tenant_script_idx")
+  @@map("scheduled_releases")
+}
+
+// Managed by SQL services; included here so schema drift protects these tables.
+model AdminPrivacyRequest {
+  id            String   @id @db.Uuid
+  tenantId      String   @map("tenant_id") @db.Uuid
+  kind          String
+  subjectSealed String   @map("subject_sealed")
+  state         String   @default("pending")
+  reason        String
+  matchedIds    Json     @default("[]") @map("matched_ids")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy     String   @map("created_by") @db.VarChar(128)
+  version       Int      @default(1)
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([tenantId, createdAt, id], map: "admin_privacy_requests_tenant_idx")
+  @@map("admin_privacy_requests")
+}
+
+// Managed by SQL services; included here so schema drift protects these tables.
+model AiCall {
+  id               String    @id @db.Uuid
+  tenantId         String    @map("tenant_id") @db.Uuid
+  requestId        String    @map("request_id") @db.Uuid
+  actorId          String    @map("actor_id") @db.Uuid
+  month            DateTime  @db.Date
+  task             String    @db.VarChar(32)
+  model            String    @db.VarChar(120)
+  inputHash        String    @map("input_hash") @db.Char(64)
+  state            String    @default("reserved") @db.VarChar(16)
+  reservedTokens   BigInt    @map("reserved_tokens")
+  reservedMicroUsd BigInt    @map("reserved_micro_usd")
+  inputTokens      Int?      @map("input_tokens")
+  outputTokens     Int?      @map("output_tokens")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  finishedAt       DateTime? @map("finished_at") @db.Timestamptz(6)
+  tenant           Tenant    @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([tenantId, requestId])
+  @@index([tenantId, createdAt], map: "ai_calls_created")
+  @@map("ai_calls")
+}
+
+// Managed by SQL services; included here so schema drift protects these tables.
+model AiUsage {
+  tenantId String   @map("tenant_id") @db.Uuid
+  month    DateTime @db.Date
+  tokens   BigInt   @default(0)
+  microUsd BigInt   @default(0) @map("micro_usd")
+  calls    Int      @default(0)
+  pending  Int      @default(0)
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([tenantId, month])
+  @@map("ai_usage")
+}
+
+// Managed by SQL services; included here so schema drift protects these tables.
+model AnalyticsErasedSession {
+  tenantId  String   @map("tenant_id") @db.Uuid
+  sessionId String   @map("session_id") @db.Uuid
+  erasedAt  DateTime @default(now()) @map("erased_at") @db.Timestamptz(6)
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([tenantId, sessionId])
+  @@map("analytics_erased_sessions")
+}
+
+// Managed by SQL services; included here so schema drift protects these tables.
+model AnalyticsFact {
+  tenantId   String   @map("tenant_id") @db.Uuid
+  eventId    String   @map("event_id") @db.Uuid
+  occurredAt DateTime @map("occurred_at") @db.Timestamptz(6)
+  sessionId  String   @map("session_id") @db.Uuid
+  fact       Json
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([tenantId, eventId, occurredAt])
+  @@index([tenantId, sessionId, occurredAt], map: "analytics_facts_session")
+  @@index([tenantId, occurredAt, sessionId], map: "analytics_facts_time")
+  @@map("analytics_facts")
+}
+
+// Managed by SQL services; included here so schema drift protects these tables.
+model AnalyticsSchedule {
+  id         String    @id @db.Uuid
+  tenantId   String    @map("tenant_id") @db.Uuid
+  ownerId    String    @map("owner_id") @db.Uuid
+  definition Json
+  nextRunAt  DateTime  @map("next_run_at") @db.Timestamptz(6)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy  String    @map("created_by") @db.VarChar(128)
+  updatedAt  DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  updatedBy  String    @map("updated_by") @db.VarChar(128)
+  version    Int       @default(1)
+  deletedAt  DateTime? @map("deleted_at") @db.Timestamptz(6)
+  owner      User      @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("analytics_schedules")
+}
