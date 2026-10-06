@@ -1,0 +1,3 @@
+.astro/
+# Locally captured files must be reviewed before committing.
+public/guides/captured/

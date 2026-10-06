@@ -1,0 +1,223 @@
+/* Script identity, primary action and lifecycle navigation have distinct places. */
+.dw-script-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vb-space-2);
+  min-block-size: 32px;
+  margin-block-end: var(--vb-space-5);
+  color: var(--vb-color-text-muted);
+  text-decoration: none;
+  font-size: 12px;
+}
+.dw-script-back:hover {
+  color: var(--vb-color-text);
+}
+.dw-script-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vb-space-6);
+  margin-block-end: var(--vb-space-6);
+}
+.dw-script-identity {
+  display: flex;
+  align-items: center;
+  gap: var(--vb-space-4);
+  min-inline-size: 0;
+}
+.dw-script-identity > div {
+  min-inline-size: 0;
+}
+.dw-script-mark {
+  display: grid;
+  place-items: center;
+  inline-size: 52px;
+  block-size: 52px;
+  flex-shrink: 0;
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-brand-bg);
+  color: var(--vb-color-brand-accent);
+  border: 1px solid var(--vb-color-brand-border);
+}
+.dw-script-header h1 {
+  margin: var(--vb-space-2) 0 0;
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  overflow-wrap: anywhere;
+}
+.dw-script-header p {
+  margin: var(--vb-space-2) 0 0;
+  color: var(--vb-color-text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.dw-script-primary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--vb-space-2);
+  flex-shrink: 0;
+}
+.dw-script-primary-actions .vb-button {
+  font-size: 12px;
+}
+.dw-script-tools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--vb-space-4);
+  margin-block-end: var(--vb-space-8);
+}
+.dw-script-tool {
+  display: flex;
+  align-items: center;
+  gap: var(--vb-space-3);
+  padding: var(--vb-space-4) var(--vb-space-5);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface-raised);
+  color: var(--vb-color-text);
+  text-decoration: none;
+  min-inline-size: 0;
+  transition: border-color var(--vb-motion-fast) var(--vb-ease-out);
+}
+.dw-script-tool:hover {
+  border-color: var(--vb-color-info);
+  background: color-mix(in srgb, var(--vb-color-info-soft) 25%, var(--vb-color-surface-raised));
+}
+.dw-script-tool > span:nth-child(2) {
+  display: grid;
+  gap: var(--vb-space-1);
+  min-inline-size: 0;
+}
+.dw-script-tool strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.dw-script-tool > span > span {
+  color: var(--vb-color-text-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.dw-script-tool > svg {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  color: var(--vb-color-text-muted);
+}
+.dw-script-tool-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 38px;
+  block-size: 38px;
+  flex-shrink: 0;
+  border-radius: var(--vb-radius-md);
+  background: var(--vb-color-info-soft);
+  color: var(--vb-color-info);
+}
+.dw-script-panel {
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface-raised);
+  padding: var(--vb-space-5);
+  min-inline-size: 0;
+}
+.dw-script-panel .vb-tab-content {
+  padding-block-start: var(--vb-space-5);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.dw-script-panel .vb-table-toolbar .vb-form-field {
+  min-inline-size: min(12rem, 100%);
+}
+.dw-script-panel .vb-data-table {
+  max-inline-size: 100%;
+}
+.dw-script-empty {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-block-size: 260px;
+  padding: var(--vb-space-6);
+}
+.dw-script-empty .vb-empty-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 64px;
+  block-size: 64px;
+  border-radius: var(--vb-radius-xl);
+  background: var(--vb-color-info-soft);
+  color: var(--vb-color-info);
+  margin-block-end: var(--vb-space-4);
+}
+.dw-script-empty .vb-empty {
+  padding: 0;
+  max-inline-size: 420px;
+}
+@media (max-width: 900px) {
+  .dw-script-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .dw-script-primary-actions {
+    justify-content: flex-start;
+    flex-shrink: 1;
+    max-inline-size: 100%;
+  }
+  .dw-script-primary-actions .vb-button {
+    max-inline-size: 100%;
+    white-space: normal;
+  }
+  .dw-script-tools {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .dw-script-header h1 {
+    font-size: 24px;
+  }
+  .dw-script-mark {
+    inline-size: 40px;
+    block-size: 40px;
+  }
+  .dw-script-tool {
+    padding: var(--vb-space-4) var(--vb-space-3);
+  }
+  .dw-script-panel {
+    padding: var(--vb-space-3);
+  }
+  .dw-script-empty {
+    padding: var(--vb-space-4) 0;
+  }
+}
+
+/* Table cells contain concise actions; full regression content lives in a dialog. */
+.dw-action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vb-space-2);
+  min-block-size: 32px;
+  color: var(--vb-color-info);
+  font-size: var(--vb-font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.dw-action-link:visited {
+  color: var(--vb-color-info);
+}
+.dw-action-link:hover {
+  text-decoration: underline;
+}
+.dw-action-link svg {
+  flex-shrink: 0;
+}
+.dw-script-detail .vb-data-table td:has(.vb-button),
+.dw-script-detail .vb-data-table td:has(.dw-action-link) {
+  white-space: normal;
+  overflow: visible;
+}
+.dw-script-detail .vb-data-table td .vb-button {
+  white-space: normal;
+  block-size: auto;
+  text-align: start;
+}

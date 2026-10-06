@@ -1,0 +1,118 @@
+/* Brand is concentrated in the page identity; working surfaces remain quiet. */
+.dw-library > .dw-page-heading {
+  padding: var(--vb-space-6);
+  border: 1px solid var(--vb-color-brand-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-brand-bg);
+  color: var(--vb-color-brand-text);
+  box-shadow: var(--vb-shadow-sm);
+  align-items: center;
+}
+.dw-library > .dw-page-heading h1 {
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+.dw-library > .dw-page-heading :is(p, .dw-eyebrow) {
+  color: var(--vb-color-brand-muted);
+}
+.dw-library > .dw-page-heading .dw-eyebrow svg {
+  color: var(--vb-color-brand-accent);
+}
+.dw-library > .dw-page-heading .dw-count {
+  background: color-mix(in srgb, var(--vb-color-brand-accent) 12%, var(--vb-color-brand-bg));
+  color: var(--vb-color-brand-accent);
+  border: 1px solid var(--vb-color-brand-border);
+  min-inline-size: 28px;
+  min-block-size: 28px;
+}
+.dw-library > .dw-page-heading > .vb-button {
+  background: var(--vb-color-brand-accent);
+  color: var(--vb-color-brand-bg);
+  border-color: var(--vb-color-brand-accent);
+  flex-shrink: 0;
+}
+.dw-library > .dw-page-heading > .vb-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--vb-color-brand-accent) 85%, var(--vb-color-brand-text));
+}
+.dw-library .dw-list-toolbar {
+  padding: var(--vb-space-5);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface-raised);
+  box-shadow: var(--vb-shadow-sm);
+}
+.dw-library .dw-search {
+  min-inline-size: min(200px, 100%);
+}
+.dw-library .vb-table-toolbar {
+  background: var(--vb-color-surface-raised);
+}
+.dw-library .vb-table th {
+  background: var(--vb-color-surface);
+}
+.dw-library .vb-table-sort {
+  font-size: 12px;
+  font-weight: 650;
+}
+.dw-library .dw-table-name {
+  font-size: 14px;
+  gap: var(--vb-space-3);
+}
+.dw-library .dw-table-name > svg {
+  color: var(--vb-color-info);
+}
+.dw-library .vb-column-resize::after {
+  background: var(--vb-color-border);
+  inline-size: 1px;
+}
+.dw-library .vb-column-resize:is(:hover, :focus-visible)::after {
+  background: var(--vb-color-info);
+  inline-size: 2px;
+}
+.dw-resource-card {
+  box-shadow: var(--vb-shadow-sm);
+  border-block-start: 3px solid var(--vb-color-info);
+}
+.dw-script-header {
+  padding: var(--vb-space-5);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface-raised);
+  box-shadow: var(--vb-shadow-sm);
+}
+.dw-script-tool {
+  background: var(--vb-color-surface-raised);
+  box-shadow: var(--vb-shadow-sm);
+}
+.dw-script-tool:hover {
+  border-color: var(--vb-color-info);
+  background: var(--vb-color-info-soft);
+}
+@media (max-width: 600px) {
+  .dw-library > .dw-page-heading,
+  .dw-script-header {
+    padding: var(--vb-space-4);
+  }
+  .dw-library > .dw-page-heading > .vb-button {
+    inline-size: 100%;
+  }
+  .dw-library .dw-list-toolbar {
+    padding: var(--vb-space-4);
+  }
+}
+/* Keep the table's broader filter available without competing with library search. */
+.dw-library .vb-table-toolbar {
+  padding: var(--vb-space-3) var(--vb-space-4);
+  gap: var(--vb-space-3);
+}
+.dw-library .vb-table-toolbar .vb-form-field {
+  max-inline-size: 240px;
+  min-inline-size: 0;
+}
+.dw-library .vb-table-toolbar .vb-form-field > label {
+  font-size: 11px;
+}
+.dw-library .vb-table-toolbar .vb-input {
+  min-block-size: 32px;
+  font-size: 12px;
+}

@@ -1,0 +1,49 @@
+.dw-campaign-settings {
+  min-inline-size: 0;
+}
+.dw-campaign-settings fieldset {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--vb-space-5);
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--vb-space-5);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface-raised);
+}
+.dw-campaign-settings legend {
+  padding-inline: var(--vb-space-2);
+  font-weight: 600;
+  font-size: var(--vb-font-size-sm);
+}
+.dw-campaign-settings fieldset > * {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.dw-campaign-settings fieldset > :is(h2, fieldset, .vb-button),
+.dw-campaign-settings .vb-form-field:has(textarea, input[maxlength='120']) {
+  grid-column: 1 / -1;
+}
+.dw-campaign-settings h2 {
+  margin: var(--vb-space-3) 0 0;
+  padding-block-start: var(--vb-space-5);
+  border-block-start: 1px solid var(--vb-color-border);
+  font-size: var(--vb-font-size-lg);
+  letter-spacing: -0.02em;
+}
+.dw-campaign-settings fieldset fieldset {
+  background: var(--vb-color-surface);
+}
+.dw-campaign-settings .vb-button {
+  justify-self: start;
+  white-space: normal;
+  block-size: auto;
+  min-block-size: 2.5rem;
+}
+@media (max-width: 700px) {
+  .dw-campaign-settings fieldset {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--vb-space-4);
+  }
+}

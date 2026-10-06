@@ -1,0 +1,202 @@
+.fd-workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.fd-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--vb-space-2);
+  padding: var(--vb-space-3);
+  border-block-end: 1px solid var(--vb-color-border);
+}
+.fd-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  min-height: 0;
+  background: var(--vb-color-bg);
+}
+.fd-properties {
+  overflow: auto;
+  background: var(--vb-color-surface-raised);
+  border-inline-start: 1px solid var(--vb-color-border);
+  padding: var(--vb-space-4);
+}
+.fd-properties fieldset {
+  border: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vb-space-3);
+}
+.fd-node {
+  min-width: 13rem;
+  border: 1px solid var(--vb-color-border-strong);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface-raised);
+  color: var(--vb-color-text);
+  box-shadow: var(--vb-shadow-md);
+  padding: var(--vb-space-4);
+  max-width: 16rem;
+}
+.fd-node-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vb-space-2);
+  overflow: hidden;
+  font-size: var(--vb-font-size-sm);
+}
+.fd-node-title strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fd-node-issues {
+  color: var(--vb-color-warning);
+  font-size: var(--vb-font-size-xs);
+  margin-block-start: var(--vb-space-2);
+}
+.fd-ports {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--vb-font-size-xs);
+  padding-block-start: var(--vb-space-3);
+}
+.fd-note {
+  border: 1px solid var(--vb-color-warning);
+  background: var(--vb-color-warning-soft);
+  color: var(--vb-color-text);
+  border-radius: var(--vb-radius-md);
+  padding: var(--vb-space-4);
+  white-space: pre-wrap;
+  min-width: 10rem;
+  max-width: 18rem;
+}
+.fd-manager {
+  flex: 1;
+  overflow: auto;
+  padding: var(--vb-space-6);
+}
+.fd-manager > fieldset {
+  border: 0;
+}
+.rb-builder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vb-space-3);
+}
+.rb-group {
+  min-width: 0;
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  padding: var(--vb-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--vb-space-3);
+  background: var(--vb-color-surface);
+}
+.rb-leaf {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: var(--vb-space-2);
+  align-items: start;
+}
+.rb-leaf > * {
+  min-width: 0;
+}
+.rb-manager-content {
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vb-space-4);
+}
+.rb-manager-content h2 {
+  margin: 0;
+}
+.rb-manager-toolbar {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: var(--vb-space-3);
+}
+.rb-manager-toolbar > :first-child {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+.rb-manager-content > fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vb-space-4);
+}
+.rb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vb-space-2);
+}
+.react-flow {
+  --xy-node-color-default: var(--vb-color-text);
+  --xy-node-background-color-default: var(--vb-color-surface-raised);
+  --xy-edge-stroke-default: var(--vb-color-text-muted);
+  --xy-edge-label-color-default: var(--vb-color-text);
+  --xy-edge-label-background-color-default: var(--vb-color-surface-raised);
+  --xy-controls-button-background-color-default: var(--vb-color-surface-raised);
+  --xy-controls-button-color-default: var(--vb-color-text);
+  --xy-controls-button-border-color-default: var(--vb-color-border);
+  --xy-background-color-default: var(--vb-color-bg);
+  --xy-minimap-background-color-default: var(--vb-color-surface);
+  --xy-handle-background-color-default: var(--vb-color-primary);
+  --xy-handle-border-color-default: var(--vb-color-surface-raised);
+}
+.react-flow__node.selected .fd-node {
+  outline: 2px solid var(--vb-color-focus);
+  outline-offset: 2px;
+}
+.react-flow__handle {
+  width: 12px;
+  height: 12px;
+}
+.react-flow__node-group {
+  border: 1px dashed var(--vb-color-primary);
+  background: transparent;
+  color: var(--vb-color-text);
+}
+.fd-properties code {
+  font-size: var(--vb-font-size-xs);
+  overflow-wrap: anywhere;
+}
+.fd-manager details code {
+  display: block;
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+  .react-flow * {
+    transition: none;
+    animation: none;
+  }
+}
+
+.react-flow__node-group {
+  border: 1px dashed var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface);
+  opacity: 0.75;
+}
+.fd-group-label {
+  padding-block: var(--vb-space-2);
+  padding-inline: var(--vb-space-3);
+  font-weight: 600;
+}
+
+.fd-visited .fd-node {
+  border-color: var(--vb-color-primary);
+  box-shadow: 0 0 0 2px var(--vb-color-primary);
+}

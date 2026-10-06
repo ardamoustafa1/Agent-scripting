@@ -1,0 +1,31 @@
+{
+  "syntheticOnly": true,
+  "steps": [
+    {
+      "name": "designer-first-draft-tr",
+      "url": "http://localhost:5173/",
+      "authState": "designer-tr.json",
+      "readySelector": "main"
+    },
+    {
+      "name": "designer-first-draft-en",
+      "url": "http://localhost:5173/",
+      "authState": "designer-en.json",
+      "readySelector": "main"
+    },
+    {
+      "name": "agent-wrapup-tr",
+      "url": "http://localhost:5174/",
+      "authState": "agent-tr.json",
+      "readySelector": "main",
+      "mask": ["input"]
+    },
+    {
+      "name": "agent-wrapup-en",
+      "url": "http://localhost:5174/",
+      "authState": "agent-en.json",
+      "readySelector": "main",
+      "mask": ["input"]
+    }
+  ]
+}

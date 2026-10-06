@@ -1,0 +1,99 @@
+@import '@verbis/ui/tokens.css';
+@import '@verbis/ui/fonts.css';
+:root {
+  --sl-font: var(--vb-font-sans);
+  --sl-font-mono: var(--vb-font-mono);
+}
+:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 3px;
+}
+.sl-markdown-content img {
+  border-radius: var(--vb-radius-lg, 0.5rem);
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Documentation is part of the product identity, including both Starlight themes. */
+:root {
+  --sl-color-bg: var(--vb-color-bg);
+  --sl-color-text: var(--vb-color-text-muted);
+  --sl-color-white: var(--vb-color-text);
+  --sl-color-gray-1: var(--vb-color-text);
+  --sl-color-gray-2: var(--vb-color-text-muted);
+  --sl-color-gray-3: var(--vb-color-text-muted);
+  --sl-color-gray-5: var(--vb-color-border);
+  --sl-color-gray-6: var(--vb-color-surface);
+  --sl-color-black: var(--vb-color-surface-raised);
+  --sl-color-accent: var(--vb-color-primary);
+  --sl-color-accent-high: var(--vb-color-primary);
+  --sl-color-accent-low: var(--vb-color-surface);
+  --sl-color-text-accent: var(--vb-color-primary);
+  --sl-color-text-invert: var(--vb-color-primary-contrast);
+  --sl-color-bg-accent: var(--vb-color-primary);
+  --sl-color-bg-nav: var(--vb-color-brand-bg);
+  --sl-color-bg-sidebar: var(--vb-color-brand-bg);
+  --sl-color-bg-inline-code: var(--vb-color-surface);
+  --sl-color-hairline: var(--vb-color-border);
+  --sl-color-hairline-light: var(--vb-color-border);
+  --sl-nav-height: 4.75rem;
+  --sl-text-h1: 2rem;
+  --sl-text-h2: 1.5rem;
+}
+.header,
+.sidebar-pane,
+mobile-starlight-toc {
+  --sl-color-white: var(--vb-color-brand-text);
+  --sl-color-gray-1: var(--vb-color-brand-text);
+  --sl-color-gray-2: var(--vb-color-brand-muted);
+  --sl-color-gray-3: var(--vb-color-brand-muted);
+  --sl-color-gray-5: var(--vb-color-brand-border);
+  --sl-color-gray-6: var(--vb-entry-panel);
+  --sl-color-black: var(--vb-color-brand-bg);
+  --sl-color-text: var(--vb-color-brand-muted);
+  --sl-color-accent: var(--vb-color-brand-accent);
+  --sl-color-accent-high: var(--vb-color-brand-accent);
+  --sl-color-text-accent: var(--vb-color-brand-accent);
+  --sl-color-text-invert: var(--vb-color-brand-bg);
+  color: var(--vb-color-brand-text);
+}
+.sl-markdown-content :is(h1, h2, h3),
+h1 {
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+.site-title {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+.sl-markdown-content table {
+  border-radius: var(--vb-radius-md);
+  font-size: var(--vb-font-size-sm);
+}
+.sl-markdown-content pre {
+  border-radius: var(--vb-radius-lg);
+  border: 1px solid var(--vb-color-border);
+}
+.sl-markdown-content a {
+  text-underline-offset: 3px;
+}
+.site-title {
+  color: var(--vb-color-brand-text);
+  font-size: var(--vb-font-size-xl);
+}
+.site-title img {
+  inline-size: 28px;
+  block-size: 28px;
+}
+@media (max-width: 400px) {
+  .site-title {
+    font-size: var(--vb-font-size-lg);
+  }
+}

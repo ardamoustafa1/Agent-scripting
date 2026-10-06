@@ -1,0 +1,57 @@
+/* Loaded wherever regression is rendered, including lifecycle and dialog routes. */
+.pv-regression {
+  display: grid;
+  gap: var(--vb-space-4);
+  min-inline-size: 0;
+  padding: var(--vb-space-5);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface);
+  white-space: normal;
+  text-align: start;
+}
+.pv-regression > * {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.pv-regression h3 {
+  margin: 0;
+  font-size: var(--vb-font-size-md);
+  font-weight: 600;
+}
+.pv-regression p {
+  margin: 0;
+  color: var(--vb-color-text-muted);
+  line-height: 1.6;
+}
+.pv-regression code,
+.pv-regression li {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+.pv-regression code {
+  font-family: var(--vb-font-mono);
+  font-size: var(--vb-font-size-xs);
+}
+.pv-regression ul {
+  margin: 0;
+  padding-inline-start: var(--vb-space-5);
+  display: grid;
+  gap: var(--vb-space-3);
+}
+.pv-regression .vb-button {
+  justify-self: start;
+  white-space: normal;
+  height: auto;
+  min-block-size: 40px;
+  line-height: 1.5;
+  text-align: center;
+}
+.dw-regression-dialog {
+  inline-size: min(42rem, calc(100vw - var(--vb-space-8)));
+}
+.dw-regression-dialog .pv-regression {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}

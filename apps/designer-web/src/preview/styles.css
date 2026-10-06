@@ -1,0 +1,128 @@
+.pv-studio {
+  display: grid;
+  gap: var(--vb-space-4);
+  min-inline-size: 0;
+  padding: var(--vb-space-4);
+  background: var(--vb-color-bg);
+}
+.pv-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--vb-space-3);
+  padding: var(--vb-space-4);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface);
+}
+.pv-toolbar .vb-form-field {
+  inline-size: 8rem;
+}
+.pv-layout {
+  display: grid;
+  grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr);
+  gap: var(--vb-space-4);
+}
+.pv-sidebar {
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface);
+  max-block-size: 55rem;
+  overflow: auto;
+}
+.pv-panel {
+  display: grid;
+  gap: var(--vb-space-3);
+  padding: var(--vb-space-4);
+}
+.pv-panel fieldset {
+  display: grid;
+  gap: var(--vb-space-3);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  padding: var(--vb-space-3);
+}
+.pv-panel ul {
+  padding-inline-start: var(--vb-space-5);
+}
+.pv-panel code {
+  overflow-wrap: anywhere;
+  font-size: var(--vb-font-size-xs);
+}
+.pv-stage {
+  min-inline-size: 0;
+  background: var(--vb-color-surface);
+  padding: var(--vb-space-4);
+  border-radius: var(--vb-radius-lg);
+  border: 1px solid var(--vb-color-border);
+}
+.pv-device-scroll {
+  overflow: auto;
+  max-block-size: 55rem;
+  padding: var(--vb-space-2);
+}
+.pv-device-scroll iframe {
+  display: block;
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-bg);
+  box-shadow: var(--vb-shadow-lg);
+}
+.pv-flow,
+.pv-timeline {
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  padding: var(--vb-space-4);
+  background: var(--vb-color-surface);
+  min-inline-size: 0;
+}
+.pv-flow > .fd-workspace {
+  max-block-size: 32rem;
+}
+.pv-timeline ol {
+  padding: 0;
+  list-style: none;
+  max-block-size: 22rem;
+  overflow: auto;
+}
+.pv-timeline li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--vb-space-3);
+  padding: var(--vb-space-2);
+  border-block-end: 1px solid var(--vb-color-border);
+}
+.pv-timeline time {
+  font: var(--vb-font-size-xs) var(--vb-font-mono);
+  color: var(--vb-color-text-muted);
+}
+.pv-timeline code {
+  overflow-wrap: anywhere;
+  flex: 1;
+}
+@media (max-width: 900px) {
+  .pv-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.pv-flow .fd-body {
+  min-block-size: 20rem;
+  block-size: 26rem;
+}
+
+.pv-sidebar .vb-tab-list {
+  flex-wrap: wrap;
+}
+.pv-sidebar .vb-tab {
+  padding-inline: var(--vb-space-3);
+}
+.pv-panel > ul {
+  display: grid;
+  gap: var(--vb-space-3);
+  margin: 0;
+}
+.pv-panel li {
+  overflow-wrap: anywhere;
+}

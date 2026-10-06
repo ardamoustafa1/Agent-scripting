@@ -1,0 +1,156 @@
+.ig-stack,
+.ig-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vb-space-4);
+  min-inline-size: 0;
+}
+.ig-editor fieldset {
+  border: 0;
+  padding: var(--vb-space-4);
+  min-inline-size: 0;
+}
+.ig-row,
+.ig-mapping {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vb-space-4);
+}
+.ig-mapping > section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: min(12rem, 100%);
+  padding: var(--vb-space-3);
+  background: var(--vb-color-surface-raised);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+}
+.ig-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vb-space-3);
+  padding: var(--vb-space-4);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface-raised);
+}
+.ig-code {
+  background: var(--vb-color-surface);
+  padding: var(--vb-space-4);
+  overflow: auto;
+  max-block-size: 28rem;
+  font-family: var(--vb-font-mono);
+  font-size: var(--vb-font-size-sm);
+  border-radius: var(--vb-radius-md);
+}
+.ig-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: var(--vb-space-4);
+}
+.ig-drop {
+  padding: var(--vb-space-3);
+  border: 1px dashed var(--vb-color-border);
+  display: flex;
+  justify-content: space-between;
+}
+.ig-drop-active {
+  outline: 2px solid var(--vb-color-focus);
+}
+.ig-environment {
+  color: var(--vb-color-text-muted);
+}
+
+.ig-editor input[type='file'] {
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.ig-stack > .vb-button,
+.ig-card > .vb-button {
+  align-self: flex-start;
+  max-inline-size: 100%;
+  white-space: normal;
+  block-size: auto;
+  min-block-size: 2.5rem;
+}
+.ig-editor .ig-panel {
+  padding: var(--vb-space-5);
+  background: var(--vb-color-surface-raised);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+}
+.ig-panel > * {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.ig-panel :is(h2, h3, p) {
+  margin: 0;
+}
+.ig-panel p {
+  color: var(--vb-color-text-muted);
+  line-height: 1.6;
+}
+.ig-editor :is(.ig-panel-request, .ig-panel-resilience) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+.ig-panel-request > :not(.vb-form-field),
+.ig-panel-resilience > :not(.vb-form-field) {
+  grid-column: 1 / -1;
+}
+.ig-panel .vb-button {
+  justify-self: start;
+}
+.ig-editor .vb-tab-list {
+  flex-wrap: wrap;
+}
+.ig-row > .vb-form-field:first-child {
+  flex: 1 1 18rem;
+}
+.ig-row > .vb-form-field {
+  min-inline-size: 0;
+}
+.ig-editor input[type='file'] {
+  padding: var(--vb-space-4);
+  border: 1px dashed var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  background: var(--vb-color-surface);
+}
+.ig-editor input[type='file']::file-selector-button {
+  padding: var(--vb-space-2) var(--vb-space-3);
+  margin-inline-end: var(--vb-space-3);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  background: var(--vb-color-surface-raised);
+  color: var(--vb-color-text);
+  font: inherit;
+  cursor: pointer;
+}
+@media (max-width: 700px) {
+  .ig-editor :is(.ig-panel-request, .ig-panel-resilience) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ig-editor .ig-panel {
+    padding: var(--vb-space-4);
+  }
+}
+
+.ig-card > .vb-badge {
+  align-self: flex-start;
+}
+.ig-mapping > section {
+  gap: var(--vb-space-3);
+  min-block-size: 7rem;
+}
+.ig-mapping h2 {
+  font-size: var(--vb-font-size-sm);
+  font-weight: 600;
+}
+.ig-drop {
+  flex-wrap: wrap;
+  gap: var(--vb-space-2);
+  overflow-wrap: anywhere;
+}

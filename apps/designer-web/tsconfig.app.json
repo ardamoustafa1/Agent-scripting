@@ -1,0 +1,15 @@
+{
+  "extends": "@verbis/config-ts/vite-app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../../packages/collaboration/tsconfig.build.json"
+    }
+  ]
+}
