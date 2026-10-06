@@ -676,3 +676,21 @@ it('runs rule and conditional fallback branches explicitly and rejects missing r
     'VERBIS_SUBFLOW_INVALID',
   );
 });
+it('resynchronizes an authorized cursor atomically without replaying external commands', async () => {
+  const command = vi.fn(),
+    { runtime } = engine(runtimeFixture(), { command });
+  runtime.resume('home');
+  runtime.resynchronize('second', ['home']);
+  expect(runtime.store.get('runtime.page')).toBe('second');
+  expect(command).not.toHaveBeenCalled();
+  expect(() => {
+    runtime.resynchronize('home', ['missing']);
+  }).toThrow('VERBIS_FLOW_NODE_UNKNOWN');
+  expect(runtime.store.get('runtime.page')).toBe('second');
+  await runtime.back();
+  expect(runtime.store.get('runtime.page')).toBe('home');
+  runtime.dispose();
+  expect(() => {
+    runtime.resynchronize('second');
+  }).toThrow('VERBIS_RUNTIME_DISPOSED');
+});

@@ -170,6 +170,14 @@ export class Runtime {
   /** Restore an authorized page without replaying flow actions or external side effects. */
   resume(pageId: string, history: readonly string[] = []): void {
     if (this.started) throw new RuntimeProblem('VERBIS_RUNTIME_STARTED');
+    this.position(pageId, history);
+  }
+  /** Apply a new authorized server snapshot without replaying page/flow side effects. */
+  resynchronize(pageId: string, history: readonly string[] = []): void {
+    if (this.disposed) throw new RuntimeProblem('VERBIS_RUNTIME_DISPOSED');
+    this.position(pageId, history);
+  }
+  private position(pageId: string, history: readonly string[]): void {
     this.page(pageId);
     const locate = (page: string): FlowFrame[] => {
       const walk = (flow: Flow, seen = new Set<string>()): FlowFrame[] | null => {
@@ -193,8 +201,10 @@ export class Runtime {
       }
       throw new RuntimeProblem('VERBIS_FLOW_NODE_UNKNOWN');
     };
-    this.frames = locate(pageId);
-    this.history = history.slice(-100).map((page) => ({ page, frames: locate(page) }));
+    const frames = locate(pageId);
+    const restoredHistory = history.slice(-100).map((page) => ({ page, frames: locate(page) }));
+    this.frames = frames;
+    this.history = restoredHistory;
     this.started = true;
     this.store.set('runtime.page', pageId);
     for (const page of [...history, pageId]) this.store.set(`runtime.visited.${page}`, true);
