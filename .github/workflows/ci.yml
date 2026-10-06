@@ -62,6 +62,8 @@ jobs:
       - name: Format check
         run: pnpm format:check
       - name: Lint
+        env:
+          NODE_OPTIONS: --max-old-space-size=8192
         run: pnpm lint && pnpm test:lint
       - name: Typecheck
         run: pnpm typecheck && pnpm test:typecheck

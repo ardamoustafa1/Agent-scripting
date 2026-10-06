@@ -4,7 +4,10 @@ import { DeadLettersService } from './dead-letters.service.js';
 
 import type { HubClient } from './hub-client.js';
 
-function fixture(hubStats = { durable: true, persisted: 7, persistFailures: 1 }) {
+function fixture(
+  hubStats = { durable: true, persisted: 7, persistFailures: 1 },
+  configured = true,
+) {
   const call = vi.fn((_t: string, method: string) =>
     Promise.resolve(
       method === 'GET'
@@ -15,7 +18,7 @@ function fixture(hubStats = { durable: true, persisted: 7, persistFailures: 1 })
   const record = vi.fn().mockResolvedValue(undefined);
   const tx = {};
   const service = new DeadLettersService(
-    { call } as unknown as HubClient,
+    { call, configured } as unknown as HubClient,
     { record } as never,
     { current: () => tx, tenantId: () => 'tenant-1' } as never,
   );
@@ -23,6 +26,16 @@ function fixture(hubStats = { durable: true, persisted: 7, persistFailures: 1 })
 }
 
 describe('DeadLettersService', () => {
+  it('reports empty stats instead of a 503 when no connector hub is configured', async () => {
+    const f = fixture(undefined, false);
+    await expect(f.service.stats()).resolves.toEqual({
+      durable: false,
+      persisted: 0,
+      persistFailures: 0,
+    });
+    expect(f.call).not.toHaveBeenCalled();
+  });
+
   it('reads dead-letter stats from the hub for the caller tenant only', async () => {
     const f = fixture();
     await expect(f.service.stats()).resolves.toEqual({

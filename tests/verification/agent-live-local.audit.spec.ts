@@ -1,5 +1,5 @@
 import { execFileSync, spawn, type ChildProcess } from 'node:child_process';
-import { X509Certificate, createHash } from 'node:crypto';
+import { X509Certificate, createHash, randomBytes } from 'node:crypto';
 import { mkdtempSync, readFileSync, writeFileSync, rmSync, mkdirSync } from 'node:fs';
 import { createServer as createTlsServer, type Server as TlsServer } from 'node:https';
 import { createServer as createNetServer } from 'node:net';
@@ -46,6 +46,9 @@ import type { PrismaClient } from '../../apps/api/src/generated/prisma/client.js
 import type { TLSSocket } from 'node:tls';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
+/** Shared secret the simulated TLS edge presents so the API trusts the forwarded certificate. */
+const EDGE_PROXY_SECRET = randomBytes(24).toString('hex');
+
 let owner: PrismaClient,
   app: NestFastifyApplication,
   hub: NestFastifyApplication,
@@ -177,6 +180,7 @@ beforeAll(async () => {
       INTERNAL_JWT_SIGNING_JWK: JSON.stringify(privateJwk),
       CONNECTOR_HUB_URL: `http://127.0.0.1:${hubPort}`,
       MTLS_CLIENT_CERT_HEADER: 'x-client-cert',
+      MTLS_PROXY_SECRET: EDGE_PROXY_SECRET,
       AUTH_APP_ORIGINS: `agent=${origin},admin=http://localhost:5175,designer=http://localhost:5173`,
       SIMULATOR_ENABLED: 'true',
       OUTBOX_RELAY_ENABLED: 'true',
@@ -208,8 +212,18 @@ beforeAll(async () => {
         for await (const chunk of request) chunks.push(Buffer.from(chunk as Uint8Array));
         const headers = new Headers();
         for (const [key, value] of Object.entries(request.headers))
-          if (value && !['host', 'connection', 'content-length', 'x-client-cert'].includes(key))
+          if (
+            value &&
+            ![
+              'host',
+              'connection',
+              'content-length',
+              'x-client-cert',
+              'x-verbis-mtls-proxy-secret',
+            ].includes(key)
+          )
             headers.set(key, Array.isArray(value) ? value.join(',') : value);
+        headers.set('x-verbis-mtls-proxy-secret', EDGE_PROXY_SECRET);
         headers.set(
           'x-client-cert',
           encodeURIComponent(new X509Certificate(certificate.raw).toString()),

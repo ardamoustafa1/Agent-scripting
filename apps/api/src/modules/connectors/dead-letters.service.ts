@@ -40,6 +40,8 @@ export class DeadLettersService {
   ) {}
 
   async stats(): Promise<DeadLetterStats> {
+    // No hub deployed: nothing to report, and the health page must not fail on it.
+    if (!this.hub.configured) return { durable: false, persisted: 0, persistFailures: 0 };
     const status = await this.hub.call(
       this.db.tenantId(),
       'GET',
