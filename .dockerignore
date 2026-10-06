@@ -1,0 +1,21 @@
+**/node_modules
+**/dist
+**/coverage
+**/.turbo
+**/playwright-report
+**/test-results
+**/src/generated
+.git
+.env
+.env.*
+!.env.example
+
+# Operations credentials and air-gap build output
+secrets
+**/*.key
+**/*.pem
+**/*.p12
+**/*.pfx
+airgap*
+*.tar
+*.sigstore.json

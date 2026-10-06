@@ -1,0 +1,27 @@
+node_modules/
+dist/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+playwright-report/
+test-results/
+blob-report/
+apps/api/src/generated/
+.vite/
+
+reports/mutation/
+reports/demo-smoke/
+.stryker-tmp/
+
+# Ephemeral CI acceptance reports (synthetic screenshots and measurements).
+reports/verification/
+
+# Generated local audit runs; preserve them on disk.
+artifacts/
+npm-audit.json

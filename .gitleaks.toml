@@ -1,0 +1,51 @@
+title = "Verbis secret scanning: default rules plus reviewed source-only false positives"
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "SAML XML element names are parser vocabulary, not an API key"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''(^|/)apps/api/src/modules/admin/workspace\.service\.ts$''']
+regexTarget = "match"
+regexes = ['''KeyDescriptor', 'X509Certificate'''']
+
+[[allowlists]]
+description = "Ephemeral generated JOSE key assignment in launch signature tests"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''(^|/)apps/api/src/modules/launch/domain/launch-jws\.spec\.ts$''']
+regexTarget = "match"
+regexes = ['''^key = k1\.privateKey;$''']
+
+[[allowlists]]
+description = "Negative credential-import fixture uses the exact non-credential word synthetic"
+targetRules = ["curl-auth-header"]
+condition = "AND"
+paths = ['''(^|/)apps/designer-web/(src/integrations/importers\.spec\.ts|e2e/integrations\.spec\.ts)$''']
+regexTarget = "match"
+regexes = ['''^curl https://api\.example\.com -H 'Authorization: Bearer synthetic'$''']
+
+[[allowlists]]
+description = "PEM serializer interpolates generated PKCS8 bytes; no embedded private key material"
+targetRules = ["private-key"]
+condition = "AND"
+paths = ['''(^|/)apps/api/src/modules/identity/saml/sp-credentials\.ts$''']
+regexTarget = "match"
+regexes = ['''(?s)-----BEGIN PRIVATE KEY-----\\n\$\{\s*Buffer\.from\(pkcs8\).*?\}\\n-----END PRIVATE KEY-----''']
+
+[[allowlists]]
+description = "SHA256 values keyed by source/artifact filenames in dated evidence manifests"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''^docs/verification/evidence/[^/]+/(source-fingerprint|sha256-manifest|manifest-sha256|manifest)\.json$''']
+regexTarget = "match"
+regexes = ['''^[^\r\n"]+\.[a-zA-Z0-9]+": "[a-f0-9]{64}"$''']
+
+[[allowlists]]
+description = "Audit copies of the exact negative curl fixture credential word synthetic"
+targetRules = ["curl-auth-header"]
+condition = "AND"
+paths = ['''^docs/verification/(V1_QUALITY_REPORT\.md|evidence/V1/static-findings\.json)$''']
+regexTarget = "match"
+regexes = ['''^curl https://api\.example\.com -H 'Authorization: Bearer synthetic'$''']

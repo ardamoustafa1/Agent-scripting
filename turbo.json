@@ -1,0 +1,44 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "stream",
+  "globalDependencies": [
+    "tsconfig.json",
+    ".npmrc",
+    "tests/playwright/**",
+    "scripts/flaky-policy.mjs"
+  ],
+  "globalEnv": ["NODE_ENV", "CI"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.spec.ts", "!**/*.spec.tsx", "!e2e/**"],
+      "outputs": ["dist/**", "src/generated/**"]
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"]
+    },
+    "e2e": {
+      "dependsOn": ["build"],
+      "outputs": ["playwright-report/**", "test-results/**"],
+      "passThroughEnv": ["PLAYWRIGHT_*"],
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

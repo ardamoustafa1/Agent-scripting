@@ -1,0 +1,26 @@
+{
+  "$comment": "Verbis Interaction Widget for Genesys Cloud. Create with POST /api/v2/integrations {integrationType:{id}}, then PUT /api/v2/integrations/{id}/config/current with `config`. Replace <AGENT_WEB_ORIGIN>, <CONNECTOR_ID> and group ids. See docs/connectors/genesys-cloud.md.",
+  "integration": {
+    "integrationType": { "id": "embedded-client-app-interaction-widget" },
+    "name": "Verbis Agent Script"
+  },
+  "config": {
+    "name": "Verbis Agent Script",
+    "notes": "Opens the Verbis script for the selected interaction. The conversation id is a hint only; Verbis re-verifies it with the Conversations API.",
+    "properties": {
+      "url": "https://<AGENT_WEB_ORIGIN>/launch#connector=<CONNECTOR_ID>&conversation={{gcConversationId}}",
+      "sandbox": "allow-scripts,allow-same-origin,allow-forms,allow-popups,allow-popups-to-escape-sandbox",
+      "permissions": "clipboard-write",
+      "groups": [],
+      "communicationTypeFilter": "call,callback,chat,email,message",
+      "displayType": "widget"
+    },
+    "advanced": {
+      "lifecycle": {
+        "ephemeral": true,
+        "hooks": { "bootstrap": false, "focus": false, "blur": false, "stop": false }
+      }
+    },
+    "credentials": {}
+  }
+}

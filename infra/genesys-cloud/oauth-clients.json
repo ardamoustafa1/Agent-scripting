@@ -1,0 +1,26 @@
+{
+  "$comment": "OAuth clients Verbis needs in Genesys Cloud (Admin > Integrations > OAuth, or POST /api/v2/oauth/clients). Secrets go to the Verbis secret vault, never into this file.",
+  "serviceClient": {
+    "name": "Verbis connector-hub (server)",
+    "authorizedGrantType": "CLIENT-CREDENTIALS",
+    "accessTokenValiditySeconds": 86400,
+    "roleDivisions": "Assign a dedicated role 'Verbis Connector' in the required divisions",
+    "requiredPermissions": [
+      "conversation:communication:view",
+      "conversation:participant:wrapup",
+      "conversation:conversation:edit (participant attributes)",
+      "recording:recording:pauseStrategy / conversation:call:record (secure pause)",
+      "outbound:contact:view (dialer contact-list import)",
+      "routing:queue:view, routing:queueMember:view (queue member topics)",
+      "routing:wrapupCode:view"
+    ],
+    "verbisSecrets": { "clientId": "<vault secret>", "clientSecret": "<vault secret>" }
+  },
+  "agentClient": {
+    "name": "Verbis agent identity (PKCE)",
+    "authorizedGrantType": "PKCE",
+    "registeredRedirectUri": ["https://<AGENT_WEB_ORIGIN>/api/v1/genesys-cloud/oauth/callback"],
+    "scope": ["users:readonly", "organization:readonly"],
+    "note": "Public client, no secret. The Verbis BFF performs the exchange; the token is used once and discarded."
+  }
+}

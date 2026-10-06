@@ -1,0 +1,343 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TELEMETRY_DISABLED: '1'
+
+jobs:
+  verification:
+    name: Real infrastructure acceptance
+    uses: ./.github/workflows/verification.yml
+  live:
+    name: Live projects including SAML and performance
+    uses: ./.github/workflows/live-acceptance.yml
+    secrets: inherit
+  quality:
+    name: Lint · Typecheck · Test · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Format check
+        run: pnpm format:check
+      - name: Lint
+        run: pnpm lint && pnpm test:lint
+      - name: Typecheck
+        run: pnpm typecheck && pnpm test:typecheck
+      - name: ASVS inventory consistency
+        run: node --test scripts/asvs-inventory.spec.mjs
+      - name: Final audit route and translation inventory
+        run: pnpm test:audit
+      - name: Install pinned gitleaks for commit-scanner policy tests
+        run: |
+          mkdir -p "$RUNNER_TEMP/gitleaks-bin"
+          container=$(docker create ghcr.io/gitleaks/gitleaks:v8.30.1)
+          docker cp "$container:/usr/bin/gitleaks" "$RUNNER_TEMP/gitleaks-bin/gitleaks"
+          docker rm "$container"
+          echo "$RUNNER_TEMP/gitleaks-bin" >> "$GITHUB_PATH"
+      - name: Secret-scanner positive canaries
+        run: node scripts/secret-scanner-policy.mjs
+      - name: Test policy regression
+        run: pnpm test:policy && node --test scripts/dependency-security.spec.mjs
+      - name: Quarantine policy
+        run: pnpm quarantine:check
+      - name: Test and coverage
+        run: pnpm test
+      - name: Mandatory coverage gate
+        if: always()
+        run: pnpm coverage:check
+      - name: Upload coverage (including failed gates)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: |
+            packages/*/coverage/
+            apps/*/coverage/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Build
+        run: pnpm build
+
+  e2e:
+    name: E2E (Playwright + axe)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: pnpm --filter @verbis/agent-web exec playwright install --with-deps chromium
+      - name: Build browser apps and shared dependencies
+        run: pnpm build
+      - name: Quarantine policy
+        run: pnpm quarantine:check
+      - name: E2E
+        run: pnpm e2e
+      - name: Upload Playwright reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-reports
+          path: |
+            apps/*/playwright-report/
+            apps/*/test-results/
+          retention-days: 7
+
+  e2e-keycloak:
+    name: E2E SSO (Keycloak dev realm)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      # pnpm install creates .env from .env.example (dev-only placeholders) and generates local keys.
+      - run: pnpm install --frozen-lockfile
+      - name: Start PostgreSQL, Redis, NATS and Keycloak
+        run: docker compose up -d --wait postgres redis nats keycloak
+      - name: Migrate and seed
+        run: pnpm --filter @verbis/api db:migrate && pnpm --filter @verbis/api seed
+      - name: Build
+        run: pnpm --filter @verbis/api... --filter @verbis/admin-web... build
+      - name: Start the API
+        run: |
+          set -a; . ./.env; set +a
+          nohup node apps/api/dist/main.js > api.log 2>&1 &
+          for i in $(seq 1 60); do curl -fs http://127.0.0.1:4000/health/ready && break; sleep 2; done
+      - name: Install Playwright browsers
+        run: pnpm --filter @verbis/admin-web exec playwright install --with-deps chromium
+      - name: Keycloak login e2e
+        run: |
+          set -a; . ./.env; set +a
+          E2E_KEYCLOAK=1 pnpm --filter @verbis/admin-web exec playwright test --project keycloak
+          node scripts/assert-test-results.mjs apps/admin-web/test-results/results.json playwright
+      - name: Upload logs and reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: keycloak-e2e
+          path: |
+            api.log
+            apps/admin-web/playwright-report
+          retention-days: 7
+
+  engage-sidecar:
+    name: Genesys Engage sidecar (Java 21)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/connector-genesys-engage-sidecar
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: '8.14'
+      # Without the licensed Platform SDK: replay source + Testcontainers NATS (Docker on the runner).
+      - name: Test
+        run: gradle --no-daemon test
+
+  avaya-sidecar:
+    name: Avaya sidecar (Java 21)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/connector-avaya-aes-sidecar
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: '8.14'
+      # Without the Avaya JTAPI SDK: replay + AACC + outbound modules, Testcontainers NATS.
+      - name: Test
+        run: gradle --no-daemon test
+
+  secret-scan:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        run: docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 git /repo --redact --no-banner --exit-code 1
+
+  docker:
+    name: Docker build + Trivy (${{ matrix.app }})
+    runs-on: ubuntu-latest
+    needs: quality
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: api
+            dockerfile: infra/docker/node-app.Dockerfile
+          - app: connector-hub
+            dockerfile: infra/docker/node-app.Dockerfile
+          - app: designer-web
+            dockerfile: infra/docker/web-app.Dockerfile
+          - app: agent-web
+            dockerfile: infra/docker/web-app.Dockerfile
+          - app: admin-web
+            dockerfile: infra/docker/web-app.Dockerfile
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          build-args: APP=${{ matrix.app }}
+          tags: verbis/${{ matrix.app }}:ci
+          load: true
+          push: false
+          cache-from: type=gha,scope=${{ matrix.app }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.app }}
+      - name: CycloneDX image SBOM (OS and npm packages)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: verbis/${{ matrix.app }}:ci
+          format: cyclonedx
+          output: image.cyclonedx.json
+          exit-code: '0'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: sbom-${{ matrix.app }}
+          path: image.cyclonedx.json
+          retention-days: 30
+      - name: Trivy image scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: verbis/${{ matrix.app }}:ci
+          severity: CRITICAL,HIGH
+          ignore-unfixed: false
+          exit-code: '1'
+          format: table
+
+  trivy-fs:
+    name: Trivy filesystem scan (deps + IaC)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Trivy fs scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,secret,misconfig
+          severity: CRITICAL,HIGH
+          ignore-unfixed: false
+          exit-code: '1'
+          skip-dirs: node_modules
+
+  dependency-audit:
+    name: Dependency audit and CycloneDX SBOM
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Audit all npm dependencies (pnpm lockfile)
+        run: node scripts/dependency-security.mjs --output npm-audit.json
+      - name: CycloneDX dependency inventory
+        if: always()
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: cyclonedx
+          output: sbom.cyclonedx.json
+          exit-code: '0'
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: dependency-security
+          path: |
+            npm-audit.json
+            sbom.cyclonedx.json
+          retention-days: 30
+
+  zap-baseline:
+    name: ZAP baseline (ephemeral production web images)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [agent-web, designer-web, admin-web]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @verbis/agent-web exec playwright install --with-deps chromium
+      - name: Build production web image
+        run: docker build -f infra/docker/web-app.Dockerfile --build-arg APP=${{ matrix.app }} -t verbis/zap-web:ci .
+      - name: Start isolated read-only target
+        run: |
+          docker network create verbis-zap
+          docker run -d --name web --network verbis-zap -p 127.0.0.1:18080:8080 --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop ALL --security-opt no-new-privileges:true verbis/zap-web:ci
+          mkdir -p zap-report
+          chmod 777 zap-report
+      - name: Production header and Trusted Types browser assertions
+        run: SECURITY_BASE_URL=http://127.0.0.1:18080 node scripts/test-security.mjs headers
+      - name: Passive baseline (no real tenant data or external target)
+        run: |
+          docker run --rm --network verbis-zap -v "$PWD/zap-report:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://web:8080 -m 1 -c /dev/null -r baseline.html -J baseline.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: zap-${{ matrix.app }}
+          path: zap-report/
+          retention-days: 14
+      - name: Cleanup
+        if: always()
+        run: docker rm -f web; docker network rm verbis-zap

@@ -1,0 +1,17 @@
+# Overlay site.yaml (containing real immutable images) before this file.
+# Canary API + web share existing DB/Redis/NATS; connector/document owners stay in stable release.
+services:
+  connector-hub: { enabled: false }
+  collaboration: { enabled: false }
+  audit-worker: { enabled: false }
+internalIngress: { enabled: false }
+migration: { enabled: false }
+routing:
+  collaborationService: verbis-collaboration
+  hubService: verbis-connector-hub
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/canary: 'true'
+    nginx.ingress.kubernetes.io/canary-weight: '5'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'

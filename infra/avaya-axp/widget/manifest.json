@@ -1,0 +1,13 @@
+{
+  "$comment": "Workspaces Widget Framework manifest (assumption X6, docs/connectors/avaya.md §AXP). Upload verbis-widget.js in Administration › Widget Management, place it on an interaction tab (requires interaction context).",
+  "name": "Verbis Agent Script",
+  "element": "verbis-script-widget",
+  "library": "verbis-widget.js",
+  "requiresInteraction": true,
+  "attributes": {
+    "agent-web-origin": "https://acme.agent.example/",
+    "connector-id": "00000000-0000-4000-8000-000000000000"
+  },
+  "permissions": [],
+  "defaultSize": { "width": 6, "height": 10 }
+}

@@ -1,0 +1,30 @@
+# Requires CNPG and Barman Cloud plugin. Site overlay replaces endpoint/bucket/credentials.
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata: { name: verbis-backup, namespace: verbis-data }
+spec:
+  retentionPolicy: '35d'
+  configuration:
+    destinationPath: s3://REPLACE_REGION_LOCAL_BACKUP_BUCKET/postgres
+    endpointURL: https://REPLACE_BACKUP_ENDPOINT
+    s3Credentials:
+      accessKeyId: { name: verbis-backup-s3, key: ACCESS_KEY_ID }
+      secretAccessKey: { name: verbis-backup-s3, key: SECRET_ACCESS_KEY }
+    wal: { compression: gzip }
+    data: { compression: gzip }
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata: { name: verbis-daily, namespace: verbis-data }
+spec:
+  schedule: '0 0 2 * * *'
+  immediate: true
+  backupOwnerReference: self
+  cluster: { name: verbis-postgres }
+  method: plugin
+  pluginConfiguration: { name: barman-cloud.cloudnative-pg.io }
+# Add this to verbis-postgres.spec (merge with deploy/examples/dependencies.yaml):
+# plugins:
+#   - name: barman-cloud.cloudnative-pg.io
+#     isWALArchiver: true
+#     parameters: { barmanObjectName: verbis-backup }

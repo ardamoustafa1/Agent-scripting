@@ -1,0 +1,63 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":semanticCommitScopeDisabled",
+    "helpers:pinGitHubActionDigestsToSemver",
+    "docker:pinDigests"
+  ],
+  "timezone": "Europe/Istanbul",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies"],
+  "rangeStrategy": "bump",
+  "minimumReleaseAge": "3 days",
+  "prConcurrentLimit": 10,
+  "lockFileMaintenance": { "enabled": true, "schedule": ["before 6am on monday"] },
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"],
+    "schedule": ["at any time"],
+    "minimumReleaseAge": null
+  },
+  "packageRules": [
+    { "matchManagers": ["github-actions"], "groupName": "github actions" },
+    { "matchManagers": ["docker-compose", "dockerfile"], "groupName": "container images" },
+    { "matchPackageNames": ["@nestjs/**"], "groupName": "nestjs" },
+    { "matchPackageNames": ["prisma", "@prisma/**"], "groupName": "prisma" },
+    {
+      "matchPackageNames": ["vite", "vitest", "@vitest/**", "@vitejs/**"],
+      "groupName": "vite and vitest"
+    },
+    {
+      "matchPackageNames": ["eslint", "@eslint/**", "typescript-eslint", "eslint-*", "globals"],
+      "groupName": "eslint"
+    },
+    {
+      "matchPackageNames": ["@playwright/test", "@axe-core/playwright"],
+      "groupName": "playwright"
+    },
+    {
+      "matchPackageNames": ["@commitlint/**", "husky", "lint-staged", "prettier"],
+      "groupName": "dev tooling"
+    },
+    {
+      "description": "Stack pins from CLAUDE.md §2: majors need an ADR",
+      "matchPackageNames": ["react", "react-dom", "@types/react", "@types/react-dom"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Infra majors (Postgres 16, Redis 7) are fixed by the architecture; change via ADR",
+      "matchDepNames": ["postgres", "redis"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "matchUpdateTypes": ["patch", "minor"],
+      "matchCurrentVersion": "!/^0/",
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true
+    }
+  ]
+}

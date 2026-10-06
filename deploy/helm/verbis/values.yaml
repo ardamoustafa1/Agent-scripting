@@ -1,0 +1,348 @@
+global:
+  production: true
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+  region: local
+  residencyCell: default
+services:
+  api:
+    enabled: true
+    image:
+      repository: ghcr.io/your-org/verbis-api
+      tag: 0.1.0
+      digest: ''
+    replicas: 2
+    port: 4000
+    entrypoint: dist/main.js
+    existingSecret: verbis-api-env
+    env:
+      API_HOST: 0.0.0.0
+      API_PORT: '4000'
+      COLLABORATION_PORT: '0'
+      AUTH_PUBLIC_PATH_PREFIX: /api
+      NATS_STREAM_REPLICAS: '3'
+      SESSION_COOKIE_SECURE: 'true'
+      MTLS_CLIENT_CERT_HEADER: ssl-client-cert
+    readinessPath: /health/ready
+    livenessPath: /health/live
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: '1'
+        memory: 1Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 6
+      cpu: 70
+    pdb:
+      enabled: true
+      minAvailable: 1
+    mountSecret: ''
+  audit-worker:
+    enabled: true
+    image:
+      repository: ghcr.io/your-org/verbis-api
+      tag: 0.1.0
+      digest: ''
+    replicas: 2
+    port: 4200
+    entrypoint: dist/audit-worker.js
+    existingSecret: verbis-audit-worker-env
+    env:
+      AUDIT_WORKER_HEALTH_PORT: '4200'
+      NATS_STREAM_REPLICAS: '3'
+    readinessPath: /health/ready
+    livenessPath: /health/live
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: '1'
+        memory: 1Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 6
+      cpu: 70
+    pdb:
+      enabled: true
+      minAvailable: 1
+    mountSecret: ''
+  connector-hub:
+    enabled: true
+    image:
+      repository: ghcr.io/your-org/verbis-connector-hub
+      tag: 0.1.0
+      digest: ''
+    replicas: 1
+    port: 4100
+    entrypoint: dist/main.js
+    existingSecret: verbis-connector-hub-env
+    env:
+      CONNECTOR_HUB_HOST: 0.0.0.0
+      CONNECTOR_HUB_PORT: '4100'
+      SIMULATOR_ENABLED: 'false'
+      HUB_CLIENT_CERT_FILE: /var/run/verbis/client.crt
+      HUB_CLIENT_KEY_FILE: /var/run/verbis/client.key
+      HUB_CA_FILE: /var/run/verbis/ca.crt
+    readinessPath: /health/ready
+    livenessPath: /health/live
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: '1'
+        memory: 1Gi
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 6
+      cpu: 70
+    pdb:
+      enabled: false
+      minAvailable: 1
+    mountSecret: verbis-hub-mtls
+  collaboration:
+    enabled: true
+    image:
+      repository: ghcr.io/your-org/verbis-api
+      tag: 0.1.0
+      digest: ''
+    replicas: 1
+    port: 4000
+    entrypoint: dist/main.js
+    existingSecret: verbis-api-env
+    env:
+      API_HOST: 0.0.0.0
+      API_PORT: '4000'
+      COLLABORATION_PORT: '4010'
+      COLLABORATION_ADDRESS: 0.0.0.0
+      OUTBOX_RELAY_ENABLED: 'false'
+      EVENT_CONSUMERS_ENABLED: 'false'
+      NATS_STREAM_REPLICAS: '3'
+      MTLS_CLIENT_CERT_HEADER: ssl-client-cert
+    readinessPath: /health/ready
+    livenessPath: /health/live
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: '1'
+        memory: 1Gi
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 6
+      cpu: 70
+    pdb:
+      enabled: false
+      minAvailable: 1
+    mountSecret: ''
+  admin-web:
+    enabled: true
+    image:
+      repository: ghcr.io/your-org/verbis-admin-web
+      tag: 0.1.0
+      digest: ''
+    replicas: 2
+    port: 8080
+    entrypoint: ''
+    existingSecret: ''
+    env: {}
+    readinessPath: /health
+    livenessPath: /health
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: '1'
+        memory: 256Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 6
+      cpu: 70
+    pdb:
+      enabled: true
+      minAvailable: 1
+    mountSecret: ''
+  designer-web:
+    enabled: true
+    image:
+      repository: ghcr.io/your-org/verbis-designer-web
+      tag: 0.1.0
+      digest: ''
+    replicas: 2
+    port: 8080
+    entrypoint: ''
+    existingSecret: ''
+    env: {}
+    readinessPath: /health
+    livenessPath: /health
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: '1'
+        memory: 256Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 6
+      cpu: 70
+    pdb:
+      enabled: true
+      minAvailable: 1
+    mountSecret: ''
+  agent-web:
+    enabled: true
+    image:
+      repository: ghcr.io/your-org/verbis-agent-web
+      tag: 0.1.0
+      digest: ''
+    replicas: 2
+    port: 8080
+    entrypoint: ''
+    existingSecret: ''
+    env: {}
+    readinessPath: /health
+    livenessPath: /health
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: '1'
+        memory: 256Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 6
+      cpu: 70
+    pdb:
+      enabled: true
+      minAvailable: 1
+    mountSecret: ''
+  engage-sidecar:
+    enabled: false
+    image:
+      repository: ghcr.io/your-org/verbis-engage-sidecar
+      tag: 0.1.0
+      digest: ''
+    replicas: 1
+    port: 8085
+    entrypoint: ''
+    existingSecret: verbis-engage-sidecar-env
+    env: {}
+    readinessPath: /actuator/health/readiness
+    livenessPath: /actuator/health/liveness
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: '1'
+        memory: 1Gi
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 6
+      cpu: 70
+    pdb:
+      enabled: false
+      minAvailable: 1
+    mountSecret: ''
+  avaya-sidecar:
+    enabled: false
+    image:
+      repository: ghcr.io/your-org/verbis-avaya-sidecar
+      tag: 0.1.0
+      digest: ''
+    replicas: 1
+    port: 8086
+    entrypoint: ''
+    existingSecret: verbis-avaya-sidecar-env
+    env: {}
+    readinessPath: /actuator/health/readiness
+    livenessPath: /actuator/health/liveness
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: '1'
+        memory: 1Gi
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 6
+      cpu: 70
+    pdb:
+      enabled: false
+      minAvailable: 1
+    mountSecret: ''
+migration:
+  enabled: true
+  image:
+    repository: ghcr.io/your-org/verbis-migration
+    tag: 0.1.0
+    digest: ''
+  existingSecret: verbis-migration-env
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
+  tlsSecret: verbis-tls
+  hosts:
+    admin-web: admin.example.invalid
+    designer-web: designer.example.invalid
+    agent-web: agent.example.invalid
+externalSecrets:
+  enabled: false
+  storeRef:
+    name: verbis-secrets
+    kind: ClusterSecretStore
+  items: []
+networkPolicy:
+  enabled: true
+  ingressNamespaceLabels:
+    kubernetes.io/metadata.name: ingress-nginx
+  monitoringNamespaceLabels:
+    kubernetes.io/metadata.name: monitoring
+  dependencyNamespaceLabels:
+    kubernetes.io/metadata.name: verbis-data
+  externalEgress: []
+telemetry:
+  enabled: false
+  endpoint: http://otel-collector.observability.svc.cluster.local:4318
+placement:
+  nodeSelector: {}
+  tolerations: []
+internalIngress:
+  enabled: true
+  className: nginx
+  host: api.internal.example.invalid
+  tlsSecret: verbis-internal-tls
+  clientCASecret: verbis-client-ca
+routing:
+  apiService: ''
+  hubService: ''
+  collaborationService: ''
+dependencyResources: []

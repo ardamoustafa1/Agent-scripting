@@ -1,0 +1,9 @@
+{
+  "package": "extract-zip",
+  "version": "2.0.1",
+  "advisories": [1139346, 1193685],
+  "patch": "patches/extract-zip@2.0.1.patch",
+  "sha256": "f14b7bec935a637fb7a4b8f7d752070e164607bea7162caa22519ab21c1dcbea",
+  "expires": "2026-11-03",
+  "reason": "No upstream fixed release. Confined symlinks, real directory traversal, exclusive no-follow file creation; installed-package attack regressions mandatory. Only Lighthouse browser download tooling is affected."
+}

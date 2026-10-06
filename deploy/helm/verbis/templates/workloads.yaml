@@ -1,0 +1,190 @@
+{{- range $name, $svc := .Values.services }}
+{{- if $svc.enabled }}
+{{- if and $.Values.global.production (has $name (list "api" "audit-worker" "admin-web" "designer-web" "agent-web")) (or (lt (int $svc.replicas) 2) (and $svc.autoscaling.enabled (lt (int $svc.autoscaling.minReplicas) 2))) }}
+{{- fail "production stateless services require at least two replicas" }}
+{{- end }}
+{{- if and $svc.autoscaling.enabled (lt (int $svc.autoscaling.maxReplicas) (int $svc.autoscaling.minReplicas)) }}
+{{- fail "HPA maxReplicas must be >= minReplicas" }}
+{{- end }}
+{{- if and (has $name (list "connector-hub" "collaboration" "engage-sidecar" "avaya-sidecar")) (or (ne (int $svc.replicas) 1) $svc.autoscaling.enabled) }}
+{{- fail (printf "%s owns connections/document rooms: replicas must be 1; shard tenant ownership into separate releases" $name) }}
+{{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ $name }}
+  labels:
+    {{- include "verbis.labels" $ | nindent 4 }}
+    app.kubernetes.io/name: {{ $name }}
+spec:
+  {{- if not $svc.autoscaling.enabled }}
+  replicas: {{ $svc.replicas }}
+  {{- end }}
+  revisionHistoryLimit: 3
+  strategy:
+    {{- if has $name (list "connector-hub" "collaboration" "engage-sidecar" "avaya-sidecar") }}
+    type: Recreate
+    {{- else }}
+    type: RollingUpdate
+    rollingUpdate: { maxUnavailable: 0, maxSurge: 1 }
+    {{- end }}
+  selector:
+    matchLabels: { app.kubernetes.io/instance: {{ $.Release.Name }}, app.kubernetes.io/name: {{ $name }} }
+  template:
+    metadata:
+      labels:
+        {{- include "verbis.labels" $ | nindent 8 }}
+        app.kubernetes.io/name: {{ $name }}
+        verbis.io/region: {{ $.Values.global.region | quote }}
+        verbis.io/cell: {{ $.Values.global.residencyCell | quote }}
+      annotations:
+        checksum/web-config: {{ include (print $.Template.BasePath "/web-config.yaml") $ | sha256sum }}
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 90
+      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }
+      {{- with $.Values.global.imagePullSecrets }}
+      imagePullSecrets: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.placement.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.placement.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if gt (int $svc.replicas) 1 }}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels: { app.kubernetes.io/instance: {{ $.Release.Name }}, app.kubernetes.io/name: {{ $name }} }
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels: { app.kubernetes.io/instance: {{ $.Release.Name }}, app.kubernetes.io/name: {{ $name }} }
+      {{- end }}
+      containers:
+        - name: {{ $name }}
+          image: {{ include "verbis.image" (dict "image" $svc.image "production" $.Values.global.production) | quote }}
+          imagePullPolicy: {{ $.Values.global.imagePullPolicy }}
+          {{- if $svc.entrypoint }}
+          args: [{{ $svc.entrypoint | quote }}]
+          {{- end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          ports:
+            - { name: http, containerPort: {{ $svc.port }} }
+            {{- if eq $name "collaboration" }}
+            - { name: collaboration, containerPort: 4010 }
+            {{- end }}
+          {{- if $svc.existingSecret }}
+          envFrom:
+            - secretRef: { name: {{ $svc.existingSecret }} }
+          {{- end }}
+          env:
+            - { name: NODE_ENV, value: production }
+            {{- range $key, $value := $svc.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- if or (eq $name "api") (eq $name "collaboration") }}
+            {{- if or $.Values.services.collaboration.enabled $.Values.routing.collaborationService }}
+            - { name: COLLABORATION_INTERNAL_URL, value: "http://{{ default (printf "%s-collaboration" $.Release.Name) $.Values.routing.collaborationService }}:4010" }
+            {{- else }}
+            - { name: COLLABORATION_INTERNAL_URL, value: "" }
+            {{- end }}
+            {{- if or (index $.Values.services "connector-hub").enabled $.Values.routing.hubService }}
+            - { name: CONNECTOR_HUB_URL, value: "http://{{ default (printf "%s-connector-hub" $.Release.Name) $.Values.routing.hubService }}:4100" }
+            {{- else }}
+            - { name: CONNECTOR_HUB_URL, value: "" }
+            {{- end }}
+            {{- end }}
+            {{- if eq $name "connector-hub" }}
+            - { name: HUB_API_URL, value: "https://{{ $.Values.internalIngress.host }}" }
+            {{- end }}
+          resources: {{ toYaml $svc.resources | nindent 12 }}
+          startupProbe:
+            httpGet: { path: {{ $svc.livenessPath }}, port: http }
+            failureThreshold: 60
+            periodSeconds: 5
+          readinessProbe:
+            httpGet: { path: {{ $svc.readinessPath }}, port: http }
+            timeoutSeconds: 5
+            periodSeconds: 5
+            failureThreshold: 2
+          livenessProbe:
+            httpGet: { path: {{ $svc.livenessPath }}, port: http }
+            timeoutSeconds: 3
+            periodSeconds: 10
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+            {{- if hasSuffix "-web" $name }}
+            - { name: nginx-cache, mountPath: /var/cache/nginx }
+            - { name: nginx-run, mountPath: /var/run }
+            - { name: web-config, mountPath: /etc/nginx/conf.d/default.conf, subPath: default.conf, readOnly: true }
+            {{- end }}
+            {{- if $svc.mountSecret }}
+            - { name: credentials, mountPath: /var/run/verbis, readOnly: true }
+            {{- end }}
+      volumes:
+        - { name: tmp, emptyDir: { sizeLimit: 256Mi } }
+        {{- if hasSuffix "-web" $name }}
+        - { name: nginx-cache, emptyDir: { sizeLimit: 64Mi } }
+        - { name: nginx-run, emptyDir: { sizeLimit: 16Mi } }
+        - name: web-config
+          configMap: { name: {{ $.Release.Name }}-web-config }
+        {{- end }}
+        {{- if $svc.mountSecret }}
+        - name: credentials
+          secret: { secretName: {{ $svc.mountSecret }}, defaultMode: 0444 }
+        {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}-{{ $name }}
+  labels:
+    {{- include "verbis.labels" $ | nindent 4 }}
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  selector: { app.kubernetes.io/instance: {{ $.Release.Name }}, app.kubernetes.io/name: {{ $name }} }
+  ports:
+    - { name: http, port: {{ $svc.port }}, targetPort: http }
+    {{- if eq $name "collaboration" }}
+    - { name: collaboration, port: 4010, targetPort: collaboration }
+    {{- end }}
+{{- if $svc.autoscaling.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: { name: {{ $.Release.Name }}-{{ $name }} }
+spec:
+  scaleTargetRef: { apiVersion: apps/v1, kind: Deployment, name: {{ $.Release.Name }}-{{ $name }} }
+  minReplicas: {{ $svc.autoscaling.minReplicas }}
+  maxReplicas: {{ $svc.autoscaling.maxReplicas }}
+  behavior:
+    scaleDown: { stabilizationWindowSeconds: 300 }
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target: { type: Utilization, averageUtilization: {{ $svc.autoscaling.cpu }} }
+{{- end }}
+{{- if $svc.pdb.enabled }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: { name: {{ $.Release.Name }}-{{ $name }} }
+spec:
+  minAvailable: {{ $svc.pdb.minAvailable }}
+  selector:
+    matchLabels: { app.kubernetes.io/instance: {{ $.Release.Name }}, app.kubernetes.io/name: {{ $name }} }
+{{- end }}
+{{- end }}
+{{- end }}

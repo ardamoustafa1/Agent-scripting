@@ -1,0 +1,69 @@
+name: Mutation and stability
+on:
+  pull_request:
+    paths:
+      - 'packages/expr/**'
+      - 'packages/script-schema/**'
+      - 'tests/playwright/**'
+      - 'scripts/*policy*'
+      - '**/e2e/**'
+      - '**/playwright.config.ts'
+      - '.github/workflows/test-depth.yml'
+      - 'pnpm-lock.yaml'
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: test-depth-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  mutation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [expr, script-schema]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm --filter @verbis/${{ matrix.package }} test:mutation
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: mutation-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/reports/mutation/
+          if-no-files-found: error
+  stability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [flaky, quarantine]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm --filter @verbis/agent-web exec playwright install --with-deps chromium
+      - run: pnpm test:${{ matrix.lane }}
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: stability-${{ matrix.lane }}
+          path: |
+            apps/*/test-results/
+            apps/*/playwright-report/

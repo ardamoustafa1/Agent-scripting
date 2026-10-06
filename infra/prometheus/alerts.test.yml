@@ -1,0 +1,53 @@
+rule_files: [alerts.yml]
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'verbis_http_requests_total{status_class="5xx"}'
+        values: '0+10x12'
+      - series: 'verbis_http_requests_total{status_class="2xx"}'
+        values: '0+100x12'
+      - series: 'verbis_integration_breaker_open'
+        values: '1+0x12'
+      - series: 'verbis_writeback_queue_depth'
+        values: '1500+0x12'
+      - series: 'verbis_launch_anomalies_total'
+        values: '0+1x12'
+      - series: 'verbis_audit_verification_failures_total'
+        values: '0+1x12'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: HighErrorRate
+        exp_alerts:
+          - exp_labels: { severity: critical }
+            exp_annotations: { summary: 'HTTP 5xx ratio above 1%' }
+      - eval_time: 10m
+        alertname: CircuitBreakerOpen
+        exp_alerts:
+          - exp_labels: { severity: warning }
+            exp_annotations: { summary: 'Integration circuit breaker remains open' }
+      - eval_time: 10m
+        alertname: WritebackBacklog
+        exp_alerts:
+          - exp_labels: { severity: warning }
+            exp_annotations: { summary: 'Connector write-back backlog exceeds 1000' }
+      - eval_time: 10m
+        alertname: LaunchDenialAnomaly
+        exp_alerts:
+          - exp_labels: { severity: warning }
+            exp_annotations: { summary: 'Secure launch denial anomaly detected' }
+      - eval_time: 10m
+        alertname: AuditChainVerificationFailed
+        exp_alerts:
+          - exp_labels: { severity: critical }
+            exp_annotations: { summary: 'Audit chain verification failed; preserve evidence' }
+  - interval: 1m
+    input_series:
+      - series: 'verbis_http_requests_total{status_class="2xx",service_name="verbis-api"}'
+        values: '0+100x15'
+      - series: 'verbis_http_requests_total{status_class="5xx",service_name="verbis-api"}'
+        values: '0+0x15'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: HighErrorRate
+        exp_alerts: []

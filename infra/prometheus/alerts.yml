@@ -1,0 +1,46 @@
+groups:
+  - name: verbis.operations
+    rules:
+      - alert: HighErrorRate
+        expr: sum(rate(verbis_http_requests_total{status_class="5xx"}[5m])) / clamp_min(sum(rate(verbis_http_requests_total[5m])), 0.001) > 0.01 and sum(increase(verbis_http_requests_total[5m])) > 100
+        for: 5m
+        labels: { severity: critical }
+        annotations: { summary: 'HTTP 5xx ratio above 1%' }
+      - alert: CircuitBreakerOpen
+        expr: verbis_integration_breaker_open > 0
+        for: 2m
+        labels: { severity: warning }
+        annotations: { summary: 'Integration circuit breaker remains open' }
+      - alert: AuditChainVerificationFailed
+        expr: increase(verbis_audit_verification_failures_total[5m]) > 0
+        labels: { severity: critical }
+        annotations: { summary: 'Audit chain verification failed; preserve evidence' }
+      - alert: WritebackBacklog
+        expr: max(verbis_writeback_queue_depth) > 1000
+        for: 5m
+        labels: { severity: warning }
+        annotations: { summary: 'Connector write-back backlog exceeds 1000' }
+      - alert: WritebackDeadLetter
+        expr: max(verbis_writeback_queue_failed) > 0
+        for: 1m
+        labels: { severity: critical }
+        annotations: { summary: 'Write-back exhausted retries; inspect before replay' }
+      - alert: LaunchDenialAnomaly
+        expr: sum(increase(verbis_launch_anomalies_total[5m])) > 0
+        labels: { severity: warning }
+        annotations: { summary: 'Secure launch denial anomaly detected' }
+      - alert: ApiSloBurn
+        expr: sum(rate(verbis_http_requests_total{service_name="verbis-api",status_class="5xx",route!="unmatched"}[1h])) / clamp_min(sum(rate(verbis_http_requests_total{service_name="verbis-api",route!="unmatched"}[1h])), 0.001) > 0.0072 and sum(rate(verbis_http_requests_total{service_name="verbis-api",status_class="5xx",route!="unmatched"}[5m])) / clamp_min(sum(rate(verbis_http_requests_total{service_name="verbis-api",route!="unmatched"}[5m])), 0.001) > 0.0072
+        for: 2m
+        labels: { severity: critical }
+        annotations: { summary: 'API error budget burn exceeds 14.4x' }
+      - alert: AgentScreenSlow
+        expr: histogram_quantile(0.95, sum by (le) (rate(verbis_trace_duration_seconds_bucket{span_name="agent.screen.open",status_code!="STATUS_CODE_ERROR"}[10m]))) > 1
+        for: 10m
+        labels: { severity: warning }
+        annotations: { summary: 'Agent screen opening p95 exceeds one second' }
+      - alert: TelemetryMissing
+        expr: absent_over_time(verbis_http_requests_total{service_name="verbis-api"}[10m])
+        for: 5m
+        labels: { severity: warning }
+        annotations: { summary: 'API RED telemetry absent; verify service and collector' }

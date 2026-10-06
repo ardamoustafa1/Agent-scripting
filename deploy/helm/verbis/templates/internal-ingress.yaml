@@ -1,0 +1,23 @@
+{{- if .Values.internalIngress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-internal-api
+  annotations:
+    nginx.ingress.kubernetes.io/auth-tls-secret: "{{ .Release.Namespace }}/{{ .Values.internalIngress.clientCASecret }}"
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: {{ .Values.internalIngress.className }}
+  tls:
+    - { secretName: {{ .Values.internalIngress.tlsSecret }}, hosts: [{{ .Values.internalIngress.host | quote }}] }
+  rules:
+    - host: {{ .Values.internalIngress.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: {{ .Release.Name }}-api, port: { number: 4000 } }
+{{- end }}

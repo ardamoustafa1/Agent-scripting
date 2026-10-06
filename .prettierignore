@@ -1,0 +1,30 @@
+pnpm-lock.yaml
+dist
+coverage
+.turbo
+playwright-report
+test-results
+apps/api/src/generated
+apps/api/prisma/migrations/**/*.sql
+docs
+CLAUDE.md
+packages/script-schema/schema/*.schema.json
+apps/api/openapi.json
+
+# Go-template syntax is checked by Helm in deployment-policy CI.
+deploy/helm/verbis/templates/**
+
+.stryker-tmp
+reports
+
+**/benchmark-dist/**
+**/benchmark-report/**
+**/storybook-static/**
+
+# Generated Astro metadata and copied OpenAPI schema are rebuilt from source.
+**/.astro/**
+apps/docs-site/public/api/openapi.json
+
+# Generated local audit runs; preserve them on disk.
+artifacts/
+npm-audit.json

@@ -1,0 +1,8 @@
+{
+  "global": {
+    "production": false
+  },
+  "migration": {
+    "enabled": true
+  }
+}

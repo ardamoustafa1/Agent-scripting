@@ -1,0 +1,99 @@
+{
+  "name": "verbis",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=9.15.0"
+  },
+  "scripts": {
+    "prepare": "node scripts/prepare.mjs",
+    "dev": "node scripts/ensure-env.mjs && turbo run dev --filter=./apps/*",
+    "build": "turbo run build",
+    "lint": "turbo run lint && eslint --max-warnings=0 scripts *.js",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test --concurrency=1 --continue=dependencies-successful",
+    "e2e": "turbo run e2e",
+    "test:genesys": "node scripts/test-genesys.mjs",
+    "test:engage": "node scripts/test-engage.mjs",
+    "test:avaya": "node scripts/test-avaya.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:migrate": "pnpm --filter @verbis/api db:migrate",
+    "db:migrate:dev": "pnpm --filter @verbis/api db:migrate:dev",
+    "seed": "pnpm --filter @verbis/api seed",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "clean": "turbo run clean && rm -rf node_modules/.cache",
+    "test:marketplace": "node scripts/test-marketplace.mjs",
+    "test:ui": "node scripts/test-ui.mjs",
+    "test:core-runtime": "node scripts/test-core-runtime.mjs",
+    "test:components": "node scripts/test-components.mjs",
+    "test:designer": "node scripts/test-designer.mjs",
+    "test:lifecycle": "node scripts/test-lifecycle.mjs",
+    "test:agent": "node scripts/test-agent.mjs",
+    "test:admin": "node scripts/test-admin.mjs",
+    "test:analytics": "node scripts/test-analytics.mjs",
+    "test:ai": "node scripts/test-ai.mjs",
+    "test:security": "node scripts/test-security.mjs",
+    "coverage:check": "node scripts/coverage-gate.mjs",
+    "test:contracts": "pnpm --filter @verbis/connector-hub exec vitest run src/connectors",
+    "test:mutation": "pnpm --no-bail --filter @verbis/expr --filter @verbis/script-schema test:mutation",
+    "test:flaky": "node scripts/playwright-lanes.mjs flaky",
+    "test:quarantine": "node scripts/playwright-lanes.mjs quarantine",
+    "test:visual": "node scripts/playwright-lanes.mjs visual",
+    "test:policy": "node --test scripts/coverage-gate.spec.mjs scripts/flaky-policy.spec.mjs infra/k6/profile.spec.mjs scripts/k6-preflight.spec.mjs scripts/quality-gates.spec.mjs scripts/secret-scan.spec.mjs",
+    "quarantine:check": "node scripts/flaky-policy.mjs",
+    "test:live": "node scripts/live-acceptance.mjs",
+    "test:typecheck": "tsc -p tests/tsconfig.json --noEmit && tsc -p tests/verification/tsconfig.json --noEmit",
+    "test:lint": "eslint --config tests/eslint.config.js tests/playwright/*.ts tests/demo-smoke/*.ts && eslint --config tests/verification/eslint.config.mjs tests/verification",
+    "seed:demo": "pnpm --filter @verbis/api seed:demo",
+    "docs:dev": "pnpm --filter @verbis/docs-site dev",
+    "docs:generate": "pnpm --filter @verbis/docs-site docs:generate",
+    "docs:capture": "pnpm --filter @verbis/docs-site docs:capture",
+    "test:audit": "node --test scripts/final-audit.spec.mjs",
+    "audit:inventory": "node scripts/audit-route-inventory.mjs && node scripts/i18n-inventory.mjs",
+    "test:demo-smoke": "node scripts/demo-smoke.mjs",
+    "test:verification": "pnpm --filter @verbis/api exec vitest run --config ../../tests/verification/v2.config.mjs --reporter=default --reporter=json --outputFile=reports/verification/results.json && node scripts/assert-test-results.mjs reports/verification/results.json vitest"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.5",
+    "globals": "^17.13.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.9",
+    "turbo": "^2.11.6",
+    "typescript": "^6.0.3"
+  },
+  "pnpm": {
+    "packageExtensions": {
+      "@nestjs/platform-fastify@12.1.2": {
+        "peerDependencies": {
+          "rxjs": "^7.8.2"
+        }
+      }
+    },
+    "overrides": {
+      "tmp": "0.2.7",
+      "yaml": "^2.8.3",
+      "uuid": "^11.1.1",
+      "qs": "^6.16.0",
+      "deepmerge-ts": "^8.0.0",
+      "mysql2": "^3.23.1",
+      "basic-ftp": "^6.2.1",
+      "http-cache-semantics": "4.3.0",
+      "vitest@4.1.10": "4.1.11",
+      "@vitest/mocker@4.1.10": "4.1.11",
+      "@vitest/coverage-v8@4.1.10": "4.1.11"
+    },
+    "patchedDependencies": {
+      "extract-zip@2.0.1": "patches/extract-zip@2.0.1.patch"
+    }
+  }
+}

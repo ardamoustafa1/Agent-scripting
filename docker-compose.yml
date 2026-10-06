@@ -1,0 +1,4 @@
+# Entry point for `docker compose up -d`. Development stack lives in docker-compose.dev.yml.
+name: verbis
+include:
+  - docker-compose.dev.yml

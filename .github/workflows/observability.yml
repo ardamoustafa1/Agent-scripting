@@ -1,0 +1,33 @@
+name: Observability and frontend budgets
+on:
+  pull_request:
+    paths: ['apps/agent-web/**', 'packages/**', 'infra/**', 'lighthouserc.cjs', 'pnpm-lock.yaml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  budgets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @verbis/agent-web... build
+      - run: pnpm --filter @verbis/agent-web exec lhci autorun --config=../../lighthouserc.cjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: lighthouse
+          path: test-results/lighthouse
+  operational-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker run --rm --entrypoint promtool -v "$PWD/infra/prometheus:/etc/prometheus:ro" prom/prometheus:v3.13.4 check rules /etc/prometheus/alerts.yml
+      - run: docker run --rm --entrypoint promtool -v "$PWD/infra/prometheus:/etc/prometheus:ro" prom/prometheus:v3.13.4 test rules /etc/prometheus/alerts.test.yml
+      - run: docker run --rm -v "$PWD/infra/otel/otel-collector.yaml:/etc/otelcol/config.yaml:ro" otel/opentelemetry-collector-contrib:0.140.0 validate --config=/etc/otelcol/config.yaml

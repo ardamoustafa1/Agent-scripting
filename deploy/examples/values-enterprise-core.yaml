@@ -1,0 +1,16 @@
+# First release core scope. Apply after a private site overlay with reviewed immutable digests.
+# Capacity targets (10k registered / 2k concurrent agents) require measured staging acceptance;
+# this overlay does not claim that the default resource sizes achieve those targets.
+services:
+  api:
+    env:
+      AI_ENABLED: 'false'
+      SIMULATOR_ENABLED: 'false'
+      COLLABORATION_PORT: '0'
+  collaboration: { enabled: false }
+  connector-hub: { enabled: false }
+  engage-sidecar: { enabled: false }
+  avaya-sidecar: { enabled: false }
+routing:
+  collaborationService: ''
+  hubService: ''

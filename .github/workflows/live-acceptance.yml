@@ -1,0 +1,66 @@
+name: Live critical acceptance
+on:
+  workflow_call:
+  schedule:
+    - cron: '11 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live:
+    # Configure this environment against a disposable synthetic staging tenant.
+    environment: test-staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ADMIN_E2E_BASE_URL: ${{ vars.ADMIN_E2E_BASE_URL }}
+      DESIGNER_E2E_BASE_URL: ${{ vars.DESIGNER_E2E_BASE_URL }}
+      AGENT_E2E_BASE_URL: ${{ vars.AGENT_E2E_BASE_URL }}
+      SAML_E2E_TENANT: ${{ vars.SAML_E2E_TENANT }}
+      SAML_E2E_IDP_ID: ${{ vars.SAML_E2E_IDP_ID }}
+      SAML_E2E_USERNAME: ${{ secrets.SAML_E2E_USERNAME }}
+      SAML_E2E_PASSWORD: ${{ secrets.SAML_E2E_PASSWORD }}
+      SAML_E2E_IDP_ORIGIN: ${{ vars.SAML_E2E_IDP_ORIGIN }}
+      DESIGNER_E2E_SCRIPT_ID: ${{ vars.DESIGNER_E2E_SCRIPT_ID }}
+      DESIGNER_E2E_DRAFT_NUMBER: ${{ vars.DESIGNER_E2E_DRAFT_NUMBER }}
+      AGENT_E2E_PERFORMANCE: '1'
+      AGENT_E2E_SESSION_ID: ${{ vars.AGENT_E2E_SESSION_ID }}
+      AGENT_E2E_CONNECTOR_ID: ${{ vars.AGENT_E2E_CONNECTOR_ID }}
+      AGENT_E2E_PLATFORM_USER: ${{ vars.AGENT_E2E_PLATFORM_USER }}
+      AUDIT_E2E_FROM_SEQ: ${{ vars.AUDIT_E2E_FROM_SEQ }}
+      AUDIT_E2E_TO_SEQ: ${{ vars.AUDIT_E2E_TO_SEQ }}
+      ADMIN_E2E_STORAGE_STATE: ${{ runner.temp }}/admin-state.json
+      DESIGNER_E2E_AUTHOR_STATE: ${{ runner.temp }}/author-state.json
+      DESIGNER_E2E_PEER_STATE: ${{ runner.temp }}/peer-state.json
+      AGENT_E2E_STORAGE_STATE: ${{ runner.temp }}/agent-state.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm --filter @verbis/agent-web exec playwright install --with-deps chromium
+      - name: Materialize short-lived synthetic SSO states without logging secrets
+        env:
+          ADMIN_STATE: ${{ secrets.ADMIN_E2E_STORAGE_STATE_JSON }}
+          AUTHOR_STATE: ${{ secrets.DESIGNER_E2E_AUTHOR_STATE_JSON }}
+          PEER_STATE: ${{ secrets.DESIGNER_E2E_PEER_STATE_JSON }}
+          AGENT_STATE: ${{ secrets.AGENT_E2E_STORAGE_STATE_JSON }}
+        run: |
+          node --input-type=module <<'JS'
+          import { writeFile } from 'node:fs/promises';
+          for (const [source, target] of [['ADMIN_STATE', 'ADMIN_E2E_STORAGE_STATE'], ['AUTHOR_STATE', 'DESIGNER_E2E_AUTHOR_STATE'], ['PEER_STATE', 'DESIGNER_E2E_PEER_STATE'], ['AGENT_STATE', 'AGENT_E2E_STORAGE_STATE']]) {
+            const value = process.env[source];
+            if (!value) throw new Error(`Missing ${source}`);
+            JSON.parse(value);
+            await writeFile(process.env[target], value, { mode: 0o600 });
+          }
+          JS
+      - run: pnpm test:live
+      - name: Remove ephemeral authentication states
+        if: always()
+        run: rm -f "$ADMIN_E2E_STORAGE_STATE" "$DESIGNER_E2E_AUTHOR_STATE" "$DESIGNER_E2E_PEER_STATE" "$AGENT_E2E_STORAGE_STATE"
+      # Live auth traces, screenshots and HTML reports are intentionally not uploaded.

@@ -1,0 +1,24 @@
+{
+  "$comment": "Example `connectors.config` for adapter genesys_cloud (non-secret). Secrets: clientId, clientSecret in the vault (connector `secretRefs`).",
+  "kind": "cloud",
+  "region": "eu-central-1",
+  "organizationId": "00000000-0000-4000-8000-000000000000",
+  "queueIds": ["00000000-0000-4000-8000-000000000001"],
+  "userIds": [],
+  "subscribeQueueMembers": true,
+  "wrapUpCodes": {
+    "SALE": "00000000-0000-4000-8000-000000000101",
+    "NO_SALE": "00000000-0000-4000-8000-000000000102"
+  },
+  "attributePrefix": "Verbis.",
+  "dialer": {
+    "enabled": true,
+    "contactColumns": ["firstName", "lastName", "balance"],
+    "importAll": false
+  },
+  "verifyAlerting": false,
+  "userAuth": {
+    "clientId": "00000000-0000-4000-8000-0000000000c1",
+    "redirectUri": "https://acme.agent.example/api/v1/genesys-cloud/oauth/callback"
+  }
+}

@@ -1,0 +1,24 @@
+# Install operators and CRDs before applying these resources. No bundled vendor binaries.
+# CloudNativePG + Barman Cloud plugin (archive configuration is operator/site-specific).
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata: { name: verbis-postgres, namespace: verbis-data }
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16
+  storage: { size: 200Gi }
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: topology.kubernetes.io/zone
+  postgresql:
+    parameters: { max_connections: '300', wal_level: replica }
+---
+# Redis Sentinel can use the official Redis/Valkey operator or a reviewed Bitnami chart.
+# The API currently requires a single writable endpoint: deploy HAProxy/managed primary endpoint.
+# NATS official Helm chart values (separate release, not a Kubernetes resource):
+# config:
+#   cluster: { enabled: true, replicas: 3 }
+#   jetstream:
+#     enabled: true
+#     fileStore: { pvc: { enabled: true, size: 100Gi } }
+# Enable TLS/accounts/NKey credentials and zone spread in the site overlay.

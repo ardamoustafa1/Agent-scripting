@@ -1,0 +1,138 @@
+[
+  {
+    "adapterType": "amazon-connect",
+    "config": {
+      "kind": "contact-events",
+      "nats": {
+        "servers": ["tls://nats.example.test:4222"],
+        "stream": "VERBIS_MARKETPLACE",
+        "requestTimeoutMs": 5000
+      },
+      "attributeAllowList": ["verbisOutcome", "customerTier"],
+      "routing": {},
+      "participantTtlSeconds": 60,
+      "secrets": {
+        "natsCreds": "00000000-0000-4000-8000-000000000001"
+      }
+    }
+  },
+  {
+    "adapterType": "cisco",
+    "config": {
+      "kind": "desktop-widget",
+      "nats": {
+        "servers": ["tls://nats.example.test:4222"],
+        "stream": "VERBIS_MARKETPLACE",
+        "requestTimeoutMs": 5000
+      },
+      "attributeAllowList": ["verbisOutcome", "customerTier"],
+      "routing": {},
+      "participantTtlSeconds": 60,
+      "secrets": {
+        "natsCreds": "00000000-0000-4000-8000-000000000001"
+      }
+    }
+  },
+  {
+    "adapterType": "cisco",
+    "config": {
+      "kind": "finesse-gadget",
+      "nats": {
+        "servers": ["tls://nats.example.test:4222"],
+        "stream": "VERBIS_MARKETPLACE",
+        "requestTimeoutMs": 5000
+      },
+      "attributeAllowList": ["callVariable1", "user.segment"],
+      "routing": {},
+      "participantTtlSeconds": 60,
+      "secrets": {
+        "natsCreds": "00000000-0000-4000-8000-000000000001"
+      }
+    }
+  },
+  {
+    "adapterType": "nice-cxone",
+    "config": {
+      "kind": "agent-api",
+      "nats": {
+        "servers": ["tls://nats.example.test:4222"],
+        "stream": "VERBIS_MARKETPLACE",
+        "requestTimeoutMs": 5000
+      },
+      "attributeAllowList": ["verbisOutcome", "customerTier"],
+      "routing": {},
+      "participantTtlSeconds": 60,
+      "secrets": {
+        "natsCreds": "00000000-0000-4000-8000-000000000001"
+      }
+    }
+  },
+  {
+    "adapterType": "five9",
+    "config": {
+      "kind": "desktop-toolkit",
+      "nats": {
+        "servers": ["tls://nats.example.test:4222"],
+        "stream": "VERBIS_MARKETPLACE",
+        "requestTimeoutMs": 5000
+      },
+      "attributeAllowList": ["verbisOutcome", "customerTier"],
+      "routing": {},
+      "participantTtlSeconds": 60,
+      "secrets": {
+        "natsCreds": "00000000-0000-4000-8000-000000000001"
+      }
+    }
+  },
+  {
+    "adapterType": "generic",
+    "config": {
+      "kind": "flex-plugin",
+      "nats": {
+        "servers": ["tls://nats.example.test:4222"],
+        "stream": "VERBIS_MARKETPLACE",
+        "requestTimeoutMs": 5000
+      },
+      "attributeAllowList": ["verbisOutcome", "customerTier"],
+      "routing": {},
+      "participantTtlSeconds": 60,
+      "secrets": {
+        "natsCreds": "00000000-0000-4000-8000-000000000001"
+      }
+    }
+  },
+  {
+    "adapterType": "generic",
+    "config": {
+      "kind": "salesforce-open-cti",
+      "nats": {
+        "servers": ["tls://nats.example.test:4222"],
+        "stream": "VERBIS_MARKETPLACE",
+        "requestTimeoutMs": 5000
+      },
+      "attributeAllowList": ["verbisOutcome", "customerTier"],
+      "routing": {},
+      "participantTtlSeconds": 60,
+      "secrets": {
+        "natsCreds": "00000000-0000-4000-8000-000000000001"
+      }
+    }
+  },
+  {
+    "adapterType": "generic",
+    "config": {
+      "kind": "dynamics-cif",
+      "nats": {
+        "servers": ["tls://nats.example.test:4222"],
+        "stream": "VERBIS_MARKETPLACE",
+        "requestTimeoutMs": 5000
+      },
+      "attributeAllowList": ["verbisOutcome", "customerTier"],
+      "routing": {},
+      "participantTtlSeconds": 60,
+      "secrets": {
+        "natsCreds": "00000000-0000-4000-8000-000000000001"
+      }
+    }
+  }
+]

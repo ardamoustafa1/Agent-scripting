@@ -1,0 +1,44 @@
+name: Real infrastructure acceptance
+on:
+  workflow_call:
+  schedule:
+    - cron: '41 1 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CI: 'true'
+      AGENT_BROWSER_EVIDENCE: ${{ github.workspace }}/reports/verification/agent
+      PRODUCT_BROWSER_EVIDENCE: ${{ github.workspace }}/reports/verification/product
+      BENCHMARK_EVIDENCE: ${{ github.workspace }}/reports/verification/benchmark
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Install all acceptance browsers
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Isolated PostgreSQL, Redis, NATS, Keycloak, Vault, SIEM and real browser flows
+        run: pnpm test:verification
+      - name: Require executed tests without skips
+        if: always()
+        run: node scripts/assert-test-results.mjs reports/verification/results.json vitest
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: real-acceptance-${{ github.run_id }}
+          path: |
+            reports/verification/
+            docs/verification/evidence/V2/*observations.json
+            docs/verification/evidence/V2/route-probes.json
+            docs/verification/evidence/remediation-20261004/*observations.json
+          if-no-files-found: error
+          retention-days: 14

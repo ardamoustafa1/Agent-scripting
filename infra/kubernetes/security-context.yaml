@@ -1,0 +1,23 @@
+# Overlay for each Verbis workload, including connector sidecars. Merge into spec.template.spec.
+# Node distroless UID 65532; override nginx UID/GID to 101; supply service-specific volume mounts.
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+containers:
+  - name: verbis
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: [ALL]
+    volumeMounts:
+      - name: runtime-tmp
+        mountPath: /tmp
+volumes:
+  - name: runtime-tmp
+    emptyDir:
+      medium: Memory
+      sizeLimit: 64Mi

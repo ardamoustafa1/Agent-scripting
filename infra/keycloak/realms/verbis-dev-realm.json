@@ -1,0 +1,155 @@
+{
+  "realm": "verbis-dev",
+  "displayName": "Verbis Development",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": false,
+  "bruteForceProtected": true,
+  "internationalizationEnabled": true,
+  "supportedLocales": ["tr", "en"],
+  "defaultLocale": "tr",
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "roles": {
+    "realm": [
+      {
+        "name": "tenant_admin",
+        "description": "Verbis tenant administrator"
+      },
+      {
+        "name": "designer",
+        "description": "Script designer"
+      },
+      {
+        "name": "reviewer",
+        "description": "Script reviewer / approver"
+      },
+      {
+        "name": "supervisor",
+        "description": "Contact center supervisor"
+      },
+      {
+        "name": "agent",
+        "description": "Contact center agent"
+      },
+      {
+        "name": "auditor",
+        "description": "Read-only audit access"
+      }
+    ]
+  },
+  "groups": [
+    {
+      "name": "verbis-admins",
+      "realmRoles": ["tenant_admin"]
+    },
+    {
+      "name": "verbis-designers",
+      "realmRoles": ["designer"]
+    },
+    {
+      "name": "verbis-agents",
+      "realmRoles": ["agent"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "verbis-bff",
+      "name": "Verbis BFF (api-gateway)",
+      "description": "Confidential OIDC client used server-side by the BFF in apps/api modules/identity (ADR-0004, ADR-0012). Tokens never reach the browser.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${OIDC_CLIENT_SECRET}",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": false,
+      "redirectUris": [
+        "http://localhost:5173/api/auth/oidc/callback",
+        "http://localhost:5174/api/auth/oidc/callback",
+        "http://localhost:5175/api/auth/oidc/callback"
+      ],
+      "webOrigins": ["+"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:5173/*##http://localhost:5174/*##http://localhost:5175/*",
+        "backchannel.logout.session.required": "true",
+        "backchannel.logout.url": "http://host.docker.internal:4000/auth/oidc/verbis-dev/01928f3a-0000-7000-8000-00000000d201/backchannel-logout",
+        "backchannel.logout.revoke.offline.tokens": "true"
+      },
+      "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "email", "basic"],
+      "optionalClientScopes": ["offline_access"],
+      "protocolMappers": [
+        {
+          "name": "groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "config": {
+            "full.path": "false",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "claim.name": "groups"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Ada",
+      "lastName": "Admin",
+      "email": "admin@verbis.test",
+      "groups": ["verbis-admins"],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${DEV_USER_ADMIN_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "designer",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Deniz",
+      "lastName": "Designer",
+      "email": "designer@verbis.test",
+      "groups": ["verbis-designers"],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${DEV_USER_DESIGNER_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "agent",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Ege",
+      "lastName": "Agent",
+      "email": "agent@verbis.test",
+      "groups": ["verbis-agents"],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${DEV_USER_AGENT_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

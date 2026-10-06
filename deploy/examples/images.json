@@ -1,0 +1,42 @@
+[
+  {
+    "name": "api",
+    "source": "ghcr.io/your-org/verbis-api@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "target": "registry.internal/verbis/api"
+  },
+  {
+    "name": "connector-hub",
+    "source": "ghcr.io/your-org/verbis-connector-hub@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "target": "registry.internal/verbis/connector-hub"
+  },
+  {
+    "name": "admin-web",
+    "source": "ghcr.io/your-org/verbis-admin-web@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "target": "registry.internal/verbis/admin-web"
+  },
+  {
+    "name": "designer-web",
+    "source": "ghcr.io/your-org/verbis-designer-web@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "target": "registry.internal/verbis/designer-web"
+  },
+  {
+    "name": "agent-web",
+    "source": "ghcr.io/your-org/verbis-agent-web@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "target": "registry.internal/verbis/agent-web"
+  },
+  {
+    "name": "migration",
+    "source": "ghcr.io/your-org/verbis-migration@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "target": "registry.internal/verbis/migration"
+  },
+  {
+    "name": "engage-sidecar",
+    "source": "ghcr.io/your-org/verbis-engage-sidecar@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "target": "registry.internal/verbis/engage-sidecar"
+  },
+  {
+    "name": "avaya-sidecar",
+    "source": "ghcr.io/your-org/verbis-avaya-sidecar@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "target": "registry.internal/verbis/avaya-sidecar"
+  }
+]

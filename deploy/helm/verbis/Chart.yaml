@@ -1,0 +1,7 @@
+apiVersion: v2
+name: verbis
+description: Verbis application workloads; managed or independently provisioned HA dependencies
+type: application
+version: 0.1.0
+appVersion: '0.1.0'
+kubeVersion: '>=1.29.0-0'
