@@ -1,0 +1,275 @@
+{
+  "name": "sidecar: inbound voice with hold and ACW",
+  "participant": {
+    "platformUserId": "E1001",
+    "platformInteractionId": "006d02a8b1c3f001"
+  },
+  "fixtures": [
+    {
+      "name": "EventRinging",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:1001",
+        "source": "tserver",
+        "event": "ringing",
+        "occurredAt": "2026-10-01T10:00:00.000Z",
+        "interactionId": "006d02a8b1c3f001",
+        "mediaType": "voice",
+        "callType": "Inbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "queue": "VQ_Retention",
+        "userData": {
+          "CustomerId": "C-42",
+          "Segment": "gold",
+          "Balance": "1250.50",
+          "CardNumber": "4111111111111111",
+          "RVQID": "VQ_Retention"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "platformInteractionId": "006d02a8b1c3f001",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "E1001"
+          },
+          "campaignRef": {
+            "kind": "queue",
+            "externalId": "VQ_Retention"
+          },
+          "attributes": {
+            "customerId": "C-42",
+            "segment": "gold",
+            "balance": 1250.5,
+            "engage.mediaType": "voice"
+          },
+          "context": {
+            "channel": "voice",
+            "ani": "+905550000001",
+            "dnis": "4440000"
+          }
+        }
+      ]
+    },
+    {
+      "name": "EventEstablished",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:1002",
+        "source": "tserver",
+        "event": "established",
+        "occurredAt": "2026-10-01T10:00:04.000Z",
+        "interactionId": "006d02a8b1c3f001",
+        "mediaType": "voice",
+        "callType": "Inbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "queue": "VQ_Retention",
+        "userData": {
+          "CustomerId": "C-42",
+          "Segment": "gold",
+          "Balance": "1250.50",
+          "CardNumber": "4111111111111111",
+          "RVQID": "VQ_Retention"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "occurredAt": "2026-10-01T10:00:04.000Z"
+        }
+      ]
+    },
+    {
+      "name": "EventAttachedDataChanged (no lifecycle change)",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:1003",
+        "source": "tserver",
+        "event": "attachedDataChanged",
+        "occurredAt": "2026-10-01T10:01:00.000Z",
+        "interactionId": "006d02a8b1c3f001",
+        "mediaType": "voice",
+        "callType": "Inbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "queue": "VQ_Retention",
+        "userData": {
+          "CustomerId": "C-42",
+          "Segment": "gold",
+          "Balance": "1250.50",
+          "CardNumber": "4111111111111111",
+          "RVQID": "VQ_Retention"
+        }
+      },
+      "expected": []
+    },
+    {
+      "name": "EventHeld",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:1004",
+        "source": "tserver",
+        "event": "held",
+        "occurredAt": "2026-10-01T10:02:00.000Z",
+        "interactionId": "006d02a8b1c3f001",
+        "mediaType": "voice",
+        "callType": "Inbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "queue": "VQ_Retention",
+        "userData": {
+          "CustomerId": "C-42",
+          "Segment": "gold",
+          "Balance": "1250.50",
+          "CardNumber": "4111111111111111",
+          "RVQID": "VQ_Retention"
+        }
+      },
+      "expected": [
+        {
+          "type": "held"
+        }
+      ]
+    },
+    {
+      "name": "EventRetrieved",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:1005",
+        "source": "tserver",
+        "event": "retrieved",
+        "occurredAt": "2026-10-01T10:03:00.000Z",
+        "interactionId": "006d02a8b1c3f001",
+        "mediaType": "voice",
+        "callType": "Inbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "queue": "VQ_Retention",
+        "userData": {
+          "CustomerId": "C-42",
+          "Segment": "gold",
+          "Balance": "1250.50",
+          "CardNumber": "4111111111111111",
+          "RVQID": "VQ_Retention"
+        }
+      },
+      "expected": [
+        {
+          "type": "resumed"
+        }
+      ]
+    },
+    {
+      "name": "EventReleased (ACW)",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:1006",
+        "source": "tserver",
+        "event": "released",
+        "occurredAt": "2026-10-01T10:06:00.000Z",
+        "interactionId": "006d02a8b1c3f001",
+        "mediaType": "voice",
+        "callType": "Inbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "queue": "VQ_Retention",
+        "userData": {
+          "CustomerId": "C-42",
+          "Segment": "gold",
+          "Balance": "1250.50",
+          "CardNumber": "4111111111111111",
+          "RVQID": "VQ_Retention"
+        }
+      },
+      "expected": [
+        {
+          "type": "wrapupRequired",
+          "wrapUp": {
+            "required": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "MarkDone",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:1007",
+        "source": "tserver",
+        "event": "markedDone",
+        "occurredAt": "2026-10-01T10:06:40.000Z",
+        "interactionId": "006d02a8b1c3f001",
+        "mediaType": "voice",
+        "callType": "Inbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "queue": "VQ_Retention",
+        "userData": {
+          "CustomerId": "C-42",
+          "Segment": "gold",
+          "Balance": "1250.50",
+          "CardNumber": "4111111111111111",
+          "RVQID": "VQ_Retention"
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

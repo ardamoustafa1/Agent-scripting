@@ -1,0 +1,182 @@
+{
+  "name": "chat with transcript",
+  "participant": {
+    "platformUserId": "agent-chat",
+    "platformInteractionId": "chat-77"
+  },
+  "fixtures": [
+    {
+      "name": "interaction.offered (chat-77-e1)",
+      "payload": {
+        "id": "chat-77-e1",
+        "type": "interaction.offered",
+        "occurred_at": "2026-10-01T10:00:00.000Z",
+        "interaction": {
+          "id": "chat-77",
+          "channel": "chat",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-chat"
+          },
+          "queue": "web-support",
+          "context": {
+            "channel": "chat",
+            "customerName": "Ayşe",
+            "entryPoint": "web",
+            "transcript": [
+              {
+                "from": "bot",
+                "text": "Merhaba, nasıl yardımcı olabilirim?",
+                "at": "2026-10-01T10:00:00.000Z"
+              },
+              {
+                "from": "customer",
+                "text": "Faturamda hata var",
+                "at": "2026-10-01T10:00:00.000Z"
+              }
+            ]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "platformInteractionId": "chat-77",
+          "channel": "chat"
+        }
+      ]
+    },
+    {
+      "name": "interaction.connected (chat-77-e2)",
+      "payload": {
+        "id": "chat-77-e2",
+        "type": "interaction.connected",
+        "occurred_at": "2026-10-01T10:01:00.000Z",
+        "interaction": {
+          "id": "chat-77",
+          "channel": "chat",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-chat"
+          },
+          "queue": "web-support",
+          "context": {
+            "channel": "chat",
+            "customerName": "Ayşe",
+            "entryPoint": "web",
+            "transcript": [
+              {
+                "from": "bot",
+                "text": "Merhaba, nasıl yardımcı olabilirim?",
+                "at": "2026-10-01T10:00:00.000Z"
+              },
+              {
+                "from": "customer",
+                "text": "Faturamda hata var",
+                "at": "2026-10-01T10:00:00.000Z"
+              }
+            ]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "platformInteractionId": "chat-77",
+          "channel": "chat"
+        }
+      ]
+    },
+    {
+      "name": "interaction.transferred (chat-77-e3)",
+      "payload": {
+        "id": "chat-77-e3",
+        "type": "interaction.transferred",
+        "occurred_at": "2026-10-01T10:02:00.000Z",
+        "interaction": {
+          "id": "chat-77",
+          "channel": "chat",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-chat"
+          },
+          "queue": "web-support",
+          "context": {
+            "channel": "chat",
+            "customerName": "Ayşe",
+            "entryPoint": "web",
+            "transcript": [
+              {
+                "from": "bot",
+                "text": "Merhaba, nasıl yardımcı olabilirim?",
+                "at": "2026-10-01T10:00:00.000Z"
+              },
+              {
+                "from": "customer",
+                "text": "Faturamda hata var",
+                "at": "2026-10-01T10:00:00.000Z"
+              }
+            ]
+          },
+          "transfer_to": {
+            "id": "agent-chat"
+          },
+          "transfer_context": {
+            "reason": "billing"
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "transferred",
+          "platformInteractionId": "chat-77",
+          "channel": "chat",
+          "transferTo": {
+            "id": "agent-chat"
+          }
+        }
+      ]
+    },
+    {
+      "name": "interaction.ended (chat-77-e4)",
+      "payload": {
+        "id": "chat-77-e4",
+        "type": "interaction.ended",
+        "occurred_at": "2026-10-01T10:03:00.000Z",
+        "interaction": {
+          "id": "chat-77",
+          "channel": "chat",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-chat"
+          },
+          "queue": "web-support",
+          "context": {
+            "channel": "chat",
+            "customerName": "Ayşe",
+            "entryPoint": "web",
+            "transcript": [
+              {
+                "from": "bot",
+                "text": "Merhaba, nasıl yardımcı olabilirim?",
+                "at": "2026-10-01T10:00:00.000Z"
+              },
+              {
+                "from": "customer",
+                "text": "Faturamda hata var",
+                "at": "2026-10-01T10:00:00.000Z"
+              }
+            ]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "ended",
+          "platformInteractionId": "chat-77",
+          "channel": "chat"
+        }
+      ]
+    }
+  ]
+}

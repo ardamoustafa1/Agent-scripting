@@ -1,0 +1,249 @@
+{
+  "name": "voice call lifecycle",
+  "participant": {
+    "platformUserId": "agent-007",
+    "platformInteractionId": "call-1001"
+  },
+  "fixtures": [
+    {
+      "name": "interaction.offered (call-1001-e1)",
+      "payload": {
+        "id": "call-1001-e1",
+        "type": "interaction.offered",
+        "occurred_at": "2026-10-01T10:00:00.000Z",
+        "interaction": {
+          "id": "call-1001",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-007",
+            "email": "agent007@acme.test"
+          },
+          "queue": "retention",
+          "campaign": {
+            "kind": "queue",
+            "id": "Q-RET"
+          },
+          "customer_id": "cust-42",
+          "attributes": {
+            "segment": "gold",
+            "contractEnd": "2026-12-31"
+          },
+          "context": {
+            "channel": "voice",
+            "ani": "+905550000001",
+            "dnis": "4440000",
+            "ivrPath": ["main", "billing"]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "platformInteractionId": "call-1001",
+          "channel": "voice"
+        }
+      ]
+    },
+    {
+      "name": "interaction.connected (call-1001-e2)",
+      "payload": {
+        "id": "call-1001-e2",
+        "type": "interaction.connected",
+        "occurred_at": "2026-10-01T10:01:00.000Z",
+        "interaction": {
+          "id": "call-1001",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-007",
+            "email": "agent007@acme.test"
+          },
+          "queue": "retention",
+          "campaign": {
+            "kind": "queue",
+            "id": "Q-RET"
+          },
+          "customer_id": "cust-42",
+          "attributes": {
+            "segment": "gold",
+            "contractEnd": "2026-12-31"
+          },
+          "context": {
+            "channel": "voice",
+            "ani": "+905550000001",
+            "dnis": "4440000",
+            "ivrPath": ["main", "billing"]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "platformInteractionId": "call-1001",
+          "channel": "voice"
+        }
+      ]
+    },
+    {
+      "name": "interaction.held (call-1001-e3)",
+      "payload": {
+        "id": "call-1001-e3",
+        "type": "interaction.held",
+        "occurred_at": "2026-10-01T10:02:00.000Z",
+        "interaction": {
+          "id": "call-1001",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-007",
+            "email": "agent007@acme.test"
+          },
+          "queue": "retention",
+          "campaign": {
+            "kind": "queue",
+            "id": "Q-RET"
+          },
+          "customer_id": "cust-42",
+          "attributes": {
+            "segment": "gold",
+            "contractEnd": "2026-12-31"
+          },
+          "context": {
+            "channel": "voice",
+            "ani": "+905550000001",
+            "dnis": "4440000",
+            "ivrPath": ["main", "billing"]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "held",
+          "platformInteractionId": "call-1001",
+          "channel": "voice"
+        }
+      ]
+    },
+    {
+      "name": "interaction.resumed (call-1001-e4)",
+      "payload": {
+        "id": "call-1001-e4",
+        "type": "interaction.resumed",
+        "occurred_at": "2026-10-01T10:03:00.000Z",
+        "interaction": {
+          "id": "call-1001",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-007",
+            "email": "agent007@acme.test"
+          },
+          "queue": "retention",
+          "campaign": {
+            "kind": "queue",
+            "id": "Q-RET"
+          },
+          "customer_id": "cust-42",
+          "attributes": {
+            "segment": "gold",
+            "contractEnd": "2026-12-31"
+          },
+          "context": {
+            "channel": "voice",
+            "ani": "+905550000001",
+            "dnis": "4440000",
+            "ivrPath": ["main", "billing"]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "resumed",
+          "platformInteractionId": "call-1001",
+          "channel": "voice"
+        }
+      ]
+    },
+    {
+      "name": "interaction.wrapup_required (call-1001-e5)",
+      "payload": {
+        "id": "call-1001-e5",
+        "type": "interaction.wrapup_required",
+        "occurred_at": "2026-10-01T10:04:00.000Z",
+        "interaction": {
+          "id": "call-1001",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-007",
+            "email": "agent007@acme.test"
+          },
+          "queue": "retention",
+          "campaign": {
+            "kind": "queue",
+            "id": "Q-RET"
+          },
+          "customer_id": "cust-42",
+          "attributes": {
+            "segment": "gold",
+            "contractEnd": "2026-12-31"
+          },
+          "context": {
+            "channel": "voice",
+            "ani": "+905550000001",
+            "dnis": "4440000",
+            "ivrPath": ["main", "billing"]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "wrapupRequired",
+          "platformInteractionId": "call-1001",
+          "channel": "voice"
+        }
+      ]
+    },
+    {
+      "name": "interaction.ended (call-1001-e6)",
+      "payload": {
+        "id": "call-1001-e6",
+        "type": "interaction.ended",
+        "occurred_at": "2026-10-01T10:05:00.000Z",
+        "interaction": {
+          "id": "call-1001",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-007",
+            "email": "agent007@acme.test"
+          },
+          "queue": "retention",
+          "campaign": {
+            "kind": "queue",
+            "id": "Q-RET"
+          },
+          "customer_id": "cust-42",
+          "attributes": {
+            "segment": "gold",
+            "contractEnd": "2026-12-31"
+          },
+          "context": {
+            "channel": "voice",
+            "ani": "+905550000001",
+            "dnis": "4440000",
+            "ivrPath": ["main", "billing"]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "ended",
+          "platformInteractionId": "call-1001",
+          "channel": "voice"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "name": "unknown op",
+    "payload": {
+      "op": "explode",
+      "requestId": "x",
+      "at": "2026-10-01T10:00:00.000Z",
+      "platformInteractionId": "sim-demo-chat-1",
+      "input": {}
+    }
+  },
+  {
+    "name": "bad interaction id",
+    "payload": {
+      "op": "create",
+      "requestId": "x",
+      "at": "2026-10-01T10:00:00.000Z",
+      "platformInteractionId": "call-1",
+      "input": {
+        "channel": "chat",
+        "agentPlatformUserId": "a"
+      }
+    }
+  },
+  {
+    "name": "unknown channel",
+    "payload": {
+      "op": "create",
+      "requestId": "x",
+      "at": "2026-10-01T10:00:00.000Z",
+      "platformInteractionId": "sim-demo-chat-1",
+      "input": {
+        "channel": "fax",
+        "agentPlatformUserId": "a"
+      }
+    }
+  },
+  {
+    "name": "unknown action",
+    "payload": {
+      "op": "action",
+      "requestId": "x",
+      "at": "2026-10-01T10:00:00.000Z",
+      "platformInteractionId": "sim-demo-chat-1",
+      "input": {
+        "action": "teleport"
+      }
+    }
+  }
+]

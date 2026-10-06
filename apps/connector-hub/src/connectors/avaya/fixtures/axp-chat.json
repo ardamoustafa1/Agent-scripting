@@ -1,0 +1,145 @@
+{
+  "name": "axp: chat with single-step transfer",
+  "participant": {
+    "platformUserId": "mehmet.y",
+    "platformInteractionId": "0c1d2e3f-4a5b-4c6d-8e9f-a0b1c2d3e4f5"
+  },
+  "fixtures": [
+    {
+      "name": "chat INVITED",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-1",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "AgentParticipant",
+          "id": "cevt-1",
+          "agentId": "ag-ayse.k",
+          "engagementId": "0c1d2e3f-4a5b-4c6d-8e9f-a0b1c2d3e4f5",
+          "channelId": "Chat",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support",
+          "action": "INVITED"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "channel": "chat"
+        }
+      ]
+    },
+    {
+      "name": "chat ADDED",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-2",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "AgentParticipant",
+          "id": "cevt-2",
+          "agentId": "ag-ayse.k",
+          "engagementId": "0c1d2e3f-4a5b-4c6d-8e9f-a0b1c2d3e4f5",
+          "channelId": "Chat",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support",
+          "action": "ADDED"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "SingleStepTransfer to mehmet.y",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-3",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "SingleStepTransfer",
+          "id": "cevt-3",
+          "agentId": "ag-ayse.k",
+          "engagementId": "0c1d2e3f-4a5b-4c6d-8e9f-a0b1c2d3e4f5",
+          "channelId": "Chat",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support"
+        },
+        "destinationLoginId": "mehmet.y"
+      },
+      "expected": [
+        {
+          "type": "transferred",
+          "transferTo": {
+            "id": "mehmet.y"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ADDED by mehmet.y",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-4",
+        "loginId": "mehmet.y",
+        "body": {
+          "event": "AgentParticipant",
+          "id": "cevt-4",
+          "agentId": "ag-mehmet.y",
+          "engagementId": "0c1d2e3f-4a5b-4c6d-8e9f-a0b1c2d3e4f5",
+          "channelId": "Chat",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support",
+          "action": "ADDED"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "agent": {
+            "id": "mehmet.y"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ACW completed",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-5",
+        "loginId": "mehmet.y",
+        "body": {
+          "event": "AfterContactWorkCompleted",
+          "id": "cevt-5",
+          "agentId": "ag-mehmet.y",
+          "engagementId": "0c1d2e3f-4a5b-4c6d-8e9f-a0b1c2d3e4f5",
+          "channelId": "Chat",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support"
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

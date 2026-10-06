@@ -1,0 +1,35 @@
+[
+  {
+    "name": "empty",
+    "payload": {}
+  },
+  {
+    "name": "body without event",
+    "payload": {
+      "loginId": "x",
+      "body": {
+        "engagementId": "bffae854-9219-4cfc-9fd3-7125f2e76844"
+      }
+    }
+  },
+  {
+    "name": "engagement id with path",
+    "payload": {
+      "family": "AGENT_ENGAGEMENT",
+      "accountId": "ACME01",
+      "subscriptionId": "sub-1",
+      "sentAt": "2026-10-01T14:00:00.000Z",
+      "correlationId": "corr-9",
+      "loginId": "ayse.k",
+      "body": {
+        "event": "AgentParticipant",
+        "action": "ADDED",
+        "engagementId": "../../x"
+      }
+    }
+  },
+  {
+    "name": "not an object",
+    "payload": "AgentParticipant"
+  }
+]

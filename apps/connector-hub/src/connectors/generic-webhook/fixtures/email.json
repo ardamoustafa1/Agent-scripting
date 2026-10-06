@@ -1,0 +1,123 @@
+{
+  "name": "email with subject and body",
+  "participant": {
+    "platformUserId": "agent-mail",
+    "platformInteractionId": "mail-5"
+  },
+  "fixtures": [
+    {
+      "name": "interaction.offered (mail-5-e1)",
+      "payload": {
+        "id": "mail-5-e1",
+        "type": "interaction.offered",
+        "occurred_at": "2026-10-01T10:00:00.000Z",
+        "interaction": {
+          "id": "mail-5",
+          "channel": "email",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-mail",
+            "email": "mail@acme.test"
+          },
+          "context": {
+            "channel": "email",
+            "from": "musteri@example.com",
+            "to": ["destek@acme.test"],
+            "subject": "İade talebi",
+            "body": "Ürün hasarlı geldi, iade etmek istiyorum.",
+            "threadId": "th-1",
+            "attachments": [
+              {
+                "name": "foto.jpg",
+                "size": 20480
+              }
+            ]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "platformInteractionId": "mail-5",
+          "channel": "email"
+        }
+      ]
+    },
+    {
+      "name": "interaction.connected (mail-5-e2)",
+      "payload": {
+        "id": "mail-5-e2",
+        "type": "interaction.connected",
+        "occurred_at": "2026-10-01T10:01:00.000Z",
+        "interaction": {
+          "id": "mail-5",
+          "channel": "email",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-mail",
+            "email": "mail@acme.test"
+          },
+          "context": {
+            "channel": "email",
+            "from": "musteri@example.com",
+            "to": ["destek@acme.test"],
+            "subject": "İade talebi",
+            "body": "Ürün hasarlı geldi, iade etmek istiyorum.",
+            "threadId": "th-1",
+            "attachments": [
+              {
+                "name": "foto.jpg",
+                "size": 20480
+              }
+            ]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "platformInteractionId": "mail-5",
+          "channel": "email"
+        }
+      ]
+    },
+    {
+      "name": "interaction.ended (mail-5-e3)",
+      "payload": {
+        "id": "mail-5-e3",
+        "type": "interaction.ended",
+        "occurred_at": "2026-10-01T10:02:00.000Z",
+        "interaction": {
+          "id": "mail-5",
+          "channel": "email",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-mail",
+            "email": "mail@acme.test"
+          },
+          "context": {
+            "channel": "email",
+            "from": "musteri@example.com",
+            "to": ["destek@acme.test"],
+            "subject": "İade talebi",
+            "body": "Ürün hasarlı geldi, iade etmek istiyorum.",
+            "threadId": "th-1",
+            "attachments": [
+              {
+                "name": "foto.jpg",
+                "size": 20480
+              }
+            ]
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "ended",
+          "platformInteractionId": "mail-5",
+          "channel": "email"
+        }
+      ]
+    }
+  ]
+}

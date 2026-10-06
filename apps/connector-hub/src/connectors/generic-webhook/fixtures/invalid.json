@@ -1,0 +1,73 @@
+[
+  {
+    "name": "unknown event type",
+    "payload": {
+      "id": "x1",
+      "type": "interaction.exploded",
+      "occurred_at": "2026-10-01T10:00:00.000Z",
+      "interaction": {
+        "id": "c",
+        "channel": "voice"
+      }
+    }
+  },
+  {
+    "name": "unknown channel",
+    "payload": {
+      "id": "x2",
+      "type": "interaction.offered",
+      "occurred_at": "2026-10-01T10:00:00.000Z",
+      "interaction": {
+        "id": "c",
+        "channel": "fax"
+      }
+    }
+  },
+  {
+    "name": "nested attributes",
+    "payload": {
+      "id": "x3",
+      "type": "interaction.offered",
+      "occurred_at": "2026-10-01T10:00:00.000Z",
+      "interaction": {
+        "id": "c",
+        "channel": "voice",
+        "attributes": {
+          "a": {
+            "b": 1
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "context of another channel",
+    "payload": {
+      "id": "x4",
+      "type": "interaction.offered",
+      "occurred_at": "2026-10-01T10:00:00.000Z",
+      "interaction": {
+        "id": "c",
+        "channel": "chat",
+        "context": {
+          "channel": "voice"
+        }
+      }
+    }
+  },
+  {
+    "name": "missing occurred_at",
+    "payload": {
+      "id": "x5",
+      "type": "interaction.offered",
+      "interaction": {
+        "id": "c",
+        "channel": "voice"
+      }
+    }
+  },
+  {
+    "name": "not an object",
+    "payload": "hello"
+  }
+]

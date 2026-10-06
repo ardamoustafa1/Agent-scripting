@@ -1,0 +1,321 @@
+{
+  "name": "workspace: voice call",
+  "participant": {
+    "platformUserId": "E1001",
+    "platformInteractionId": "006d02a8b1c3f0aa"
+  },
+  "fixtures": [
+    {
+      "name": "Ringing",
+      "payload": {
+        "workspace": {
+          "agentRef": "E1001",
+          "agent": {
+            "employeeId": "E1001",
+            "userName": "ayse.k"
+          },
+          "message": {
+            "channel": "/workspace/v3/voice",
+            "data": {
+              "messageType": "CallStateChanged",
+              "notificationType": "StateChange",
+              "call": {
+                "id": "006d02a8b1c3f0aa",
+                "connId": "006d02a8b1c3f0aa",
+                "state": "Ringing",
+                "callType": "Inbound",
+                "ani": "+905550000009",
+                "dnis": "4440000",
+                "userData": [
+                  {
+                    "key": "CustomerId",
+                    "type": "str",
+                    "value": "C-99"
+                  },
+                  {
+                    "key": "Balance",
+                    "type": "str",
+                    "value": "10"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "platformInteractionId": "006d02a8b1c3f0aa",
+          "agent": {
+            "id": "E1001"
+          },
+          "attributes": {
+            "customerId": "C-99",
+            "balance": 10
+          }
+        }
+      ]
+    },
+    {
+      "name": "Established",
+      "payload": {
+        "workspace": {
+          "agentRef": "E1001",
+          "agent": {
+            "employeeId": "E1001",
+            "userName": "ayse.k"
+          },
+          "message": {
+            "channel": "/workspace/v3/voice",
+            "data": {
+              "messageType": "CallStateChanged",
+              "notificationType": "StateChange",
+              "call": {
+                "id": "006d02a8b1c3f0aa",
+                "connId": "006d02a8b1c3f0aa",
+                "state": "Established",
+                "callType": "Inbound",
+                "ani": "+905550000009",
+                "dnis": "4440000",
+                "userData": [
+                  {
+                    "key": "CustomerId",
+                    "type": "str",
+                    "value": "C-99"
+                  },
+                  {
+                    "key": "Balance",
+                    "type": "str",
+                    "value": "10"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "AttachedDataChanged (ignored)",
+      "payload": {
+        "workspace": {
+          "agentRef": "E1001",
+          "agent": {
+            "employeeId": "E1001",
+            "userName": "ayse.k"
+          },
+          "message": {
+            "channel": "/workspace/v3/voice",
+            "data": {
+              "messageType": "CallStateChanged",
+              "notificationType": "AttachedDataChanged",
+              "call": {
+                "id": "006d02a8b1c3f0aa",
+                "connId": "006d02a8b1c3f0aa",
+                "state": "Established",
+                "callType": "Inbound",
+                "ani": "+905550000009",
+                "dnis": "4440000",
+                "userData": [
+                  {
+                    "key": "CustomerId",
+                    "type": "str",
+                    "value": "C-99"
+                  },
+                  {
+                    "key": "Balance",
+                    "type": "str",
+                    "value": "10"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "expected": []
+    },
+    {
+      "name": "Held",
+      "payload": {
+        "workspace": {
+          "agentRef": "E1001",
+          "agent": {
+            "employeeId": "E1001",
+            "userName": "ayse.k"
+          },
+          "message": {
+            "channel": "/workspace/v3/voice",
+            "data": {
+              "messageType": "CallStateChanged",
+              "notificationType": "StateChange",
+              "call": {
+                "id": "006d02a8b1c3f0aa",
+                "connId": "006d02a8b1c3f0aa",
+                "state": "Held",
+                "callType": "Inbound",
+                "ani": "+905550000009",
+                "dnis": "4440000",
+                "userData": [
+                  {
+                    "key": "CustomerId",
+                    "type": "str",
+                    "value": "C-99"
+                  },
+                  {
+                    "key": "Balance",
+                    "type": "str",
+                    "value": "10"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "held"
+        }
+      ]
+    },
+    {
+      "name": "Established after hold = retrieve",
+      "payload": {
+        "workspace": {
+          "agentRef": "E1001",
+          "agent": {
+            "employeeId": "E1001",
+            "userName": "ayse.k"
+          },
+          "message": {
+            "channel": "/workspace/v3/voice",
+            "data": {
+              "messageType": "CallStateChanged",
+              "notificationType": "StateChange",
+              "call": {
+                "id": "006d02a8b1c3f0aa",
+                "connId": "006d02a8b1c3f0aa",
+                "state": "Established",
+                "callType": "Inbound",
+                "ani": "+905550000009",
+                "dnis": "4440000",
+                "userData": [
+                  {
+                    "key": "CustomerId",
+                    "type": "str",
+                    "value": "C-99"
+                  },
+                  {
+                    "key": "Balance",
+                    "type": "str",
+                    "value": "10"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "resumed"
+        }
+      ]
+    },
+    {
+      "name": "Released",
+      "payload": {
+        "workspace": {
+          "agentRef": "E1001",
+          "agent": {
+            "employeeId": "E1001",
+            "userName": "ayse.k"
+          },
+          "message": {
+            "channel": "/workspace/v3/voice",
+            "data": {
+              "messageType": "CallStateChanged",
+              "notificationType": "StateChange",
+              "call": {
+                "id": "006d02a8b1c3f0aa",
+                "connId": "006d02a8b1c3f0aa",
+                "state": "Released",
+                "callType": "Inbound",
+                "ani": "+905550000009",
+                "dnis": "4440000",
+                "userData": [
+                  {
+                    "key": "CustomerId",
+                    "type": "str",
+                    "value": "C-99"
+                  },
+                  {
+                    "key": "Balance",
+                    "type": "str",
+                    "value": "10"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "wrapupRequired"
+        }
+      ]
+    },
+    {
+      "name": "Completed (marked done)",
+      "payload": {
+        "workspace": {
+          "agentRef": "E1001",
+          "agent": {
+            "employeeId": "E1001",
+            "userName": "ayse.k"
+          },
+          "message": {
+            "channel": "/workspace/v3/voice",
+            "data": {
+              "messageType": "CallStateChanged",
+              "notificationType": "StateChange",
+              "call": {
+                "id": "006d02a8b1c3f0aa",
+                "connId": "006d02a8b1c3f0aa",
+                "state": "Completed",
+                "callType": "Inbound",
+                "ani": "+905550000009",
+                "dnis": "4440000",
+                "userData": [
+                  {
+                    "key": "CustomerId",
+                    "type": "str",
+                    "value": "C-99"
+                  },
+                  {
+                    "key": "Balance",
+                    "type": "str",
+                    "value": "10"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

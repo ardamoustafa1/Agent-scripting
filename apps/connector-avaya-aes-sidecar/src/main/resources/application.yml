@@ -1,0 +1,49 @@
+server:
+  port: ${SIDECAR_PORT:8086}
+management:
+  endpoints.web.exposure.include: health
+  endpoint.health.probes.enabled: true
+spring:
+  main.banner-mode: off
+verbis:
+  sidecar:
+    connector-id: ${VERBIS_CONNECTOR_ID}
+    # aes | aacc | replay (one platform per connector; outbound is an add-on to aes/aacc)
+    source: ${SIDECAR_SOURCE:replay}
+    nats:
+      servers: ${NATS_SERVERS:nats://127.0.0.1:4222}
+      creds-file: ${NATS_CREDS_FILE:}
+      stream: ${NATS_STREAM:VERBIS_AVAYA}
+      create-stream: ${NATS_CREATE_STREAM:false}
+    replay:
+      file: ${SIDECAR_REPLAY_FILE:}
+    aes:
+      # TSAPI tlink, e.g. AVAYA#CM01#CSTA#AES01 (secure link: CSTA-S)
+      tlink: ${AES_TLINK:}
+      servers: ${AES_SERVERS:}
+      user: ${AES_USER:}
+      password-file: ${AES_PASSWORD_FILE:}
+      # Agent stations to observe (or VDNs: observing a VDN gives delivered events before agents)
+      extensions: ${AES_EXTENSIONS:}
+      vdns: ${AES_VDNS:}
+      uui-encoding: ${AES_UUI_ENCODING:auto}
+    aacc:
+      ccmm-url: ${AACC_CCMM_URL:}
+      ccmm-user: ${AACC_CCMM_USER:}
+      ccmm-password-file: ${AACC_CCMM_PASSWORD_FILE:}
+      # Shared secret the CCT WS-Notification push must present (X-Verbis-Notify-Token)
+      notify-token-file: ${AACC_NOTIFY_TOKEN_FILE:}
+      intrinsics-allow-list: ${AACC_INTRINSICS_ALLOW:}
+    outbound:
+      system: ${OUTBOUND_SYSTEM:none} # pom | pc | none
+      pc-host: ${PC_HOST:}
+      pc-port: ${PC_PORT:22700}
+      pc-user: ${PC_USER:}
+      pc-password-file: ${PC_PASSWORD_FILE:}
+      pom-url: ${POM_URL:}
+
+otel:
+  service.name: verbis-avaya-sidecar
+  exporter.otlp.protocol: http/protobuf
+  exporter.otlp.endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://127.0.0.1:4318}
+  logs.exporter: none

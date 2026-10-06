@@ -1,0 +1,118 @@
+{
+  "name": "sidecar: Interaction Server email",
+  "participant": {
+    "platformUserId": "E1001",
+    "platformInteractionId": "0001KaC9WYKH3E77"
+  },
+  "fixtures": [
+    {
+      "name": "email invite",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "IxnServer:4001",
+        "source": "ixn",
+        "event": "ringing",
+        "occurredAt": "2026-10-01T13:00:00.000Z",
+        "interactionId": "0001KaC9WYKH3E77",
+        "mediaType": "email",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "queue": "Email_Inbound",
+        "userData": {
+          "Subject": "\u0130ade talebi"
+        },
+        "email": {
+          "from": "musteri@example.test",
+          "to": ["destek@acme.test"],
+          "subject": "\u0130ade talebi",
+          "body": "\u00dcr\u00fcn\u00fc iade etmek istiyorum."
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "channel": "email",
+          "context": {
+            "channel": "email",
+            "from": "musteri@example.test",
+            "subject": "\u0130ade talebi",
+            "body": "\u00dcr\u00fcn\u00fc iade etmek istiyorum."
+          }
+        }
+      ]
+    },
+    {
+      "name": "email accepted",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "IxnServer:4002",
+        "source": "ixn",
+        "event": "established",
+        "occurredAt": "2026-10-01T13:00:30.000Z",
+        "interactionId": "0001KaC9WYKH3E77",
+        "mediaType": "email",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "queue": "Email_Inbound",
+        "userData": {
+          "Subject": "\u0130ade talebi"
+        },
+        "email": {
+          "from": "musteri@example.test",
+          "to": ["destek@acme.test"],
+          "subject": "\u0130ade talebi",
+          "body": "\u00dcr\u00fcn\u00fc iade etmek istiyorum."
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "email done",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "IxnServer:4003",
+        "source": "ixn",
+        "event": "markedDone",
+        "occurredAt": "2026-10-01T13:20:00.000Z",
+        "interactionId": "0001KaC9WYKH3E77",
+        "mediaType": "email",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "queue": "Email_Inbound",
+        "userData": {
+          "Subject": "\u0130ade talebi"
+        },
+        "email": {
+          "from": "musteri@example.test",
+          "to": ["destek@acme.test"],
+          "subject": "\u0130ade talebi",
+          "body": "\u00dcr\u00fcn\u00fc iade etmek istiyorum."
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.verbis.io/engage-envelope.v1.json",
+  "title": "Verbis Genesys Engage envelope v1",
+  "description": "Sidecar → hub event contract. Twin of apps/connector-hub/src/connectors/genesys-engage/envelope.ts (zod is authoritative; keep both in sync).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "eventId", "source", "event", "occurredAt", "interactionId", "mediaType"],
+  "properties": {
+    "schema": { "const": "verbis.engage.envelope.v1" },
+    "eventId": { "type": "string", "pattern": "^[A-Za-z0-9._:@-]{1,200}$" },
+    "source": { "enum": ["tserver", "ixn", "workspace"] },
+    "event": {
+      "enum": [
+        "ringing",
+        "dialing",
+        "established",
+        "held",
+        "retrieved",
+        "partyChanged",
+        "released",
+        "markedDone",
+        "abandoned",
+        "attachedDataChanged"
+      ]
+    },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "interactionId": { "type": "string", "pattern": "^[A-Za-z0-9._:@-]{1,128}$" },
+    "previousInteractionId": { "type": "string", "pattern": "^[A-Za-z0-9._:@-]{1,128}$" },
+    "mediaType": {
+      "enum": [
+        "voice",
+        "chat",
+        "email",
+        "sms",
+        "whatsapp",
+        "webchat",
+        "facebook",
+        "twitter",
+        "workitem"
+      ]
+    },
+    "callType": { "enum": ["Inbound", "Outbound", "Internal", "Consult", "Unknown"] },
+    "agent": { "$ref": "#/$defs/agent" },
+    "transferTo": { "$ref": "#/$defs/agent" },
+    "ani": { "type": "string", "maxLength": 64 },
+    "dnis": { "type": "string", "maxLength": 64 },
+    "queue": { "type": "string", "maxLength": 256 },
+    "userData": {
+      "type": "object",
+      "propertyNames": { "maxLength": 128 },
+      "additionalProperties": { "type": ["string", "number", "boolean", "null"], "maxLength": 4000 }
+    },
+    "email": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from"],
+      "properties": {
+        "from": { "type": "string", "maxLength": 320 },
+        "to": { "type": "array", "maxItems": 50, "items": { "type": "string", "maxLength": 320 } },
+        "subject": { "type": "string", "maxLength": 1000 },
+        "body": { "type": "string", "maxLength": 100000 }
+      }
+    },
+    "chat": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "customerName": { "type": "string", "maxLength": 256 },
+        "messages": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "text", "at"],
+            "properties": {
+              "from": { "enum": ["customer", "agent", "bot", "system"] },
+              "text": { "type": "string", "maxLength": 8000 },
+              "at": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "employeeId": { "type": "string", "maxLength": 128 },
+        "userName": { "type": "string", "maxLength": 128 },
+        "agentLoginId": { "type": "string", "maxLength": 128 },
+        "dn": { "type": "string", "maxLength": 64 },
+        "place": { "type": "string", "maxLength": 128 }
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "@verbis/connector-hub",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Hosts CTI and channel adapters (ADR-0008).",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "dev": "concurrently -k -n tsc,hub -c blue,green \"tsc -b tsconfig.build.json --watch --preserveWatchOutput\" \"node --watch --env-file-if-exists=../../.env dist/main.js\"",
+    "start": "node dist/main.js",
+    "lint": "eslint --max-warnings=0 .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --coverage",
+    "clean": "rm -rf dist coverage"
+  },
+  "dependencies": {
+    "@nats-io/jetstream": "^3.4.0",
+    "@nats-io/transport-node": "^3.4.0",
+    "@nestjs/common": "^12.1.2",
+    "@nestjs/core": "^12.1.2",
+    "@nestjs/platform-fastify": "^12.1.2",
+    "@verbis/sdk-connector": "workspace:*",
+    "@verbis/shared-types": "workspace:*",
+    "fastify": "5.12.5",
+    "jose": "^6.2.12",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "zod": "^4.6.5",
+    "@verbis/observability": "workspace:*",
+    "@opentelemetry/api": "^1.9.1"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^12.1.2",
+    "@swc/core": "^1.16.13",
+    "@types/node": "^24.10.1",
+    "@verbis/config-eslint": "workspace:*",
+    "@verbis/config-ts": "workspace:*",
+    "@verbis/test-utils": "workspace:*",
+    "@vitest/coverage-v8": "^5.0.3",
+    "concurrently": "^10.0.5",
+    "eslint": "^9.39.5",
+    "testcontainers": "^12.2.0",
+    "typescript": "^6.0.3",
+    "unplugin-swc": "^2.0.0",
+    "vitest": "^5.0.3"
+  }
+}

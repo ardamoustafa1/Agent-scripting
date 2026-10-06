@@ -1,0 +1,169 @@
+{
+  "name": "web messaging",
+  "participant": {
+    "platformUserId": "0f0c2a1e-0000-4000-8000-000000000101",
+    "platformInteractionId": "0f0c2a1e-0000-4000-8000-000000000006"
+  },
+  "fixtures": [
+    {
+      "name": "web messaging alerting",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000006",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000061",
+              "purpose": "customer",
+              "name": "Web Visitor",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000062",
+                  "state": "connected",
+                  "type": "webmessaging"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000064",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000063",
+                  "state": "alerting",
+                  "type": "webmessaging",
+                  "direction": "inbound"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "channel": "chat",
+          "context": {
+            "channel": "chat",
+            "customerName": "Web Visitor"
+          }
+        }
+      ]
+    },
+    {
+      "name": "web messaging connected",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000006",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000061",
+              "purpose": "customer",
+              "name": "Web Visitor",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000062",
+                  "state": "connected",
+                  "type": "webmessaging"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000064",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000063",
+                  "state": "connected",
+                  "type": "webmessaging",
+                  "direction": "inbound"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "channel": "chat"
+        }
+      ]
+    },
+    {
+      "name": "web messaging ended",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000006",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000061",
+              "purpose": "customer",
+              "name": "Web Visitor",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000062",
+                  "state": "connected",
+                  "type": "webmessaging"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000064",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000063",
+                  "state": "disconnected",
+                  "type": "webmessaging",
+                  "direction": "inbound"
+                }
+              ],
+              "endTime": "2026-10-01T14:10:00.000Z"
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

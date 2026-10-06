@@ -1,0 +1,377 @@
+{
+  "name": "whatsapp message with blind transfer",
+  "participant": {
+    "platformUserId": "0f0c2a1e-0000-4000-8000-000000000102",
+    "platformInteractionId": "0f0c2a1e-0000-4000-8000-000000000003"
+  },
+  "fixtures": [
+    {
+      "name": "whatsapp alerting A",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000003",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000031",
+              "purpose": "customer",
+              "name": "Mehmet",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000032",
+                  "state": "connected",
+                  "type": "whatsapp",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000034",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000036",
+                  "state": "alerting",
+                  "type": "whatsapp",
+                  "direction": "inbound",
+                  "other": {
+                    "addressNormalized": "+905559998877"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "channel": "whatsapp",
+          "agent": {
+            "id": "0f0c2a1e-0000-4000-8000-000000000101"
+          },
+          "context": {
+            "channel": "whatsapp",
+            "from": "+905559998877",
+            "profileName": "Mehmet"
+          },
+          "attributes": {
+            "genesys.messageType": "whatsapp"
+          }
+        }
+      ]
+    },
+    {
+      "name": "whatsapp connected A",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000003",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000031",
+              "purpose": "customer",
+              "name": "Mehmet",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000032",
+                  "state": "connected",
+                  "type": "whatsapp",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000034",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000036",
+                  "state": "connected",
+                  "type": "whatsapp",
+                  "direction": "inbound",
+                  "other": {
+                    "addressNormalized": "+905559998877"
+                  },
+                  "connectedTime": "2026-10-01T12:00:03.000Z"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "blind transfer A \u2192 B",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000102.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000003",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000031",
+              "purpose": "customer",
+              "name": "Mehmet",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000032",
+                  "state": "connected",
+                  "type": "whatsapp",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000034",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000036",
+                  "state": "disconnected",
+                  "type": "whatsapp",
+                  "direction": "inbound",
+                  "other": {
+                    "addressNormalized": "+905559998877"
+                  },
+                  "disconnectType": "transfer",
+                  "disconnectedTime": "2026-10-01T12:03:00.000Z"
+                }
+              ],
+              "endTime": "2026-10-01T12:03:00.000Z"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000035",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000102",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000037",
+                  "state": "alerting",
+                  "type": "whatsapp",
+                  "direction": "inbound",
+                  "other": {
+                    "addressNormalized": "+905559998877"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "transferred",
+          "agent": {
+            "id": "0f0c2a1e-0000-4000-8000-000000000101"
+          },
+          "transferTo": {
+            "id": "0f0c2a1e-0000-4000-8000-000000000102"
+          },
+          "occurredAt": "2026-10-01T12:03:00.000Z"
+        },
+        {
+          "type": "interactionOffered",
+          "agent": {
+            "id": "0f0c2a1e-0000-4000-8000-000000000102"
+          }
+        }
+      ]
+    },
+    {
+      "name": "whatsapp connected B",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000102.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000003",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000031",
+              "purpose": "customer",
+              "name": "Mehmet",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000032",
+                  "state": "connected",
+                  "type": "whatsapp",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000034",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000036",
+                  "state": "disconnected",
+                  "type": "whatsapp",
+                  "direction": "inbound",
+                  "other": {
+                    "addressNormalized": "+905559998877"
+                  },
+                  "disconnectType": "transfer"
+                }
+              ],
+              "endTime": "2026-10-01T12:03:00.000Z"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000035",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000102",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000037",
+                  "state": "connected",
+                  "type": "whatsapp",
+                  "direction": "inbound",
+                  "other": {
+                    "addressNormalized": "+905559998877"
+                  },
+                  "connectedTime": "2026-10-01T12:03:20.000Z"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "agent": {
+            "id": "0f0c2a1e-0000-4000-8000-000000000102"
+          }
+        }
+      ]
+    },
+    {
+      "name": "whatsapp ended",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000102.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000003",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000031",
+              "purpose": "customer",
+              "name": "Mehmet",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000032",
+                  "state": "connected",
+                  "type": "whatsapp",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000034",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000036",
+                  "state": "disconnected",
+                  "type": "whatsapp",
+                  "direction": "inbound",
+                  "other": {
+                    "addressNormalized": "+905559998877"
+                  },
+                  "disconnectType": "transfer"
+                }
+              ],
+              "endTime": "2026-10-01T12:03:00.000Z"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000035",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000102",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "messages": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000037",
+                  "state": "disconnected",
+                  "type": "whatsapp",
+                  "direction": "inbound",
+                  "other": {
+                    "addressNormalized": "+905559998877"
+                  },
+                  "disconnectedTime": "2026-10-01T12:09:00.000Z"
+                }
+              ],
+              "endTime": "2026-10-01T12:09:00.000Z"
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "ended",
+          "agent": {
+            "id": "0f0c2a1e-0000-4000-8000-000000000102"
+          }
+        }
+      ]
+    }
+  ]
+}

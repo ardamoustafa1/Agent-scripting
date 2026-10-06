@@ -1,0 +1,178 @@
+{
+  "name": "outbound dialer preview with contact-list data",
+  "participant": {
+    "platformUserId": "0f0c2a1e-0000-4000-8000-000000000101",
+    "platformInteractionId": "0f0c2a1e-0000-4000-8000-000000000002"
+  },
+  "fixtures": [
+    {
+      "name": "preview offered",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000002",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000021",
+              "purpose": "customer",
+              "address": "tel:+905551112233",
+              "attributes": {
+                "dialerCampaignId": "0f0c2a1e-0000-4000-8000-000000000301",
+                "dialerContactListId": "0f0c2a1e-0000-4000-8000-000000000302",
+                "dialerContactId": "contact-0042"
+              },
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000022",
+                  "state": "connected",
+                  "direction": "outbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000024",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000023",
+                  "state": "alerting",
+                  "direction": "outbound"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "direction": "outbound",
+          "campaignRef": {
+            "kind": "campaign",
+            "externalId": "0f0c2a1e-0000-4000-8000-000000000301"
+          },
+          "attributes": {
+            "dialer.campaignId": "0f0c2a1e-0000-4000-8000-000000000301",
+            "dialer.contactListId": "0f0c2a1e-0000-4000-8000-000000000302",
+            "dialer.contactId": "contact-0042",
+            "contact.firstName": "Ay\u015fe",
+            "contact.balance": 1250.5
+          }
+        }
+      ]
+    },
+    {
+      "name": "preview connected",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000002",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000021",
+              "purpose": "customer",
+              "address": "tel:+905551112233",
+              "attributes": {
+                "dialerCampaignId": "0f0c2a1e-0000-4000-8000-000000000301",
+                "dialerContactListId": "0f0c2a1e-0000-4000-8000-000000000302",
+                "dialerContactId": "contact-0042"
+              },
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000022",
+                  "state": "connected",
+                  "direction": "outbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000024",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000023",
+                  "state": "connected",
+                  "direction": "outbound",
+                  "connectedTime": "2026-10-01T11:00:10.000Z"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "attributes": {
+            "contact.firstName": "Ay\u015fe"
+          }
+        }
+      ]
+    },
+    {
+      "name": "preview ended (no ACW)",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000002",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000021",
+              "purpose": "customer",
+              "address": "tel:+905551112233",
+              "attributes": {
+                "dialerCampaignId": "0f0c2a1e-0000-4000-8000-000000000301",
+                "dialerContactListId": "0f0c2a1e-0000-4000-8000-000000000302",
+                "dialerContactId": "contact-0042"
+              },
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000022",
+                  "state": "connected",
+                  "direction": "outbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000024",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000023",
+                  "state": "disconnected",
+                  "direction": "outbound",
+                  "disconnectedTime": "2026-10-01T11:04:00.000Z"
+                }
+              ],
+              "endTime": "2026-10-01T11:04:00.000Z"
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "ended",
+          "occurredAt": "2026-10-01T11:04:00.000Z"
+        }
+      ]
+    }
+  ]
+}

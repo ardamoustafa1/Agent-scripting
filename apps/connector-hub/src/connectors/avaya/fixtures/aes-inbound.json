@@ -1,0 +1,296 @@
+{
+  "name": "aes: inbound VDN call with UUI, hold, transfer, ACW",
+  "participant": {
+    "platformUserId": "3002",
+    "platformInteractionId": "00001002011696172345"
+  },
+  "fixtures": [
+    {
+      "name": "CallCtlConnDeliveredEv (VDN 7001, skill 21, UUI)",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:1",
+        "source": "aes",
+        "event": "delivered",
+        "occurredAt": "2026-10-01T10:00:00.000Z",
+        "interactionId": "00001002011696172345",
+        "mediaType": "voice",
+        "ucid": "00001002011696172345",
+        "callId": "812",
+        "agent": {
+          "loginId": "3001",
+          "extension": "4001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "vdn": "7001",
+        "skill": "21",
+        "uui": "cust=C-42|seg=gold|pin=1234"
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "platformInteractionId": "00001002011696172345",
+          "channel": "voice",
+          "agent": {
+            "id": "3001"
+          },
+          "queue": "21",
+          "campaignRef": {
+            "kind": "vdn",
+            "externalId": "7001"
+          },
+          "attributes": {
+            "avaya.ucid": "00001002011696172345",
+            "avaya.vdn": "7001",
+            "avaya.skill": "21",
+            "uui.cust": "C-42",
+            "uui.seg": "gold"
+          },
+          "context": {
+            "channel": "voice",
+            "ani": "+905550000001",
+            "dnis": "4440000"
+          }
+        }
+      ]
+    },
+    {
+      "name": "established",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:2",
+        "source": "aes",
+        "event": "established",
+        "occurredAt": "2026-10-01T10:00:05.000Z",
+        "interactionId": "00001002011696172345",
+        "mediaType": "voice",
+        "ucid": "00001002011696172345",
+        "callId": "812",
+        "agent": {
+          "loginId": "3001",
+          "extension": "4001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "vdn": "7001",
+        "skill": "21",
+        "uui": "cust=C-42|seg=gold|pin=1234"
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "conferenced (no lifecycle change)",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:3",
+        "source": "aes",
+        "event": "conferenced",
+        "occurredAt": "2026-10-01T10:01:00.000Z",
+        "interactionId": "00001002011696172345",
+        "mediaType": "voice",
+        "ucid": "00001002011696172345",
+        "callId": "812",
+        "agent": {
+          "loginId": "3001",
+          "extension": "4001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "vdn": "7001",
+        "skill": "21",
+        "uui": "cust=C-42|seg=gold|pin=1234"
+      },
+      "expected": []
+    },
+    {
+      "name": "held",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:4",
+        "source": "aes",
+        "event": "held",
+        "occurredAt": "2026-10-01T10:02:00.000Z",
+        "interactionId": "00001002011696172345",
+        "mediaType": "voice",
+        "ucid": "00001002011696172345",
+        "callId": "812",
+        "agent": {
+          "loginId": "3001",
+          "extension": "4001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "vdn": "7001",
+        "skill": "21",
+        "uui": "cust=C-42|seg=gold|pin=1234"
+      },
+      "expected": [
+        {
+          "type": "held"
+        }
+      ]
+    },
+    {
+      "name": "retrieved",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:5",
+        "source": "aes",
+        "event": "retrieved",
+        "occurredAt": "2026-10-01T10:03:00.000Z",
+        "interactionId": "00001002011696172345",
+        "mediaType": "voice",
+        "ucid": "00001002011696172345",
+        "callId": "812",
+        "agent": {
+          "loginId": "3001",
+          "extension": "4001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "vdn": "7001",
+        "skill": "21",
+        "uui": "cust=C-42|seg=gold|pin=1234"
+      },
+      "expected": [
+        {
+          "type": "resumed"
+        }
+      ]
+    },
+    {
+      "name": "transferred to 3002",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:6",
+        "source": "aes",
+        "event": "transferred",
+        "occurredAt": "2026-10-01T10:04:00.000Z",
+        "interactionId": "00001002011696172345",
+        "mediaType": "voice",
+        "ucid": "00001002011696172345",
+        "callId": "812",
+        "agent": {
+          "loginId": "3001",
+          "extension": "4001"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "vdn": "7001",
+        "skill": "21",
+        "uui": "cust=C-42|seg=gold|pin=1234",
+        "transferTo": {
+          "loginId": "3002",
+          "extension": "4002"
+        }
+      },
+      "expected": [
+        {
+          "type": "transferred",
+          "agent": {
+            "id": "3001"
+          },
+          "transferTo": {
+            "id": "3002"
+          }
+        }
+      ]
+    },
+    {
+      "name": "established at 3002",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:7",
+        "source": "aes",
+        "event": "established",
+        "occurredAt": "2026-10-01T10:04:10.000Z",
+        "interactionId": "00001002011696172345",
+        "mediaType": "voice",
+        "ucid": "00001002011696172345",
+        "callId": "812",
+        "agent": {
+          "loginId": "3002",
+          "extension": "4002"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "vdn": "7001",
+        "skill": "21",
+        "uui": "cust=C-42|seg=gold|pin=1234"
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "agent": {
+            "id": "3002"
+          }
+        }
+      ]
+    },
+    {
+      "name": "cleared into ACW",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:8",
+        "source": "aes",
+        "event": "cleared",
+        "occurredAt": "2026-10-01T10:09:00.000Z",
+        "interactionId": "00001002011696172345",
+        "mediaType": "voice",
+        "ucid": "00001002011696172345",
+        "callId": "812",
+        "agent": {
+          "loginId": "3002",
+          "extension": "4002"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "vdn": "7001",
+        "skill": "21",
+        "uui": "cust=C-42|seg=gold|pin=1234",
+        "afterCallWork": true
+      },
+      "expected": [
+        {
+          "type": "wrapupRequired",
+          "wrapUp": {
+            "required": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "ACW completed",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:9",
+        "source": "aes",
+        "event": "acwCompleted",
+        "occurredAt": "2026-10-01T10:09:40.000Z",
+        "interactionId": "00001002011696172345",
+        "mediaType": "voice",
+        "ucid": "00001002011696172345",
+        "callId": "812",
+        "agent": {
+          "loginId": "3002",
+          "extension": "4002"
+        },
+        "ani": "+905550000001",
+        "dnis": "4440000",
+        "vdn": "7001",
+        "skill": "21",
+        "uui": "cust=C-42|seg=gold|pin=1234"
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

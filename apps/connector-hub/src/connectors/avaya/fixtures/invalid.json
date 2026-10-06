@@ -1,0 +1,81 @@
+[
+  {
+    "name": "empty",
+    "payload": {}
+  },
+  {
+    "name": "wrong schema",
+    "payload": {
+      "schema": "verbis.avaya.envelope.v2",
+      "eventId": "x:1",
+      "source": "aes",
+      "event": "delivered",
+      "occurredAt": "2026-10-01T10:00:00.000Z",
+      "interactionId": "00001002011696172345",
+      "mediaType": "voice"
+    }
+  },
+  {
+    "name": "bad UCID",
+    "payload": {
+      "schema": "verbis.avaya.envelope.v1",
+      "eventId": "x:2",
+      "source": "aes",
+      "event": "delivered",
+      "occurredAt": "2026-10-01T10:00:00.000Z",
+      "interactionId": "00001002011696172345",
+      "mediaType": "voice",
+      "ucid": "12ab"
+    }
+  },
+  {
+    "name": "path in interaction id",
+    "payload": {
+      "schema": "verbis.avaya.envelope.v1",
+      "eventId": "x:3",
+      "source": "aes",
+      "event": "delivered",
+      "occurredAt": "2026-10-01T10:00:00.000Z",
+      "interactionId": "../x",
+      "mediaType": "voice"
+    }
+  },
+  {
+    "name": "unknown event",
+    "payload": {
+      "schema": "verbis.avaya.envelope.v1",
+      "eventId": "x:4",
+      "source": "aes",
+      "event": "exploded",
+      "occurredAt": "2026-10-01T10:00:00.000Z",
+      "interactionId": "00001002011696172345",
+      "mediaType": "voice"
+    }
+  },
+  {
+    "name": "extra field",
+    "payload": {
+      "schema": "verbis.avaya.envelope.v1",
+      "eventId": "x:5",
+      "source": "aes",
+      "event": "delivered",
+      "occurredAt": "2026-10-01T10:00:00.000Z",
+      "interactionId": "00001002011696172345",
+      "mediaType": "voice",
+      "script": "x"
+    }
+  },
+  {
+    "name": "oversized UUI",
+    "payload": {
+      "schema": "verbis.avaya.envelope.v1",
+      "eventId": "x:6",
+      "source": "aes",
+      "event": "delivered",
+      "occurredAt": "2026-10-01T10:00:00.000Z",
+      "interactionId": "00001002011696172345",
+      "mediaType": "voice",
+      "uui": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+  }
+]

@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.verbis.io/avaya-envelope.v1.json",
+  "title": "Verbis Avaya envelope v1",
+  "description": "Sidecar → hub event contract. Twin of apps/connector-hub/src/connectors/avaya/envelope.ts (zod is authoritative).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "eventId", "source", "event", "occurredAt", "interactionId", "mediaType"],
+  "properties": {
+    "schema": { "const": "verbis.avaya.envelope.v1" },
+    "eventId": { "type": "string", "pattern": "^[A-Za-z0-9._:@-]{1,200}$" },
+    "source": { "enum": ["aes", "aacc"] },
+    "event": {
+      "enum": [
+        "delivered",
+        "established",
+        "held",
+        "retrieved",
+        "transferred",
+        "conferenced",
+        "cleared",
+        "acwCompleted",
+        "closed",
+        "dataChanged"
+      ]
+    },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "interactionId": { "type": "string", "pattern": "^[A-Za-z0-9._:@-]{1,128}$" },
+    "callId": { "type": "string", "maxLength": 32 },
+    "ucid": { "type": "string", "pattern": "^\\d{20}$" },
+    "mediaType": {
+      "enum": [
+        "voice",
+        "email",
+        "chat",
+        "sms",
+        "social",
+        "im",
+        "webcomm",
+        "fax",
+        "scanned",
+        "voicemail"
+      ]
+    },
+    "direction": { "enum": ["inbound", "outbound"] },
+    "agent": { "$ref": "#/$defs/agent" },
+    "transferTo": { "$ref": "#/$defs/agent" },
+    "ani": { "type": "string", "maxLength": 64 },
+    "dnis": { "type": "string", "maxLength": 64 },
+    "vdn": { "type": "string", "maxLength": 32 },
+    "skill": { "type": "string", "maxLength": 128 },
+    "uui": { "type": "string", "maxLength": 256 },
+    "uuiEncoding": { "enum": ["ascii", "hex"] },
+    "intrinsics": {
+      "type": "object",
+      "propertyNames": { "maxLength": 64 },
+      "additionalProperties": { "type": "string", "maxLength": 1000 }
+    },
+    "afterCallWork": { "type": "boolean" },
+    "outbound": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "campaign", "recordId"],
+      "properties": {
+        "system": { "enum": ["pom", "pc"] },
+        "campaign": { "type": "string", "maxLength": 128 },
+        "list": { "type": "string", "maxLength": 128 },
+        "recordId": { "type": "string", "maxLength": 128 },
+        "fields": {
+          "type": "object",
+          "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+        }
+      }
+    },
+    "email": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from"],
+      "properties": {
+        "from": { "type": "string" },
+        "to": { "type": "array", "items": { "type": "string" } },
+        "subject": { "type": "string" },
+        "body": { "type": "string", "maxLength": 100000 }
+      }
+    },
+    "chat": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "customerName": { "type": "string" },
+        "messages": { "type": "array", "maxItems": 500 }
+      }
+    }
+  },
+  "$defs": {
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "loginId": { "type": "string", "maxLength": 64 },
+        "extension": { "type": "string", "maxLength": 32 },
+        "handle": { "type": "string", "maxLength": 256 }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "0f0c2a1e-0000-4000-8000-000000000302/contact-0042": {
+    "id": "contact-0042",
+    "contactListId": "0f0c2a1e-0000-4000-8000-000000000302",
+    "data": {
+      "firstName": "Ayşe",
+      "balance": 1250.5,
+      "nationalId": "SHOULD-NOT-IMPORT"
+    }
+  }
+}

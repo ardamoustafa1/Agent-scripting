@@ -1,0 +1,199 @@
+{
+  "name": "aacc: web communications chat with transfer",
+  "participant": {
+    "platformUserId": "5002",
+    "platformInteractionId": "1000456"
+  },
+  "fixtures": [
+    {
+      "name": "web communications presented",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aacc-1:51",
+        "source": "aacc",
+        "event": "delivered",
+        "occurredAt": "2026-10-01T13:00:01.000Z",
+        "interactionId": "1000456",
+        "mediaType": "webcomm",
+        "agent": {
+          "loginId": "5001",
+          "handle": "ayse.k"
+        },
+        "skill": "WC_Sales",
+        "intrinsics": {
+          "CustomerId": "C-9"
+        },
+        "chat": {
+          "customerName": "Zeynep",
+          "messages": [
+            {
+              "from": "customer",
+              "text": "Kampanya hakk\u0131nda bilgi alabilir miyim?",
+              "at": "2026-10-01T13:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "channel": "chat",
+          "context": {
+            "channel": "chat",
+            "customerName": "Zeynep"
+          }
+        }
+      ]
+    },
+    {
+      "name": "chat accepted",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aacc-1:52",
+        "source": "aacc",
+        "event": "established",
+        "occurredAt": "2026-10-01T13:00:05.000Z",
+        "interactionId": "1000456",
+        "mediaType": "webcomm",
+        "agent": {
+          "loginId": "5001",
+          "handle": "ayse.k"
+        },
+        "skill": "WC_Sales",
+        "intrinsics": {
+          "CustomerId": "C-9"
+        },
+        "chat": {
+          "customerName": "Zeynep",
+          "messages": [
+            {
+              "from": "customer",
+              "text": "Kampanya hakk\u0131nda bilgi alabilir miyim?",
+              "at": "2026-10-01T13:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "chat transferred to 5002",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aacc-1:53",
+        "source": "aacc",
+        "event": "transferred",
+        "occurredAt": "2026-10-01T13:03:00.000Z",
+        "interactionId": "1000456",
+        "mediaType": "webcomm",
+        "agent": {
+          "loginId": "5001",
+          "handle": "ayse.k"
+        },
+        "skill": "WC_Sales",
+        "intrinsics": {
+          "CustomerId": "C-9"
+        },
+        "chat": {
+          "customerName": "Zeynep",
+          "messages": [
+            {
+              "from": "customer",
+              "text": "Kampanya hakk\u0131nda bilgi alabilir miyim?",
+              "at": "2026-10-01T13:00:00.000Z"
+            }
+          ]
+        },
+        "transferTo": {
+          "loginId": "5002",
+          "handle": "mehmet.y"
+        }
+      },
+      "expected": [
+        {
+          "type": "transferred",
+          "transferTo": {
+            "id": "5002"
+          }
+        }
+      ]
+    },
+    {
+      "name": "chat accepted by 5002",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aacc-1:54",
+        "source": "aacc",
+        "event": "established",
+        "occurredAt": "2026-10-01T13:03:10.000Z",
+        "interactionId": "1000456",
+        "mediaType": "webcomm",
+        "agent": {
+          "loginId": "5002",
+          "handle": "mehmet.y"
+        },
+        "skill": "WC_Sales",
+        "intrinsics": {
+          "CustomerId": "C-9"
+        },
+        "chat": {
+          "customerName": "Zeynep",
+          "messages": [
+            {
+              "from": "customer",
+              "text": "Kampanya hakk\u0131nda bilgi alabilir miyim?",
+              "at": "2026-10-01T13:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "agent": {
+            "id": "5002"
+          }
+        }
+      ]
+    },
+    {
+      "name": "chat closed",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aacc-1:55",
+        "source": "aacc",
+        "event": "closed",
+        "occurredAt": "2026-10-01T13:10:00.000Z",
+        "interactionId": "1000456",
+        "mediaType": "webcomm",
+        "agent": {
+          "loginId": "5002",
+          "handle": "mehmet.y"
+        },
+        "skill": "WC_Sales",
+        "intrinsics": {
+          "CustomerId": "C-9"
+        },
+        "chat": {
+          "customerName": "Zeynep",
+          "messages": [
+            {
+              "from": "customer",
+              "text": "Kampanya hakk\u0131nda bilgi alabilir miyim?",
+              "at": "2026-10-01T13:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

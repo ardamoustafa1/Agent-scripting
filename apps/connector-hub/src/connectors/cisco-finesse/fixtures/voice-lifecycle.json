@@ -1,0 +1,179 @@
+{
+  "name": "cisco-finesse voice lifecycle",
+  "participant": {
+    "platformUserId": "agent-1",
+    "platformInteractionId": "contact-1"
+  },
+  "fixtures": [
+    {
+      "name": "interactionOffered",
+      "payload": {
+        "version": 1,
+        "platform": "cisco-finesse",
+        "event": {
+          "eventId": "cisco-finesse-0",
+          "type": "interactionOffered",
+          "occurredAt": "2026-10-01T10:00:00.000Z",
+          "platformInteractionId": "contact-1",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-1"
+          }
+        },
+        "routingId": "route-1",
+        "variables": {
+          "verbisOutcome": "pending",
+          "customerTier": "gold",
+          "privateField": "discard"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "platformInteractionId": "contact-1",
+          "attributes": {
+            "verbisOutcome": "pending",
+            "customerTier": "gold"
+          }
+        }
+      ]
+    },
+    {
+      "name": "connected",
+      "payload": {
+        "version": 1,
+        "platform": "cisco-finesse",
+        "event": {
+          "eventId": "cisco-finesse-1",
+          "type": "connected",
+          "occurredAt": "2026-10-01T10:00:00.000Z",
+          "platformInteractionId": "contact-1",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-1"
+          }
+        },
+        "routingId": "route-1",
+        "variables": {
+          "verbisOutcome": "pending",
+          "customerTier": "gold",
+          "privateField": "discard"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "platformInteractionId": "contact-1",
+          "attributes": {
+            "verbisOutcome": "pending",
+            "customerTier": "gold"
+          }
+        }
+      ]
+    },
+    {
+      "name": "held",
+      "payload": {
+        "version": 1,
+        "platform": "cisco-finesse",
+        "event": {
+          "eventId": "cisco-finesse-2",
+          "type": "held",
+          "occurredAt": "2026-10-01T10:00:00.000Z",
+          "platformInteractionId": "contact-1",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-1"
+          }
+        },
+        "routingId": "route-1",
+        "variables": {
+          "verbisOutcome": "pending",
+          "customerTier": "gold",
+          "privateField": "discard"
+        }
+      },
+      "expected": [
+        {
+          "type": "held",
+          "platformInteractionId": "contact-1",
+          "attributes": {
+            "verbisOutcome": "pending",
+            "customerTier": "gold"
+          }
+        }
+      ]
+    },
+    {
+      "name": "resumed",
+      "payload": {
+        "version": 1,
+        "platform": "cisco-finesse",
+        "event": {
+          "eventId": "cisco-finesse-3",
+          "type": "resumed",
+          "occurredAt": "2026-10-01T10:00:00.000Z",
+          "platformInteractionId": "contact-1",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-1"
+          }
+        },
+        "routingId": "route-1",
+        "variables": {
+          "verbisOutcome": "pending",
+          "customerTier": "gold",
+          "privateField": "discard"
+        }
+      },
+      "expected": [
+        {
+          "type": "resumed",
+          "platformInteractionId": "contact-1",
+          "attributes": {
+            "verbisOutcome": "pending",
+            "customerTier": "gold"
+          }
+        }
+      ]
+    },
+    {
+      "name": "wrapupRequired",
+      "payload": {
+        "version": 1,
+        "platform": "cisco-finesse",
+        "event": {
+          "eventId": "cisco-finesse-4",
+          "type": "wrapupRequired",
+          "occurredAt": "2026-10-01T10:00:00.000Z",
+          "platformInteractionId": "contact-1",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "agent-1"
+          }
+        },
+        "routingId": "route-1",
+        "variables": {
+          "verbisOutcome": "pending",
+          "customerTier": "gold",
+          "privateField": "discard"
+        }
+      },
+      "expected": [
+        {
+          "type": "wrapupRequired",
+          "platformInteractionId": "contact-1",
+          "attributes": {
+            "verbisOutcome": "pending",
+            "customerTier": "gold"
+          }
+        }
+      ]
+    }
+  ]
+}

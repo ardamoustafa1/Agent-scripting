@@ -1,0 +1,168 @@
+{
+  "name": "scheduled callback",
+  "participant": {
+    "platformUserId": "0f0c2a1e-0000-4000-8000-000000000101",
+    "platformInteractionId": "0f0c2a1e-0000-4000-8000-000000000005"
+  },
+  "fixtures": [
+    {
+      "name": "callback alerting",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000005",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000051",
+              "purpose": "customer",
+              "callbacks": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000052",
+                  "state": "connected",
+                  "callbackNumbers": ["+905553334455"],
+                  "callbackScheduledTime": "2026-10-01T15:00:00.000Z"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000054",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "callbacks": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000053",
+                  "state": "alerting",
+                  "direction": "outbound",
+                  "callbackNumbers": ["+905553334455"]
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "channel": "callback",
+          "context": {
+            "channel": "callback",
+            "number": "+905553334455",
+            "scheduledAt": "2026-10-01T15:00:00.000Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "callback connected",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000005",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000051",
+              "purpose": "customer",
+              "callbacks": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000052",
+                  "state": "connected",
+                  "callbackNumbers": ["+905553334455"],
+                  "callbackScheduledTime": "2026-10-01T15:00:00.000Z"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000054",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "callbacks": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000053",
+                  "state": "connected",
+                  "direction": "outbound",
+                  "callbackNumbers": ["+905553334455"]
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "callback ended",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000005",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000051",
+              "purpose": "customer",
+              "callbacks": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000052",
+                  "state": "connected",
+                  "callbackNumbers": ["+905553334455"],
+                  "callbackScheduledTime": "2026-10-01T15:00:00.000Z"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000054",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "callbacks": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000053",
+                  "state": "terminated",
+                  "direction": "outbound",
+                  "callbackNumbers": ["+905553334455"]
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2" xmlns:cct="http://www.avaya.com/cct/notification">
+  <soapenv:Body>
+    <wsnt:Notify>
+      <wsnt:NotificationMessage>
+        <wsnt:Message>
+          <cct:ContactEvent>
+            <cct:EventType>ContactPresented</cct:EventType>
+            <cct:SequenceNumber>1</cct:SequenceNumber>
+            <cct:Timestamp>2026-10-01T12:00:00Z</cct:Timestamp>
+            <cct:ContactID>1000123</cct:ContactID>
+            <cct:ContactType>Email</cct:ContactType>
+            <cct:Skillset>EM_Billing</cct:Skillset>
+            <cct:Agent><cct:AgentID>5001</cct:AgentID><cct:UserID>ayse.k</cct:UserID></cct:Agent>
+            <cct:Intrinsic><cct:Key>CustomerId</cct:Key><cct:Value>C-7</cct:Value></cct:Intrinsic>
+            <cct:Intrinsic><cct:Key>CardNo</cct:Key><cct:Value>4111</cct:Value></cct:Intrinsic>
+          </cct:ContactEvent>
+        </wsnt:Message>
+      </wsnt:NotificationMessage>
+      <wsnt:NotificationMessage>
+        <wsnt:Message>
+          <cct:ContactEvent>
+            <cct:EventType>AgentStateChanged</cct:EventType>
+            <cct:ContactID>1000123</cct:ContactID>
+          </cct:ContactEvent>
+        </wsnt:Message>
+      </wsnt:NotificationMessage>
+    </wsnt:Notify>
+  </soapenv:Body>
+</soapenv:Envelope>

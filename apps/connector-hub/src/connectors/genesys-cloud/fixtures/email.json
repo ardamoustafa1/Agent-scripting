@@ -1,0 +1,179 @@
+{
+  "name": "email",
+  "participant": {
+    "platformUserId": "0f0c2a1e-0000-4000-8000-000000000101",
+    "platformInteractionId": "0f0c2a1e-0000-4000-8000-000000000004"
+  },
+  "fixtures": [
+    {
+      "name": "email alerting",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000004",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000041",
+              "purpose": "customer",
+              "address": "musteri@example.test",
+              "emails": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000042",
+                  "state": "connected",
+                  "subject": "Fatura itiraz\u0131"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000044",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "emails": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000043",
+                  "state": "alerting",
+                  "direction": "inbound",
+                  "subject": "Fatura itiraz\u0131",
+                  "other": {
+                    "addressNormalized": "musteri@example.test"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "channel": "email",
+          "context": {
+            "channel": "email",
+            "from": "musteri@example.test",
+            "subject": "Fatura itiraz\u0131"
+          }
+        }
+      ]
+    },
+    {
+      "name": "email connected",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000004",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000041",
+              "purpose": "customer",
+              "address": "musteri@example.test",
+              "emails": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000042",
+                  "state": "connected",
+                  "subject": "Fatura itiraz\u0131"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000044",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "emails": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000043",
+                  "state": "connected",
+                  "direction": "inbound",
+                  "subject": "Fatura itiraz\u0131",
+                  "other": {
+                    "addressNormalized": "musteri@example.test"
+                  },
+                  "connectedTime": "2026-10-01T13:00:00.000Z"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "email ended",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000004",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000041",
+              "purpose": "customer",
+              "address": "musteri@example.test",
+              "emails": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000042",
+                  "state": "connected",
+                  "subject": "Fatura itiraz\u0131"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000044",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "emails": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000043",
+                  "state": "disconnected",
+                  "direction": "inbound",
+                  "subject": "Fatura itiraz\u0131",
+                  "other": {
+                    "addressNormalized": "musteri@example.test"
+                  }
+                }
+              ],
+              "endTime": "2026-10-01T13:20:00.000Z"
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

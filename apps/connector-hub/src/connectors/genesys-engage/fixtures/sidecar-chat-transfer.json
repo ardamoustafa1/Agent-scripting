@@ -1,0 +1,228 @@
+{
+  "name": "sidecar: Interaction Server chat with transfer",
+  "participant": {
+    "platformUserId": "E2002",
+    "platformInteractionId": "0001KaC9WYKH3C1A"
+  },
+  "fixtures": [
+    {
+      "name": "EventInvite",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "IxnServer:3001",
+        "source": "ixn",
+        "event": "ringing",
+        "occurredAt": "2026-10-01T12:00:01.000Z",
+        "interactionId": "0001KaC9WYKH3C1A",
+        "mediaType": "chat",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "queue": "Chat_Inbound",
+        "userData": {
+          "CustomerId": "C-9",
+          "FirstName": "Zeynep"
+        },
+        "chat": {
+          "customerName": "Zeynep",
+          "messages": [
+            {
+              "from": "customer",
+              "text": "Merhaba, faturam y\u00fcksek geldi",
+              "at": "2026-10-01T12:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "channel": "chat",
+          "agent": {
+            "id": "E1001"
+          },
+          "context": {
+            "channel": "chat",
+            "customerName": "Zeynep"
+          }
+        }
+      ]
+    },
+    {
+      "name": "EventAccepted",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "IxnServer:3002",
+        "source": "ixn",
+        "event": "established",
+        "occurredAt": "2026-10-01T12:00:05.000Z",
+        "interactionId": "0001KaC9WYKH3C1A",
+        "mediaType": "chat",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "queue": "Chat_Inbound",
+        "userData": {
+          "CustomerId": "C-9",
+          "FirstName": "Zeynep"
+        },
+        "chat": {
+          "customerName": "Zeynep",
+          "messages": [
+            {
+              "from": "customer",
+              "text": "Merhaba, faturam y\u00fcksek geldi",
+              "at": "2026-10-01T12:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "transfer to E2002 (EventPartyChanged)",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "IxnServer:3003",
+        "source": "ixn",
+        "event": "partyChanged",
+        "occurredAt": "2026-10-01T12:04:00.000Z",
+        "interactionId": "0001KaC9WYKH3C1A",
+        "mediaType": "chat",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "queue": "Chat_Inbound",
+        "userData": {
+          "CustomerId": "C-9",
+          "FirstName": "Zeynep"
+        },
+        "chat": {
+          "customerName": "Zeynep",
+          "messages": [
+            {
+              "from": "customer",
+              "text": "Merhaba, faturam y\u00fcksek geldi",
+              "at": "2026-10-01T12:00:00.000Z"
+            }
+          ]
+        },
+        "transferTo": {
+          "employeeId": "E2002",
+          "userName": "mehmet.y",
+          "agentLoginId": "5002",
+          "dn": "7002",
+          "place": "P7002"
+        }
+      },
+      "expected": [
+        {
+          "type": "transferred",
+          "agent": {
+            "id": "E1001"
+          },
+          "transferTo": {
+            "id": "E2002"
+          }
+        }
+      ]
+    },
+    {
+      "name": "EventAccepted by E2002",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "IxnServer:3004",
+        "source": "ixn",
+        "event": "established",
+        "occurredAt": "2026-10-01T12:04:10.000Z",
+        "interactionId": "0001KaC9WYKH3C1A",
+        "mediaType": "chat",
+        "agent": {
+          "employeeId": "E2002",
+          "userName": "mehmet.y",
+          "agentLoginId": "5002",
+          "dn": "7002",
+          "place": "P7002"
+        },
+        "queue": "Chat_Inbound",
+        "userData": {
+          "CustomerId": "C-9",
+          "FirstName": "Zeynep"
+        },
+        "chat": {
+          "customerName": "Zeynep",
+          "messages": [
+            {
+              "from": "customer",
+              "text": "Merhaba, faturam y\u00fcksek geldi",
+              "at": "2026-10-01T12:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "agent": {
+            "id": "E2002"
+          }
+        }
+      ]
+    },
+    {
+      "name": "EventProcessingStopped",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "IxnServer:3005",
+        "source": "ixn",
+        "event": "markedDone",
+        "occurredAt": "2026-10-01T12:10:00.000Z",
+        "interactionId": "0001KaC9WYKH3C1A",
+        "mediaType": "chat",
+        "agent": {
+          "employeeId": "E2002",
+          "userName": "mehmet.y",
+          "agentLoginId": "5002",
+          "dn": "7002",
+          "place": "P7002"
+        },
+        "queue": "Chat_Inbound",
+        "userData": {
+          "CustomerId": "C-9",
+          "FirstName": "Zeynep"
+        },
+        "chat": {
+          "customerName": "Zeynep",
+          "messages": [
+            {
+              "from": "customer",
+              "text": "Merhaba, faturam y\u00fcksek geldi",
+              "at": "2026-10-01T12:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

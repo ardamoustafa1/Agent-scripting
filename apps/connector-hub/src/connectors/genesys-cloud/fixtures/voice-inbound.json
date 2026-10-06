@@ -1,0 +1,440 @@
+{
+  "name": "voice inbound with hold and ACW",
+  "participant": {
+    "platformUserId": "0f0c2a1e-0000-4000-8000-000000000101",
+    "platformInteractionId": "0f0c2a1e-0000-4000-8000-000000000001"
+  },
+  "fixtures": [
+    {
+      "name": "call alerting",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000001",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000011",
+              "purpose": "customer",
+              "ani": "tel:+905550000001",
+              "dnis": "tel:+902120000000",
+              "attributes": {
+                "segment": "gold",
+                "Customer Tier": "vip"
+              },
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000012",
+                  "state": "connected",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000014",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000013",
+                  "state": "alerting",
+                  "direction": "inbound",
+                  "recordingState": "active"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "platformInteractionId": "0f0c2a1e-0000-4000-8000-000000000001",
+          "channel": "voice",
+          "direction": "inbound",
+          "agent": {
+            "id": "0f0c2a1e-0000-4000-8000-000000000101"
+          },
+          "queue": "0f0c2a1e-0000-4000-8000-000000000201",
+          "campaignRef": {
+            "kind": "queue",
+            "externalId": "0f0c2a1e-0000-4000-8000-000000000201"
+          },
+          "attributes": {
+            "segment": "gold",
+            "Customer_Tier": "vip",
+            "genesys.mediaType": "calls"
+          },
+          "context": {
+            "channel": "voice",
+            "ani": "tel:+905550000001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "call connected",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000001",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000011",
+              "purpose": "customer",
+              "ani": "tel:+905550000001",
+              "dnis": "tel:+902120000000",
+              "attributes": {
+                "segment": "gold",
+                "Customer Tier": "vip"
+              },
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000012",
+                  "state": "connected",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000014",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000013",
+                  "state": "connected",
+                  "direction": "inbound",
+                  "recordingState": "active",
+                  "connectedTime": "2026-10-01T10:00:05.000Z"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "occurredAt": "2026-10-01T10:00:05.000Z"
+        }
+      ]
+    },
+    {
+      "name": "same snapshot via queue topic (duplicate)",
+      "payload": {
+        "topicName": "v2.routing.queues.0f0c2a1e-0000-4000-8000-000000000201.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000001",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000011",
+              "purpose": "customer",
+              "ani": "tel:+905550000001",
+              "dnis": "tel:+902120000000",
+              "attributes": {
+                "segment": "gold",
+                "Customer Tier": "vip"
+              },
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000012",
+                  "state": "connected",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000014",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000013",
+                  "state": "connected",
+                  "direction": "inbound",
+                  "recordingState": "active",
+                  "connectedTime": "2026-10-01T10:00:05.000Z"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": []
+    },
+    {
+      "name": "call held",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000001",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000011",
+              "purpose": "customer",
+              "ani": "tel:+905550000001",
+              "dnis": "tel:+902120000000",
+              "attributes": {
+                "segment": "gold",
+                "Customer Tier": "vip"
+              },
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000012",
+                  "state": "connected",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000014",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000013",
+                  "state": "connected",
+                  "direction": "inbound",
+                  "recordingState": "active",
+                  "held": true,
+                  "startHoldTime": "2026-10-01T10:02:00.000Z",
+                  "connectedTime": "2026-10-01T10:00:05.000Z"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "held",
+          "occurredAt": "2026-10-01T10:02:00.000Z"
+        }
+      ]
+    },
+    {
+      "name": "call resumed",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000001",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000011",
+              "purpose": "customer",
+              "ani": "tel:+905550000001",
+              "dnis": "tel:+902120000000",
+              "attributes": {
+                "segment": "gold",
+                "Customer Tier": "vip"
+              },
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000012",
+                  "state": "connected",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000014",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000013",
+                  "state": "connected",
+                  "direction": "inbound",
+                  "recordingState": "active",
+                  "held": false,
+                  "connectedTime": "2026-10-01T10:00:05.000Z"
+                }
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "resumed"
+        }
+      ]
+    },
+    {
+      "name": "call disconnected, ACW",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000001",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000011",
+              "purpose": "customer",
+              "ani": "tel:+905550000001",
+              "dnis": "tel:+902120000000",
+              "attributes": {
+                "segment": "gold",
+                "Customer Tier": "vip"
+              },
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000012",
+                  "state": "connected",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000014",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000013",
+                  "state": "disconnected",
+                  "direction": "inbound",
+                  "recordingState": "active",
+                  "disconnectedTime": "2026-10-01T10:06:00.000Z",
+                  "disconnectType": "client"
+                }
+              ],
+              "wrapupRequired": true,
+              "wrapupTimeoutMs": 60000
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "wrapupRequired",
+          "wrapUp": {
+            "required": true,
+            "timeoutSeconds": 60
+          }
+        }
+      ]
+    },
+    {
+      "name": "wrap-up applied",
+      "payload": {
+        "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+        "version": "2",
+        "eventBody": {
+          "id": "0f0c2a1e-0000-4000-8000-000000000001",
+          "participants": [
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000011",
+              "purpose": "customer",
+              "ani": "tel:+905550000001",
+              "dnis": "tel:+902120000000",
+              "attributes": {
+                "segment": "gold",
+                "Customer Tier": "vip"
+              },
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000012",
+                  "state": "connected",
+                  "direction": "inbound"
+                }
+              ]
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-00000000a0cd",
+              "purpose": "acd",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201"
+            },
+            {
+              "id": "0f0c2a1e-0000-4000-8000-000000000014",
+              "purpose": "agent",
+              "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+              "queueId": "0f0c2a1e-0000-4000-8000-000000000201",
+              "calls": [
+                {
+                  "id": "0f0c2a1e-0000-4000-8000-000000000013",
+                  "state": "disconnected",
+                  "direction": "inbound",
+                  "recordingState": "active",
+                  "disconnectedTime": "2026-10-01T10:06:00.000Z"
+                }
+              ],
+              "wrapupRequired": true,
+              "wrapup": {
+                "code": "0f0c2a1e-0000-4000-8000-000000000901"
+              },
+              "endTime": "2026-10-01T10:06:30.000Z"
+            }
+          ]
+        },
+        "metadata": {
+          "CorrelationId": "corr-1"
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

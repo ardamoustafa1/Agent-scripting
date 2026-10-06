@@ -1,0 +1,69 @@
+[
+  {
+    "name": "empty",
+    "payload": {}
+  },
+  {
+    "name": "conversation topic without body",
+    "payload": {
+      "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations"
+    }
+  },
+  {
+    "name": "participants not an array",
+    "payload": {
+      "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+      "eventBody": {
+        "id": "0f0c2a1e-0000-4000-8000-000000000001",
+        "participants": "x"
+      }
+    }
+  },
+  {
+    "name": "numeric conversation id",
+    "payload": {
+      "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+      "eventBody": {
+        "id": 5,
+        "participants": []
+      }
+    }
+  },
+  {
+    "name": "id with path characters",
+    "payload": {
+      "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+      "eventBody": {
+        "id": "../../users/me",
+        "participants": []
+      }
+    }
+  },
+  {
+    "name": "oversized subject",
+    "payload": {
+      "topicName": "v2.users.0f0c2a1e-0000-4000-8000-000000000101.conversations",
+      "eventBody": {
+        "id": "0f0c2a1e-0000-4000-8000-000000000004",
+        "participants": [
+          {
+            "id": "0f0c2a1e-0000-4000-8000-000000000044",
+            "purpose": "agent",
+            "userId": "0f0c2a1e-0000-4000-8000-000000000101",
+            "emails": [
+              {
+                "id": "0f0c2a1e-0000-4000-8000-000000000043",
+                "state": "alerting",
+                "subject": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "not an object",
+    "payload": "v2.users.x.conversations"
+  }
+]

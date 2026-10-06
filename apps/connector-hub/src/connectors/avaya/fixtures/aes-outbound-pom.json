@@ -1,0 +1,126 @@
+{
+  "name": "aes: POM outbound preview",
+  "participant": {
+    "platformUserId": "3001",
+    "platformInteractionId": "00001002011696179999"
+  },
+  "fixtures": [
+    {
+      "name": "POM preview delivered",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:101",
+        "source": "aes",
+        "event": "delivered",
+        "occurredAt": "2026-10-01T11:00:00.000Z",
+        "interactionId": "00001002011696179999",
+        "mediaType": "voice",
+        "ucid": "00001002011696179999",
+        "direction": "outbound",
+        "agent": {
+          "loginId": "3001",
+          "extension": "4001"
+        },
+        "dnis": "+905551112233",
+        "outbound": {
+          "system": "pom",
+          "campaign": "Renewal_Q4",
+          "list": "CL_Renewal",
+          "recordId": "98765",
+          "fields": {
+            "firstName": "Ay\u015fe",
+            "balance": 1250.5,
+            "tckn": "secret"
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "direction": "outbound",
+          "campaignRef": {
+            "kind": "campaign",
+            "externalId": "Renewal_Q4"
+          },
+          "attributes": {
+            "outbound.system": "pom",
+            "outbound.campaign": "Renewal_Q4",
+            "outbound.recordId": "98765",
+            "outbound.firstName": "Ay\u015fe",
+            "outbound.balance": 1250.5
+          }
+        }
+      ]
+    },
+    {
+      "name": "POM established",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:102",
+        "source": "aes",
+        "event": "established",
+        "occurredAt": "2026-10-01T11:00:09.000Z",
+        "interactionId": "00001002011696179999",
+        "mediaType": "voice",
+        "ucid": "00001002011696179999",
+        "direction": "outbound",
+        "agent": {
+          "loginId": "3001",
+          "extension": "4001"
+        },
+        "dnis": "+905551112233",
+        "outbound": {
+          "system": "pom",
+          "campaign": "Renewal_Q4",
+          "list": "CL_Renewal",
+          "recordId": "98765",
+          "fields": {
+            "firstName": "Ay\u015fe",
+            "balance": 1250.5,
+            "tckn": "secret"
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "POM cleared (no ACW)",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aes-1:103",
+        "source": "aes",
+        "event": "cleared",
+        "occurredAt": "2026-10-01T11:04:00.000Z",
+        "interactionId": "00001002011696179999",
+        "mediaType": "voice",
+        "ucid": "00001002011696179999",
+        "direction": "outbound",
+        "agent": {
+          "loginId": "3001",
+          "extension": "4001"
+        },
+        "dnis": "+905551112233",
+        "outbound": {
+          "system": "pom",
+          "campaign": "Renewal_Q4",
+          "list": "CL_Renewal",
+          "recordId": "98765",
+          "fields": {
+            "firstName": "Ay\u015fe",
+            "balance": 1250.5,
+            "tckn": "secret"
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

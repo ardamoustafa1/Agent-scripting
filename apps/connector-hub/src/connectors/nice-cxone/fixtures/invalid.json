@@ -1,0 +1,57 @@
+[
+  {
+    "payload": {}
+  },
+  {
+    "payload": {
+      "version": 2,
+      "platform": "nice-cxone"
+    }
+  },
+  {
+    "payload": {
+      "version": 1,
+      "platform": "unknown",
+      "event": {
+        "eventId": "nice-cxone-0",
+        "type": "interactionOffered",
+        "occurredAt": "2026-10-01T10:00:00.000Z",
+        "platformInteractionId": "contact-1",
+        "channel": "voice",
+        "direction": "inbound",
+        "agent": {
+          "id": "agent-1"
+        }
+      },
+      "routingId": "route-1",
+      "variables": {
+        "verbisOutcome": "pending",
+        "customerTier": "gold",
+        "privateField": "discard"
+      }
+    }
+  },
+  {
+    "payload": {
+      "version": 1,
+      "platform": "nice-cxone",
+      "event": {
+        "eventId": "nice-cxone-0",
+        "type": "interactionOffered",
+        "occurredAt": "2026-10-01T10:00:00.000Z",
+        "platformInteractionId": "contact-1",
+        "channel": "voice",
+        "direction": "inbound",
+        "agent": {
+          "id": "agent-1"
+        }
+      },
+      "routingId": "route-1",
+      "variables": {
+        "nested": {
+          "secret": "no"
+        }
+      }
+    }
+  }
+]

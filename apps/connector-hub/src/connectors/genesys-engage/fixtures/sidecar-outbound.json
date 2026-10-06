@@ -1,0 +1,165 @@
+{
+  "name": "sidecar: OCS outbound preview",
+  "participant": {
+    "platformUserId": "E1001",
+    "platformInteractionId": "006d02a8b1c3f002"
+  },
+  "fixtures": [
+    {
+      "name": "OCS preview dialing",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:2001",
+        "source": "tserver",
+        "event": "dialing",
+        "occurredAt": "2026-10-01T11:00:00.000Z",
+        "interactionId": "006d02a8b1c3f002",
+        "mediaType": "voice",
+        "callType": "Outbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "dnis": "+905551112233",
+        "userData": {
+          "GSW_RECORD_HANDLE": "77",
+          "GSW_CAMPAIGN_NAME": "Renewal_Q4",
+          "GSW_CALLING_LIST": "CL_Renewal",
+          "GSW_APPLICATION_ID": "118",
+          "GSW_PHONE": "+905551112233",
+          "GSW_ATTEMPTS": "1",
+          "CustomerId": "C-77",
+          "ContractEnd": "2026-12-31"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "direction": "outbound",
+          "campaignRef": {
+            "kind": "campaign",
+            "externalId": "Renewal_Q4"
+          },
+          "attributes": {
+            "customerId": "C-77",
+            "outbound.GSW_RECORD_HANDLE": "77",
+            "outbound.GSW_CAMPAIGN_NAME": "Renewal_Q4",
+            "outbound.GSW_PHONE": "+905551112233"
+          }
+        }
+      ]
+    },
+    {
+      "name": "outbound established",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:2002",
+        "source": "tserver",
+        "event": "established",
+        "occurredAt": "2026-10-01T11:00:09.000Z",
+        "interactionId": "006d02a8b1c3f002",
+        "mediaType": "voice",
+        "callType": "Outbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "dnis": "+905551112233",
+        "userData": {
+          "GSW_RECORD_HANDLE": "77",
+          "GSW_CAMPAIGN_NAME": "Renewal_Q4",
+          "GSW_CALLING_LIST": "CL_Renewal",
+          "GSW_APPLICATION_ID": "118",
+          "GSW_PHONE": "+905551112233",
+          "GSW_ATTEMPTS": "1",
+          "CustomerId": "C-77",
+          "ContractEnd": "2026-12-31"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "direction": "outbound"
+        }
+      ]
+    },
+    {
+      "name": "outbound released",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:2003",
+        "source": "tserver",
+        "event": "released",
+        "occurredAt": "2026-10-01T11:04:00.000Z",
+        "interactionId": "006d02a8b1c3f002",
+        "mediaType": "voice",
+        "callType": "Outbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "dnis": "+905551112233",
+        "userData": {
+          "GSW_RECORD_HANDLE": "77",
+          "GSW_CAMPAIGN_NAME": "Renewal_Q4",
+          "GSW_CALLING_LIST": "CL_Renewal",
+          "GSW_APPLICATION_ID": "118",
+          "GSW_PHONE": "+905551112233",
+          "GSW_ATTEMPTS": "1",
+          "CustomerId": "C-77",
+          "ContractEnd": "2026-12-31"
+        }
+      },
+      "expected": [
+        {
+          "type": "wrapupRequired"
+        }
+      ]
+    },
+    {
+      "name": "outbound done",
+      "payload": {
+        "schema": "verbis.engage.envelope.v1",
+        "eventId": "TServer_Main:2004",
+        "source": "tserver",
+        "event": "markedDone",
+        "occurredAt": "2026-10-01T11:04:30.000Z",
+        "interactionId": "006d02a8b1c3f002",
+        "mediaType": "voice",
+        "callType": "Outbound",
+        "agent": {
+          "employeeId": "E1001",
+          "userName": "ayse.k",
+          "agentLoginId": "5001",
+          "dn": "7001",
+          "place": "P7001"
+        },
+        "dnis": "+905551112233",
+        "userData": {
+          "GSW_RECORD_HANDLE": "77",
+          "GSW_CAMPAIGN_NAME": "Renewal_Q4",
+          "GSW_CALLING_LIST": "CL_Renewal",
+          "GSW_APPLICATION_ID": "118",
+          "GSW_PHONE": "+905551112233",
+          "GSW_ATTEMPTS": "1",
+          "CustomerId": "C-77",
+          "ContractEnd": "2026-12-31"
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

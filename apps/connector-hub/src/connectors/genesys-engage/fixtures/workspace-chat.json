@@ -1,0 +1,140 @@
+{
+  "name": "workspace: chat",
+  "participant": {
+    "platformUserId": "E1001",
+    "platformInteractionId": "0001KaC9WYKH3W01"
+  },
+  "fixtures": [
+    {
+      "name": "chat Invite",
+      "payload": {
+        "workspace": {
+          "agentRef": "E1001",
+          "agent": {
+            "employeeId": "E1001",
+            "userName": "ayse.k"
+          },
+          "message": {
+            "channel": "/workspace/v3/media",
+            "data": {
+              "messageType": "InteractionStateChanged",
+              "notificationType": "StateChange",
+              "interaction": {
+                "id": "0001KaC9WYKH3W01",
+                "mediatype": "chat",
+                "state": "Invite",
+                "queue": "Chat_Inbound",
+                "userData": [
+                  {
+                    "key": "FirstName",
+                    "type": "str",
+                    "value": "Can"
+                  },
+                  {
+                    "key": "CustomerId",
+                    "type": "str",
+                    "value": "C-5"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "channel": "chat",
+          "context": {
+            "channel": "chat",
+            "customerName": "Can"
+          }
+        }
+      ]
+    },
+    {
+      "name": "chat Accepted",
+      "payload": {
+        "workspace": {
+          "agentRef": "E1001",
+          "agent": {
+            "employeeId": "E1001",
+            "userName": "ayse.k"
+          },
+          "message": {
+            "channel": "/workspace/v3/media",
+            "data": {
+              "messageType": "InteractionStateChanged",
+              "notificationType": "StateChange",
+              "interaction": {
+                "id": "0001KaC9WYKH3W01",
+                "mediatype": "chat",
+                "state": "Accepted",
+                "queue": "Chat_Inbound",
+                "userData": [
+                  {
+                    "key": "FirstName",
+                    "type": "str",
+                    "value": "Can"
+                  },
+                  {
+                    "key": "CustomerId",
+                    "type": "str",
+                    "value": "C-5"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "chat Completed",
+      "payload": {
+        "workspace": {
+          "agentRef": "E1001",
+          "agent": {
+            "employeeId": "E1001",
+            "userName": "ayse.k"
+          },
+          "message": {
+            "channel": "/workspace/v3/media",
+            "data": {
+              "messageType": "InteractionStateChanged",
+              "notificationType": "StateChange",
+              "interaction": {
+                "id": "0001KaC9WYKH3W01",
+                "mediatype": "chat",
+                "state": "Completed",
+                "queue": "Chat_Inbound",
+                "userData": [
+                  {
+                    "key": "FirstName",
+                    "type": "str",
+                    "value": "Can"
+                  },
+                  {
+                    "key": "CustomerId",
+                    "type": "str",
+                    "value": "C-5"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

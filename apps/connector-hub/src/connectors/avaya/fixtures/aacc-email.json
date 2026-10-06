@@ -1,0 +1,151 @@
+{
+  "name": "aacc: CCMM email",
+  "participant": {
+    "platformUserId": "5001",
+    "platformInteractionId": "1000123"
+  },
+  "fixtures": [
+    {
+      "name": "CCMM email presented",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aacc-1:1",
+        "source": "aacc",
+        "event": "delivered",
+        "occurredAt": "2026-10-01T12:00:00.000Z",
+        "interactionId": "1000123",
+        "mediaType": "email",
+        "agent": {
+          "loginId": "5001",
+          "handle": "ayse.k"
+        },
+        "skill": "EM_Billing",
+        "intrinsics": {
+          "CustomerId": "C-7",
+          "Priority": "high",
+          "CardNo": "4111"
+        },
+        "email": {
+          "from": "musteri@example.test",
+          "to": ["fatura@acme.test"],
+          "subject": "Fatura itiraz\u0131",
+          "body": "Faturam hatal\u0131."
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "channel": "email",
+          "campaignRef": {
+            "kind": "skillset",
+            "externalId": "EM_Billing"
+          },
+          "attributes": {
+            "intrinsic.CustomerId": "C-7",
+            "intrinsic.Priority": "high"
+          },
+          "context": {
+            "channel": "email",
+            "subject": "Fatura itiraz\u0131",
+            "body": "Faturam hatal\u0131."
+          }
+        }
+      ]
+    },
+    {
+      "name": "email accepted",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aacc-1:2",
+        "source": "aacc",
+        "event": "established",
+        "occurredAt": "2026-10-01T12:00:30.000Z",
+        "interactionId": "1000123",
+        "mediaType": "email",
+        "agent": {
+          "loginId": "5001",
+          "handle": "ayse.k"
+        },
+        "skill": "EM_Billing",
+        "intrinsics": {
+          "CustomerId": "C-7",
+          "Priority": "high",
+          "CardNo": "4111"
+        },
+        "email": {
+          "from": "musteri@example.test",
+          "to": ["fatura@acme.test"],
+          "subject": "Fatura itiraz\u0131",
+          "body": "Faturam hatal\u0131."
+        }
+      },
+      "expected": [
+        {
+          "type": "connected"
+        }
+      ]
+    },
+    {
+      "name": "intrinsics changed (ignored)",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aacc-1:3",
+        "source": "aacc",
+        "event": "dataChanged",
+        "occurredAt": "2026-10-01T12:05:00.000Z",
+        "interactionId": "1000123",
+        "mediaType": "email",
+        "agent": {
+          "loginId": "5001",
+          "handle": "ayse.k"
+        },
+        "skill": "EM_Billing",
+        "intrinsics": {
+          "CustomerId": "C-7",
+          "Priority": "high",
+          "CardNo": "4111"
+        },
+        "email": {
+          "from": "musteri@example.test",
+          "to": ["fatura@acme.test"],
+          "subject": "Fatura itiraz\u0131",
+          "body": "Faturam hatal\u0131."
+        }
+      },
+      "expected": []
+    },
+    {
+      "name": "email closed",
+      "payload": {
+        "schema": "verbis.avaya.envelope.v1",
+        "eventId": "aacc-1:4",
+        "source": "aacc",
+        "event": "closed",
+        "occurredAt": "2026-10-01T12:20:00.000Z",
+        "interactionId": "1000123",
+        "mediaType": "email",
+        "agent": {
+          "loginId": "5001",
+          "handle": "ayse.k"
+        },
+        "skill": "EM_Billing",
+        "intrinsics": {
+          "CustomerId": "C-7",
+          "Priority": "high",
+          "CardNo": "4111"
+        },
+        "email": {
+          "from": "musteri@example.test",
+          "to": ["fatura@acme.test"],
+          "subject": "Fatura itiraz\u0131",
+          "body": "Faturam hatal\u0131."
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "name": "axp: voice engagement with hold and ACW",
+  "participant": {
+    "platformUserId": "ayse.k",
+    "platformInteractionId": "bffae854-9219-4cfc-9fd3-7125f2e76844"
+  },
+  "fixtures": [
+    {
+      "name": "MatchOffered",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-1",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "MatchOffered",
+          "id": "evt-1",
+          "agentId": "ag-ayse.k",
+          "engagementId": "bffae854-9219-4cfc-9fd3-7125f2e76844",
+          "channelId": "Voice",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support",
+          "customerIdentifier": "+905550000001"
+        }
+      },
+      "expected": [
+        {
+          "type": "interactionOffered",
+          "platformInteractionId": "bffae854-9219-4cfc-9fd3-7125f2e76844",
+          "channel": "voice",
+          "agent": {
+            "id": "ayse.k"
+          },
+          "campaignRef": {
+            "kind": "queue",
+            "externalId": "Q_Support"
+          },
+          "attributes": {
+            "axp.customerIdentifier": "+905550000001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "AgentParticipant ADDED",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:04.000Z",
+        "correlationId": "corr-2",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "AgentParticipant",
+          "id": "evt-2",
+          "agentId": "ag-ayse.k",
+          "engagementId": "bffae854-9219-4cfc-9fd3-7125f2e76844",
+          "channelId": "Voice",
+          "timestamp": "2026-10-01T14:00:04.000Z",
+          "queueId": "Q_Support",
+          "action": "ADDED"
+        }
+      },
+      "expected": [
+        {
+          "type": "connected",
+          "occurredAt": "2026-10-01T14:00:04.000Z"
+        }
+      ]
+    },
+    {
+      "name": "AgentParticipant HELD",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-3",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "AgentParticipant",
+          "id": "evt-3",
+          "agentId": "ag-ayse.k",
+          "engagementId": "bffae854-9219-4cfc-9fd3-7125f2e76844",
+          "channelId": "Voice",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support",
+          "action": "HELD"
+        }
+      },
+      "expected": [
+        {
+          "type": "held"
+        }
+      ]
+    },
+    {
+      "name": "AgentParticipant UNHELD",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-4",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "AgentParticipant",
+          "id": "evt-4",
+          "agentId": "ag-ayse.k",
+          "engagementId": "bffae854-9219-4cfc-9fd3-7125f2e76844",
+          "channelId": "Voice",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support",
+          "action": "UNHELD"
+        }
+      },
+      "expected": [
+        {
+          "type": "resumed"
+        }
+      ]
+    },
+    {
+      "name": "supervisor OBSERVING (ignored)",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-5",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "AgentParticipant",
+          "id": "evt-5",
+          "agentId": "ag-ayse.k",
+          "engagementId": "bffae854-9219-4cfc-9fd3-7125f2e76844",
+          "channelId": "Voice",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support",
+          "action": "OBSERVING"
+        }
+      },
+      "expected": []
+    },
+    {
+      "name": "AgentParticipant REMOVED (ACW)",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-6",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "AgentParticipant",
+          "id": "evt-6",
+          "agentId": "ag-ayse.k",
+          "engagementId": "bffae854-9219-4cfc-9fd3-7125f2e76844",
+          "channelId": "Voice",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support",
+          "action": "REMOVED"
+        }
+      },
+      "expected": [
+        {
+          "type": "wrapupRequired"
+        }
+      ]
+    },
+    {
+      "name": "AfterContactWorkActivated (same state, once)",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-7",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "AfterContactWorkActivated",
+          "id": "evt-7",
+          "agentId": "ag-ayse.k",
+          "engagementId": "bffae854-9219-4cfc-9fd3-7125f2e76844",
+          "channelId": "Voice",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support"
+        }
+      },
+      "expected": []
+    },
+    {
+      "name": "AfterContactWorkCompleted",
+      "payload": {
+        "family": "AGENT_ENGAGEMENT",
+        "accountId": "ACME01",
+        "subscriptionId": "sub-1",
+        "sentAt": "2026-10-01T14:00:00.000Z",
+        "correlationId": "corr-8",
+        "loginId": "ayse.k",
+        "body": {
+          "event": "AfterContactWorkCompleted",
+          "id": "evt-8",
+          "agentId": "ag-ayse.k",
+          "engagementId": "bffae854-9219-4cfc-9fd3-7125f2e76844",
+          "channelId": "Voice",
+          "timestamp": "2026-10-01T14:00:00.000Z",
+          "queueId": "Q_Support"
+        }
+      },
+      "expected": [
+        {
+          "type": "ended"
+        }
+      ]
+    }
+  ]
+}
