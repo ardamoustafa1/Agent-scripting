@@ -122,6 +122,7 @@
     "admin.simulator.create",
     "admin.simulator.description",
     "admin.simulator.empty",
+    "admin.simulator.error.capacity",
     "admin.simulator.error.disabled",
     "admin.simulator.error.generic",
     "admin.simulator.error.rejected",
@@ -363,8 +364,17 @@
     "adminWorkspace.workspace",
     "agent.desktop.back",
     "agent.desktop.callback",
+    "agent.desktop.channels.chat",
+    "agent.desktop.channels.email",
+    "agent.desktop.channels.messaging",
+    "agent.desktop.channels.sms",
+    "agent.desktop.channels.social",
+    "agent.desktop.channels.video",
+    "agent.desktop.channels.voice",
+    "agent.desktop.channels.whatsapp",
     "agent.desktop.close",
     "agent.desktop.completed",
+    "agent.desktop.confirmManualData",
     "agent.desktop.conflict",
     "agent.desktop.connection.connected",
     "agent.desktop.connection.connecting",
@@ -374,7 +384,12 @@
     "agent.desktop.context.customerId",
     "agent.desktop.context.customerName",
     "agent.desktop.continue",
+    "agent.desktop.continueWithoutData",
+    "agent.desktop.copySupportCode",
     "agent.desktop.customer",
+    "agent.desktop.dataSourceCircuit",
+    "agent.desktop.dataSourceFailed",
+    "agent.desktop.dataSourceTimeout",
     "agent.desktop.densities.comfortable",
     "agent.desktop.densities.compact",
     "agent.desktop.density",
@@ -384,6 +399,10 @@
     "agent.desktop.empty",
     "agent.desktop.ended",
     "agent.desktop.failed",
+    "agent.desktop.failure.authorization",
+    "agent.desktop.failure.network",
+    "agent.desktop.failure.script",
+    "agent.desktop.failure.storage",
     "agent.desktop.fontSize",
     "agent.desktop.held",
     "agent.desktop.history",
@@ -392,6 +411,7 @@
     "agent.desktop.keepDraft",
     "agent.desktop.knowledge",
     "agent.desktop.logout",
+    "agent.desktop.manualData",
     "agent.desktop.next",
     "agent.desktop.noMonitorSessions",
     "agent.desktop.notes",
@@ -431,7 +451,10 @@
     "agent.desktop.summary",
     "agent.desktop.supervisor",
     "agent.desktop.supervisorReadOnly",
+    "agent.desktop.supportCode",
+    "agent.desktop.supportCodeCopied",
     "agent.desktop.tab",
+    "agent.desktop.takeover",
     "agent.desktop.tenant",
     "agent.desktop.transcript",
     "agent.desktop.transferred",
@@ -1352,6 +1375,7 @@
     "designer.preview.saveScenario",
     "designer.preview.scenarioName",
     "designer.preview.scenarios",
+    "designer.preview.scenariosRequired",
     "designer.preview.simulation",
     "designer.preview.staleReport",
     "designer.preview.step",
@@ -1431,8 +1455,11 @@
     "designer.workspace.connected",
     "designer.workspace.continue",
     "designer.workspace.create",
+    "designer.workspace.createCampaign",
+    "designer.workspace.createCampaignHelp",
     "designer.workspace.createDescription",
     "designer.workspace.createFirstDraft",
+    "designer.workspace.createForbidden",
     "designer.workspace.createNextDraft",
     "designer.workspace.denied",
     "designer.workspace.deniedDetail",
@@ -1520,6 +1547,7 @@
     "designer.workspace.next",
     "designer.workspace.noAssignments",
     "designer.workspace.noAssignmentsDetail",
+    "designer.workspace.noCreateCampaign",
     "designer.workspace.noDescription",
     "designer.workspace.noLimit",
     "designer.workspace.noProvider",
@@ -1538,6 +1566,7 @@
     "designer.workspace.refreshError",
     "designer.workspace.retry",
     "designer.workspace.scope",
+    "designer.workspace.scopeMissing",
     "designer.workspace.scriptActions",
     "designer.workspace.search",
     "designer.workspace.searchLibrary",
@@ -1855,6 +1884,7 @@
     "admin.simulator.create",
     "admin.simulator.description",
     "admin.simulator.empty",
+    "admin.simulator.error.capacity",
     "admin.simulator.error.disabled",
     "admin.simulator.error.generic",
     "admin.simulator.error.rejected",
@@ -2096,8 +2126,17 @@
     "adminWorkspace.workspace",
     "agent.desktop.back",
     "agent.desktop.callback",
+    "agent.desktop.channels.chat",
+    "agent.desktop.channels.email",
+    "agent.desktop.channels.messaging",
+    "agent.desktop.channels.sms",
+    "agent.desktop.channels.social",
+    "agent.desktop.channels.video",
+    "agent.desktop.channels.voice",
+    "agent.desktop.channels.whatsapp",
     "agent.desktop.close",
     "agent.desktop.completed",
+    "agent.desktop.confirmManualData",
     "agent.desktop.conflict",
     "agent.desktop.connection.connected",
     "agent.desktop.connection.connecting",
@@ -2107,7 +2146,12 @@
     "agent.desktop.context.customerId",
     "agent.desktop.context.customerName",
     "agent.desktop.continue",
+    "agent.desktop.continueWithoutData",
+    "agent.desktop.copySupportCode",
     "agent.desktop.customer",
+    "agent.desktop.dataSourceCircuit",
+    "agent.desktop.dataSourceFailed",
+    "agent.desktop.dataSourceTimeout",
     "agent.desktop.densities.comfortable",
     "agent.desktop.densities.compact",
     "agent.desktop.density",
@@ -2117,6 +2161,10 @@
     "agent.desktop.empty",
     "agent.desktop.ended",
     "agent.desktop.failed",
+    "agent.desktop.failure.authorization",
+    "agent.desktop.failure.network",
+    "agent.desktop.failure.script",
+    "agent.desktop.failure.storage",
     "agent.desktop.fontSize",
     "agent.desktop.held",
     "agent.desktop.history",
@@ -2125,6 +2173,7 @@
     "agent.desktop.keepDraft",
     "agent.desktop.knowledge",
     "agent.desktop.logout",
+    "agent.desktop.manualData",
     "agent.desktop.next",
     "agent.desktop.noMonitorSessions",
     "agent.desktop.notes",
@@ -2164,7 +2213,10 @@
     "agent.desktop.summary",
     "agent.desktop.supervisor",
     "agent.desktop.supervisorReadOnly",
+    "agent.desktop.supportCode",
+    "agent.desktop.supportCodeCopied",
     "agent.desktop.tab",
+    "agent.desktop.takeover",
     "agent.desktop.tenant",
     "agent.desktop.transcript",
     "agent.desktop.transferred",
@@ -3085,6 +3137,7 @@
     "designer.preview.saveScenario",
     "designer.preview.scenarioName",
     "designer.preview.scenarios",
+    "designer.preview.scenariosRequired",
     "designer.preview.simulation",
     "designer.preview.staleReport",
     "designer.preview.step",
@@ -3164,8 +3217,11 @@
     "designer.workspace.connected",
     "designer.workspace.continue",
     "designer.workspace.create",
+    "designer.workspace.createCampaign",
+    "designer.workspace.createCampaignHelp",
     "designer.workspace.createDescription",
     "designer.workspace.createFirstDraft",
+    "designer.workspace.createForbidden",
     "designer.workspace.createNextDraft",
     "designer.workspace.denied",
     "designer.workspace.deniedDetail",
@@ -3253,6 +3309,7 @@
     "designer.workspace.next",
     "designer.workspace.noAssignments",
     "designer.workspace.noAssignmentsDetail",
+    "designer.workspace.noCreateCampaign",
     "designer.workspace.noDescription",
     "designer.workspace.noLimit",
     "designer.workspace.noProvider",
@@ -3271,6 +3328,7 @@
     "designer.workspace.refreshError",
     "designer.workspace.retry",
     "designer.workspace.scope",
+    "designer.workspace.scopeMissing",
     "designer.workspace.scriptActions",
     "designer.workspace.search",
     "designer.workspace.searchLibrary",
@@ -3468,7 +3526,7 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 786,
+  "literalKeyCount": 797,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
@@ -3536,19 +3594,15 @@
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 95
+      "line": 97
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 146
+      "line": 148
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 172
-    },
-    {
-      "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 217
+      "line": 174
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
@@ -3556,19 +3610,23 @@
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 231
+      "line": 221
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 232
+      "line": 233
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 239
+      "line": 234
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 249
+      "line": 241
+    },
+    {
+      "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+      "line": 251
     },
     {
       "file": "apps/admin-web/src/workspace/ai-page.tsx",
@@ -3775,24 +3833,28 @@
       "line": 235
     },
     {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 271
+      "file": "apps/agent-web/src/desktop/failure-notice.tsx",
+      "line": 18
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 298
+      "line": 324
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 332
+      "line": 365
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 424
+      "line": 389
     },
     {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 318
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 450
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 542
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
@@ -3800,31 +3862,39 @@
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 363
+      "line": 357
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 383
+      "line": 394
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 397
+      "line": 404
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 406
+      "line": 424
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 412
+      "line": 438
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 523
+      "line": 447
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 528
+      "line": 453
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 631
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 636
     },
     {
       "file": "apps/agent-web/src/launch/genesys-linked-page.tsx",
@@ -4036,19 +4106,23 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 172
+      "line": 176
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 302
+      "line": 189
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 325
+      "line": 309
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 337
+      "line": 332
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/release.tsx",
+      "line": 344
     },
     {
       "file": "apps/designer-web/src/lifecycle/templates.tsx",
@@ -4188,15 +4262,15 @@
     },
     {
       "file": "apps/designer-web/src/preview/regression-panel.tsx",
-      "line": 120
+      "line": 124
     },
     {
       "file": "apps/designer-web/src/preview/regression-panel.tsx",
-      "line": 129
+      "line": 137
     },
     {
       "file": "apps/designer-web/src/preview/regression-panel.tsx",
-      "line": 136
+      "line": 144
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
@@ -4252,7 +4326,11 @@
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
-      "line": 67
+      "line": 108
+    },
+    {
+      "file": "apps/designer-web/src/workspace/create-dialog.tsx",
+      "line": 173
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",

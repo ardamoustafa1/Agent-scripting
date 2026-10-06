@@ -48,6 +48,7 @@ describe('migrations', () => {
       '20261003150000_analytics',
       '20261003180000_ai',
       '20261003210000_observability',
+      '20261006103000_runtime_resilience',
     ]);
     expect(rows.every((row) => row.finished_at !== null && row.rolled_back_at === null)).toBe(true);
   });

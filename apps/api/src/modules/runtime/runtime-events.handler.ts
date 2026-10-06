@@ -18,14 +18,19 @@ export class RuntimeEventsHandler implements EventHandler {
     'verbis.runtime.session.changed.v1',
     'verbis.runtime.outcome.submitted.v1',
     'verbis.runtime.recording.requested.v1',
+    'verbis.runtime.connector.acknowledged.v1',
   ];
   constructor(
     @Inject(RuntimeGateway) private readonly gateway: RuntimeGateway,
     @Inject(RuntimeJobsService) private readonly jobs: RuntimeJobsService,
   ) {}
   async handle(event: EventEnvelope, tx: TransactionClient): Promise<void> {
-    await this.jobs.enqueue(event, tx);
-    if (event.type === 'verbis.runtime.session.changed.v1')
+    if (event.type !== 'verbis.runtime.connector.acknowledged.v1')
+      await this.jobs.enqueue(event, tx);
+    if (
+      event.type === 'verbis.runtime.session.changed.v1' ||
+      event.type === 'verbis.runtime.connector.acknowledged.v1'
+    )
       this.gateway.publish(event.tenantId, event.aggregate.id, event.payload);
   }
 }

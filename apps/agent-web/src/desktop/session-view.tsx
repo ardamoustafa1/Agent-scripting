@@ -384,7 +384,16 @@ function Interaction({
           </div>
         )}
         {s.dataFailure && (
-          <Alert tone="warning" title={t('agent.desktop.dataSourceFailed')}>
+          <Alert
+            tone="warning"
+            title={t(
+              s.dataFailure.failure.reason === 'timeout'
+                ? 'agent.desktop.dataSourceTimeout'
+                : s.dataFailure.failure.reason === 'circuit'
+                  ? 'agent.desktop.dataSourceCircuit'
+                  : 'agent.desktop.dataSourceFailed',
+            )}
+          >
             <p>
               {t('agent.desktop.supportCode')}: <code>{s.dataFailure.failure.correlationId}</code>
             </p>

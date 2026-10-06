@@ -1,0 +1,7 @@
+RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/connector-hub
+
+
+ Test Files  1 passed (1)
+      Tests  86 passed (86)
+   Start at  13:46:18
+   Duration  403ms (transform 43%, import 41%, tests 15%)

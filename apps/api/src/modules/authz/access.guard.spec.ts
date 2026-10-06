@@ -1,5 +1,5 @@
 import { Reflector } from '@nestjs/core';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { requestContext, type RequestContext } from '../../common/context/request-context.js';
 import { DomainError, ForbiddenError } from '../../common/errors/domain-errors.js';
@@ -173,5 +173,15 @@ describe('AccessGuard (CASL)', () => {
       ),
     ).toBe(true);
     await expect(run(g, 'legacyRead')).rejects.toBeInstanceOf(ForbiddenError);
+  });
+});
+
+it('fails closed visibly when a denied request cannot be audited', async () => {
+  const g = guard([role('agent')]);
+  const audit = (g as unknown as { audit: AuditService }).audit;
+  vi.spyOn(audit, 'record').mockRejectedValue(new Error('private database details'));
+  await expect(run(g, 'undeclared')).rejects.toMatchObject({
+    code: 'VERBIS_AUDIT_UNAVAILABLE',
+    detail: 'Security audit is unavailable',
   });
 });

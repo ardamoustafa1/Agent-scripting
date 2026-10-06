@@ -9,6 +9,7 @@ import { ForbiddenError, NotFoundError } from '../../common/errors/domain-errors
 import { NoResponseReplay } from '../../common/idempotency/idempotency.interceptor.js';
 import { ZParam, ZBody } from '../../common/validation/zod.js';
 import { TenantDb } from '../../infra/database/tenant-db.js';
+import { OwnTenantTransactions } from '../../infra/database/tenant-transaction.interceptor.js';
 import { ApiOperation, ApiResponse, ApiTag } from '../../openapi/metadata.js';
 import { AuditService } from '../audit/audit.service.js';
 import { RequirePermissions } from '../authz/permissions.js';
@@ -240,6 +241,7 @@ export class AgentDesktopController {
     });
     return this.runtime.view(id);
   }
+  @OwnTenantTransactions()
   @Post(':id/desktop/data-source')
   @HttpCode(200)
   @RequirePermissions('update:Session')
@@ -256,32 +258,45 @@ export class AgentDesktopController {
     @ZParam('id', UuidSchema) id: string,
     @ZBody(DataCall) input: z.infer<typeof DataCall>,
   ) {
-    const row = await this.runtime.row(id, true);
-    this.requireOwner(row.userId);
-    this.runtime.claim(row, input);
-    const source = this.runtime.document(row).dataSources.find((s) => s.id === input.sourceId);
-    if (!source) throw new NotFoundError('DataSource');
-    const record = await this.db.current().dataSource.findFirst({
-      where: {
-        tenantId: row.tenantId,
-        key: source.ref.replace(/^tenant-datasource:/, ''),
-        version: source.version,
-        deletedAt: null,
-      },
-      select: { id: true },
+    const context = requestContext.require();
+    const scoped = <T>(work: () => Promise<T>) =>
+      this.db.run(this.db.tenantId(), (tx) => requestContext.run({ ...context, tx }, work));
+    const prepared = await scoped(async () => {
+      const row = await this.runtime.row(id, true);
+      this.requireOwner(row.userId);
+      this.runtime.claim(row, input);
+      const source = this.runtime.document(row).dataSources.find((s) => s.id === input.sourceId);
+      if (!source) throw new NotFoundError('DataSource');
+      const record = await this.db.current().dataSource.findFirst({
+        where: {
+          tenantId: row.tenantId,
+          key: source.ref.replace(/^tenant-datasource:/, ''),
+          version: source.version,
+          deletedAt: null,
+        },
+        select: { id: true },
+      });
+      if (!record) throw new NotFoundError('Pinned DataSource');
+      return this.integrations.prepareAuthorized(record.id, id, {
+        input: input.input,
+        environment: 'prod',
+      });
     });
-    if (!record) throw new NotFoundError('Pinned DataSource');
-    const result = await this.integrations.executeAuthorized(record.id, id, {
-      input: input.input,
-      environment: 'prod',
+    // No request transaction or session row lock is held across upstream I/O.
+    const result = await this.integrations.executePrepared(prepared);
+    const view = await scoped(async () => {
+      const row = await this.runtime.row(id, true);
+      this.requireOwner(row.userId);
+      this.runtime.claim(row, input);
+      await this.runtime.recordActivity(id, {
+        type: 'datasource.called',
+        name: input.sourceId,
+        status: result.error ? 'failure' : 'success',
+        durationMs: Math.min(300000, Math.round(result.durationMs)),
+      });
+      return this.runtime.view(id);
     });
-    // Preserve the runtime hash-chain/debugger stream; analytics consumes the integration event only.
-    await this.runtime.recordActivity(id, {
-      type: 'datasource.called',
-      name: source.id,
-      status: 'success',
-      durationMs: Math.round(result.durationMs),
-    });
-    return { value: result.value, view: await this.runtime.view(id) };
+    if (result.value === undefined) throw this.integrations.failure(result.error);
+    return { value: result.value, view };
   }
 }

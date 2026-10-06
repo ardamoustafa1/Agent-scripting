@@ -1,4 +1,4 @@
-import { Inject, type OnApplicationShutdown, type OnModuleDestroy } from '@nestjs/common';
+import { Logger, Inject, type OnApplicationShutdown, type OnModuleDestroy } from '@nestjs/common';
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -9,9 +9,11 @@ import {
 import { createAdapter } from '@socket.io/redis-adapter';
 import { Namespace, type Socket } from 'socket.io';
 
+import { instruments } from '@verbis/observability';
+
 import { RedisService } from '../../infra/redis/redis.service.js';
 
-import { RuntimeRealtimeService, room } from './runtime-realtime.service.js';
+import { RuntimeRealtimeService, type RuntimeGrant, room } from './runtime-realtime.service.js';
 
 import type { Redis } from 'ioredis';
 
@@ -33,6 +35,8 @@ export class RuntimeGateway
   readonly #checks = new Map<string, ReturnType<typeof setInterval>>();
   readonly #clients: Redis[] = [];
   #ready = false;
+  readonly #observers = new Map<string, RuntimeGrant>();
+  readonly #logger = new Logger(RuntimeGateway.name);
   constructor(
     @Inject(RuntimeRealtimeService) private readonly realtime: RuntimeRealtimeService,
     @Inject(RedisService) private readonly redis: RedisService,
@@ -68,6 +72,10 @@ export class RuntimeGateway
         (client.handshake.auth as Record<string, unknown>)['ticket'],
         client.handshake.headers.origin,
       );
+      if (grant.supervisor) {
+        await this.realtime.observation(grant, 'started');
+        this.#observers.set(client.id, grant);
+      }
       await client.join(room(grant.tenantId, grant.sessionId));
       client.emit('runtime.resume', await this.realtime.resume(grant));
       if (!client.connected) return;
@@ -86,6 +94,13 @@ export class RuntimeGateway
     const timer = this.#checks.get(client.id);
     if (timer !== undefined) clearInterval(timer);
     this.#checks.delete(client.id);
+    const grant = this.#observers.get(client.id);
+    this.#observers.delete(client.id);
+    if (grant)
+      void this.realtime.observation(grant, 'stopped').catch(() => {
+        instruments.operationFailures.add(1, { operation: 'runtime.observation.audit' });
+        this.#logger.error('Observation stop audit unavailable');
+      });
   }
   publish(tenantId: string, sessionId: string, payload: Record<string, unknown>): void {
     if (!this.#ready) throw new Error('Runtime channel unavailable');

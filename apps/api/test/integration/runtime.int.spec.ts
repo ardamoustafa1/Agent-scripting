@@ -1,6 +1,7 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { createAbility } from '@verbis/authz';
+import { DataSourceRefSchema, ScriptDocumentSchema } from '@verbis/script-schema';
 import { surveyScript } from '@verbis/script-schema/fixtures';
 
 import { requestContext } from '../../src/common/context/request-context.js';
@@ -8,6 +9,9 @@ import { uuidv7 } from '../../src/common/crypto/uuid.js';
 import { TenantDb } from '../../src/infra/database/tenant-db.js';
 import { RedisService } from '../../src/infra/redis/redis.service.js';
 import { recomputeHash } from '../../src/modules/audit/core/audit-event.js';
+import { DefinitionSchema, PolicySchema } from '../../src/modules/integrations/engine/contracts.js';
+import { IntegrationEngineService } from '../../src/modules/integrations/integration-engine.service.js';
+import { AgentDesktopController } from '../../src/modules/runtime/agent-desktop.controller.js';
 import { RuntimeEngineService } from '../../src/modules/runtime/runtime-engine.service.js';
 import { RuntimeStateStore } from '../../src/modules/runtime/runtime-state.store.js';
 import { startApiProcess, type ApiProcess } from '../support/api-process.js';
@@ -88,6 +92,7 @@ async function fixture() {
     fn: () => Promise<T>,
     overrideTenant: TenantFixture = tenant,
     instance: NestFastifyApplication = app,
+    ownTransactions = false,
   ) {
     const rules = [{ action: 'manage' as const, subject: 'all' as const }];
     return requestContext.run(
@@ -98,6 +103,7 @@ async function fixture() {
         userAgent: 'fixture',
         principal: {
           type: 'user',
+          authMethod: 'sso',
           tenantId: overrideTenant.tenantId,
           id: overrideTenant.adminId,
           sessionId: bffId,
@@ -111,10 +117,12 @@ async function fixture() {
         },
       },
       () =>
-        instance.get(TenantDb).run(overrideTenant.tenantId, async (tx) => {
-          requestContext.require().tx = tx;
-          return fn();
-        }),
+        ownTransactions
+          ? fn()
+          : instance.get(TenantDb).run(overrideTenant.tenantId, async (tx) => {
+              requestContext.require().tx = tx;
+              return fn();
+            }),
     );
   }
   await run(() => engine.initialize(session.id));
@@ -483,4 +491,108 @@ describe('runtime PostgreSQL / Redis boundaries', () => {
       (await f.run(() => f.engine.view(f.session.id))).snapshot.variables['runtimeCounter'],
     ).toBeUndefined();
   });
+});
+
+it('allows a concurrent writer during slow upstream I/O and rejects the fenced late result', async () => {
+  const f = await fixture();
+  const row = await owner.session.findUniqueOrThrow({
+    where: { id: f.session.id },
+    include: { scriptVersion: true },
+  });
+  const document = ScriptDocumentSchema.parse(row.scriptVersion.document);
+  document.dataSources.push(
+    DataSourceRefSchema.parse({ id: 'lookup', ref: 'tenant-datasource:lookup', version: 1 }),
+  );
+  await owner.scriptVersion.update({
+    where: { id: row.scriptVersionId },
+    data: { document: JSON.parse(JSON.stringify(document)) as Record<string, never> },
+  });
+  await owner.session.update({
+    where: { id: row.id },
+    data: { decisionTrace: { preview: true, liveDataSources: true } },
+  });
+  await owner.dataSource.create({
+    data: {
+      tenantId: f.tenant.tenantId,
+      key: 'lookup',
+      protocol: 'rest',
+      definition: JSON.parse(
+        JSON.stringify(
+          DefinitionSchema.parse({ baseUrl: 'https://service.test', endpoint: '/lookup' }),
+        ),
+      ) as Record<string, never>,
+      policy: JSON.parse(
+        JSON.stringify(PolicySchema.parse({ allowedOrigins: ['https://service.test'] })),
+      ) as Record<string, never>,
+      secretRefs: [],
+      createdBy: 'fixture',
+      updatedBy: 'fixture',
+    },
+  });
+  const integration = app.get(IntegrationEngineService);
+  let signalStarted!: () => void;
+  const started = new Promise<void>((resolve) => {
+    signalStarted = resolve;
+  });
+  let finish!: () => void;
+  const waiting = new Promise<void>((resolve) => {
+    finish = resolve;
+  });
+  const spy = vi.spyOn(integration.executor, 'execute').mockImplementationOnce(async () => {
+    expect(requestContext.require().tx).toBeUndefined();
+    signalStarted();
+    await waiting;
+    return {
+      value: { ok: true },
+      trace: {
+        request: null,
+        response: null,
+        mapped: null,
+        durationMs: 250,
+        cached: false,
+        mock: false,
+        error: null,
+      },
+    };
+  });
+  const pending = f.run(
+    () =>
+      app
+        .get(AgentDesktopController)
+        .call(row.id, { ...f.claim, expectedSequence: 2, sourceId: 'lookup', input: {} }),
+    f.tenant,
+    app,
+    true,
+  );
+  const rejection = expect(pending).rejects.toMatchObject({
+    code: 'VERBIS_CONCURRENCY_VERSION_MISMATCH',
+  });
+  try {
+    await started;
+    await f.run(async () => {
+      await app.get(TenantDb).current().$executeRaw`SET LOCAL lock_timeout = '1000ms'`;
+      return f.engine.command(row.id, {
+        ...f.claim,
+        expectedSequence: 2,
+        command: { type: 'field', variable: 'runtimeCounter', value: 7 },
+      });
+    });
+  } finally {
+    finish();
+  }
+  try {
+    await rejection;
+  } finally {
+    spy.mockRestore();
+  }
+  const current = await owner.session.findUniqueOrThrow({ where: { id: row.id } });
+  expect(current.sequence).toBe(3);
+  expect(
+    await owner.sessionEvent.count({ where: { sessionId: row.id, type: 'datasource.called' } }),
+  ).toBe(0);
+  expect(
+    await owner.auditEvent.count({
+      where: { tenantId: f.tenant.tenantId, action: 'integration.datasource.executed' },
+    }),
+  ).toBe(1);
 });

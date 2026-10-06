@@ -691,3 +691,16 @@ describe('framing', () => {
     });
   });
 });
+
+it('deduplicates concurrent push intent creation in PostgreSQL across pipeline instances', async () => {
+  const i = await interaction(agentId);
+  const results = await Promise.all(
+    Array.from({ length: 5 }, () => createIntent(agentId, i.id, 'push')),
+  );
+  expect(new Set(results.map((result) => result.intentId)).size).toBe(1);
+  expect(
+    await owner.launchIntent.count({
+      where: { tenantId: a.tenantId, interactionId: i.id, userId: agentId },
+    }),
+  ).toBe(1);
+});

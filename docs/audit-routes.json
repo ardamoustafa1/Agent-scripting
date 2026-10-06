@@ -785,7 +785,7 @@
       "controller": "IntegrationsController",
       "handler": "create",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 76,
+      "line": 77,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -798,7 +798,7 @@
       "controller": "IntegrationsController",
       "handler": "introspection",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 220,
+      "line": 222,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -811,7 +811,7 @@
       "controller": "IntegrationsController",
       "handler": "preview",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 161,
+      "line": 162,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -824,7 +824,7 @@
       "controller": "IntegrationsController",
       "handler": "promote",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 120,
+      "line": 121,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -837,7 +837,7 @@
       "controller": "IntegrationsController",
       "handler": "approve",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 133,
+      "line": 134,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -850,7 +850,7 @@
       "controller": "IntegrationsController",
       "handler": "test",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 173,
+      "line": 174,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -863,7 +863,7 @@
       "controller": "IntegrationsController",
       "handler": "wsdl",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 200,
+      "line": 202,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -876,7 +876,7 @@
       "controller": "IntegrationsController",
       "handler": "draftPreview",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 61,
+      "line": 62,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1319,7 +1319,7 @@
       "controller": "IntegrationsController",
       "handler": "setSecret",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 142,
+      "line": 143,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1399,11 +1399,13 @@
       "controller": "AgentDesktopController",
       "handler": "call",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 243,
-      "decorators": [],
-      "strategy": "transaction-interceptor",
+      "line": 244,
+      "decorators": [
+        "OwnTenantTransactions"
+      ],
+      "strategy": "explicit",
       "auditEvidence": [
-        "apps/api/src/modules/audit/audit.interceptors.ts"
+        "apps/api/src/modules/audit/audit.service.ts"
       ]
     },
     {
@@ -1412,7 +1414,7 @@
       "controller": "AgentDesktopController",
       "handler": "recovery",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 195,
+      "line": 196,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1425,7 +1427,7 @@
       "controller": "AgentDesktopController",
       "handler": "failure",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 169,
+      "line": 170,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1438,7 +1440,7 @@
       "controller": "AgentDesktopController",
       "handler": "telemetry",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 132,
+      "line": 133,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1542,11 +1544,13 @@
       "controller": "IntegrationsController",
       "handler": "execute",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 183,
-      "decorators": [],
-      "strategy": "transaction-interceptor",
+      "line": 184,
+      "decorators": [
+        "OwnTenantTransactions"
+      ],
+      "strategy": "explicit",
       "auditEvidence": [
-        "apps/api/src/modules/audit/audit.interceptors.ts"
+        "apps/api/src/modules/audit/audit.service.ts"
       ]
     },
     {
@@ -1795,7 +1799,7 @@
       "controller": "IntegrationsController",
       "handler": "update",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 84,
+      "line": 85,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1821,7 +1825,7 @@
       "controller": "IntegrationsController",
       "handler": "rotate",
       "file": "apps/api/src/modules/integrations/integrations.controller.ts",
-      "line": 150,
+      "line": 151,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [

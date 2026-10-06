@@ -15,6 +15,7 @@ const definitions = {
   launch: () => meter().createCounter('verbis.launch.attempts'),
   anomaly: () => meter().createCounter('verbis.launch.anomalies'),
   outbox: () => meter().createCounter('verbis.outbox.events'),
+  operationFailures: () => meter().createCounter('verbis.operation.failures'),
   auditFailures: () => meter().createCounter('verbis.audit.verification.failures'),
   integrations: () => meter().createCounter('verbis.integration.calls'),
   integrationDuration: () => meter().createHistogram('verbis.integration.duration', { unit: 's' }),

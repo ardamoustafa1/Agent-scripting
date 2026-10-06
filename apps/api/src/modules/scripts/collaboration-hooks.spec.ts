@@ -28,9 +28,11 @@ afterEach(async () => {
   vi.restoreAllMocks();
   vi.useRealTimers();
 });
-function fixture(enabled = true) {
+function fixture(enabled = true, failListen = false) {
   vi.spyOn(Server.prototype, 'listen').mockImplementation(function (this: Server) {
-    return Promise.resolve(this.hocuspocus);
+    return failListen
+      ? Promise.reject(new Error('private bind details'))
+      : Promise.resolve(this.hocuspocus);
   });
   const grant: Grant = {
     tenantId: randomUUID(),
@@ -244,13 +246,13 @@ describe('collaboration authenticated document lifecycle', () => {
     expect(f.leases.release).toHaveBeenCalledWith('synthetic-lease', expect.any(String));
     await expect(f.hook('beforeHandleMessage', f.payload)).rejects.toThrow();
   });
-  it('checks active author permissions for every write and rejects newly published drafts', async () => {
+  it('checks newly published drafts at persistence before accepting a save', async () => {
     const f = fixture();
     await f.load();
     await f.hook('beforeHandleMessage', f.payload);
-    expect(f.tickets.validate).toHaveBeenCalledTimes(2);
+    expect(f.tickets.validate).toHaveBeenCalledTimes(1);
     f.version.state = 'published';
-    await expect(f.hook('beforeHandleMessage', f.payload)).rejects.toThrow();
+    await expect(f.service.persist(f.grant.documentName, f.document)).rejects.toThrow();
   });
   it('validates an actual Yjs update without mutating the live document', async () => {
     const f = fixture();
@@ -266,9 +268,9 @@ describe('collaboration authenticated document lifecycle', () => {
     const composed = structuredClone(minimalScript());
     composed.meta.name = 'Changed linked content';
     f.scripts.composeForCollaboration.mockResolvedValue(composed);
-    await expect(
-      f.hook('beforeSync', { ...f.payload, type: 2, payload: Y.encodeStateAsUpdate(f.document) }),
-    ).rejects.toThrow('Linked content');
+    await expect(f.service.persist(f.grant.documentName, f.document)).rejects.toThrow(
+      'Linked content',
+    );
   });
   it('flushes and snapshots before releasing the lease, and survives repeated closure', async () => {
     const f = fixture();
@@ -394,4 +396,23 @@ describe('collaboration presence ownership', () => {
     await expect(f.hook('beforeHandleMessage', f.payload)).rejects.toThrow();
     await f.hook('onDisconnect', f.payload);
   });
+});
+
+it('does not access Redis or tenant SQL for awareness/message authorization between periodic checks', async () => {
+  const f = fixture();
+  await f.load();
+  f.leases.renew.mockClear();
+  f.authorize.mockClear();
+  f.abilities.forPrincipal.mockClear();
+  for (let index = 0; index < 10; index++) await f.hook('beforeHandleMessage', f.payload);
+  expect(f.leases.renew).not.toHaveBeenCalled();
+  expect(f.authorize).not.toHaveBeenCalled();
+  expect(f.abilities.forPrincipal).not.toHaveBeenCalled();
+});
+
+it('marks collaboration unavailable when its listener fails', async () => {
+  const f = fixture(true, true);
+  await Promise.resolve();
+  await Promise.resolve();
+  expect(f.service.ready()).toBe(false);
 });

@@ -294,29 +294,23 @@ export class IntegrationEngineService {
   private reader(refs: readonly string[]) {
     return async (ref: string) => {
       if (!refs.includes(ref)) throw new ForbiddenError();
-      return this.db.run(this.db.tenantId(), async (tx) => {
+      const tenantId = this.db.tenantId();
+      const row = await this.db.run(tenantId, async (tx) => {
         const row = await tx.secret.findFirst({
-          where: { id: ref, tenantId: this.db.tenantId(), deletedAt: null },
+          where: { id: ref, tenantId, deletedAt: null },
           select: { id: true, ciphertext: true, keyVersion: true },
         });
         if (!row) throw new NotFoundError('Secret');
-        const value = await this.vault.decrypt(
-          this.db.tenantId(),
-          ref,
-          row.keyVersion,
-          row.ciphertext,
-        );
         await this.audit.record(tx, {
           action: 'integration.secret.used',
           target: { type: 'Secret', id: ref },
           after: { keyVersion: row.keyVersion },
         });
-        await tx.secret.update({
-          where: { id: ref, tenantId: this.db.tenantId() },
-          data: { lastUsedAt: new Date() },
-        });
-        return { value, version: row.keyVersion };
+        await tx.secret.update({ where: { id: ref, tenantId }, data: { lastUsedAt: new Date() } });
+        return row;
       });
+      const value = await this.vault.decrypt(tenantId, ref, row.keyVersion, row.ciphertext);
+      return { value, version: row.keyVersion };
     };
   }
   async draftPreview(body: z.infer<typeof SaveDataSourceSchema>, call: Call) {
@@ -405,6 +399,20 @@ export class IntegrationEngineService {
   }
   /** Server-only BFF bridge; ownership, active session, scoped permission and exact pin are checked below. */
   async executeAuthorized(id: string, sessionId: string, call: Call) {
+    const context = requestContext.require();
+    const prepared = await this.db.run(this.db.tenantId(), (tx) =>
+      requestContext.run({ ...context, tx }, () => this.prepareAuthorized(id, sessionId, call)),
+    );
+    const result = await this.executePrepared(prepared);
+    if (result.value === undefined) throw this.failure(result.error);
+    return result;
+  }
+  failure(error: string | null) {
+    return new DomainError('VERBIS_INTEGRATION_FAILED', undefined, [
+      { path: '/dataSource', message: error ?? 'INTEGRATION_FAILED' },
+    ]);
+  }
+  async prepareAuthorized(id: string, sessionId: string, call: Call) {
     const actor = this.actor();
     if (actor.type !== 'user' || !actor.sessionId) throw new UnauthenticatedError();
     const session = await this.db.current().session.findFirst({
@@ -438,13 +446,31 @@ export class IntegrationEngineService {
     const environment = z
       .enum(['dev', 'test', 'prod'])
       .parse(process.env['VERBIS_ENVIRONMENT'] ?? 'prod');
+    return {
+      actor,
+      source,
+      call: { ...call, environment },
+      refs: row.secretRefs,
+      origins: await this.origins(),
+      credentialVersion: await this.credentialVersion(row.secretRefs),
+      session,
+      row,
+      id,
+      sessionId,
+    };
+  }
+  async executePrepared(
+    prepared: Awaited<ReturnType<IntegrationEngineService['prepareAuthorized']>>,
+  ) {
+    const { actor, source, call, refs, origins, credentialVersion, session, row, id, sessionId } =
+      prepared;
     const result = await this.executor.execute(
       actor.tenantId,
       source,
-      { ...call, environment },
-      this.reader(row.secretRefs),
-      await this.origins(),
-      { sessionId, credentialVersion: await this.credentialVersion(row.secretRefs) },
+      call,
+      this.reader(refs),
+      origins,
+      { sessionId, credentialVersion },
     );
     await this.db.run(actor.tenantId, async (tx) => {
       await this.audit.record(tx, {
@@ -482,8 +508,7 @@ export class IntegrationEngineService {
           });
       }
     });
-    if (result.value === undefined) throw new DomainError('VERBIS_INTEGRATION_FAILED');
-    return { value: result.value, durationMs: result.trace.durationMs };
+    return { value: result.value, durationMs: result.trace.durationMs, error: result.trace.error };
   }
   /** Authoring simulation: exact saved pin, explicit TEST profile, server permission and audit. */
   async previewRuntimeCall(

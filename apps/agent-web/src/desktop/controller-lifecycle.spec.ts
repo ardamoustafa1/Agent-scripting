@@ -505,12 +505,12 @@ it('reconnects after a socket error, renews on resume, and prevents reconnect af
   await vi.advanceTimersByTimeAsync(3_000);
   expect(f.fetch).toHaveBeenCalledTimes(count);
 });
-it('refreshes a terminal session on its shorter timer without obtaining a writer', async () => {
+it('does not poll a terminal session or obtain a writer', async () => {
   vi.useFakeTimers();
   const f = fixture('expired');
   await f.controller.initialize();
   await vi.advanceTimersByTimeAsync(5_000);
-  expect(requests(f, '/state')).toHaveLength(1);
+  expect(requests(f, '/state')).toHaveLength(0);
   expect(requests(f, '/attach')).toHaveLength(0);
 });
 it('retains read-only authority when renewal omits the writer token and rejects writer commands', async () => {
@@ -820,4 +820,19 @@ it('pagehide release tolerates a network failure without losing the local draft'
     expect(requests(f, '/release')).toHaveLength(1);
   });
   expect(f.remove).not.toHaveBeenCalled();
+});
+
+it('receives terminal writeback acknowledgment through runtime push without polling', async () => {
+  vi.useFakeTimers();
+  const f = fixture();
+  await f.controller.initialize();
+  await f.controller.complete();
+  expect(f.controller.getSnapshot().writeback).toBe('queued');
+  socket.callbacks.get('runtime.event')?.();
+  await vi.advanceTimersByTimeAsync(0);
+  expect(f.controller.getSnapshot().writeback).toBe('success');
+  const count = requests(f, '/state').length;
+  await vi.advanceTimersByTimeAsync(60000);
+  expect(requests(f, '/state')).toHaveLength(count);
+  expect(socket.disconnect).toHaveBeenCalled();
 });

@@ -43,6 +43,7 @@ function fixture() {
     {},
     {},
     {},
+    { record: vi.fn().mockResolvedValue(undefined) },
   ] as unknown as ConstructorParameters<typeof RuntimeJobsService>;
   return new RuntimeJobsService(...args);
 }

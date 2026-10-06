@@ -74,6 +74,7 @@ function fixture() {
   };
   const tx = {
     scriptVersion: {
+      findFirstOrThrow: vi.fn().mockResolvedValue(version),
       findFirst: vi.fn().mockResolvedValue(version),
       findMany: vi.fn().mockResolvedValue([version]),
     },

@@ -8,6 +8,7 @@ import { ConflictError } from '../../common/errors/domain-errors.js';
 import { API_ENV, type ApiEnv } from '../../env.js';
 import { RedisService } from '../../infra/redis/redis.service.js';
 
+import { PaymentTokenSchema } from './domain/runtime.js';
 import { RuntimePorts, type SecureTokenVerifier } from './runtime-ports.js';
 
 const Profile = z.strictObject({
@@ -23,9 +24,7 @@ const Claims = z.strictObject({
   tenantId: z.uuid(),
   sessionId: z.uuid(),
   variable: z.string().max(128),
-  token: z
-    .string()
-    .regex(/^tok_(?=[A-Za-z0-9_-]*[A-Za-z_-])(?![A-Za-z0-9_-]*[0-9]{13})[A-Za-z0-9_-]{16,512}$/),
+  token: PaymentTokenSchema,
   jti: z.string().min(16).max(128),
   exp: z.number(),
   iat: z.number(),

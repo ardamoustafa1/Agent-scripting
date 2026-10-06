@@ -57,6 +57,6 @@ import { VersionLifecycleService } from './version-lifecycle.service.js';
         PackageKeys.from(env.PACKAGE_SIGNING_JWK, env.PACKAGE_TRUSTED_JWKS),
     },
   ],
-  exports: [ScriptsService, SharedScreensService],
+  exports: [ScriptsService, SharedScreensService, CollaborationService],
 })
 export class ScriptsModule {}

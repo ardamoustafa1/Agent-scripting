@@ -148,3 +148,11 @@ it('updates the autocomplete query variable while preserving selected values', a
   expect(f.write).not.toHaveBeenCalled();
   expect(f.runtime.store.variable('field')).toBe('');
 });
+
+it.each(['loading', 'error', 'idle'])('does not show empty results during %s', (status) => {
+  const f = mount('customerCard', { ds: 'customers' });
+  act(() => {
+    f.runtime.store.set('ds.customers', { status, loading: status === 'loading' });
+  });
+  expect(screen.queryByText(i18n.t('components.empty'))).toBeNull();
+});

@@ -1,5 +1,13 @@
-import { Inject, Injectable, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  type OnModuleDestroy,
+  type OnModuleInit,
+} from '@nestjs/common';
 import { Redis } from 'ioredis';
+
+import { instruments } from '@verbis/observability';
 
 import { type ApiEnv, API_ENV } from '../../env.js';
 
@@ -10,6 +18,14 @@ export abstract class CacheProbe {
 @Injectable()
 export class RedisService extends CacheProbe implements OnModuleInit, OnModuleDestroy {
   readonly client: Redis;
+  private readonly logger = new Logger(RedisService.name);
+  private lastErrorAt = -Infinity;
+  private reportFailure() {
+    instruments.operationFailures.add(1, { operation: 'redis.connection' });
+    if (Date.now() - this.lastErrorAt < 30_000) return;
+    this.lastErrorAt = Date.now();
+    this.logger.error('Redis connection unavailable');
+  }
 
   constructor(@Inject(API_ENV) env: ApiEnv) {
     super();
@@ -23,13 +39,15 @@ export class RedisService extends CacheProbe implements OnModuleInit, OnModuleDe
       keyPrefix: 'verbis:api:',
     });
     this.client.on('error', () => {
-      // Surfaced through readiness; avoid log floods while reconnecting.
+      this.reportFailure();
     });
   }
 
   onModuleInit(): void {
     // Background connect; ioredis keeps reconnecting. Failures surface through readiness.
-    this.client.connect().catch(() => undefined);
+    this.client.connect().catch(() => {
+      this.reportFailure();
+    });
   }
 
   async ping(): Promise<void> {

@@ -18,10 +18,31 @@ export function useLaunchOffers(
   useEffect(() => {
     if (!enabled) return;
     const closed = { value: false };
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    let attempt = 0;
     let socket: ReturnType<typeof io> | undefined;
-    void (async () => {
-      const session = await fetchAgentSession().catch(() => null);
-      if (session?.user.authMethod !== 'sso' || closed.value) return;
+    const connect = async () => {
+      let session;
+      try {
+        session = await fetchAgentSession();
+      } catch (error) {
+        if (closed.value) return;
+        setStatus('disconnected');
+        onFailure?.(
+          error instanceof LaunchApiError ? error : new LaunchApiError('VERBIS_HTTP_UNAVAILABLE'),
+        );
+        retry = setTimeout(
+          () => {
+            void connect();
+          },
+          Math.min(10000, 1000 * 2 ** Math.min(attempt++, 4)),
+        );
+        return;
+      }
+      if (session?.user.authMethod !== 'sso' || closed.value) {
+        if (!closed.value) setStatus('disconnected');
+        return;
+      }
       socket = io('/launch', {
         transports: ['websocket'],
         auth: (callback) => {
@@ -29,7 +50,14 @@ export function useLaunchOffers(
             .then((ticket) => {
               callback({ ticket });
             })
-            .catch(() => {
+            .catch((error: unknown) => {
+              if (closed.value) return;
+              setStatus('disconnected');
+              onFailure?.(
+                error instanceof LaunchApiError
+                  ? error
+                  : new LaunchApiError('VERBIS_HTTP_UNAVAILABLE'),
+              );
               callback({});
             });
         },
@@ -63,9 +91,11 @@ export function useLaunchOffers(
               );
           });
       });
-    })();
+    };
+    void connect();
     return () => {
       closed.value = true;
+      if (retry) clearTimeout(retry);
       socket?.disconnect();
     };
   }, [enabled, navigate, onFailure]);

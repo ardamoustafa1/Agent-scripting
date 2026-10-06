@@ -50,6 +50,7 @@ export class AgentError extends Error {
     readonly status: number,
     readonly code: string,
     readonly correlationId: string = crypto.randomUUID(),
+    readonly integrationError?: string,
   ) {
     super(code);
   }
@@ -88,6 +89,7 @@ export async function api<T>(
     const problem = z
       .object({
         code: z.string(),
+        errors: z.array(z.object({ path: z.string(), message: z.string() })).optional(),
         correlationId: z
           .string()
           .regex(/^[A-Za-z0-9_-]{1,128}$/)
@@ -98,6 +100,9 @@ export async function api<T>(
       response.status,
       problem.success ? problem.data.code : 'VERBIS_HTTP_UNAVAILABLE',
       problem.success ? (problem.data.correlationId ?? correlationId) : correlationId,
+      problem.success
+        ? problem.data.errors?.find((entry) => entry.path === '/dataSource')?.message
+        : undefined,
     );
   }
   const parsed = schema.safeParse(value);

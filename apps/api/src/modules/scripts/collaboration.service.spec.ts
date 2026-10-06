@@ -49,7 +49,15 @@ function fixture() {
     { validate: vi.fn().mockResolvedValue(undefined) } as unknown as LaunchRealtime,
     { forPrincipal: vi.fn().mockResolvedValue({ ability: {} }) } as unknown as AbilityFactory,
     { authorize } as unknown as TeamService,
-    { getVersion: vi.fn().mockResolvedValue(version), updateDraft } as unknown as ScriptsService,
+    {
+      getVersion: vi.fn().mockResolvedValue(version),
+      updateDraft,
+      composeForCollaboration: vi
+        .fn()
+        .mockImplementation((_tx: unknown, input: { document: unknown }) =>
+          Promise.resolve(input.document),
+        ),
+    } as unknown as ScriptsService,
     { record } as unknown as AuditService,
     { renew } as unknown as DraftLeaseService,
   );

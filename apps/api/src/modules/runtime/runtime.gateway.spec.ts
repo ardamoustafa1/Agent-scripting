@@ -13,6 +13,7 @@ describe('gateway lifecycle and reconnect', () => {
       consume: vi.fn().mockResolvedValue({ tenantId: 'tenant', sessionId: 'session' }),
       resume: vi.fn().mockResolvedValue({ sequence: 3, reset: false, events: [{ seq: 3 }] }),
       validate: vi.fn().mockResolvedValue(undefined),
+      observation: vi.fn().mockResolvedValue(undefined),
     };
     const publisher = {
       connect: vi.fn().mockResolvedValue(undefined),
@@ -86,5 +87,17 @@ describe('gateway lifecycle and reconnect', () => {
     expect(denied.join).not.toHaveBeenCalled();
     expect(denied.disconnect).toHaveBeenCalledWith(true);
     gateway.onModuleDestroy();
+  });
+  it('audits start and stop only once for a supervisor connection', async () => {
+    const f = await harness();
+    const grant = { tenantId: 'tenant', sessionId: 'session', supervisor: true };
+    f.realtime.consume.mockResolvedValue(grant);
+    const c = client('supervisor', 'ticket');
+    await f.gateway.handleConnection(c as unknown as Socket);
+    expect(f.realtime.observation).toHaveBeenCalledWith(grant, 'started');
+    f.gateway.handleDisconnect(c as unknown as Socket);
+    f.gateway.handleDisconnect(c as unknown as Socket);
+    expect(f.realtime.observation).toHaveBeenCalledWith(grant, 'stopped');
+    expect(f.realtime.observation).toHaveBeenCalledTimes(2);
   });
 });

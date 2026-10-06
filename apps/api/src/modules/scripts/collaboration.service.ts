@@ -3,13 +3,15 @@ import { createHash, randomUUID } from 'node:crypto';
 import { Server, type Document, type Connection } from '@hocuspocus/server';
 import {
   Inject,
+  Logger,
   Injectable,
   type OnApplicationBootstrap,
   type OnModuleDestroy,
 } from '@nestjs/common';
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
 
 import { initializeDocument, readDocument, Y } from '@verbis/collaboration';
+import { instruments } from '@verbis/observability';
 import { ScriptDocumentSchema } from '@verbis/script-schema';
 
 import { requestContext, systemContext } from '../../common/context/request-context.js';
@@ -57,6 +59,11 @@ const Presence = z.object({
 });
 @Injectable()
 export class CollaborationService implements OnApplicationBootstrap, OnModuleDestroy {
+  private readonly logger = new Logger(CollaborationService.name);
+  private listening = false;
+  ready() {
+    return !this.env.COLLABORATION_PORT || this.listening;
+  }
   private server: Server<Grant> | undefined;
   private timer: ReturnType<typeof setInterval> | undefined;
   private readonly clients = new Map<string, { grant: Grant; connection: Connection<Grant> }>();
@@ -208,36 +215,20 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
           throw error;
         }
       },
+      // Hocuspocus hooks require promises; authorization is handled on connect, periodically and at save.
+      // eslint-disable-next-line @typescript-eslint/require-await
       beforeHandleMessage: async ({ context, documentName }) => {
         const room = this.rooms.get(documentName);
         if (!room || room.frozen) throw new ForbiddenError();
-        await this.leases.renew(room.lease, this.owner);
-        await this.run(context, async () => {
-          const v = await this.team.authorize(context.scriptId, context.number, 'update');
-          if (v.state !== 'draft') throw new ForbiddenError();
-        });
         room.grant = context;
       },
+      // eslint-disable-next-line @typescript-eslint/require-await
       beforeSync: async ({ type, payload, document, documentName, context }) => {
         if (type === 0) return;
         const shadow = new Y.Doc();
         try {
           Y.applyUpdate(shadow, Y.encodeStateAsUpdate(document));
           Y.applyUpdate(shadow, payload);
-          const candidate = ScriptDocumentSchema.parse(readDocument(shadow));
-          await this.run(context, async () => {
-            const saved = await this.scripts.getVersion(context.scriptId, context.number);
-            const prepared = await this.scripts.composeForCollaboration(this.db.current(), {
-              document: candidate,
-              screens: saved.screens.map((s) => ({
-                sharedScreenId: s.sharedScreenId,
-                versionNumber: s.versionNumber,
-                mode: s.mode as 'linked' | 'detached',
-              })),
-            });
-            if (checksumOf(ScriptDocumentSchema.parse(prepared)) !== checksumOf(candidate))
-              throw new ForbiddenError('Linked content cannot be changed in this room');
-          });
           if (Y.encodeStateAsUpdate(shadow).byteLength > 2 * 1024 * 1024)
             throw new ForbiddenError();
         } finally {
@@ -287,9 +278,17 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
         this.rooms.delete(documentName);
       },
     });
-    void this.server.listen().catch(() => {
-      this.server = undefined;
-    });
+    void this.server
+      .listen()
+      .then(() => {
+        this.listening = true;
+      })
+      .catch(() => {
+        this.listening = false;
+        this.server = undefined;
+        this.logger.error('Collaboration listener unavailable');
+        instruments.operationFailures.add(1, { operation: 'collaboration.listen' });
+      });
     this.timer = setInterval(() => {
       for (const [name, room] of this.rooms) {
         void this.leases.renew(room.lease, this.owner).catch(() => {
@@ -340,6 +339,17 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
                 'Draft changed outside collaboration',
               );
             await this.team.authorize(room.grant.scriptId, room.grant.number, 'update');
+            const candidate = ScriptDocumentSchema.parse(content);
+            const prepared = await this.scripts.composeForCollaboration(this.db.current(), {
+              document: candidate,
+              screens: current.screens.map((s) => ({
+                sharedScreenId: s.sharedScreenId,
+                versionNumber: s.versionNumber,
+                mode: s.mode as 'linked' | 'detached',
+              })),
+            });
+            if (checksumOf(ScriptDocumentSchema.parse(prepared)) !== checksumOf(candidate))
+              throw new ForbiddenError('Linked content cannot be changed in this room');
             const saved = await this.scripts.updateDraft(
               room.grant.scriptId,
               room.grant.number,
@@ -413,11 +423,14 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
     try {
       await next;
     } catch (error) {
+      instruments.operationFailures.add(1, { operation: 'collaboration.persist' });
+      this.logger.warn('Collaboration document save refused');
       const room = this.rooms.get(name);
       const invalid =
-        error instanceof DomainError &&
-        (error.code === 'VERBIS_SCRIPT_DOCUMENT_INVALID' ||
-          error.code === 'VERBIS_SCREEN_COMPOSITION_CONFLICT');
+        error instanceof ZodError ||
+        (error instanceof DomainError &&
+          (error.code === 'VERBIS_SCRIPT_DOCUMENT_INVALID' ||
+            error.code === 'VERBIS_SCREEN_COMPOSITION_CONFLICT'));
       if (room && !invalid) room.frozen = true;
       document.broadcastStateless(JSON.stringify({ type: invalid ? 'invalid' : 'conflict' }));
       throw error;

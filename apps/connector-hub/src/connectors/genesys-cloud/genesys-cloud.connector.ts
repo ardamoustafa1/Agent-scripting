@@ -80,6 +80,7 @@ export class GenesysCloudConnector implements Connector {
   readonly #resync = new Set<string>();
   #channels: NotificationChannel[] = [];
   #draining = false;
+  #drainRetry: { handle: unknown } | undefined;
   #ctx: ConnectorContext | undefined;
   #config: GenesysCloudConfig | undefined;
   #client: GenesysCloudClient | undefined;
@@ -139,6 +140,8 @@ export class GenesysCloudConnector implements Connector {
     this.#state.clear();
     this.#conversations.clear();
     this.#holds.clear();
+    if (this.#drainRetry) this.#scheduler().clearTimeout(this.#drainRetry.handle);
+    this.#drainRetry = undefined;
     this.#pending.length = 0;
     this.#resync.clear();
     return Promise.resolve();
@@ -320,14 +323,27 @@ export class GenesysCloudConnector implements Connector {
     if (this.#pending.length >= MAX_PENDING) {
       const dropped = this.#pending.shift();
       const id = (dropped as { eventBody?: { id?: unknown } } | undefined)?.eventBody?.id;
-      if (typeof id === 'string') this.#resync.add(id);
+      if (typeof id === 'string') {
+        this.#resync.add(id);
+        if (this.#resync.size > MAX_TRACKED)
+          this.#resync.delete(this.#resync.values().next().value ?? '');
+      }
     }
     this.#pending.push(frame);
     void this.#drain();
   }
 
+  #scheduleDrain(attempt: number, delay: number): void {
+    if (this.#drainRetry) return;
+    const scheduled = { handle: undefined as unknown };
+    this.#drainRetry = scheduled;
+    scheduled.handle = this.#scheduler().setTimeout(() => {
+      this.#drainRetry = undefined;
+      void this.#drain(attempt);
+    }, delay);
+  }
   async #drain(attempt = 0): Promise<void> {
-    if (this.#draining) return;
+    if (this.#draining || this.#drainRetry) return;
     this.#draining = true;
     try {
       while (this.#ctx !== undefined && this.#pending.length > 0) {
@@ -337,19 +353,25 @@ export class GenesysCloudConnector implements Connector {
           if (error instanceof BackpressureError) {
             const delay = Math.min(5_000, 100 * 2 ** attempt);
             this.#draining = false;
-            this.#scheduler().setTimeout(() => void this.#drain(attempt + 1), delay);
+            this.#scheduleDrain(attempt + 1, delay);
             return;
           }
         }
         this.#pending.shift();
       }
       for (const id of [...this.#resync]) {
-        this.#resync.delete(id);
-        const conversation = await this.#fetchConversation(id).catch(() => undefined);
-        if (conversation !== undefined)
-          await this.ingest({ topicName: 'resync', eventBody: conversation }).catch(
-            () => undefined,
+        try {
+          const conversation = await this.#fetchConversation(id);
+          await this.ingest({ topicName: 'resync', eventBody: conversation });
+          this.#resync.delete(id);
+        } catch {
+          this.#ctx?.logger.warn('Conversation resync deferred');
+          this.#scheduleDrain(
+            Math.min(attempt + 1, 6),
+            Math.min(10000, 1000 * 2 ** Math.min(attempt, 4)),
           );
+          break;
+        }
       }
     } finally {
       this.#draining = false;

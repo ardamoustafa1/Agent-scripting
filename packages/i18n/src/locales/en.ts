@@ -1613,6 +1613,8 @@ export const en = {
       copySupportCode: 'Copy support code',
       supportCodeCopied: 'Support code copied',
       takeover: 'Take over in this tab',
+      dataSourceTimeout: 'The data source timed out. Retry or use an allowed recovery option.',
+      dataSourceCircuit: 'The data source is temporarily unavailable. Try again shortly.',
       dataSourceFailed:
         'The data source failed. Retry or use the fallback permitted by this script.',
       continueWithoutData: 'Continue without data',

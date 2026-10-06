@@ -87,10 +87,17 @@ export class IntegrationExecutor {
       backoff: new ExponentialBackoff({ initialDelay: 100, maxDelay: 1000 }),
     });
     const policy = wrap(
-      bulkhead(source.policy.concurrency, 0),
+      timeout(
+        Math.min(
+          120_000,
+          source.policy.timeoutMs * (source.policy.retries + 2) + 1000 * source.policy.retries,
+        ),
+        TimeoutStrategy.Aggressive,
+      ),
+      bulkhead(source.policy.concurrency, source.policy.concurrency),
       breaker,
-      timeout(source.policy.timeoutMs, TimeoutStrategy.Aggressive),
       retries,
+      timeout(source.policy.timeoutMs, TimeoutStrategy.Aggressive),
     );
     return { policy, breaker };
   }
@@ -105,7 +112,9 @@ export class IntegrationExecutor {
     const started = performance.now();
     const key = `${tenant}:${source.id}:${source.version}:${call.environment}`;
     const stats = this.counters.get(key) ?? { calls: 0, errors: 0, durations: [] };
+    this.counters.delete(key);
     this.counters.set(key, stats);
+    if (this.counters.size > 1000) this.counters.delete(this.counters.keys().next().value ?? '');
     stats.calls++;
     let wire: WireRequest | undefined;
     let raw: unknown = null;
@@ -163,13 +172,17 @@ export class IntegrationExecutor {
           source.definition.method === 'GET';
         const ck = `${cacheKey(tenant, source, call, options.sessionId ?? 'designer')}:${options.credentialVersion ?? ''}`;
         if (canCache) {
-          const stored = await this.cache.get(ck).catch(() => null);
+          const stored = await this.cache.get(ck).catch(() => {
+            instruments.operationFailures.add(1, { operation: 'integration.cache.read' });
+            return null;
+          });
           if (stored !== null) {
             try {
               const cached: unknown = JSON.parse(stored);
               validateSchema(source.definition.outputSchema, cached);
               return { value: cached, trace: trace(cached, null, true) };
             } catch {
+              instruments.operationFailures.add(1, { operation: 'integration.cache.invalid' });
               // Cache is best effort; corrupt or obsolete entries must not block a live read.
             }
           }
@@ -177,9 +190,13 @@ export class IntegrationExecutor {
         let policies = this.policies.get(key);
         if (!policies) {
           policies = this.makePolicy(source);
-          if (this.policies.size > 1000) this.policies.clear();
+          if (this.policies.size >= 1000)
+            this.policies.delete(this.policies.keys().next().value ?? '');
           this.policies.set(key, policies);
         }
+        // Touch only the used policy; eviction preserves other tenants' breaker state.
+        this.policies.delete(key);
+        this.policies.set(key, policies);
         const profile = source.definition.profiles[call.environment];
         const base = new URL(profile?.baseUrl ?? source.definition.baseUrl);
         const auth = profile?.auth ?? source.definition.auth;
@@ -274,7 +291,9 @@ export class IntegrationExecutor {
         if (canCache)
           await this.cache
             .set(ck, JSON.stringify(result), source.policy.cacheTtlSeconds)
-            .catch(() => undefined);
+            .catch(() => {
+              instruments.operationFailures.add(1, { operation: 'integration.cache.write' });
+            });
       }
       validateSchema(source.definition.outputSchema, result);
       return { value: result, trace: trace(result, null) };
@@ -296,7 +315,6 @@ export class IntegrationExecutor {
         ((error instanceof IntegrationError && error.retryable) ||
           error instanceof TaskCancelledError ||
           error instanceof BrokenCircuitError ||
-          error instanceof TaskCancelledError ||
           error instanceof BulkheadRejectedError) &&
         source.policy.fallback !== undefined
       ) {

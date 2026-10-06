@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Layers3, Radio, Settings2, LogOut } from 'lucide-react';
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { io } from 'socket.io-client';
 import { z } from 'zod';
 
 import { AdminBrandSchema } from '@verbis/shared-types';
@@ -311,7 +312,7 @@ export function AgentWorkspace() {
         {launchFailure && <FailureNotice failure={launchFailure} />}
         {logoutFailed && <Alert tone="danger" title={t('agent.desktop.failed')} />}
         {supervisor ? (
-          <Supervisor identity={key.join(':')} />
+          <Supervisor identity={key.join(':')} csrf={session.csrfToken} />
         ) : ids.length && vault ? (
           <main id="agent-interactions">
             <div className="ag-tabs" role="tablist" aria-label={t('agent.desktop.interactions')}>
@@ -531,20 +532,87 @@ function SignIn() {
     </AccessLayout>
   );
 }
-function Supervisor({ identity }: { identity: string }) {
+function Supervisor({ identity, csrf }: { identity: string; csrf: string }) {
   const { t } = useTranslation();
+  const client = useQueryClient();
+  const [connected, setConnected] = useState(false);
   const [watch, setWatch] = useState('');
   const list = useQuery({
     queryKey: ['agent', identity, 'supervisor'],
     queryFn: () => api('/v1/supervisor/sessions?limit=50&sort=-startedAt', Sessions),
-    refetchInterval: 5000,
+    refetchInterval: () =>
+      watch &&
+      ['completed', 'abandoned', 'expired'].includes(
+        client.getQueryData<View>(['agent', identity, 'supervisor', watch])?.state ?? '',
+      )
+        ? false
+        : 30000,
   });
   const state = useQuery({
     queryKey: ['agent', identity, 'supervisor', watch],
     queryFn: () => api(`/v1/supervisor/sessions/${watch}/state`, View),
     enabled: !!watch,
-    refetchInterval: 2000,
+    refetchInterval: (query) =>
+      ['completed', 'abandoned', 'expired'].includes(query.state.data?.state ?? '') || connected
+        ? false
+        : 10000,
   });
+  useEffect(() => {
+    if (!watch) return;
+    let closed = false;
+    const socket = io('/runtime', {
+      transports: ['websocket'],
+      auth: (callback) => {
+        void api(
+          `/v1/supervisor/sessions/${watch}/socket-ticket`,
+          z.object({ ticket: z.string() }),
+          csrf,
+          { afterSequence: 0 },
+        )
+          .then(({ ticket }) => {
+            if (!closed) callback({ ticket });
+          })
+          .catch(() => {
+            if (!closed) callback({});
+          });
+      },
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 10000,
+    });
+    socket.on('connect', () => {
+      setConnected(true);
+    });
+    socket.on('disconnect', () => {
+      setConnected(false);
+    });
+    socket.on('connect_error', () => {
+      setConnected(false);
+    });
+    socket.on('runtime.resume', (input: unknown) => {
+      const parsed = z.object({ snapshot: View }).safeParse(input);
+      if (parsed.success)
+        client.setQueryData(['agent', identity, 'supervisor', watch], parsed.data.snapshot);
+    });
+    socket.on('runtime.event', () => {
+      void client.invalidateQueries(
+        {
+          queryKey: ['agent', identity, 'supervisor', watch],
+          exact: true,
+        },
+        { cancelRefetch: false },
+      );
+      void client.invalidateQueries({ queryKey: ['agent', identity, 'supervisor'], exact: true });
+    });
+    socket.on('runtime.error', () => {
+      setConnected(false);
+      socket.disconnect();
+    });
+    return () => {
+      closed = true;
+      setConnected(false);
+      socket.disconnect();
+    };
+  }, [watch, identity, csrf, client]);
   return (
     <main className="ag-supervisor">
       <h1>{t('agent.desktop.supervisor')}</h1>

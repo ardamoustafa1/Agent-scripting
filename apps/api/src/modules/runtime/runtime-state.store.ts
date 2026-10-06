@@ -1,21 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { instruments } from '@verbis/observability';
+
 import { RedisService } from '../../infra/redis/redis.service.js';
 
-import { SnapshotSchema, type RuntimeSnapshot, emptySnapshot } from './domain/runtime.js';
+import {
+  PaymentTokenSchema,
+  SnapshotSchema,
+  type RuntimeSnapshot,
+  emptySnapshot,
+} from './domain/runtime.js';
 import { RuntimeCipher } from './runtime-cipher.js';
 
 @Injectable()
 export class RuntimeStateStore {
-  readonly #secure = new Map<
-    string,
-    {
-      sequence: number;
-      generation: number;
-      expiresAt: number;
-      values: RuntimeSnapshot['variables'];
-    }
-  >();
   constructor(
     @Inject(RedisService) private readonly redis: RedisService,
     @Inject(RuntimeCipher) private readonly keys: RuntimeCipher,
@@ -40,7 +38,6 @@ export class RuntimeStateStore {
   }
   async evict(tenantId: string, id: string): Promise<void> {
     const slot = this.slot(tenantId, id);
-    this.#secure.delete(slot);
     await this.redis.client.del(slot);
   }
   async read(
@@ -59,38 +56,13 @@ export class RuntimeStateStore {
           snapshot: unknown;
         };
         if (record.sequence === sequence && (record.generation ?? record.sequence) === generation)
-          return this.withSecure(
-            this.slot(tenantId, id),
-            sequence,
-            SnapshotSchema.parse(record.snapshot),
-            generation,
-          );
+          return SnapshotSchema.parse(record.snapshot);
       }
     } catch {
+      instruments.operationFailures.add(1, { operation: 'runtime.cache.read' });
       /* PostgreSQL is authoritative; an unavailable hot cache never prevents recovery. */
     }
-    return this.withSecure(
-      this.slot(tenantId, id),
-      sequence,
-      this.open(tenantId, id, persisted),
-      generation,
-    );
-  }
-  withSecure(
-    slot: string,
-    sequence: number,
-    snapshot: RuntimeSnapshot,
-    generation = sequence,
-  ): RuntimeSnapshot {
-    const local = this.#secure.get(slot);
-    if (
-      local !== undefined &&
-      local.expiresAt > Date.now() &&
-      local.sequence === sequence &&
-      local.generation === generation
-    )
-      snapshot.variables = { ...snapshot.variables, ...local.values };
-    return snapshot;
+    return this.open(tenantId, id, persisted);
   }
   async write(
     tenantId: string,
@@ -101,25 +73,15 @@ export class RuntimeStateStore {
     generation = sequence,
   ): Promise<void> {
     const slot = this.slot(tenantId, id);
-    for (const [key, value] of this.#secure)
-      if (value.expiresAt <= Date.now()) this.#secure.delete(key);
-    const values = Object.fromEntries(
-      Object.entries(snapshot.variables).filter(([key]) => secureKeys.includes(key)),
-    );
-    if (Object.keys(values).length > 0) {
-      if (this.#secure.size >= 10_000 && !this.#secure.has(slot))
-        throw new Error('Secure runtime memory capacity exceeded');
-      this.#secure.set(slot, { sequence, generation, expiresAt: Date.now() + 60_000, values });
-    } else this.#secure.delete(slot);
-    const cacheSnapshot = {
-      ...snapshot,
-      variables: Object.fromEntries(
-        Object.entries(snapshot.variables).filter(([key]) => !secureKeys.includes(key)),
-      ),
-    };
+    // Only verified hosted-capture token references are permitted for payment variables.
+    for (const key of secureKeys) {
+      const value = snapshot.variables[key];
+      if (value !== undefined && !PaymentTokenSchema.safeParse(value).success)
+        throw new Error('Invalid payment token reference');
+    }
     await this.redis.client.set(
       slot,
-      this.keys.seal(JSON.stringify({ sequence, generation, snapshot: cacheSnapshot }), slot),
+      this.keys.seal(JSON.stringify({ sequence, generation, snapshot }), slot),
       'EX',
       3600,
     );

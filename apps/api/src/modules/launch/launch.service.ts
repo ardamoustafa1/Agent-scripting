@@ -99,6 +99,26 @@ export class LaunchService {
         await this.activeUser(tx, tenantId, input.userId);
         const denial = checkInteraction(interaction, input.userId);
         if (denial !== undefined) throw new LaunchDeniedError(denial);
+        if (input.delivery === 'push') {
+          // Cross-replica/restart dedupe; serialize only this interaction/user pair.
+          await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`${tenantId}:${input.interactionId}:${input.userId}`}, 0))`;
+          const prior = await tx.launchIntent.findFirst({
+            where: {
+              tenantId,
+              interactionId: input.interactionId,
+              userId: input.userId,
+              flow: 's2s',
+              OR: [{ state: 'redeemed' }, { state: 'pending', expiresAt: { gt: this.#now() } }],
+            },
+            select: { id: true, expiresAt: true },
+          });
+          if (prior)
+            return {
+              intentId: prior.id,
+              expiresAt: prior.expiresAt.toISOString(),
+              delivery: 'push' as const,
+            };
+        }
         const { intentId, code, expiresAt } = await this.insertIntent(tx, {
           tenantId,
           userId: input.userId,

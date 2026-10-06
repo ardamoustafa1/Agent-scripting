@@ -125,6 +125,10 @@ export class RuntimeRealtimeService {
         }),
     );
   }
+  async observation(grant: RuntimeGrant, phase: 'started' | 'stopped') {
+    if (!grant.supervisor) return;
+    return this.inContext(grant, () => this.engine.observation(grant.sessionId, phase));
+  }
   async resume(grant: RuntimeGrant) {
     return this.inContext(grant, async () => {
       const view = await this.engine.view(grant.sessionId, grant.supervisor);

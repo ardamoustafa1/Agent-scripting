@@ -349,11 +349,14 @@ describe('integration executor', () => {
     ds.policy.timeoutMs = 100;
     const executor = new IntegrationExecutor(cache, transport);
     const first = executor.execute('tenant-a', ds, call, secret, ['https://service.test']);
+    const queued = executor.execute('tenant-a', ds, call, secret, ['https://service.test']);
+    await Promise.resolve();
     expect(
       (await executor.execute('tenant-a', ds, call, secret, ['https://service.test'])).trace.error,
     ).toBe('BULKHEAD_FULL');
-    await vi.advanceTimersByTimeAsync(101);
+    await vi.advanceTimersByTimeAsync(250);
     expect((await first).trace.error).toBe('TIMEOUT');
+    expect((await queued).trace.error).toBe('TIMEOUT');
   });
   it('validates fallback and never falls back on SSRF failures', async () => {
     const ds = source();
@@ -509,4 +512,45 @@ it('models bounded delay scenarios using an injected fake timer, without transpo
   await vi.advanceTimersByTimeAsync(100);
   expect((await pending).value).toEqual({ ok: true });
   expect(transport).not.toHaveBeenCalled();
+});
+
+it('retries a timed-out attempt with a fresh per-attempt deadline', async () => {
+  vi.useFakeTimers();
+  const transport = vi
+    .fn<Transport>()
+    .mockImplementationOnce(() => new Promise(() => undefined))
+    .mockResolvedValue(good);
+  const ds = source();
+  ds.policy.timeoutMs = 200;
+  ds.policy.retries = 1;
+  const promise = new IntegrationExecutor(cache, transport).execute(
+    'retry-tenant',
+    ds,
+    call,
+    secret,
+    ['https://service.test'],
+  );
+  await vi.advanceTimersByTimeAsync(1500);
+  expect((await promise).value).toEqual({ ok: true });
+  expect(transport).toHaveBeenCalledTimes(2);
+});
+
+it('evicts the least recently used policy without resetting a hot tenant breaker', async () => {
+  const transport = vi
+    .fn<Transport>()
+    .mockRejectedValue(new IntegrationError('UPSTREAM_ERROR', true));
+  const executor = new IntegrationExecutor(cache, transport);
+  const ds = source();
+  ds.policy.breakerThreshold = 1;
+  ds.policy.breakerResetMs = 60000;
+  await executor.execute('hot', ds, call, secret, ['https://service.test']);
+  for (let index = 0; index < 999; index++)
+    await executor.execute(`cold-${index}`, ds, call, secret, ['https://service.test']);
+  expect(
+    (await executor.execute('hot', ds, call, secret, ['https://service.test'])).trace.error,
+  ).toBe('CIRCUIT_OPEN');
+  await executor.execute('new', ds, call, secret, ['https://service.test']);
+  expect(
+    (await executor.execute('hot', ds, call, secret, ['https://service.test'])).trace.error,
+  ).toBe('CIRCUIT_OPEN');
 });

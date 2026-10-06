@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { ConnectorError, type Connector } from '@verbis/sdk-connector';
+import { BackpressureError, ConnectorError, type Connector } from '@verbis/sdk-connector';
 import { runConnectorContract, startHarness } from '@verbis/sdk-connector/testing';
 
 import { FakeGenesys } from '../../test/fake-genesys.js';
@@ -281,4 +281,28 @@ describe('genesys cloud connector', () => {
       await connector.ingest({ topicName: `v2.users.${AGENT_A}.presence`, eventBody: {} }),
     ).toBe(0);
   });
+});
+
+it('retains a failed overflow resync and retries it with backoff', async () => {
+  vi.useFakeTimers();
+  try {
+    const { connector, fake } = await upTo('call connected');
+    const frame = voice.fixtures.find((item) => item.name === 'call connected')?.payload;
+    const ingestMock = vi.spyOn(connector, 'ingest').mockRejectedValue(new BackpressureError());
+    connector.onNotification(frame);
+    await vi.advanceTimersByTimeAsync(0);
+    for (let index = 0; index < 501; index++) connector.onNotification(frame);
+    ingestMock.mockResolvedValue(1);
+    const pattern = new RegExp(`/api/v2/conversations/${C1}$`);
+    const before = fake.requests('GET', pattern).length;
+    fake.failNext(400, {}, pattern);
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(fake.requests('GET', pattern).length).toBe(before + 1);
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(fake.requests('GET', pattern).length).toBe(before + 2);
+    await connector.shutdown();
+    ingestMock.mockRestore();
+  } finally {
+    vi.useRealTimers();
+  }
 });

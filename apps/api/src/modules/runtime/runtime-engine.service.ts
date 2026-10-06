@@ -1,9 +1,10 @@
 import { createHash, randomBytes } from 'node:crypto';
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { z } from 'zod';
 
 import { asSubject } from '@verbis/authz';
+import { instruments } from '@verbis/observability';
 import {
   walkNodes,
   JsonValueSchema,
@@ -76,6 +77,8 @@ export function writableLease(
 
 @Injectable()
 export class RuntimeEngineService {
+  private readonly logger = new Logger(RuntimeEngineService.name);
+  private lastCacheFailureAt = -Infinity;
   constructor(
     @Inject(TenantDb) private readonly db: TenantDb,
     @Inject(AuthzService) private readonly authz: AuthzService,
@@ -179,11 +182,6 @@ export class RuntimeEngineService {
     this.authorize(row);
     const own = requestContext.require().principal?.id === row.userId;
     const snapshot = await this.snapshot(row);
-    if (!own || supervisor)
-      await this.audit.record(this.db.current(), {
-        action: 'runtime.session.observed',
-        target: { type: 'Session', id: row.id },
-      });
     return {
       id: row.id,
       state: row.state,
@@ -191,6 +189,14 @@ export class RuntimeEngineService {
       readOnly: true,
       snapshot: safeSnapshot(snapshot, this.document(row).variables, supervisor || !own),
     };
+  }
+  async observation(id: string, phase: 'started' | 'stopped') {
+    const row = await this.row(id);
+    this.authorize(row);
+    await this.audit.record(this.db.current(), {
+      action: `runtime.session.observation${phase}`,
+      target: { type: 'Session', id },
+    });
   }
   async snapshot(row: EngineSession): Promise<RuntimeSnapshot> {
     const snapshot = await this.store.read(
@@ -386,7 +392,10 @@ export class RuntimeEngineService {
     const terminal = TERMINAL.has(state),
       definitions = this.document(row).variables;
     if (terminal) {
-      snapshot = persistedSnapshot(snapshot, definitions);
+      snapshot = persistedSnapshot(
+        snapshot,
+        definitions.filter((definition) => definition.classification !== 'pci'),
+      );
       snapshot.timers = {};
     }
     if (Buffer.byteLength(JSON.stringify(snapshot)) > 512_000)
@@ -463,7 +472,19 @@ export class RuntimeEngineService {
         definitions.filter((v) => v.classification === 'pci').map((v) => v.key),
         row.version + 1,
       )
-      .catch(() => undefined);
+      .catch(() => {
+        instruments.operationFailures.add(1, { operation: 'runtime.cache.write' });
+        if (Date.now() - this.lastCacheFailureAt >= 30000) {
+          this.lastCacheFailureAt = Date.now();
+          this.logger.error('Runtime cache write unavailable');
+        }
+        if (
+          definitions.some(
+            (v) => v.classification === 'pci' && snapshot.variables[v.key] !== undefined,
+          )
+        )
+          throw new ConflictError('Payment state could not be stored');
+      });
     if (terminal) await this.events.seal(tx, row.id);
     return {
       id: row.id,

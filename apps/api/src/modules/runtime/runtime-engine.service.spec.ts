@@ -373,7 +373,12 @@ it('seeds only non-PCI defaults and masks private values from supervisor views',
   expect(own.snapshot.variables['privateValue']).toBe('synthetic-private');
   const observed = await f.run(() => f.service.view(id, true));
   expect(observed.snapshot.variables['privateValue']).toBe('[REDACTED]');
+  expect(f.audit.record).not.toHaveBeenCalled();
+  await f.run(() => f.service.observation(id, 'started'));
+  await f.run(() => f.service.view(id, true));
   expect(f.audit.record).toHaveBeenCalledTimes(1);
+  await f.run(() => f.service.observation(id, 'stopped'));
+  expect(f.audit.record).toHaveBeenCalledTimes(2);
   f.row.sequence = 2;
   f.snapshot.variables = {};
   expect((await f.service.snapshot(f.row)).variables).toEqual({});
@@ -518,6 +523,7 @@ it.each(['active', 'paused', 'launching', 'wrapup'] as const)(
     f.row.state = state;
     f.row.expiresAt = new Date(0);
     f.snapshot.timers = { synthetic: Date.now() + 1000 };
+    f.snapshot.variables['secureValue'] = 'tok_abcdefghijklmnop';
     await f.run(() =>
       f.service.expire(f.tx as unknown as Parameters<typeof f.service.expire>[0], id),
     );
@@ -530,6 +536,8 @@ it.each(['active', 'paused', 'launching', 'wrapup'] as const)(
       expiresAt: null,
     });
     expect(f.events.seal).toHaveBeenCalledWith(f.tx, id);
+    const cached = f.store.write.mock.calls[0]?.[3] as { variables: Record<string, unknown> };
+    expect(cached.variables['secureValue']).toBeUndefined();
   },
 );
 it('ignores unexpired and terminal sessions and rejects oversized state before writing events', async () => {
@@ -643,3 +651,21 @@ it.each([
   expect(f.events.append).not.toHaveBeenCalled();
   expect(f.tx.session.updateMany).not.toHaveBeenCalled();
 });
+
+it.each([false, true])(
+  'makes a failed cache write visible and fails closed for payment references=%s',
+  async (payment) => {
+    const f = fixture();
+    f.lease();
+    if (payment) f.snapshot.variables['secureValue'] = 'tok_abcdefghijklmnop';
+    f.store.write.mockRejectedValue(new Error('private cache detail'));
+    const command = f.run(() =>
+      f.service.command(id, {
+        ...f.claim,
+        command: { type: 'field', variable: 'publicValue', value: 'changed' },
+      }),
+    );
+    if (payment) await expect(command).rejects.toThrow('Payment state could not be stored');
+    else await expect(command).resolves.toMatchObject({ sequence: 1 });
+  },
+);

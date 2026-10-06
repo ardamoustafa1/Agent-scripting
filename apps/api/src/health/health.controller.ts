@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Res } from '@nestjs/common';
+import { Controller, Get, Inject, Res, Optional } from '@nestjs/common';
 import { z } from 'zod';
 
 import { aggregateHealth, type HealthCheckResult, type HealthStatus } from '@verbis/shared-types';
@@ -8,6 +8,7 @@ import { type ApiEnv, API_ENV } from '../env.js';
 import { DatabaseProbe } from '../infra/database/prisma.service.js';
 import { MessagingProbe } from '../infra/nats/nats.service.js';
 import { CacheProbe } from '../infra/redis/redis.service.js';
+import { CollaborationService } from '../modules/scripts/collaboration.service.js';
 import { ApiOperation, ApiResponse, ApiTag } from '../openapi/metadata.js';
 
 import type { FastifyReply } from 'fastify';
@@ -56,6 +57,7 @@ export class HealthController {
     @Inject(DatabaseProbe) private readonly db: DatabaseProbe,
     @Inject(CacheProbe) private readonly cache: CacheProbe,
     @Inject(MessagingProbe) private readonly messaging: MessagingProbe,
+    @Optional() @Inject(CollaborationService) private readonly collaboration?: CollaborationService,
   ) {}
 
   /** Liveness: the process is running. No dependency checks. */
@@ -90,7 +92,14 @@ export class HealthController {
       probe('redis', () => this.cache.ping()),
       probe('nats', () => this.messaging.ping()),
     ]);
-    const status = aggregateHealth(SERVICE, this.env.APP_VERSION, { database, redis, nats });
+    const collaboration: HealthCheckResult =
+      this.collaboration?.ready() === false ? { status: 'down' } : { status: 'up' };
+    const status = aggregateHealth(SERVICE, this.env.APP_VERSION, {
+      database,
+      redis,
+      nats,
+      collaboration,
+    });
     if (status.status !== 'ok') void reply.status(503);
     return status;
   }

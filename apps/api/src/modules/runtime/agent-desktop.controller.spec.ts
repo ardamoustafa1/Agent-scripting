@@ -4,6 +4,7 @@ import { ScriptDocumentSchema, DataSourceRefSchema } from '@verbis/script-schema
 import { minimalScript } from '@verbis/script-schema/fixtures';
 
 import { requestContext } from '../../common/context/request-context.js';
+import { DomainError } from '../../common/errors/domain-errors.js';
 
 import { AgentDesktopController } from './agent-desktop.controller.js';
 
@@ -50,10 +51,21 @@ function fixture(state = 'active') {
     auditEvent: { findFirst: vi.fn().mockResolvedValue(null) },
     dataSource: { findFirst: vi.fn().mockResolvedValue({ id: 'source-id' }) },
   };
-  const db = { current: () => tx };
+  const db = {
+    current: () => tx,
+    tenantId: () => tenant,
+    run: vi.fn(async (_tenant: string, work: (value: typeof tx) => Promise<unknown>) => work(tx)),
+  };
   const audit = { record: vi.fn().mockResolvedValue(undefined) };
   const integration = {
-    executeAuthorized: vi.fn().mockResolvedValue({ value: { ok: true }, durationMs: 4 }),
+    failure: vi.fn(
+      (error: string | null) =>
+        new DomainError('VERBIS_INTEGRATION_FAILED', undefined, [
+          { path: '/dataSource', message: error ?? 'INTEGRATION_FAILED' },
+        ]),
+    ),
+    prepareAuthorized: vi.fn().mockResolvedValue('prepared'),
+    executePrepared: vi.fn().mockResolvedValue({ value: { ok: true }, durationMs: 4 }),
   };
   const controller = new AgentDesktopController(
     db as unknown as TenantDb,
@@ -62,7 +74,7 @@ function fixture(state = 'active') {
     audit as unknown as AuditService,
     { publicProfile: () => undefined } as unknown as SecureCaptureService,
   );
-  return { controller, runtime, tx, audit, integration, document };
+  return { controller, runtime, tx, audit, integration, document, db };
 }
 function asUser<T>(user: string, work: () => T) {
   return requestContext.run(
@@ -121,7 +133,7 @@ describe('owner-only agent desktop BFF boundary', () => {
       ),
     ).rejects.toThrow('fenced');
     expect(f.tx.dataSource.findFirst).not.toHaveBeenCalled();
-    expect(f.integration.executeAuthorized).not.toHaveBeenCalled();
+    expect(f.integration.executePrepared).not.toHaveBeenCalled();
   });
   it('rejects a source absent from the immutable script pin', async () => {
     const f = fixture();
@@ -136,7 +148,7 @@ describe('owner-only agent desktop BFF boundary', () => {
         }),
       ),
     ).rejects.toThrow();
-    expect(f.integration.executeAuthorized).not.toHaveBeenCalled();
+    expect(f.integration.executePrepared).not.toHaveBeenCalled();
   });
 });
 
@@ -158,7 +170,7 @@ it('resolves the exact pinned source version and records the successful session 
     where: { tenantId: tenant, key: 'customer', version: 3, deletedAt: null },
     select: { id: true },
   });
-  expect(f.integration.executeAuthorized).toHaveBeenCalledWith('source-id', id, {
+  expect(f.integration.prepareAuthorized).toHaveBeenCalledWith('source-id', id, {
     input: { key: 'synthetic' },
     environment: 'prod',
   });
@@ -251,4 +263,106 @@ it('uses normalized channel customer metadata when the platform has no flat cust
   f.runtime.interaction.mockReturnValue({ 'channel.chat.customerName': 'Scoped customer' });
   const result = await asUser(owner, () => f.controller.desktop(id));
   expect(result.interaction.customerName).toBe('Scoped customer');
+});
+
+it('releases the preparation transaction before HTTP and fences the result in a second transaction', async () => {
+  const f = fixture();
+  f.document.dataSources.push(
+    DataSourceRefSchema.parse({ id: 'lookup', ref: 'tenant-datasource:customer', version: 3 }),
+  );
+  f.integration.executePrepared.mockImplementation(() => {
+    expect(requestContext.require().tx).toBeUndefined();
+    return Promise.resolve({ value: { ok: true }, durationMs: 4 });
+  });
+  await asUser(owner, () =>
+    f.controller.call(id, {
+      sourceId: 'lookup',
+      expectedSequence: 1,
+      tabId: id,
+      writeToken: 'a'.repeat(43),
+      input: {},
+    }),
+  );
+  expect(f.db.run).toHaveBeenCalledTimes(2);
+  expect(f.runtime.claim).toHaveBeenCalledTimes(2);
+});
+it('records fallback as failed activity rather than successful upstream data', async () => {
+  const f = fixture();
+  f.document.dataSources.push(
+    DataSourceRefSchema.parse({ id: 'lookup', ref: 'tenant-datasource:customer', version: 3 }),
+  );
+  f.integration.executePrepared.mockResolvedValue({
+    value: { ok: true },
+    durationMs: 4,
+    error: 'TIMEOUT',
+  });
+  await asUser(owner, () =>
+    f.controller.call(id, {
+      sourceId: 'lookup',
+      expectedSequence: 1,
+      tabId: id,
+      writeToken: 'a'.repeat(43),
+      input: {},
+    }),
+  );
+  expect(f.runtime.recordActivity).toHaveBeenCalledWith(
+    id,
+    expect.objectContaining({ status: 'failure' }),
+  );
+});
+
+it('refuses a late result after writer sequence changes while upstream is in flight', async () => {
+  const f = fixture();
+  f.document.dataSources.push(
+    DataSourceRefSchema.parse({ id: 'lookup', ref: 'tenant-datasource:customer', version: 3 }),
+  );
+  f.integration.executePrepared.mockImplementation(() => {
+    f.runtime.claim.mockImplementation(() => {
+      throw new Error('stale sequence');
+    });
+    return Promise.resolve({ value: { ok: true }, durationMs: 4 });
+  });
+  await expect(
+    asUser(owner, () =>
+      f.controller.call(id, {
+        sourceId: 'lookup',
+        expectedSequence: 1,
+        tabId: id,
+        writeToken: 'a'.repeat(43),
+        input: {},
+      }),
+    ),
+  ).rejects.toThrow('stale sequence');
+  expect(f.runtime.recordActivity).not.toHaveBeenCalled();
+});
+
+it('commits failed datasource activity before returning a sanitized timeout problem', async () => {
+  const f = fixture();
+  f.document.dataSources.push(
+    DataSourceRefSchema.parse({ id: 'lookup', ref: 'tenant-datasource:customer', version: 3 }),
+  );
+  f.integration.executePrepared.mockResolvedValue({
+    value: undefined,
+    durationMs: 4,
+    error: 'TIMEOUT',
+  });
+  await expect(
+    asUser(owner, () =>
+      f.controller.call(id, {
+        sourceId: 'lookup',
+        expectedSequence: 1,
+        tabId: id,
+        writeToken: 'a'.repeat(43),
+        input: {},
+      }),
+    ),
+  ).rejects.toMatchObject({
+    code: 'VERBIS_INTEGRATION_FAILED',
+    errors: [{ path: '/dataSource', message: 'TIMEOUT' }],
+  });
+  expect(f.runtime.recordActivity).toHaveBeenCalledWith(
+    id,
+    expect.objectContaining({ status: 'failure' }),
+  );
+  expect(f.runtime.view).toHaveBeenCalled();
 });

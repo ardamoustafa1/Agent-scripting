@@ -219,6 +219,10 @@ export class AxpConnector implements Connector {
       true,
     );
     this.#sent.add(target.commandId);
+    if (this.#sent.size > 20_000) {
+      const oldest = this.#sent.values().next().value;
+      if (oldest !== undefined) this.#sent.delete(oldest);
+    }
   }
 
   pauseRecording(target: CommandTarget): Promise<void> {

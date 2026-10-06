@@ -1,0 +1,174 @@
+RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+
+ ❯ |unit| src/modules/integrations/engine/executor.spec.ts (37 tests | 1 failed) 47ms
+   × retries a timed-out attempt with a fresh per-attempt deadline 3ms
+ ❯ |unit| src/modules/scripts/collaboration-hooks.spec.ts (23 tests | 1 failed) 32ms
+   × does not access Redis or tenant SQL for awareness/message authorization between periodic checks 3ms
+ ❯ |unit| src/modules/runtime/agent-desktop.controller.spec.ts (11 tests | 2 failed) 13ms
+   × releases the preparation transaction before HTTP and fences the result in a second transaction 2ms
+   × records fallback as failed activity rather than successful upstream data 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |unit| src/modules/runtime/agent-desktop.controller.spec.ts > releases the preparation transaction before HTTP and fences the result in a second transaction
+AssertionError: expected "vi.fn()" to be called 2 times, but got 0 times
+ ❯ src/modules/runtime/agent-desktop.controller.spec.ts:264:20
+    262|   });
+    263|   await asUser(owner, () => f.controller.call(id, { sourceId: 'lookup'…
+    264|   expect(f.db.run).toHaveBeenCalledTimes(2);
+       |                    ^
+    265|   expect(f.runtime.claim).toHaveBeenCalledTimes(2);
+    266| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |unit| src/modules/runtime/agent-desktop.controller.spec.ts > records fallback as failed activity rather than successful upstream data
+AssertionError: expected "vi.fn()" to be called with arguments: [ …(2) ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+    "01928f3a-0000-7000-8000-000000000001",
+-   ObjectContaining {
+-     "status": "failure",
++   {
++     "durationMs": 4,
++     "name": "lookup",
++     "status": "success",
++     "type": "datasource.called",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ src/modules/runtime/agent-desktop.controller.spec.ts:272:36
+    270|   f.integration.executeAuthorized.mockResolvedValue({ value: { ok: tru…
+    271|   await asUser(owner, () => f.controller.call(id, { sourceId: 'lookup'…
+    272|   expect(f.runtime.recordActivity).toHaveBeenCalledWith(id, expect.obj…
+       |                                    ^
+    273| });
+    274|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |unit| src/modules/scripts/collaboration-hooks.spec.ts > does not access Redis or tenant SQL for awareness/message authorization between periodic checks
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 10 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      "synthetic-lease",
+      "b2fd742d-2135-431e-8f72-0e85e9e7eb17",
+    ]
+
+  2nd vi.fn() call:
+
+    Array [
+      "synthetic-lease",
+      "b2fd742d-2135-431e-8f72-0e85e9e7eb17",
+    ]
+
+  3rd vi.fn() call:
+
+    Array [
+      "synthetic-lease",
+      "b2fd742d-2135-431e-8f72-0e85e9e7eb17",
+    ]
+
+  4th vi.fn() call:
+
+    Array [
+      "synthetic-lease",
+      "b2fd742d-2135-431e-8f72-0e85e9e7eb17",
+    ]
+
+  5th vi.fn() call:
+
+    Array [
+      "synthetic-lease",
+      "b2fd742d-2135-431e-8f72-0e85e9e7eb17",
+    ]
+
+  6th vi.fn() call:
+
+    Array [
+      "synthetic-lease",
+      "b2fd742d-2135-431e-8f72-0e85e9e7eb17",
+    ]
+
+  7th vi.fn() call:
+
+    Array [
+      "synthetic-lease",
+      "b2fd742d-2135-431e-8f72-0e85e9e7eb17",
+    ]
+
+  8th vi.fn() call:
+
+    Array [
+      "synthetic-lease",
+      "b2fd742d-2135-431e-8f72-0e85e9e7eb17",
+    ]
+
+  9th vi.fn() call:
+
+    Array [
+      "synthetic-lease",
+      "b2fd742d-2135-431e-8f72-0e85e9e7eb17",
+    ]
+
+  10th vi.fn() call:
+
+    Array [
+      "synthetic-lease",
+      "b2fd742d-2135-431e-8f72-0e85e9e7eb17",
+    ]
+
+
+Number of calls: 10
+
+ ❯ src/modules/scripts/collaboration-hooks.spec.ts:406:30
+    404|   f.abilities.forPrincipal.mockClear();
+    405|   for (let index = 0; index < 10; index++) await f.hook('beforeHandleM…
+    406|   expect(f.leases.renew).not.toHaveBeenCalled();
+       |                              ^
+    407|   expect(f.authorize).not.toHaveBeenCalled();
+    408|   expect(f.abilities.forPrincipal).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |unit| src/modules/integrations/engine/executor.spec.ts > retries a timed-out attempt with a fresh per-attempt deadline
+AssertionError: expected undefined to deeply equal { ok: true }
+
+- Expected:
+{
+  "ok": true,
+}
+
++ Received:
+undefined
+
+ ❯ src/modules/integrations/engine/executor.spec.ts:524:33
+    522|   const promise = new IntegrationExecutor(cache, transport).execute('r…
+    523|   await vi.advanceTimersByTimeAsync(1500);
+    524|   expect((await promise).value).toEqual({ ok: true });
+       |                                 ^
+    525|   expect(transport).toHaveBeenCalledTimes(2);
+    526| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  4 failed | 67 passed (71)
+   Start at  13:28:20
+   Duration  839ms (import 61%, transform 34%, tests 4%)
+
+undefined
+/Users/ardamoustafa/agent scripting/apps/api:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run src/modules/integrations/engine/executor.spec.ts src/modules/runtime/agent-desktop.controller.spec.ts src/modules/scripts/collaboration-hooks.spec.ts

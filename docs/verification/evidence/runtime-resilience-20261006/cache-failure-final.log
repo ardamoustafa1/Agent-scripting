@@ -1,0 +1,9 @@
+RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+
+[Nest] 79207  - 10/06/2026, 1:53:51 PM   ERROR [RuntimeEngineService] Runtime cache write unavailable
+[Nest] 79207  - 10/06/2026, 1:53:51 PM   ERROR [RuntimeEngineService] Runtime cache write unavailable
+
+ Test Files  1 passed (1)
+      Tests  64 passed (64)
+   Start at  13:53:50
+   Duration  701ms (transform 50%, import 44%, tests 7%)

@@ -216,7 +216,15 @@ export function DataComponent(component: RendererProps) {
           },
         }}
       />
-      {rows.length ? content : <Alert title={t('components.empty')} />}
+      {rows.length ? (
+        content
+      ) : p.rows !== undefined ||
+        (typeof state === 'object' &&
+          state !== null &&
+          'status' in state &&
+          state['status'] === 'success') ? (
+        <Alert title={t('components.empty')} />
+      ) : null}
       {p.trigger === 'manual' && (
         <CoreAction
           component={component}

@@ -1625,6 +1625,10 @@ export const tr: Catalog = {
       copySupportCode: 'Destek kodunu kopyala',
       supportCodeCopied: 'Destek kodu kopyalandı',
       takeover: 'Bu sekmede devral',
+      dataSourceTimeout:
+        'Veri kaynağı zaman aşımına uğradı. Yeniden deneyebilir veya izin verilen kurtarma seçeneğini kullanabilirsiniz.',
+      dataSourceCircuit:
+        'Veri kaynağı geçici olarak erişime kapalı. Bir süre sonra yeniden deneyin.',
       dataSourceFailed:
         'Veri kaynağı başarısız oldu. Yeniden deneyin veya scriptin izin verdiği alternatif yolu kullanın.',
       continueWithoutData: 'Veri olmadan devam et',

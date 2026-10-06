@@ -47,7 +47,7 @@ describe('runtime state machine', () => {
   });
 });
 describe('classification and concurrency', () => {
-  it('does not persist PCI, undeclared or volatile variables', () => {
+  it('persists only payment token references and excludes undeclared or volatile values', () => {
     const snapshot = {
       ...emptySnapshot(),
       variables: {
@@ -67,6 +67,7 @@ describe('classification and concurrency', () => {
     expect(persistedSnapshot(snapshot, definitions).variables).toEqual({
       normal: 'value',
       customer: 'synthetic',
+      card: 'tok_abcdefghijklmnop',
     });
     expect(safeSnapshot(snapshot, definitions, true).variables['customer']).toBe('[REDACTED]');
     expect(safeSnapshot(snapshot, definitions).variables['card']).toBe('[REDACTED]');

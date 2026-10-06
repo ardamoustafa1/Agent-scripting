@@ -1,5 +1,13 @@
-import { type CanActivate, type ExecutionContext, Inject, Injectable } from '@nestjs/common';
+import {
+  type CanActivate,
+  type ExecutionContext,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+
+import { instruments } from '@verbis/observability';
 
 import { requestContext, type RequestContext } from '../../common/context/request-context.js';
 import { DomainError, ForbiddenError } from '../../common/errors/domain-errors.js';
@@ -25,6 +33,7 @@ import type { FastifyRequest } from 'fastify';
  */
 @Injectable()
 export class AccessGuard implements CanActivate {
+  private readonly logger = new Logger(AccessGuard.name);
   constructor(
     @Inject(Reflector) private readonly reflector: Reflector,
     @Inject(TenantDb) private readonly tenantDb: TenantDb,
@@ -55,7 +64,11 @@ export class AccessGuard implements CanActivate {
             }),
           ),
         )
-        .catch(() => undefined);
+        .catch(() => {
+          instruments.operationFailures.add(1, { operation: 'authz.denial.audit' });
+          this.logger.error('Authorization denial audit unavailable');
+          throw new DomainError('VERBIS_AUDIT_UNAVAILABLE', 'Security audit is unavailable');
+        });
     }
     throw new ForbiddenError();
   }

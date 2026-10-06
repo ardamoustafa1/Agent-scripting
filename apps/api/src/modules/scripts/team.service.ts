@@ -43,7 +43,21 @@ export class TeamService {
       tenantId = this.db.tenantId();
     const version = await tx.scriptVersion.findFirst({
       where: { tenantId, scriptId, number, deletedAt: null },
-      include: { script: true },
+      select: {
+        id: true,
+        scriptId: true,
+        number: true,
+        checksum: true,
+        reviewRound: true,
+        submittedAt: true,
+        createdAt: true,
+        state: true,
+        version: true,
+        createdBy: true,
+        updatedBy: true,
+        source: true,
+        script: { select: { deletedAt: true, approvalPolicy: true } },
+      },
     });
     if (!version || version.script.deletedAt) throw new NotFoundError('Script version');
     const campaigns = await tx.assignment.findMany({
@@ -117,7 +131,11 @@ export class TeamService {
     const version = await this.authorize(scriptId, number),
       tx = this.db.current(),
       tenantId = this.db.tenantId();
-    const document = (await decodeDocument(version)) as ScriptDocument;
+    const stored = await tx.scriptVersion.findFirstOrThrow({
+      where: { id: version.id, tenantId },
+      select: { document: true, documentEncoding: true, documentCompressed: true },
+    });
+    const document = (await decodeDocument(stored)) as ScriptDocument;
     if (input.nodeId !== 'script' && !findNode(document, input.nodeId))
       throw new NotFoundError('Node');
     const mentions = [...new Set(input.mentions)];
@@ -241,7 +259,21 @@ export class TeamService {
     if (!authz) return [];
     const rows = await tx.scriptVersion.findMany({
       where: { tenantId, state: 'in_review', deletedAt: null, script: { deletedAt: null } },
-      include: { script: true },
+      select: {
+        id: true,
+        scriptId: true,
+        number: true,
+        checksum: true,
+        reviewRound: true,
+        submittedAt: true,
+        createdAt: true,
+        state: true,
+        version: true,
+        createdBy: true,
+        updatedBy: true,
+        source: true,
+        script: { select: { deletedAt: true, approvalPolicy: true } },
+      },
       take: 100,
       orderBy: { submittedAt: 'desc' },
     });

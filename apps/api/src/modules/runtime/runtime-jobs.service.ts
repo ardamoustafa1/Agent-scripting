@@ -1,6 +1,7 @@
 import {
   Inject,
   Injectable,
+  Logger,
   type OnApplicationBootstrap,
   type OnModuleDestroy,
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { instruments, messagingHeaders, consumeMessage } from '@verbis/observabi
 import { requestContext, systemContext } from '../../common/context/request-context.js';
 import { API_ENV, type ApiEnv } from '../../env.js';
 import { TenantDb } from '../../infra/database/tenant-db.js';
+import { OutboxWriter } from '../../infra/outbox/outbox.writer.js';
 import { RedisService } from '../../infra/redis/redis.service.js';
 import { AuditService } from '../audit/audit.service.js';
 
@@ -39,6 +41,14 @@ const JobSchema = z.strictObject({
 });
 @Injectable()
 export class RuntimeJobsService implements OnApplicationBootstrap, OnModuleDestroy {
+  private readonly logger = new Logger(RuntimeJobsService.name);
+  private lastFailureAt = -Infinity;
+  private failed() {
+    instruments.operationFailures.add(1, { operation: 'runtime.queue' });
+    if (Date.now() - this.lastFailureAt < 30000) return;
+    this.lastFailureAt = Date.now();
+    this.logger.error('Runtime queue unavailable');
+  }
   #queue: Queue | undefined;
   #worker: Worker | undefined;
   #writebackQueue: Queue | undefined;
@@ -53,6 +63,7 @@ export class RuntimeJobsService implements OnApplicationBootstrap, OnModuleDestr
     @Inject(RuntimePorts) private readonly ports: RuntimePorts,
     @Inject(RuntimeCipher) private readonly keys: RuntimeCipher,
     @Inject(AuditService) private readonly audit: AuditService,
+    @Inject(OutboxWriter) private readonly outbox: OutboxWriter,
   ) {}
   queue(): Queue {
     if (this.#queue === undefined) {
@@ -63,9 +74,13 @@ export class RuntimeJobsService implements OnApplicationBootstrap, OnModuleDestr
         enableOfflineQueue: false,
         commandTimeout: 2000,
       });
-      this.#connection.on('error', () => undefined);
+      this.#connection.on('error', () => {
+        this.failed();
+      });
       this.#queue = new Queue('runtime', { connection: this.#connection, prefix: 'verbis:jobs' });
-      this.#queue.on('error', () => undefined);
+      this.#queue.on('error', () => {
+        this.failed();
+      });
     }
     return this.#queue;
   }
@@ -77,7 +92,9 @@ export class RuntimeJobsService implements OnApplicationBootstrap, OnModuleDestr
         connection: this.#connection,
         prefix: 'verbis:jobs',
       });
-      this.#writebackQueue.on('error', () => undefined);
+      this.#writebackQueue.on('error', () => {
+        this.failed();
+      });
     }
     return this.#writebackQueue;
   }
@@ -115,7 +132,9 @@ export class RuntimeJobsService implements OnApplicationBootstrap, OnModuleDestr
       enableOfflineQueue: true,
       commandTimeout: undefined,
     });
-    this.#workerConnection.on('error', () => undefined);
+    this.#workerConnection.on('error', () => {
+      this.failed();
+    });
     const processJob: Processor = async (job) => {
       const data = JobSchema.parse(job.data);
       const principal = {
@@ -196,6 +215,13 @@ export class RuntimeJobsService implements OnApplicationBootstrap, OnModuleDestr
                     target: { type: 'Session', id: data.sessionId },
                     metadata: { commandId: data.eventId },
                   });
+                  if (data.kind === 'outcome')
+                    await this.outbox.record(tx, {
+                      type: 'verbis.runtime.connector.acknowledged.v1',
+                      aggregateType: 'Session',
+                      aggregateId: data.sessionId,
+                      payload: { commandId: data.eventId },
+                    });
                 }),
             ),
         );
@@ -210,8 +236,12 @@ export class RuntimeJobsService implements OnApplicationBootstrap, OnModuleDestr
     };
     this.#worker = new Worker('runtime', processJob, workerOptions);
     this.#writebackWorker = new Worker('runtime-writeback', processJob, workerOptions);
-    this.#writebackWorker.on('error', () => undefined);
-    this.#worker.on('error', () => undefined);
+    this.#writebackWorker.on('error', () => {
+      this.failed();
+    });
+    this.#worker.on('error', () => {
+      this.failed();
+    });
   }
   async enqueue(event: EventEnvelope, tx: TransactionClient): Promise<void> {
     const kind =

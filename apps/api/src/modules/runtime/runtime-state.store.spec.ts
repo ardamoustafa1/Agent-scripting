@@ -32,7 +32,7 @@ describe('sealed hot state and durable recovery', () => {
       'tenant',
       'session',
       2,
-      { ...emptySnapshot(), variables: { customer: 'fixture', card: 'tok_fixture' } },
+      { ...emptySnapshot(), variables: { customer: 'fixture', card: 'tok_abcdefghijklmnop' } },
       ['card'],
       5,
     );
@@ -59,7 +59,7 @@ describe('sealed hot state and durable recovery', () => {
       await store.read('tenant', 'session', 2, store.seal('tenant', 'session', durable)),
     ).toEqual(durable);
   });
-  it('keeps secure tokens only in local memory and removes them from Redis', async () => {
+  it('stores token references encrypted for recovery on another replica', async () => {
     const { store, values } = harness(),
       token = 'tok_abcdefghijklmnop';
     await store.write('tenant', 'session', 2, { ...emptySnapshot(), variables: { card: token } }, [
@@ -74,8 +74,34 @@ describe('sealed hot state and durable recovery', () => {
     const decoded = JSON.parse(
       keys.openString(envelope ?? '', store.slot('tenant', 'session')),
     ) as { snapshot: { variables: Record<string, unknown> } };
-    expect(decoded.snapshot.variables['card']).toBeUndefined();
+    expect(decoded.snapshot.variables['card']).toBe(token);
+    const replica = new RuntimeStateStore(
+      { client: { get: () => Promise.resolve(null) } } as unknown as RedisService,
+      keys,
+    );
+    const persisted = store.seal('tenant', 'session', {
+      ...emptySnapshot(),
+      variables: { card: token },
+    });
+    expect((await replica.read('tenant', 'session', 2, persisted)).variables['card']).toBe(token);
+    expect(envelope).not.toContain(token);
     await store.write('tenant', 'session', 3, emptySnapshot(), ['card']);
     expect((await store.read('tenant', 'session', 3, durable)).variables['card']).toBeUndefined();
   });
+});
+
+it('rejects raw payment values instead of silently caching them', async () => {
+  const store = new RuntimeStateStore(
+    { client: { set: vi.fn() } } as unknown as RedisService,
+    new RuntimeCipher(new Keyring(`test:${Buffer.alloc(32, 2).toString('base64')}`)),
+  );
+  await expect(
+    store.write(
+      'tenant',
+      'session',
+      1,
+      { ...emptySnapshot(), variables: { card: '4242424242424242' } },
+      ['card'],
+    ),
+  ).rejects.toThrow();
 });

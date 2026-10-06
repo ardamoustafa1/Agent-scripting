@@ -228,7 +228,7 @@ Masked by default (`•••• 1234`); "reveal" is permission-gated, time-boxe
 ### 6.4 PCI-DSS scope reduction
 
 - Verbis **does not store, process-to-persist, or log PAN/CVV**. Payment capture uses either (a) a hosted fields/iframe from a PCI-validated PSP, (b) DTMF masking / pause-and-resume via the telephony platform, or (c) tokenization data sources where only tokens flow through Verbis.
-- `pci` variables: memory-only, never in SessionEvent/audit/log/analytics, auto-cleared on page leave/session end, screen-capture hint (`autocomplete=off`).
+- `pci` variables accept only signed hosted-capture receipts. The verified token reference is tenant/session-envelope encrypted for replica/cache-loss recovery; raw PAN/CVV remain forbidden. References are redacted from browser views, excluded from SessionEvent/audit/log/analytics, and cleared on page leave/session end ([ADR-0039](adr/0039-runtime-io-and-payment-token-recovery.md)).
 - Segmentation: payment-related connectors run in an isolated deployment profile; quarterly ASV scans and annual pentest planned (see [PROGRESS](PROGRESS.md) step 35).
 - Mapped controls: req 3 (no storage), 4 (TLS), 6 (secure SDLC, SAST/DAST), 7/8 (RBAC, MFA via IdP), 10 (audit logging, time sync, chain integrity), 11 (testing), 12 (policies).
 

@@ -10,14 +10,22 @@ import { AgentWorkspace } from './workspace.js';
 
 const id = '01928f3a-0000-7000-8000-000000000001';
 const session = { user: { id, tenantId: id, authMethod: 'sso' }, csrfToken: 'synthetic' };
-const socket = vi.hoisted(() => ({ handlers: new Map<string, () => void>() }));
-vi.mock('socket.io-client', () => ({
-  io: () => ({
-    on: (name: string, callback: () => void) => {
-      socket.handlers.set(name, callback);
-    },
-    disconnect: vi.fn(),
+const socket = vi.hoisted(
+  (): { handlers: Map<string, (input?: unknown) => void>; auth: unknown } => ({
+    handlers: new Map<string, (input?: unknown) => void>(),
+    auth: undefined,
   }),
+);
+vi.mock('socket.io-client', () => ({
+  io: (_namespace: string, options: { auth?: unknown }) => {
+    socket.auth = options.auth;
+    return {
+      on: (name: string, callback: (input?: unknown) => void) => {
+        socket.handlers.set(name, callback);
+      },
+      disconnect: vi.fn(),
+    };
+  },
 }));
 let i18n: I18nInstance;
 const clients: QueryClient[] = [];
@@ -240,4 +248,56 @@ it('does not expose supervisor mode to an ordinary agent and follows callback ro
     window.dispatchEvent(new PopStateEvent('popstate'));
   });
   expect(await screen.findByRole('alert')).toBeDefined();
+});
+
+it('uses read-only push snapshots, ticket failures and event invalidation for supervisor observation', async () => {
+  const f = mount(true, true);
+  fireEvent.click(await screen.findByRole('button', { name: i18n.t('agent.desktop.supervisor') }));
+  const selector = await screen.findByRole('combobox', {
+    name: i18n.t('agent.desktop.interaction'),
+  });
+  await waitFor(() => {
+    expect(selector.hasAttribute('disabled')).toBe(false);
+  });
+  fireEvent.click(selector);
+  fireEvent.click(await screen.findByRole('option', { name: /01928f3a/ }));
+  await screen.findByText('Synthetic');
+  act(() => socket.handlers.get('connect')?.());
+  act(() =>
+    socket.handlers.get('runtime.resume')?.({
+      snapshot: {
+        id,
+        state: 'active',
+        sequence: 2,
+        readOnly: true,
+        snapshot: {
+          variables: { name: '[REDACTED]' },
+          currentPage: 'home',
+          history: [],
+          timers: {},
+        },
+      },
+    }),
+  );
+  expect(await screen.findByText('[REDACTED]')).toBeDefined();
+  act(() => socket.handlers.get('runtime.resume')?.({ invalid: true }));
+  act(() => socket.handlers.get('runtime.event')?.());
+  await screen.findByText('Synthetic');
+  const auth = socket.auth as (callback: (result: unknown) => void) => void;
+  const callback = vi.fn();
+  f.fetcher.mockResolvedValueOnce(Response.json({ ticket: 'synthetic-ticket' }));
+  await act(async () => {
+    auth(callback);
+    await Promise.resolve();
+  });
+  expect(callback).toHaveBeenCalledWith({ ticket: 'synthetic-ticket' });
+  f.fetcher.mockRejectedValueOnce(new Error('private network detail'));
+  await act(async () => {
+    auth(callback);
+    await Promise.resolve();
+  });
+  expect(callback).toHaveBeenCalledWith({});
+  act(() => socket.handlers.get('runtime.error')?.());
+  act(() => socket.handlers.get('disconnect')?.());
+  act(() => socket.handlers.get('connect_error')?.());
 });

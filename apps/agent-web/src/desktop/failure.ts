@@ -5,6 +5,7 @@ import { RuntimeProblem } from '@verbis/core-runtime';
 import { AgentError } from './api.js';
 
 export interface AgentFailure {
+  reason?: 'timeout' | 'circuit';
   kind: 'script' | 'authorization' | 'network' | 'storage';
   correlationId: string;
 }
@@ -25,6 +26,11 @@ export function classifyAgentFailure(error: unknown): AgentFailure {
             ? 'network'
             : 'script';
   return {
+    ...(error instanceof AgentError && error.integrationError === 'TIMEOUT'
+      ? { reason: 'timeout' as const }
+      : error instanceof AgentError && error.integrationError === 'CIRCUIT_OPEN'
+        ? { reason: 'circuit' as const }
+        : {}),
     kind,
     correlationId: error instanceof AgentError ? error.correlationId : crypto.randomUUID(),
   };

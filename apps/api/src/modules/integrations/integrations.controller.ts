@@ -11,6 +11,7 @@ import { UuidSchema } from '../../common/dto.js';
 import { expectedVersion } from '../../common/http/if-match.js';
 import { NoResponseReplay } from '../../common/idempotency/idempotency.interceptor.js';
 import { ZBody, ZParam, ZQuery } from '../../common/validation/zod.js';
+import { OwnTenantTransactions } from '../../infra/database/tenant-transaction.interceptor.js';
 import { ApiOperation, ApiResponse, ApiTag, RequiresIfMatch } from '../../openapi/metadata.js';
 import { RequirePermissions, Can } from '../authz/permissions.js';
 
@@ -187,6 +188,7 @@ export class IntegrationsController {
   @Can('execute', 'Integration')
   @HttpCode(200)
   @NoResponseReplay()
+  @OwnTenantTransactions()
   @Post('sessions/:sessionId/data-sources/:id/execute')
   execute(
     @ZParam('sessionId', UuidSchema) sessionId: string,

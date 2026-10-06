@@ -50,12 +50,21 @@ export type RuntimeSnapshot = z.infer<typeof SnapshotSchema>;
 export function emptySnapshot(): RuntimeSnapshot {
   return SnapshotSchema.parse({});
 }
+export const PaymentTokenSchema = z
+  .string()
+  .regex(/^tok_(?=[A-Za-z0-9_-]*[A-Za-z_-])(?![A-Za-z0-9_-]*[0-9]{13})[A-Za-z0-9_-]{16,512}$/);
 export function persistedSnapshot(
   snapshot: RuntimeSnapshot,
   variables: readonly Variable[],
 ): RuntimeSnapshot {
   const allowed = new Set(
-    variables.filter((v) => v.persist && v.classification !== 'pci').map((v) => v.key),
+    variables
+      .filter((v) =>
+        v.classification === 'pci'
+          ? PaymentTokenSchema.safeParse(snapshot.variables[v.key]).success
+          : v.persist,
+      )
+      .map((v) => v.key),
   );
   return {
     ...snapshot,

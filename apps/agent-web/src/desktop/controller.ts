@@ -151,6 +151,7 @@ export class AgentController {
                     policy: source.policy.onFailure ?? 'block',
                     failure: {
                       kind: event.phase === 'cancelled' ? 'network' : 'script',
+                      ...(event.phase === 'cancelled' ? { reason: 'timeout' as const } : {}),
                       correlationId: crypto.randomUUID(),
                     },
                   },
@@ -187,6 +188,13 @@ export class AgentController {
               this.publish({ dataFailure: null });
               return result.value;
             } catch (error) {
+              if (error instanceof AgentError && error.integrationError) {
+                try {
+                  await this.refresh(true);
+                } catch {
+                  this.publish({ online: false, failure: classifyAgentFailure(error) });
+                }
+              }
               if (!request.signal.aborted) {
                 this.publish({
                   dataFailure: {
@@ -360,9 +368,7 @@ export class AgentController {
     if (['completed', 'abandoned', 'expired'].includes(this.state.view.state)) {
       const page = this.state.view.snapshot.currentPage ?? this.desktop.document.pages[0]?.id;
       if (page) this.runtime.resume(page);
-      this.timer = setInterval(() => {
-        void this.refresh().catch(() => undefined);
-      }, 5000);
+      if (this.state.writeback === 'queued') this.connect();
       return;
     }
     await this.renew();
@@ -389,7 +395,8 @@ export class AgentController {
     this.timer = setInterval(() => {
       void this.serial(async () => {
         if (['completed', 'abandoned', 'expired'].includes(this.state.view.state)) {
-          await this.refresh();
+          if (this.timer) clearInterval(this.timer);
+          this.timer = undefined;
           return;
         }
         if (!this.state.readOnly || this.leaseUntil <= Date.now()) await this.renew();
@@ -518,6 +525,11 @@ export class AgentController {
       const desktop = await api(`/v1/sessions/${this.id}/desktop`, Desktop);
       this.desktop.interaction = desktop.interaction;
       this.publish({ writeback: desktop.writeback });
+      if (
+        ['completed', 'abandoned', 'expired'].includes(view.state) &&
+        desktop.writeback !== 'queued'
+      )
+        this.socket?.disconnect();
     }
   }
   private async flush() {
@@ -703,7 +715,9 @@ export class AgentController {
           });
         });
         socket.on('runtime.event', () => {
-          void this.serial(() => this.refresh(true)).catch(() => undefined);
+          void this.serial(() => this.refresh(true)).catch((error: unknown) => {
+            this.publish({ online: false, failure: classifyAgentFailure(error) });
+          });
         });
         socket.on('runtime.error', () => {
           this.publish({ error: 'authorization', readOnly: true });
@@ -720,7 +734,13 @@ export class AgentController {
       });
   }
   private retry() {
-    if (this.disposed || this.reconnect) return;
+    if (
+      this.disposed ||
+      this.reconnect ||
+      (['completed', 'abandoned', 'expired'].includes(this.state.view.state) &&
+        this.state.writeback !== 'queued')
+    )
+      return;
     this.publish({ online: false });
     this.socket?.disconnect();
     this.reconnect = setTimeout(

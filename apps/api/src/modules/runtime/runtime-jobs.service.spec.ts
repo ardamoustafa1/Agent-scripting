@@ -90,6 +90,7 @@ function fixture(enabled = true) {
     pauseRecording: vi.fn().mockResolvedValue(undefined),
     writeOutcome: vi.fn().mockResolvedValue(undefined),
   };
+  const outbox = { record: vi.fn().mockResolvedValue(undefined) };
   const audit = { record: vi.fn().mockResolvedValue({}) };
   const db = {
     run: vi.fn((_tenant: string, fn: (tx: TransactionClient) => Promise<unknown>) =>
@@ -104,12 +105,14 @@ function fixture(enabled = true) {
     { connector: () => connector } as unknown as RuntimePorts,
     keys,
     audit as unknown as AuditService,
+    outbox,
   );
   services.push(service);
   const process = (data: unknown) =>
     processors.get('runtime-writeback')!({ data } as Job, 'synthetic-token');
   return {
     service,
+    outbox,
     queues,
     processors,
     worker,
@@ -259,6 +262,14 @@ it.each([true, false])(
       where: { id: outcomeId, tenantId, sessionId, deletedAt: null },
     });
     expect(JSON.stringify(f.audit.record.mock.calls)).not.toContain('Synthetic note');
+    expect(f.outbox.record).toHaveBeenCalledWith(
+      f.tx,
+      expect.objectContaining({
+        type: 'verbis.runtime.connector.acknowledged.v1',
+        aggregateId: sessionId,
+        payload: { commandId: eventId },
+      }),
+    );
   },
 );
 

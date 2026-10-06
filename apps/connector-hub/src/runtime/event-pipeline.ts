@@ -30,7 +30,8 @@ export class EventPipeline {
   readonly sampleDepth = (result: { observe(value: number): void }) => {
     result.observe(this.#queue.stats().depth);
   };
-  readonly #launched = new Set<string>();
+  readonly #launched = new Map<string, { agents: Set<string>; expiresAt: number }>();
+  #nextSweep = 0;
   readonly workload = new AgentWorkload();
 
   constructor(
@@ -85,8 +86,7 @@ export class EventPipeline {
       });
     if (event.type === 'ended') {
       this.workload.close(item.tenantId, result.interactionId);
-      for (const key of [...this.#launched])
-        if (key.startsWith(`${result.interactionId}:`)) this.#launched.delete(key);
+      this.#launched.delete(`${item.tenantId}:${result.interactionId}`);
       return;
     }
     if (result.agentId === null) return;
@@ -103,14 +103,27 @@ export class EventPipeline {
           `Agent over ${event.channel} limit (${String(load.count)}) on connector ${item.connectorId}`,
         );
     }
-    const key = `${result.interactionId}:${result.agentId}`;
-    if (event.type === 'connected' && !this.#launched.has(key)) {
+    const key = `${item.tenantId}:${result.interactionId}`;
+    const now = Date.now();
+    if (now >= this.#nextSweep) {
+      this.#nextSweep = now + 60_000;
+      for (const [id, entry] of this.#launched)
+        if (entry.expiresAt <= now) this.#launched.delete(id);
+    }
+    if (event.type === 'connected' && !this.#launched.get(key)?.agents.has(result.agentId)) {
       await this.api.createLaunchIntent(item.slug, {
         connectorId: item.connectorId,
         interactionId: result.interactionId,
         userId: result.agentId,
       });
-      this.#launched.add(key);
+      const entry = this.#launched.get(key) ?? { agents: new Set<string>(), expiresAt: 0 };
+      entry.agents.add(result.agentId);
+      if (entry.agents.size > 100) entry.agents.delete(entry.agents.values().next().value ?? '');
+      entry.expiresAt = now + 2 * 60 * 60_000;
+      this.#launched.delete(key);
+      this.#launched.set(key, entry);
+      if (this.#launched.size > 50_000)
+        this.#launched.delete(this.#launched.keys().next().value ?? '');
     }
   }
 }

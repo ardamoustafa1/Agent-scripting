@@ -648,6 +648,7 @@ model Assignment {
   pinnedVersion ScriptVersion? @relation(fields: [pinnedVersionId], references: [id], onDelete: Restrict)
   sessions      Session[]
 
+  @@index([tenantId, scriptId], map: "assignments_tenant_script_active_idx", where: raw("deleted_at IS NULL"))
   @@index([tenantId, campaignId, priority])
   @@index([tenantId, createdAt, id])
   @@map("assignments")
@@ -1479,6 +1480,7 @@ model LaunchIntent {
   @@unique([tenantId, jti], map: "launch_intents_tenant_jti_key", where: raw("(jti IS NOT NULL)"))
   @@index([tenantId, userId, state])
   @@index([tenantId, interactionId])
+  @@index([tenantId, interactionId, userId], map: "launch_intents_push_dedupe_idx")
   @@map("launch_intents")
 }
 

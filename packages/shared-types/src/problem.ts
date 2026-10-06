@@ -280,6 +280,11 @@ export const PROBLEM_CATALOG = {
     slug: 'integration-failed',
     title: 'Integration failed',
   },
+  VERBIS_AUDIT_UNAVAILABLE: {
+    status: 503,
+    slug: 'audit-unavailable',
+    title: 'Security audit unavailable',
+  },
   VERBIS_INTEGRATION_UNAVAILABLE: {
     status: 503,
     slug: 'integration-unavailable',

@@ -196,6 +196,10 @@ export class GenericWebhookConnector implements Connector {
         response.status >= 500 || response.status === 429,
       );
     this.#sentCommands.add(target.commandId);
+    if (this.#sentCommands.size > 20_000) {
+      const oldest = this.#sentCommands.values().next().value;
+      if (oldest !== undefined) this.#sentCommands.delete(oldest);
+    }
   }
 
   #require(): ConnectorContext {

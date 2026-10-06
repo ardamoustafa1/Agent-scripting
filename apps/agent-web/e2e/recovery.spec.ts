@@ -9,6 +9,7 @@ async function fixture(
   page: Page,
   failure?: number | 'script',
   policy?: 'block' | 'continue' | 'manual',
+  integrationError?: 'TIMEOUT' | 'CIRCUIT_OPEN',
 ) {
   const attaches: string[] = [];
   const states: Record<
@@ -115,7 +116,13 @@ async function fixture(
     else if (path.endsWith('/data-source')) {
       await route.fulfill({
         status: 503,
-        json: { code: 'VERBIS_INTEGRATION_UNAVAILABLE', correlationId: 'support-datasource-42' },
+        json: {
+          code: 'VERBIS_INTEGRATION_FAILED',
+          correlationId: 'support-datasource-42',
+          ...(integrationError
+            ? { errors: [{ path: '/dataSource', message: integrationError }] }
+            : {}),
+        },
       });
       return;
     } else if (path.endsWith('/data-source-recovery')) result = view();
@@ -217,6 +224,24 @@ for (const policy of ['block', 'continue', 'manual'] as const) {
       await page.locator('[data-agent-next]').click();
       await expect(page.getByRole('heading', { name: /^Wrap.?up$/i })).toBeVisible();
     }
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  });
+}
+
+for (const reason of ['TIMEOUT', 'CIRCUIT_OPEN'] as const) {
+  test(`shows localized ${reason} and support correlation with accessible recovery`, async ({
+    page,
+  }) => {
+    await fixture(page, undefined, 'block', reason);
+    await expect(page.getByRole('status').getByText('support-datasource-42')).toBeVisible();
+    await expect(
+      page.getByText(
+        reason === 'TIMEOUT'
+          ? 'The data source timed out. Retry or use an allowed recovery option.'
+          : 'The data source is temporarily unavailable. Try again shortly.',
+      ),
+    ).toBeVisible();
+    await expect(page.locator('[data-agent-next]')).toBeDisabled();
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   });
 }

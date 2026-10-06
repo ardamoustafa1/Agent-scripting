@@ -1,0 +1,37 @@
+RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+
+ ❯ |unit| src/modules/runtime/runtime-state.store.spec.ts (5 tests | 1 failed) 8ms
+   × rejects raw payment values instead of silently caching them 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |unit| src/modules/runtime/runtime-state.store.spec.ts > rejects raw payment values instead of silently caching them
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ src/modules/runtime/runtime-state.store.spec.ts:85:125
+     83| it('rejects raw payment values instead of silently caching them', asyn…
+     84|   const store = new RuntimeStateStore({ client: { set: vi.fn() } } as …
+     85|   await expect(store.write('tenant', 'session', 1, { ...emptySnapshot(…
+       |                                                                                                                             ^
+     86| });
+     87|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  13:29:46
+   Duration  285ms (transform 50%, import 46%, tests 3%, worker 1%)
+
+undefined
+/Users/ardamoustafa/agent scripting/apps/api:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run src/modules/runtime/runtime-state.store.spec.ts
