@@ -1,0 +1,180 @@
+
+> verbis@ lint /Users/ardamoustafa/agent scripting
+> turbo run lint && eslint --max-warnings=0 scripts *.js
+
+
+   • turbo 2.11.6
+   • Packages in scope: @verbis/admin-web, @verbis/agent-web, @verbis/api, @verbis/authz, @verbis/collaboration, @verbis/components, @verbis/config-eslint, @verbis/config-ts, @verbis/connector-hub, @verbis/core-runtime, @verbis/designer-web, @verbis/docs-site, @verbis/expr, @verbis/i18n, @verbis/observability, @verbis/script-schema, @verbis/sdk-component, @verbis/sdk-connector, @verbis/shared-types, @verbis/test-utils, @verbis/ui
+   • Running lint in 21 packages
+   • Remote caching disabled
+
+@verbis/test-utils:build: cache hit, replaying logs 1d8d7fac39b0d746
+@verbis/test-utils:build: 
+@verbis/test-utils:build: > @verbis/test-utils@0.0.0 build /Users/ardamoustafa/agent scripting/packages/test-utils
+@verbis/test-utils:build: > tsc -b tsconfig.build.json
+@verbis/test-utils:build: 
+@verbis/config-eslint:lint: cache hit, replaying logs 45ab626b2d741035
+@verbis/authz:build: cache hit, replaying logs d36e695eda65d732
+@verbis/config-eslint:lint: 
+@verbis/config-eslint:lint: > @verbis/config-eslint@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/config-eslint
+@verbis/config-eslint:lint: > eslint --max-warnings=0 .
+@verbis/config-eslint:lint: 
+@verbis/authz:lint: cache hit, replaying logs 018d27a37209e399
+@verbis/authz:lint: 
+@verbis/authz:lint: > @verbis/authz@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/authz
+@verbis/authz:lint: > eslint --max-warnings=0 .
+@verbis/authz:lint: 
+@verbis/test-utils:lint: cache hit, replaying logs 07ded88b864cda07
+@verbis/test-utils:lint: 
+@verbis/test-utils:lint: > @verbis/test-utils@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/test-utils
+@verbis/test-utils:lint: > eslint --max-warnings=0 .
+@verbis/test-utils:lint: 
+@verbis/authz:build: 
+@verbis/authz:build: > @verbis/authz@0.0.0 build /Users/ardamoustafa/agent scripting/packages/authz
+@verbis/authz:build: > tsc -b tsconfig.build.json
+@verbis/authz:build: 
+@verbis/expr:lint: cache hit, replaying logs 23bf7314949e7b20
+@verbis/collaboration:build: cache hit, replaying logs 95bafeb273f627e5
+@verbis/expr:build: cache hit, replaying logs d6f95e2ce0d9b3fa
+@verbis/expr:lint: 
+@verbis/expr:lint: > @verbis/expr@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/expr
+@verbis/expr:lint: > eslint --max-warnings=0 .
+@verbis/expr:lint: 
+@verbis/observability:build: cache hit, replaying logs b2bea1a812c74aef
+@verbis/observability:build: 
+@verbis/observability:build: > @verbis/observability@0.0.0 build /Users/ardamoustafa/agent scripting/packages/observability
+@verbis/observability:build: > tsc -b tsconfig.build.json
+@verbis/observability:build: 
+@verbis/i18n:build: cache hit, replaying logs 14b9696baf1ac9e8
+@verbis/shared-types:lint: cache hit, replaying logs 5f83cd11eaa8e2d2
+@verbis/collaboration:build: 
+@verbis/collaboration:build: > @verbis/collaboration@0.0.0 build /Users/ardamoustafa/agent scripting/packages/collaboration
+@verbis/collaboration:build: > tsc -b tsconfig.build.json
+@verbis/collaboration:build: 
+@verbis/shared-types:lint: 
+@verbis/shared-types:lint: > @verbis/shared-types@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/shared-types
+@verbis/shared-types:lint: > eslint --max-warnings=0 .
+@verbis/shared-types:lint: 
+@verbis/shared-types:build: cache hit, replaying logs a59d18304710396a
+@verbis/expr:build: 
+@verbis/expr:build: > @verbis/expr@0.0.0 build /Users/ardamoustafa/agent scripting/packages/expr
+@verbis/expr:build: > tsc -b tsconfig.build.json
+@verbis/expr:build: 
+@verbis/collaboration:lint: cache hit, replaying logs b7cbf57ae2b648bb
+@verbis/shared-types:build: 
+@verbis/shared-types:build: > @verbis/shared-types@0.0.0 build /Users/ardamoustafa/agent scripting/packages/shared-types
+@verbis/shared-types:build: > tsc -b tsconfig.build.json
+@verbis/shared-types:build: 
+@verbis/collaboration:lint: 
+@verbis/observability:lint: cache hit, replaying logs 06433fccf814a89b
+@verbis/i18n:build: 
+@verbis/i18n:build: > @verbis/i18n@0.0.0 build /Users/ardamoustafa/agent scripting/packages/i18n
+@verbis/i18n:build: > tsc -b tsconfig.build.json
+@verbis/i18n:build: 
+@verbis/observability:lint: 
+@verbis/observability:lint: > @verbis/observability@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/observability
+@verbis/observability:lint: > eslint --max-warnings=0 .
+@verbis/observability:lint: 
+@verbis/i18n:lint: cache hit, replaying logs 8666209fca7d5f78
+@verbis/i18n:lint: 
+@verbis/i18n:lint: > @verbis/i18n@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/i18n
+@verbis/i18n:lint: > eslint --max-warnings=0 .
+@verbis/i18n:lint: 
+@verbis/collaboration:lint: > @verbis/collaboration@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/collaboration
+@verbis/collaboration:lint: > eslint --max-warnings=0 .
+@verbis/collaboration:lint: 
+@verbis/ui:lint: cache hit, replaying logs 97076a10495d20e6
+@verbis/sdk-connector:build: cache hit, replaying logs 0a052c5829c65918
+@verbis/ui:lint: 
+@verbis/ui:lint: > @verbis/ui@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/ui
+@verbis/ui:lint: > eslint --max-warnings=0 .
+@verbis/ui:lint: 
+@verbis/sdk-connector:lint: cache hit, replaying logs ef3a221da954e353
+@verbis/sdk-connector:build: 
+@verbis/sdk-connector:build: > @verbis/sdk-connector@0.0.0 build /Users/ardamoustafa/agent scripting/packages/sdk-connector
+@verbis/sdk-connector:build: > tsc -b tsconfig.build.json
+@verbis/sdk-connector:build: 
+@verbis/ui:build: cache hit, replaying logs 683820bca1e08c52
+@verbis/script-schema:lint: cache hit, replaying logs 0cde2b670479e7b9
+@verbis/script-schema:build: cache hit, replaying logs 9499b4adb69efe58
+@verbis/sdk-connector:lint: 
+@verbis/sdk-connector:lint: > @verbis/sdk-connector@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/sdk-connector
+@verbis/sdk-connector:lint: > eslint --max-warnings=0 .
+@verbis/sdk-connector:lint: 
+@verbis/script-schema:lint: 
+@verbis/script-schema:lint: > @verbis/script-schema@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/script-schema
+@verbis/script-schema:lint: > eslint --max-warnings=0 .
+@verbis/script-schema:lint: 
+@verbis/ui:build: 
+@verbis/ui:build: > @verbis/ui@0.0.0 build /Users/ardamoustafa/agent scripting/packages/ui
+@verbis/ui:build: > tsc -b tsconfig.build.json
+@verbis/ui:build: 
+@verbis/script-schema:build: 
+@verbis/script-schema:build: > @verbis/script-schema@0.0.0 build /Users/ardamoustafa/agent scripting/packages/script-schema
+@verbis/script-schema:build: > tsc -b tsconfig.build.json
+@verbis/script-schema:build: 
+@verbis/connector-hub:lint: cache hit, replaying logs 0e6faf6f8b215955
+@verbis/connector-hub:lint: 
+@verbis/connector-hub:lint: > @verbis/connector-hub@0.0.0 lint /Users/ardamoustafa/agent scripting/apps/connector-hub
+@verbis/connector-hub:lint: > eslint --max-warnings=0 .
+@verbis/connector-hub:lint: 
+@verbis/core-runtime:lint: cache hit, replaying logs ba353cfddd6f46e7
+@verbis/admin-web:lint: cache hit, replaying logs 3c5382442a9cf7ca
+@verbis/core-runtime:lint: 
+@verbis/core-runtime:lint: > @verbis/core-runtime@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/core-runtime
+@verbis/core-runtime:lint: > eslint --max-warnings=0 .
+@verbis/core-runtime:lint: 
+@verbis/core-runtime:build: cache hit, replaying logs 7ec53c7293f81488
+@verbis/core-runtime:build: 
+@verbis/core-runtime:build: > @verbis/core-runtime@0.0.0 build /Users/ardamoustafa/agent scripting/packages/core-runtime
+@verbis/core-runtime:build: > tsc -b tsconfig.build.json
+@verbis/core-runtime:build: 
+@verbis/admin-web:lint: 
+@verbis/admin-web:lint: > @verbis/admin-web@0.0.0 lint /Users/ardamoustafa/agent scripting/apps/admin-web
+@verbis/admin-web:lint: > eslint --max-warnings=0 .
+@verbis/admin-web:lint: 
+@verbis/sdk-component:lint: cache hit, replaying logs 56d28905921d04ec
+@verbis/sdk-component:build: cache hit, replaying logs 72b0cee352fec463
+@verbis/sdk-component:build: 
+@verbis/sdk-component:build: > @verbis/sdk-component@0.0.0 build /Users/ardamoustafa/agent scripting/packages/sdk-component
+@verbis/sdk-component:build: > tsc -b tsconfig.build.json
+@verbis/sdk-component:build: 
+@verbis/sdk-component:lint: 
+@verbis/sdk-component:lint: > @verbis/sdk-component@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/sdk-component
+@verbis/sdk-component:lint: > eslint --max-warnings=0 .
+@verbis/sdk-component:lint: 
+@verbis/components:build: cache hit, replaying logs f9d3c90d7683f147
+@verbis/components:lint: cache hit, replaying logs 7e9f86e53aeb18b2
+@verbis/components:lint: 
+@verbis/components:lint: > @verbis/components@0.0.0 lint /Users/ardamoustafa/agent scripting/packages/components
+@verbis/components:lint: > eslint --max-warnings=0 .
+@verbis/components:lint: 
+@verbis/components:build: 
+@verbis/components:build: > @verbis/components@0.0.0 build /Users/ardamoustafa/agent scripting/packages/components
+@verbis/components:build: > tsc -b tsconfig.build.json
+@verbis/components:build: 
+@verbis/agent-web:lint: cache miss, executing 5609759a1e0ce69a
+@verbis/api:lint: cache miss, executing e500eaf94a833332
+@verbis/designer-web:lint: cache hit, replaying logs c4878a13fe575b06
+@verbis/docs-site:lint: cache hit, replaying logs 6a758686c322ff35
+@verbis/docs-site:lint: 
+@verbis/docs-site:lint: > @verbis/docs-site@0.0.0 lint /Users/ardamoustafa/agent scripting/apps/docs-site
+@verbis/docs-site:lint: > eslint --max-warnings=0 scripts *.mjs
+@verbis/docs-site:lint: 
+@verbis/designer-web:lint: 
+@verbis/designer-web:lint: > @verbis/designer-web@0.0.0 lint /Users/ardamoustafa/agent scripting/apps/designer-web
+@verbis/designer-web:lint: > eslint --max-warnings=0 .
+@verbis/designer-web:lint: 
+@verbis/api:lint: 
+@verbis/api:lint: > @verbis/api@0.0.0 lint /Users/ardamoustafa/agent scripting/apps/api
+@verbis/api:lint: > eslint --max-warnings=0 .
+@verbis/api:lint: 
+@verbis/agent-web:lint: 
+@verbis/agent-web:lint: > @verbis/agent-web@0.0.0 lint /Users/ardamoustafa/agent scripting/apps/agent-web
+@verbis/agent-web:lint: > eslint --max-warnings=0 .
+@verbis/agent-web:lint: 
+
+ Tasks:    33 successful, 33 total
+Cached:    31 cached, 33 total
+  Time:    49.62s 
+

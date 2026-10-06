@@ -1,0 +1,152 @@
+
+ RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+
+ ❯ |unit| src/modules/integrations/engine/vault-provider.spec.ts (2 tests | 1 failed) 15ms
+   × rejects malformed stream results before accepting key metadata 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |unit| src/modules/integrations/engine/vault-provider.spec.ts > rejects malformed stream results before accepting key metadata
+AssertionError: promise resolved "Buffer[ 123, 34, 118, 34, 58, 49, …(68) ]" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "data": [
++     123,
++     34,
++     118,
++     34,
++     58,
++     49,
++     44,
++     34,
++     119,
++     114,
++     97,
++     112,
++     112,
++     101,
++     100,
++     34,
++     58,
++     34,
++     118,
++     97,
++     117,
++     108,
++     116,
++     58,
++     118,
++     49,
++     58,
++     99,
++     51,
++     108,
++     117,
++     100,
++     71,
++     104,
++     108,
++     100,
++     71,
++     108,
++     106,
++     34,
++     44,
++     34,
++     100,
++     97,
++     116,
++     97,
++     34,
++     58,
++     34,
++     82,
++     106,
++     87,
++     112,
++     65,
++     101,
++     114,
++     111,
++     115,
++     80,
++     48,
++     85,
++     77,
++     72,
++     76,
++     43,
++     120,
++     100,
++     84,
++     110,
++     74,
++     113,
++     72,
++     51,
++     101,
++     55,
++     117,
++     72,
++     52,
++     71,
++     86,
++     43,
++     112,
++     55,
++     88,
++     54,
++     76,
++     48,
++     114,
++     102,
++     112,
++     84,
++     53,
++     65,
++     104,
++     84,
++     103,
++     112,
++     43,
++     57,
++     53,
++     53,
++     103,
++     72,
++     88,
++     117,
++     120,
++     74,
++     65,
++     61,
++     34,
++     125,
++   ],
++   "type": "Buffer",
+  }
+
+ ❯ src/modules/integrations/engine/vault-provider.spec.ts:72:55
+     70|     INTEGRATION_VAULT_TOKEN_FILE: tokenFile,
+     71|   }));
+     72|   await expect(vault.encrypt('tenant-a', 'secret', 1, 'synthetic-secre…
+       |                                                       ^
+     73|     .rejects.toMatchObject({ code: 'VERBIS_INTEGRATION_UNAVAILABLE' });
+     74|   expect(reader.cancel).toHaveBeenCalledOnce();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  11:59:23
+   Duration  798ms (import 68%, transform 30%, tests 2%)
+
+undefined
+/Users/ardamoustafa/agent scripting/apps/api:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run --project unit src/modules/integrations/engine/vault-provider.spec.ts

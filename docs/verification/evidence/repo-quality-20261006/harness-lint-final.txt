@@ -1,0 +1,4 @@
+
+> verbis@ test:lint /Users/ardamoustafa/agent scripting
+> eslint --config tests/eslint.config.js tests/playwright/*.ts tests/demo-smoke/*.ts && eslint --config tests/verification/eslint.config.mjs tests/verification
+

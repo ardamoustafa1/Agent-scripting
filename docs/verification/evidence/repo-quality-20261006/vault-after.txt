@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  12:01:02
+   Duration  648ms (import 56%, transform 41%, tests 2%)
+

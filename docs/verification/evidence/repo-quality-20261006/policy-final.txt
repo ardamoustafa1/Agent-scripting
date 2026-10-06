@@ -1,0 +1,58 @@
+
+> verbis@ test:policy /Users/ardamoustafa/agent scripting
+> node --test scripts/coverage-gate.spec.mjs scripts/flaky-policy.spec.mjs infra/k6/profile.spec.mjs scripts/k6-preflight.spec.mjs scripts/quality-gates.spec.mjs scripts/secret-scan.spec.mjs
+
+✔ rejects duplicated userId before creating load (1.41725ms)
+✔ rejects duplicated sessionId before creating load (0.170375ms)
+✔ rejects duplicated cookie before creating load (0.069875ms)
+✔ rejects identical BFF session hidden by different extra cookies (0.072917ms)
+✔ rejects invalid agent count "0" (0.064125ms)
+✔ rejects invalid agent count "-1" (0.039042ms)
+✔ rejects invalid agent count "1.5" (0.035166ms)
+✔ rejects invalid agent count "NaN" (0.041375ms)
+✔ rejects invalid agent count "Infinity" (0.047125ms)
+✔ rejects invalid agent count "" (0.144875ms)
+✔ rejects unsafe origin without echoing credentials (0.3745ms)
+✔ rejects unsafe origin without echoing credentials (0.049708ms)
+✔ rejects unsafe origin without echoing credentials (0.036292ms)
+✔ rejects unsafe origin without echoing credentials (0.4325ms)
+✔ rejects unsafe origin without echoing credentials (0.039958ms)
+✔ rejects missing socket session before any network call (0.068083ms)
+✔ rejects reused interactions across users and rounds (0.13225ms)
+✔ rejects example placeholder credentials (0.044916ms)
+✔ long soak gets a sufficient executor deadline (0.056042ms)
+✔ valid profiles contain only configuration, never fixture secrets (0.057167ms)
+✔ partial run reports measured completed interactions separately from requested (1.07975ms)
+✔ missing measurement cannot pass acceptance (0.240375ms)
+✔ all required thresholds and counts must pass, and a failing threshold revokes acceptance (0.104666ms)
+✔ validates K6_ROUNDS before network operations (0.067917ms)
+✔ validates K6_SOAK_SECONDS before network operations (0.046666ms)
+✔ rejects reused interactions within the same agent (0.038875ms)
+✔ rejects incomplete or duplicated page/REST definitions (0.053958ms)
+✔ supports explicit secure custom cookie names (0.035916ms)
+✔ HTTP workload uses the production edge API prefix and keeps websocket origin separate (0.048875ms)
+✔ core default accepts 2000 independent fixture identities and rejects a duplicate at the end (6.355125ms)
+✔ accepts the boundary and rejects each deficient dimension (0.609875ms)
+✔ missing, empty, nonnumeric and malformed reports cannot pass (0.086334ms)
+✔ security scopes require weighted 95 percent line coverage and cannot disappear (0.768542ms)
+✔ quarantine is explicit, bounded, reviewed and unique (0.696916ms)
+✔ empty quarantine is valid and malformed manifests fail (0.060291ms)
+✔ private preflight exits successfully without exposing credentials or sending traffic (23.915708ms)
+✔ preflight rejects malformed JSON without leaking embedded secrets (23.569542ms)
+✔ preflight rejects publicly readable credential files (23.62425ms)
+✔ preflight rejects duplicate authenticated agents (24.182208ms)
+✔ real k6 init validates both complete load scripts without executing requests (113.895875ms)
+✔ real k6 offline metric harness passes complete counts (329.636417ms)
+✔ real k6 offline metric harness fails incomplete counts (282.981834ms)
+✔ PR acceptance runs isolated infrastructure and mandatory live projects (3.466209ms)
+✔ missing live configuration fails before browser execution (26.040833ms)
+✔ mandatory report gate rejects zero tests, skips, failures and malformed reports (0.692792ms)
+✔ commit scanner permits reviewed PEM serialization and rejects real keys and env files (225.352375ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 46
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 940.991708

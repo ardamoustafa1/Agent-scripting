@@ -1,0 +1,399 @@
+
+> verbis@ build /Users/ardamoustafa/agent scripting
+> turbo run build
+
+
+   • turbo 2.11.6
+   • Packages in scope: @verbis/admin-web, @verbis/agent-web, @verbis/api, @verbis/authz, @verbis/collaboration, @verbis/components, @verbis/config-eslint, @verbis/config-ts, @verbis/connector-hub, @verbis/core-runtime, @verbis/designer-web, @verbis/docs-site, @verbis/expr, @verbis/i18n, @verbis/observability, @verbis/script-schema, @verbis/sdk-component, @verbis/sdk-connector, @verbis/shared-types, @verbis/test-utils, @verbis/ui
+   • Running build in 21 packages
+   • Remote caching disabled
+
+@verbis/authz:build: cache hit, replaying logs d36e695eda65d732
+@verbis/authz:build: 
+@verbis/authz:build: > @verbis/authz@0.0.0 build /Users/ardamoustafa/agent scripting/packages/authz
+@verbis/authz:build: > tsc -b tsconfig.build.json
+@verbis/authz:build: 
+@verbis/test-utils:build: cache hit, replaying logs 1d8d7fac39b0d746
+@verbis/test-utils:build: 
+@verbis/test-utils:build: > @verbis/test-utils@0.0.0 build /Users/ardamoustafa/agent scripting/packages/test-utils
+@verbis/test-utils:build: > tsc -b tsconfig.build.json
+@verbis/test-utils:build: 
+@verbis/expr:build: cache hit, replaying logs d6f95e2ce0d9b3fa
+@verbis/expr:build: 
+@verbis/expr:build: > @verbis/expr@0.0.0 build /Users/ardamoustafa/agent scripting/packages/expr
+@verbis/expr:build: > tsc -b tsconfig.build.json
+@verbis/expr:build: 
+@verbis/collaboration:build: cache hit, replaying logs 95bafeb273f627e5
+@verbis/i18n:build: cache hit, replaying logs 14b9696baf1ac9e8
+@verbis/observability:build: cache hit, replaying logs b2bea1a812c74aef
+@verbis/collaboration:build: 
+@verbis/collaboration:build: > @verbis/collaboration@0.0.0 build /Users/ardamoustafa/agent scripting/packages/collaboration
+@verbis/collaboration:build: > tsc -b tsconfig.build.json
+@verbis/collaboration:build: 
+@verbis/observability:build: 
+@verbis/observability:build: > @verbis/observability@0.0.0 build /Users/ardamoustafa/agent scripting/packages/observability
+@verbis/observability:build: > tsc -b tsconfig.build.json
+@verbis/observability:build: 
+@verbis/i18n:build: 
+@verbis/i18n:build: > @verbis/i18n@0.0.0 build /Users/ardamoustafa/agent scripting/packages/i18n
+@verbis/i18n:build: > tsc -b tsconfig.build.json
+@verbis/i18n:build: 
+@verbis/shared-types:build: cache hit, replaying logs a59d18304710396a
+@verbis/shared-types:build: 
+@verbis/shared-types:build: > @verbis/shared-types@0.0.0 build /Users/ardamoustafa/agent scripting/packages/shared-types
+@verbis/shared-types:build: > tsc -b tsconfig.build.json
+@verbis/shared-types:build: 
+@verbis/sdk-connector:build: cache hit, replaying logs 0a052c5829c65918
+@verbis/sdk-connector:build: 
+@verbis/sdk-connector:build: > @verbis/sdk-connector@0.0.0 build /Users/ardamoustafa/agent scripting/packages/sdk-connector
+@verbis/sdk-connector:build: > tsc -b tsconfig.build.json
+@verbis/sdk-connector:build: 
+@verbis/ui:build: cache hit, replaying logs 683820bca1e08c52
+@verbis/script-schema:build: cache hit, replaying logs 9499b4adb69efe58
+@verbis/ui:build: 
+@verbis/ui:build: > @verbis/ui@0.0.0 build /Users/ardamoustafa/agent scripting/packages/ui
+@verbis/ui:build: > tsc -b tsconfig.build.json
+@verbis/ui:build: 
+@verbis/script-schema:build: 
+@verbis/script-schema:build: > @verbis/script-schema@0.0.0 build /Users/ardamoustafa/agent scripting/packages/script-schema
+@verbis/script-schema:build: > tsc -b tsconfig.build.json
+@verbis/script-schema:build: 
+@verbis/core-runtime:build: cache hit, replaying logs 7ec53c7293f81488
+@verbis/core-runtime:build: 
+@verbis/core-runtime:build: > @verbis/core-runtime@0.0.0 build /Users/ardamoustafa/agent scripting/packages/core-runtime
+@verbis/core-runtime:build: > tsc -b tsconfig.build.json
+@verbis/core-runtime:build: 
+@verbis/admin-web:build: cache hit, replaying logs 438acb4adf7f2ebf
+@verbis/sdk-component:build: cache hit, replaying logs 72b0cee352fec463
+@verbis/sdk-component:build: 
+@verbis/sdk-component:build: > @verbis/sdk-component@0.0.0 build /Users/ardamoustafa/agent scripting/packages/sdk-component
+@verbis/sdk-component:build: > tsc -b tsconfig.build.json
+@verbis/sdk-component:build: 
+@verbis/admin-web:build: 
+@verbis/admin-web:build: > @verbis/admin-web@0.0.0 build /Users/ardamoustafa/agent scripting/apps/admin-web
+@verbis/admin-web:build: > tsc -b && vite build
+@verbis/admin-web:build: 
+@verbis/admin-web:build: vite v8.3.1 building client environment for production...
+@verbis/admin-web:build: transforming...
+@verbis/admin-web:build: ✓ 3908 modules transformed.
+@verbis/admin-web:build: rendering chunks...
+@verbis/admin-web:build: computing gzip size...
+@verbis/admin-web:build: dist/index.html                             1.69 kB │ gzip:   0.58 kB
+@verbis/admin-web:build: dist/assets/index-ChvMuHah.css             67.02 kB │ gzip:  11.99 kB
+@verbis/admin-web:build: dist/assets/iso-D-uwRTlb.js                 0.13 kB │ gzip:   0.12 kB
+@verbis/admin-web:build: dist/assets/x-Jiwxjcdn.js                   0.18 kB │ gzip:   0.16 kB
+@verbis/admin-web:build: dist/assets/rolldown-runtime-hePW80VL.js    0.71 kB │ gzip:   0.42 kB
+@verbis/admin-web:build: dist/assets/users-CBVuk6D6.js               0.84 kB │ gzip:   0.47 kB
+@verbis/admin-web:build: dist/assets/access-CsSfXcAY.js              2.06 kB │ gzip:   0.82 kB
+@verbis/admin-web:build: dist/assets/useMutation-CyzsGMmT.js         5.72 kB │ gzip:   1.83 kB
+@verbis/admin-web:build: dist/assets/overlays-DPrw5th5.js            5.90 kB │ gzip:   2.10 kB
+@verbis/admin-web:build: dist/assets/fields-BPJHVEVX.js             10.59 kB │ gzip:   4.02 kB
+@verbis/admin-web:build: dist/assets/tenant-pages-CpK9Nmx-.js       11.47 kB │ gzip:   3.50 kB
+@verbis/admin-web:build: dist/assets/identity-pages-B4VxXQ9Y.js     13.13 kB │ gzip:   4.14 kB
+@verbis/admin-web:build: dist/assets/es2015-Cbwh-52i.js             22.69 kB │ gzip:   8.15 kB
+@verbis/admin-web:build: dist/assets/ai-page-BVZLiGZX.js            24.73 kB │ gzip:   8.64 kB
+@verbis/admin-web:build: dist/assets/provider-Bn5s3Tbl.js           32.11 kB │ gzip:  12.45 kB
+@verbis/admin-web:build: dist/assets/operations-pages-Cjw8UMTx.js   36.14 kB │ gzip:   9.43 kB
+@verbis/admin-web:build: dist/assets/widgets-CLIhZsns.js            84.21 kB │ gzip:  23.23 kB
+@verbis/admin-web:build: dist/assets/index-BNWBKJtz.js             248.51 kB │ gzip:  86.71 kB
+@verbis/admin-web:build: dist/assets/api-DvIiLTMv.js               285.13 kB │ gzip:  89.41 kB
+@verbis/admin-web:build: dist/assets/analytics-page-CCZW5MXP.js    337.32 kB │ gzip: 101.38 kB
+@verbis/admin-web:build: 
+@verbis/admin-web:build: ✓ built in 415ms
+@verbis/connector-hub:build: cache hit, replaying logs 668e899dc15da64a
+@verbis/components:build: cache hit, replaying logs f9d3c90d7683f147
+@verbis/connector-hub:build: 
+@verbis/connector-hub:build: > @verbis/connector-hub@0.0.0 build /Users/ardamoustafa/agent scripting/apps/connector-hub
+@verbis/connector-hub:build: > tsc -b tsconfig.build.json
+@verbis/connector-hub:build: 
+@verbis/components:build: 
+@verbis/components:build: > @verbis/components@0.0.0 build /Users/ardamoustafa/agent scripting/packages/components
+@verbis/components:build: > tsc -b tsconfig.build.json
+@verbis/components:build: 
+@verbis/designer-web:build: cache miss, executing 06356c47b02e7540
+@verbis/docs-site:build: cache miss, executing d09c91c0abada634
+@verbis/api:build: cache miss, executing a6b32f542c9604cc
+@verbis/agent-web:build: cache miss, executing 46f71cb5e2b9af38
+@verbis/designer-web:build: 
+@verbis/designer-web:build: > @verbis/designer-web@0.0.0 build /Users/ardamoustafa/agent scripting/apps/designer-web
+@verbis/designer-web:build: > tsc -b && vite build
+@verbis/designer-web:build: 
+@verbis/docs-site:build: 
+@verbis/docs-site:build: > @verbis/docs-site@0.0.0 build /Users/ardamoustafa/agent scripting/apps/docs-site
+@verbis/docs-site:build: > node scripts/generate-reference.mjs && astro build
+@verbis/docs-site:build: 
+@verbis/api:build: 
+@verbis/api:build: > @verbis/api@0.0.0 build /Users/ardamoustafa/agent scripting/apps/api
+@verbis/api:build: > prisma generate && tsc -b tsconfig.build.json
+@verbis/api:build: 
+@verbis/agent-web:build: 
+@verbis/agent-web:build: > @verbis/agent-web@0.0.0 build /Users/ardamoustafa/agent scripting/apps/agent-web
+@verbis/agent-web:build: > tsc -b && vite build
+@verbis/agent-web:build: 
+@verbis/api:build: Loaded Prisma config from prisma.config.ts.
+@verbis/api:build: 
+@verbis/api:build: Prisma schema loaded from prisma/schema.prisma.
+@verbis/api:build: 
+@verbis/api:build: ✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 887ms
+@verbis/api:build: 
+@verbis/agent-web:build: vite v8.3.1 building client environment for production...
+@verbis/agent-web:build: transforming...
+@verbis/agent-web:build: ✓ 4267 modules transformed.
+@verbis/agent-web:build: rendering chunks...
+@verbis/docs-site:build: 12:44:47 [content] Syncing content
+@verbis/agent-web:build: computing gzip size...
+@verbis/agent-web:build: dist/index.html                              1.16 kB │ gzip:   0.51 kB
+@verbis/agent-web:build: dist/assets/index-SAfE6ZRj.css              66.56 kB │ gzip:  11.89 kB
+@verbis/agent-web:build: dist/assets/rolldown-runtime-hePW80VL.js     0.71 kB │ gzip:   0.42 kB
+@verbis/agent-web:build: dist/assets/web-vitals-T56GecVW.js           5.62 kB │ gzip:   2.35 kB
+@verbis/agent-web:build: dist/assets/trace-api-8Y8zsXbv.js            9.32 kB │ gzip:   3.24 kB
+@verbis/agent-web:build: dist/assets/observability-sdk-CQzXYJxu.js   48.11 kB │ gzip:  15.59 kB
+@verbis/agent-web:build: dist/assets/index-CPJ75ycs.js              217.53 kB │ gzip:  74.13 kB
+@verbis/agent-web:build: dist/assets/failure-i7dxCT0G.js            488.38 kB │ gzip: 156.40 kB
+@verbis/agent-web:build: dist/assets/session-view-DlbTzdjQ.js       546.88 kB │ gzip: 162.11 kB
+@verbis/agent-web:build: 
+@verbis/agent-web:build: [plugin builtin:vite-reporter] 
+@verbis/agent-web:build: (!) Some chunks are larger than 500 kB after minification. Consider:
+@verbis/agent-web:build: - Using dynamic import() to code-split the application
+@verbis/agent-web:build: - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+@verbis/agent-web:build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+@verbis/agent-web:build: ✓ built in 463ms
+@verbis/docs-site:build: 12:44:48 [content] Synced content
+@verbis/docs-site:build: 12:44:48 [types] Generated 1.38s
+@verbis/docs-site:build: 12:44:48 [build] output: "static"
+@verbis/docs-site:build: 12:44:48 [build] mode: "static"
+@verbis/docs-site:build: 12:44:48 [build] directory: /Users/ardamoustafa/agent scripting/apps/docs-site/dist/
+@verbis/docs-site:build: 12:44:48 [build] Collecting build info...
+@verbis/docs-site:build: 12:44:48 [build] ✓ Completed in 1.54s.
+@verbis/docs-site:build: 12:44:48 [build] Building static entrypoints...
+@verbis/docs-site:build: 12:44:50 [vite] ✓ built in 1.64s
+@verbis/docs-site:build: 12:44:50 [vite] ✓ built in 56ms
+@verbis/docs-site:build: 12:44:50 [build] Rearranging server assets...
+@verbis/docs-site:build: 
+@verbis/docs-site:build:  generating static routes 
+@verbis/docs-site:build: 12:44:50   ├─ /404.html12:44:50 [WARN] [content] Entry docs → 404 was not found.
+@verbis/docs-site:build:  (+15ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/index.html (+8ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/adfs/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/entra/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/keycloak/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/okta/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/roles-audit-security/index.html (+5ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/scim/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/sso/index.html (+5ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/agent/quick-start/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/amazon-connect/index.html (+5ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/avaya-aacc/index.html (+32ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/avaya-aes/index.html (+37ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/avaya-axp/index.html (+70ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/cisco-finesse/index.html (+18ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/cisco-webex/index.html (+16ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/dynamics-365/index.html (+13ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/five9/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/genesys-cloud/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/genesys-engage/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/nice-cxone/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/salesforce/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/setup/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/demo/index.html (+6ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/best-practices/index.html (+6ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/components/index.html (+15ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/first-script/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/flow/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/functions/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/rules-expressions/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/testing-publishing/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/web-services/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/developer/component-sdk/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/developer/connector-sdk/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/developer/rest-api/index.html (+97ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/developer/webhooks/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/adfs/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/entra/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/keycloak/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/okta/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/roles-audit-security/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/scim/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/sso/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/agent/quick-start/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/amazon-connect/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/avaya-aacc/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/avaya-aes/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/avaya-axp/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/cisco-finesse/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/cisco-webex/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/dynamics-365/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/five9/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/genesys-cloud/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/genesys-engage/index.html (+30ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/nice-cxone/index.html (+13ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/connectors/salesforce/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/connectors/setup/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/demo/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/best-practices/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/components/index.html (+5ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/first-script/index.html (+5ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/flow/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/functions/index.html (+6ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/rules-expressions/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/testing-publishing/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/web-services/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/developer/component-sdk/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/developer/connector-sdk/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/developer/rest-api/index.html (+124ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/developer/webhooks/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51 ✓ Completed in 1.05s.
+@verbis/docs-site:build: 
+@verbis/docs-site:build: 12:44:51 [build] ✓ Completed in 2.84s.
+@verbis/docs-site:build: 12:44:51 [starlight:pagefind] Building search index with Pagefind...
+@verbis/designer-web:build: vite v8.3.1 building client environment for production...
+@verbis/designer-web:build: transforming...
+@verbis/designer-web:build: ✓ 4309 modules transformed.
+@verbis/docs-site:build: 12:44:52 [starlight:pagefind] Found 71 HTML files.
+@verbis/designer-web:build: rendering chunks...
+@verbis/docs-site:build: 12:44:52 [starlight:pagefind] Finished building search index in 1.73s.
+@verbis/docs-site:build: 12:44:52 [@astrojs/sitemap] `sitemap-index.xml` created at `dist`
+@verbis/docs-site:build: 12:44:52 [build] 71 page(s) built in 6.16s
+@verbis/docs-site:build: 12:44:52 [build] Complete!
+@verbis/designer-web:build: computing gzip size...
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-ext-400-normal-C_uLvvQ5.woff2      1.16 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-ext-500-normal-C9ShMxGR.woff2      1.17 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-ext-500-normal-CEVyPk4Y.woff       1.74 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-ext-400-normal-Bh0R7Dhr.woff       1.74 kB
+@verbis/designer-web:build: dist/index.html                                                        2.90 kB │ gzip:   0.75 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-vietnamese-400-normal-ByoDsISC.woff2        3.92 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-vietnamese-500-normal-BvH7FW2L.woff2        4.04 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-greek-400-normal-C190GLew.woff2             4.22 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-greek-500-normal-JpySY46c.woff2             4.28 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-400-normal-BEIGL1Tu.woff2          5.32 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-500-normal-DmUKJPL_.woff2          5.35 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-vietnamese-400-normal-CqNFfHCs.woff         5.37 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-vietnamese-500-normal-DNRqzVM1.woff         5.47 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-greek-400-normal-B9oWc5Lo.woff              5.66 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-greek-500-normal-D7SFKleX.woff              5.72 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-400-normal-ugxPyKxw.woff           6.97 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-500-normal-DJqRU3vO.woff           7.02 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-ext-400-normal-Bc8Ftmh3.woff2         7.33 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-ext-500-normal-Cut-4mMH.woff2         7.52 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-ext-400-normal-fXTG6kC5.woff         10.12 kB
+@verbis/designer-web:build: dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2               10.25 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-ext-500-normal-ckzbgY84.woff         10.33 kB
+@verbis/designer-web:build: dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2                11.23 kB
+@verbis/designer-web:build: dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2                 18.74 kB
+@verbis/designer-web:build: dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2                    18.99 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-400-normal-V6pRDFza.woff2            21.16 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-500-normal-BWZEU5yA.woff2            21.83 kB
+@verbis/designer-web:build: dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2             25.96 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-400-normal-6-qcROiO.woff             27.49 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-500-normal-CJOVTJB7.woff             28.20 kB
+@verbis/designer-web:build: dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                    48.25 kB
+@verbis/designer-web:build: dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2                85.06 kB
+@verbis/designer-web:build: dist/assets/regression-panel-CHyle7PY.css                              0.99 kB │ gzip:   0.41 kB
+@verbis/designer-web:build: dist/assets/campaign-aAb3R1yb.css                                      1.17 kB │ gzip:   0.46 kB
+@verbis/designer-web:build: dist/assets/studio-B1eRorrU.css                                        2.31 kB │ gzip:   0.63 kB
+@verbis/designer-web:build: dist/assets/styles-BVOoOVOY.css                                        3.00 kB │ gzip:   0.86 kB
+@verbis/designer-web:build: dist/assets/styles-Bv2jS1t5.css                                        4.06 kB │ gzip:   1.06 kB
+@verbis/designer-web:build: dist/assets/styles-TkgPOYJF.css                                        6.75 kB │ gzip:   1.52 kB
+@verbis/designer-web:build: dist/assets/editor-D2hWhRgU.css                                       12.61 kB │ gzip:   2.71 kB
+@verbis/designer-web:build: dist/assets/style-CHpVij2M.css                                        15.39 kB │ gzip:   2.55 kB
+@verbis/designer-web:build: dist/assets/index-BiTtCTGk.css                                        90.76 kB │ gzip:  15.63 kB
+@verbis/designer-web:build: dist/assets/useQuery-DV4W8y__.js                                       0.10 kB │ gzip:   0.11 kB
+@verbis/designer-web:build: dist/assets/iso-JsNgfvKC.js                                            0.13 kB │ gzip:   0.12 kB
+@verbis/designer-web:build: dist/assets/plus-Bjvo0N4i.js                                           0.18 kB │ gzip:   0.17 kB
+@verbis/designer-web:build: dist/assets/x-CPxi8C_J.js                                              0.18 kB │ gzip:   0.17 kB
+@verbis/designer-web:build: dist/assets/arrow-left-BYYT18Sb.js                                     0.19 kB │ gzip:   0.18 kB
+@verbis/designer-web:build: dist/assets/arrow-right-CN47k32F.js                                    0.19 kB │ gzip:   0.18 kB
+@verbis/designer-web:build: dist/assets/arrow-up-right-CDSCGfaX.js                                 0.19 kB │ gzip:   0.17 kB
+@verbis/designer-web:build: dist/assets/search-DihD4aA4.js                                         0.20 kB │ gzip:   0.18 kB
+@verbis/designer-web:build: dist/assets/context-BX7piq-V.js                                        0.25 kB │ gzip:   0.20 kB
+@verbis/designer-web:build: dist/assets/git-branch-J7x7kBLc.js                                     0.26 kB │ gzip:   0.21 kB
+@verbis/designer-web:build: dist/assets/activity-DT-lSNXl.js                                       0.26 kB │ gzip:   0.22 kB
+@verbis/designer-web:build: dist/assets/workflow-t7m1Jsog.js                                       0.29 kB │ gzip:   0.22 kB
+@verbis/designer-web:build: dist/assets/pencil-8cVwo9gD.js                                         0.30 kB │ gzip:   0.24 kB
+@verbis/designer-web:build: dist/assets/shield-check-CPCBTEYn.js                                   0.35 kB │ gzip:   0.27 kB
+@verbis/designer-web:build: dist/assets/megaphone-DwaKdMQ1.js                                      0.37 kB │ gzip:   0.26 kB
+@verbis/designer-web:build: dist/assets/QueryClientProvider-BNHQ4L64.js                            0.42 kB │ gzip:   0.29 kB
+@verbis/designer-web:build: dist/assets/earth-C_nnsBXh.js                                          0.44 kB │ gzip:   0.30 kB
+@verbis/designer-web:build: dist/assets/layers-D0NBrKH1.js                                         0.47 kB │ gzip:   0.27 kB
+@verbis/designer-web:build: dist/assets/theme-CFR_5put.js                                          0.66 kB │ gzip:   0.40 kB
+@verbis/designer-web:build: dist/assets/json-field-DBzBqpwt.js                                     0.76 kB │ gzip:   0.48 kB
+@verbis/designer-web:build: dist/assets/settings-DwYdpAcA.js                                       0.95 kB │ gzip:   0.40 kB
+@verbis/designer-web:build: dist/assets/rolldown-runtime-Dd_uD5pT.js                               1.10 kB │ gzip:   0.62 kB
+@verbis/designer-web:build: dist/assets/useInfiniteQuery-rVlxrrcd.js                               1.12 kB │ gzip:   0.47 kB
+@verbis/designer-web:build: dist/assets/lint-BFip8zln.js                                           1.14 kB │ gzip:   0.63 kB
+@verbis/designer-web:build: dist/assets/preload-helper-BZ1Pz5am.js                                 1.21 kB │ gzip:   0.69 kB
+@verbis/designer-web:build: dist/assets/lifecycle-tTuQdHwz.js                                      1.21 kB │ gzip:   0.61 kB
+@verbis/designer-web:build: dist/assets/manager-V4zvd2Xh.js                                        1.62 kB │ gzip:   0.78 kB
+@verbis/designer-web:build: dist/assets/analytics---oMJqoX.js                                      2.01 kB │ gzip:   1.06 kB
+@verbis/designer-web:build: dist/assets/overlays-BYxvJVGE.js                                       2.28 kB │ gzip:   0.90 kB
+@verbis/designer-web:build: dist/assets/useMutation-DkWLvV2O.js                                    2.46 kB │ gzip:   1.02 kB
+@verbis/designer-web:build: dist/assets/rules-B2JtF4n8.js                                          2.56 kB │ gzip:   1.17 kB
+@verbis/designer-web:build: dist/assets/comments-CJ_9CizA.js                                       3.20 kB │ gzip:   1.41 kB
+@verbis/designer-web:build: dist/assets/rule-CpDNZKYq.js                                           3.24 kB │ gzip:   1.50 kB
+@verbis/designer-web:build: dist/assets/mutation-DF2WBM_q.js                                       3.44 kB │ gzip:   1.14 kB
+@verbis/designer-web:build: dist/assets/client-DtYg9ccq.js                                         3.55 kB │ gzip:   1.69 kB
+@verbis/designer-web:build: dist/assets/styles-CfZ77TcY.js                                         3.63 kB │ gzip:   1.64 kB
+@verbis/designer-web:build: dist/assets/regression-panel-CnGhWWOY.js                               3.98 kB │ gzip:   1.61 kB
+@verbis/designer-web:build: dist/assets/list-FGPw_uS1.js                                           4.41 kB │ gzip:   1.78 kB
+@verbis/designer-web:build: dist/assets/templates-DpCz9HMf.js                                      5.20 kB │ gzip:   1.99 kB
+@verbis/designer-web:build: dist/assets/dist-AjX8W7jl.js                                           5.45 kB │ gzip:   2.23 kB
+@verbis/designer-web:build: dist/assets/ai-CjB5BSMT.js                                             5.88 kB │ gzip:   2.43 kB
+@verbis/designer-web:build: dist/assets/packages-X57aqJON.js                                       5.93 kB │ gzip:   2.22 kB
+@verbis/designer-web:build: dist/assets/builder-CyIqwkGl.js                                        6.59 kB │ gzip:   2.24 kB
+@verbis/designer-web:build: dist/assets/analysis-DKDEpW11.js                                       6.70 kB │ gzip:   2.64 kB
+@verbis/designer-web:build: dist/assets/sortable.esm-BVY0zHRf.js                                   6.98 kB │ gzip:   2.91 kB
+@verbis/designer-web:build: dist/assets/document-WFeg9soy.js                                       6.99 kB │ gzip:   2.79 kB
+@verbis/designer-web:build: dist/assets/jsx-runtime-BShSzW0e.js                                    7.11 kB │ gzip:   2.72 kB
+@verbis/designer-web:build: dist/assets/removable-ybvVlAM9.js                                      7.16 kB │ gzip:   2.73 kB
+@verbis/designer-web:build: dist/assets/login-CgUWyR6Z.js                                          8.56 kB │ gzip:   2.79 kB
+@verbis/designer-web:build: dist/assets/script-tMiIdhcH.js                                         8.89 kB │ gzip:   3.07 kB
+@verbis/designer-web:build: dist/assets/assignments-B9skK3FH.js                                    8.91 kB │ gzip:   3.25 kB
+@verbis/designer-web:build: dist/assets/library-BNgOJrjL.js                                        9.07 kB │ gzip:   2.85 kB
+@verbis/designer-web:build: dist/assets/variable-manager-DS-g6ZAA.js                               9.18 kB │ gzip:   3.48 kB
+@verbis/designer-web:build: dist/assets/dist-CcDWp-J_.js                                           9.22 kB │ gzip:   2.48 kB
+@verbis/designer-web:build: dist/assets/disclosure-BxIvU_gy.js                                     9.59 kB │ gzip:   3.22 kB
+@verbis/designer-web:build: dist/assets/value-BPmTLx1z.js                                         10.19 kB │ gzip:   4.43 kB
+@verbis/designer-web:build: dist/assets/campaign-TC5bsWpn.js                                      11.27 kB │ gzip:   3.75 kB
+@verbis/designer-web:build: dist/assets/index-RODl6aGS.js                                         11.70 kB │ gzip:   4.16 kB
+@verbis/designer-web:build: dist/assets/immer-CtAi3CKT.js                                         13.02 kB │ gzip:   5.15 kB
+@verbis/designer-web:build: dist/assets/dist-CXO4YUG8.js                                          13.30 kB │ gzip:   5.18 kB
+@verbis/designer-web:build: dist/assets/release-dyGkDKG7.js                                       14.35 kB │ gzip:   4.61 kB
+@verbis/designer-web:build: dist/assets/useBaseQuery-CcFsZV1j.js                                  15.72 kB │ gzip:   5.30 kB
+@verbis/designer-web:build: dist/assets/react-ZkMeJG2Q.js                                         16.07 kB │ gzip:   5.90 kB
+@verbis/designer-web:build: dist/assets/studio-B-mG8q4W.js                                        18.61 kB │ gzip:   6.32 kB
+@verbis/designer-web:build: dist/assets/states-CvadbQ8c.js                                        20.12 kB │ gzip:   6.88 kB
+@verbis/designer-web:build: dist/assets/designer-Dz_s9Odu.js                                      21.87 kB │ gzip:   6.86 kB
+@verbis/designer-web:build: dist/assets/editor-cCzSHHTQ.js                                        28.31 kB │ gzip:   8.64 kB
+@verbis/designer-web:build: dist/assets/security-C-sYc17a.js                                      29.11 kB │ gzip:  11.59 kB
+@verbis/designer-web:build: dist/assets/fields-hSvofypB.js                                        29.40 kB │ gzip:   8.67 kB
+@verbis/designer-web:build: dist/assets/select-Ku7N93y1.js                                        37.16 kB │ gzip:  12.94 kB
+@verbis/designer-web:build: dist/assets/shell-7cf6-1TP.js                                         39.35 kB │ gzip:  12.31 kB
+@verbis/designer-web:build: dist/assets/core.esm-DsOjmCeV.js                                      42.50 kB │ gzip:  13.84 kB
+@verbis/designer-web:build: dist/assets/provider-BPLo3-ZO.js                                      44.55 kB │ gzip:  16.16 kB
+@verbis/designer-web:build: dist/assets/runtime-CSrN23G6.js                                       71.86 kB │ gzip:  21.92 kB
+@verbis/designer-web:build: dist/assets/data-table-OX-Oy2g4.js                                    79.33 kB │ gzip:  21.75 kB
+@verbis/designer-web:build: dist/assets/chunk-OB3PAWPO-Dm9u06CR.js                                93.94 kB │ gzip:  31.00 kB
+@verbis/designer-web:build: dist/assets/browser-CGIpxNSg.js                                       96.24 kB │ gzip:  29.98 kB
+@verbis/designer-web:build: dist/assets/schemas-CSYboedc.js                                       97.32 kB │ gzip:  27.52 kB
+@verbis/designer-web:build: dist/assets/registry-RNS9Aese.js                                     159.53 kB │ gzip:  49.33 kB
+@verbis/designer-web:build: dist/assets/style-Bx9U9v9z.js                                        162.02 kB │ gzip:  51.20 kB
+@verbis/designer-web:build: dist/assets/feedback-BJnpGwgf.js                                     162.32 kB │ gzip:  54.15 kB
+@verbis/designer-web:build: dist/assets/store-BiejDuDo.js                                        162.44 kB │ gzip:  49.34 kB
+@verbis/designer-web:build: dist/assets/i18n-DnZ4alj1.js                                         171.11 kB │ gzip:  59.60 kB
+@verbis/designer-web:build: dist/assets/editor-DPHAVZJ1.js                                       185.11 kB │ gzip:  55.40 kB
+@verbis/designer-web:build: dist/assets/expression-CVHym48J.js                                   300.25 kB │ gzip:  97.08 kB
+@verbis/designer-web:build: dist/assets/analytics-BzAZOEEv.js                                    316.08 kB │ gzip:  92.84 kB
+@verbis/designer-web:build: dist/assets/elk.bundled-CVOErv1M.js                                1,429.64 kB │ gzip: 441.60 kB
+@verbis/designer-web:build: 
+@verbis/designer-web:build: [plugin builtin:vite-reporter] 
+@verbis/designer-web:build: (!) Some chunks are larger than 500 kB after minification. Consider:
+@verbis/designer-web:build: - Using dynamic import() to code-split the application
+@verbis/designer-web:build: - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+@verbis/designer-web:build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+@verbis/designer-web:build: ✓ built in 1.38s
+
+ Tasks:    19 successful, 19 total
+Cached:    15 cached, 19 total
+  Time:    15.695s 
+

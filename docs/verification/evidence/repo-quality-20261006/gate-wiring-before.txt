@@ -1,0 +1,370 @@
+✖ PR acceptance runs isolated infrastructure and mandatory live projects (2.453458ms)
+✖ missing live configuration fails before browser execution (23.174667ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 58.117583
+
+✖ failing tests:
+
+test at scripts/quality-gates.spec.mjs:6:1
+✖ PR acceptance runs isolated infrastructure and mandatory live projects (2.453458ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /uses: \.\/\.github\/workflows\/verification\.yml/. Input:
+  
+  'name: CI\n' +
+    '\n' +
+    'on:\n' +
+    '  push:\n' +
+    '    branches: [main]\n' +
+    '  pull_request:\n' +
+    '\n' +
+    'permissions:\n' +
+    '  contents: read\n' +
+    '\n' +
+    'concurrency:\n' +
+    '  group: ci-${{ github.workflow }}-${{ github.ref }}\n' +
+    '  cancel-in-progress: true\n' +
+    '\n' +
+    'env:\n' +
+    "  TURBO_TELEMETRY_DISABLED: '1'\n" +
+    '\n' +
+    'jobs:\n' +
+    '  quality:\n' +
+    '    name: Lint · Typecheck · Test · Build\n' +
+    '    runs-on: ubuntu-latest\n' +
+    '    timeout-minutes: 30\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@v7\n' +
+    '      - uses: pnpm/action-setup@v6\n' +
+    '      - uses: actions/setup-node@v7\n' +
+    '        with:\n' +
+    '          node-version-file: .nvmrc\n' +
+    '          cache: pnpm\n' +
+    '      - name: Install\n' +
+    '        run: pnpm install --frozen-lockfile\n' +
+    '      - name: Format check\n' +
+    '        run: pnpm format:check\n' +
+    '      - name: Lint\n' +
+    '        run: pnpm lint && pnpm test:lint\n' +
+    '      - name: Typecheck\n' +
+    '        run: pnpm typecheck && pnpm test:typecheck\n' +
+    '      - name: ASVS inventory consistency\n' +
+    '        run: node --test scripts/asvs-inventory.spec.mjs\n' +
+    '      - name: Final audit route and translation inventory\n' +
+    '        run: pnpm test:audit\n' +
+    '      - name: Test policy regression\n' +
+    '        run: pnpm test:policy && node --test scripts/dependency-security.spec.mjs\n' +
+    '      - name: Quarantine policy\n' +
+    '        run: pnpm quarantine:check\n' +
+    '      - name: Test and coverage\n' +
+    '        run: pnpm test\n' +
+    '      - name: Mandatory coverage gate\n' +
+    '        if: always()\n' +
+    '        run: pnpm coverage:check\n' +
+    '      - name: Upload coverage (including failed gates)\n' +
+    '        if: always()\n' +
+    '        uses: actions/upload-artifact@v7\n' +
+    '        with:\n' +
+    '          name: coverage\n' +
+    '          path: |\n' +
+    '            packages/*/coverage/\n' +
+    '            apps/*/coverage/\n' +
+    '          if-no-files-found: error\n' +
+    '          retention-days: 14\n' +
+    '      - name: Build\n' +
+    '        run: pnpm build\n' +
+    '\n' +
+    '  e2e:\n' +
+    '    name: E2E (Playwright + axe)\n' +
+    '    runs-on: ubuntu-latest\n' +
+    '    timeout-minutes: 30\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@v7\n' +
+    '      - uses: pnpm/action-setup@v6\n' +
+    '      - uses: actions/setup-node@v7\n' +
+    '        with:\n' +
+    '          node-version-file: .nvmrc\n' +
+    '          cache: pnpm\n' +
+    '      - run: pnpm install --frozen-lockfile\n' +
+    '      - name: Install Playwright browsers\n' +
+    '        run: pnpm --filter @verbis/agent-web exec playwright install --with-deps chromium\n' +
+    '      - name: Build browser apps and shared dependencies\n' +
+    '        run: pnpm build\n' +
+    '      - name: Quarantine policy\n' +
+    '        run: pnpm quarantine:check\n' +
+    '      - name: E2E\n' +
+    '        run: pnpm e2e\n' +
+    '      - name: Upload Playwright reports\n' +
+    '        if: always()\n' +
+    '        uses: actions/upload-artifact@v7\n' +
+    '        with:\n' +
+    '          name: playwright-reports\n' +
+    '          path: |\n' +
+    '            apps/*/playwright-report/\n' +
+    '            apps/*/test-results/\n' +
+    '          retention-days: 7\n' +
+    '\n' +
+    '  e2e-keycloak:\n' +
+    '    name: E2E SSO (Keycloak dev realm)\n' +
+    '    runs-on: ubuntu-latest\n' +
+    '    timeout-minutes: 30\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@v7\n' +
+    '      - uses: pnpm/action-setup@v6\n' +
+    '      - uses: actions/setup-node@v7\n' +
+    '        with:\n' +
+    '          node-version-file: .nvmrc\n' +
+    '          cache: pnpm\n' +
+    '      # pnpm install creates .env from .env.example (dev-only placeholders) and generates local keys.\n' +
+    '      - run: pnpm install --frozen-lockfile\n' +
+    '      - name: Start PostgreSQL, Redis, NATS and Keycloak\n' +
+    '        run: docker compose up -d --wait postgres redis nats keycloak\n' +
+    '      - name: Migrate and seed\n' +
+    '        run: pnpm --filter @verbis/api db:migrate && pnpm --filter @verbis/api seed\n' +
+    '      - name: Build\n' +
+    '        run: pnpm --filter @verbis/api... --filter @verbis/admin-web... build\n' +
+    '      - name: Start the API\n' +
+    '        run: |\n' +
+    '          set -a; . ./.env; set +a\n' +
+    '          nohup node apps/api/dist/main.js > api.log 2>&1 &\n' +
+    '          for i in $(seq 1 60); do curl -fs http://127.0.0.1:4000/health/ready && break; sleep 2; done\n' +
+    '      - name: Install Playwright browsers\n' +
+    '        run: pnpm --filter @verbis/admin-web exec playwright install --with-deps chromium\n' +
+    '      - name: Keycloak login e2e\n' +
+    '        run: |\n' +
+    '          set -a; . ./.env; set +a\n' +
+    '          E2E_KEYCLOAK=1 pnpm --filter @verbis/admin-web e2e --project keycloak\n' +
+    '      - name: Upload logs and reports\n' +
+    '        if: failure()\n' +
+    '        uses: actions/upload-artifact@v7\n' +
+    '        with:\n' +
+    '          name: keycloak-e2e\n' +
+    '          path: |\n' +
+    '            api.log\n' +
+    '            apps/admin-web/playwright-report\n' +
+    '          retention-days: 7\n' +
+    '\n' +
+    '  engage-sidecar:\n' +
+    '    name: Genesys Engage sidecar (Java 21)\n' +
+    '    runs-on: ubuntu-latest\n' +
+    '    timeout-minutes: 20\n' +
+    '    defaults:\n' +
+    '      run:\n' +
+    '        working-directory: apps/connector-genesys-engage-sidecar\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@v7\n' +
+    '      - uses: actions/setup-java@v5\n' +
+    '        with:\n' +
+    '          distribution: temurin\n' +
+    "          java-version: '21'\n" +
+    '      - uses: gradle/actions/setup-gradle@v5\n' +
+    '        with:\n' +
+    "          gradle-version: '8.14'\n" +
+    '      # Without the licensed Platform SDK: replay source + Testcontainers NATS (Docker on the runner).\n' +
+    '      - name: Test\n' +
+    '        run: gradle --no-daemon test\n' +
+    '\n' +
+    '  avaya-sidecar:\n' +
+    '    name: Avaya sidecar (Java 21)\n' +
+    '    runs-on: ubuntu-latest\n' +
+    '    timeout-minutes: 20\n' +
+    '    defaults:\n' +
+    '      run:\n' +
+    '        working-directory: apps/connector-avaya-aes-sidecar\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@v7\n' +
+    '      - uses: actions/setup-java@v5\n' +
+    '        with:\n' +
+    '          distribution: temurin\n' +
+    "          java-version: '21'\n" +
+    '      - uses: gradle/actions/setup-gradle@v5\n' +
+    '        with:\n' +
+    "          gradle-version: '8.14'\n" +
+    '      # Without the Avaya JTAPI SDK: replay + AACC + outbound modules, Testcontainers NATS.\n' +
+    '      - name: Test\n' +
+    '        run: gradle --no-daemon test\n' +
+    '\n' +
+    '  secret-scan:\n' +
+    '    name: Secret scan (gitleaks)\n' +
+    '    runs-on: ubuntu-latest\n' +
+    '    timeout-minutes: 10\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@v7\n' +
+    '        with:\n' +
+    '          fetch-depth: 0\n' +
+    '      - name: gitleaks\n' +
+    '        run: docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 git /repo --redact --no-banner --exit-code 1\n' +
+    '\n' +
+    '  docker:\n' +
+    '    name: Docker build + Trivy (${{ matrix.app }})\n' +
+    '    runs-on: ubuntu-latest\n' +
+    '    needs: quality\n' +
+    '    timeout-minutes: 30\n' +
+    '    strategy:\n' +
+    '      fail-fast: false\n' +
+    '      matrix:\n' +
+    '        include:\n' +
+    '          - app: api\n' +
+    '            dockerfile: infra/docker/node-app.Dockerfile\n' +
+    '          - app: connector-hub\n' +
+    '            dockerfile: infra/docker/node-app.Dockerfile\n' +
+    '          - app: designer-web\n' +
+    '            dockerfile: infra/docker/web-app.Dockerfile\n' +
+    '          - app: agent-web\n' +
+    '            dockerfile: infra/docker/web-app.Dockerfile\n' +
+    '          - app: admin-web\n' +
+    '            dockerfile: infra/docker/web-app.Dockerfile\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@v7\n' +
+    '      - uses: docker/setup-buildx-action@v4\n' +
+    '      - name: Build image\n' +
+    '        uses: docker/build-push-action@v7\n' +
+    '        with:\n' +
+    '          context: .\n' +
+    '          file: ${{ matrix.dockerfile }}\n' +
+    '          build-args: APP=${{ matrix.app }}\n' +
+    '          tags: verbis/${{ matrix.app }}:ci\n' +
+    '          load: true\n' +
+    '          push: false\n' +
+    '          cache-from: type=gha,scope=${{ matrix.app }}\n' +
+    '          cache-to: type=gha,mode=max,scope=${{ matrix.app }}\n' +
+    '      - name: CycloneDX image SBOM (OS and npm packages)\n' +
+    '        uses: aquasecurity/trivy-action@v0.36.0\n' +
+    '        with:\n' +
+    '          image-ref: verbis/${{ matrix.app }}:ci\n' +
+    '          format: cyclonedx\n' +
+    '          output: image.cyclonedx.json\n' +
+    "          exit-code: '0'\n" +
+    '      - uses: actions/upload-artifact@v7\n' +
+    '        with:\n' +
+    '          name: sbom-${{ matrix.app }}\n' +
+    '          path: image.cyclonedx.json\n' +
+    '          retention-days: 30\n' +
+    '      - name: Trivy image scan\n' +
+    '        uses: aquasecurity/trivy-action@v0.36.0\n' +
+    '        with:\n' +
+    '          image-ref: verbis/${{ matrix.app }}:ci\n' +
+    '          severity: CRITICAL,HIGH\n' +
+    '          ignore-unfixed: false\n' +
+    "          exit-code: '1'\n" +
+    '          format: table\n' +
+    '\n' +
+    '  trivy-fs:\n' +
+    '    name: Trivy filesystem scan (deps + IaC)\n' +
+    '    runs-on: ubuntu-latest\n' +
+    '    timeout-minutes: 15\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@v7\n' +
+    '      - name: Trivy fs scan\n' +
+    '        uses: aquasecurity/trivy-action@v0.36.0\n' +
+    '        with:\n' +
+    '          scan-type: fs\n' +
+    '          scan-ref: .\n' +
+    '          scanners: vuln,secret,misconfig\n' +
+    '          severity: CRITICAL,HIGH\n' +
+    '          ignore-unfixed: false\n' +
+    "          exit-code: '1'\n" +
+    '          skip-dirs: node_modules\n' +
+    '\n' +
+    '  dependency-audit:\n' +
+    '    name: Dependency audit and CycloneDX SBOM\n' +
+    '    runs-on: ubuntu-latest\n' +
+    '    timeout-minutes: 15\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@v7\n' +
+    '      - uses: pnpm/action-setup@v6\n' +
+    '      - uses: actions/setup-node@v7\n' +
+    '        with:\n' +
+    '          node-version-file: .nvmrc\n' +
+    '          cache: pnpm\n' +
+    '      - run: pnpm install --frozen-lockfile\n' +
+    '      - name: Audit all npm dependencies (pnpm lockfile)\n' +
+    '        run: node scripts/dependency-security.mjs --output npm-audit.json\n' +
+    '      - name: CycloneDX dependency inventory\n' +
+    '        if: always()\n' +
+    '        uses: aquasecurity/trivy-action@v0.36.0\n' +
+    '        with:\n' +
+    '          scan-type: fs\n' +
+    '          scan-ref: .\n' +
+    '          format: cyclonedx\n' +
+    '          output: sbom.cyclonedx.json\n' +
+    "          exit-code: '0'\n" +
+    '      - uses: actions/upload-artifact@v7\n' +
+    '        if: always()\n' +
+    '        with:\n' +
+    '          name: dependency-security\n' +
+    '          path: |\n' +
+    '            npm-audit.json\n' +
+    '            sbom.cyclonedx.json\n' +
+    '          retention-days: 30\n' +
+    '\n' +
+    '  zap-baseline:\n' +
+    '    name: ZAP baseline (ephemeral production web images)\n' +
+    '    runs-on: ubuntu-latest\n' +
+    '    timeout-minutes: 25\n' +
+    '    strategy:\n' +
+    '      fail-fast: false\n' +
+    '      matrix:\n' +
+    '        app: [agent-web, designer-web, admin-web]\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@v7\n' +
+    '      - uses: pnpm/action-setup@v6\n' +
+    '      - uses: actions/setup-node@v7\n' +
+    '        with:\n' +
+    '          node-version-file: .nvmrc\n' +
+    '          cache: pnpm\n' +
+    '      - run: pnpm install --frozen-lockfile\n' +
+    '      - run: pnpm --filter @verbis/agent-web exec playwright install --with-deps chromium\n' +
+    '      - name: Build production web image\n' +
+    '        run: docker build -f infra/docker/web-app.Dockerfile --build-arg APP=${{ matrix.app }} -t verbis/zap-web:ci .\n' +
+    '      - name: Start isolated read-only target\n' +
+    '        run: |\n' +
+    '          docker network create verbis-zap\n' +
+    '          docker run -d --name web --network verbis-zap -p 127.0.0.1:18080:8080 --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop ALL --security-opt no-new-privileges:true verbis/zap-web:ci\n' +
+    '          mkdir -p zap-report\n' +
+    '          chmod 777 zap-report\n' +
+    '      - name: Production header and Trusted Types browser assertions\n' +
+    '        r'... 643 more characters
+  
+      at TestContext.<anonymous> (file:///Users/ardamoustafa/agent%20scripting/scripts/quality-gates.spec.mjs:8:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'name: CI\n\non:\n  push:\n    branches: [main]\n  pull_request:\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: ci-${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: true\n\nenv:\n  TURBO_TELEMETRY_DISABLED: \'1\'\n\njobs:\n  quality:\n    name: Lint · Typecheck · Test · Build\n    runs-on: ubuntu-latest\n    timeout-minutes: 30\n    steps:\n      - uses: actions/checkout@v7\n      - uses: pnpm/action-setup@v6\n      - uses: actions/setup-node@v7\n        with:\n          node-version-file: .nvmrc\n          cache: pnpm\n      - name: Install\n        run: pnpm install --frozen-lockfile\n      - name: Format check\n        run: pnpm format:check\n      - name: Lint\n        run: pnpm lint && pnpm test:lint\n      - name: Typecheck\n        run: pnpm typecheck && pnpm test:typecheck\n      - name: ASVS inventory consistency\n        run: node --test scripts/asvs-inventory.spec.mjs\n      - name: Final audit route and translation inventory\n        run: pnpm test:audit\n      - name: Test policy regression\n        run: pnpm test:policy && node --test scripts/dependency-security.spec.mjs\n      - name: Quarantine policy\n        run: pnpm quarantine:check\n      - name: Test and coverage\n        run: pnpm test\n      - name: Mandatory coverage gate\n        if: always()\n        run: pnpm coverage:check\n      - name: Upload coverage (including failed gates)\n        if: always()\n        uses: actions/upload-artifact@v7\n        with:\n          name: coverage\n          path: |\n            packages/*/coverage/\n            apps/*/coverage/\n          if-no-files-found: error\n          retention-days: 14\n      - name: Build\n        run: pnpm build\n\n  e2e:\n    name: E2E (Playwright + axe)\n    runs-on: ubuntu-latest\n    timeout-minutes: 30\n    steps:\n      - uses: actions/checkout@v7\n      - uses: pnpm/action-setup@v6\n      - uses: actions/setup-node@v7\n        with:\n          node-version-file: .nvmrc\n          cache: pnpm\n      - run: pnpm install --frozen-lockfile\n      - name: Install Playwright browsers\n        run: pnpm --filter @verbis/agent-web exec playwright install --with-deps chromium\n      - name: Build browser apps and shared dependencies\n        run: pnpm build\n      - name: Quarantine policy\n        run: pnpm quarantine:check\n      - name: E2E\n        run: pnpm e2e\n      - name: Upload Playwright reports\n        if: always()\n        uses: actions/upload-artifact@v7\n        with:\n          name: playwright-reports\n          path: |\n            apps/*/playwright-report/\n            apps/*/test-results/\n          retention-days: 7\n\n  e2e-keycloak:\n    name: E2E SSO (Keycloak dev realm)\n    runs-on: ubuntu-latest\n    timeout-minutes: 30\n    steps:\n      - uses: actions/checkout@v7\n      - uses: pnpm/action-setup@v6\n      - uses: actions/setup-node@v7\n        with:\n          node-version-file: .nvmrc\n          cache: pnpm\n      # pnpm install creates .env from .env.example (dev-only placeholders) and generates local keys.\n      - run: pnpm install --frozen-lockfile\n      - name: Start PostgreSQL, Redis, NATS and Keycloak\n        run: docker compose up -d --wait postgres redis nats keycloak\n      - name: Migrate and seed\n        run: pnpm --filter @verbis/api db:migrate && pnpm --filter @verbis/api seed\n      - name: Build\n        run: pnpm --filter @verbis/api... --filter @verbis/admin-web... build\n      - name: Start the API\n        run: |\n          set -a; . ./.env; set +a\n          nohup node apps/api/dist/main.js > api.log 2>&1 &\n          for i in $(seq 1 60); do curl -fs http://127.0.0.1:4000/health/ready && break; sleep 2; done\n      - name: Install Playwright browsers\n        run: pnpm --filter @verbis/admin-web exec playwright install --with-deps chromium\n      - name: Keycloak login e2e\n        run: |\n          set -a; . ./.env; set +a\n          E2E_KEYCLOAK=1 pnpm --filter @verbis/admin-web e2e --project keycloak\n      - name: Upload logs and reports\n        if: failure()\n        uses: actions/upload-artifact@v7\n        with:\n          name: keycloak-e2e\n          path: |\n            api.log\n            apps/admin-web/playwright-report\n          retention-days: 7\n\n  engage-sidecar:\n    name: Genesys Engage sidecar (Java 21)\n    runs-on: ubuntu-latest\n    timeout-minutes: 20\n    defaults:\n      run:\n        working-directory: apps/connector-genesys-engage-sidecar\n    steps:\n      - uses: actions/checkout@v7\n      - uses: actions/setup-java@v5\n        with:\n          distribution: temurin\n          java-version: \'21\'\n      - uses: gradle/actions/setup-gradle@v5\n        with:\n          gradle-version: \'8.14\'\n      # Without the licensed Platform SDK: replay source + Testcontainers NATS (Docker on the runner).\n      - name: Test\n        run: gradle --no-daemon test\n\n  avaya-sidecar:\n    name: Avaya sidecar (Java 21)\n    runs-on: ubuntu-latest\n    timeout-minutes: 20\n    defaults:\n      run:\n        working-directory: apps/connector-avaya-aes-sidecar\n    steps:\n      - uses: actions/checkout@v7\n      - uses: actions/setup-java@v5\n        with:\n          distribution: temurin\n          java-version: \'21\'\n      - uses: gradle/actions/setup-gradle@v5\n        with:\n          gradle-version: \'8.14\'\n      # Without the Avaya JTAPI SDK: replay + AACC + outbound modules, Testcontainers NATS.\n      - name: Test\n        run: gradle --no-daemon test\n\n  secret-scan:\n    name: Secret scan (gitleaks)\n    runs-on: ubuntu-latest\n    timeout-minutes: 10\n    steps:\n      - uses: actions/checkout@v7\n        with:\n          fetch-depth: 0\n      - name: gitleaks\n        run: docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 git /repo --redact --no-banner --exit-code 1\n\n  docker:\n    name: Docker build + Trivy (${{ matrix.app }})\n    runs-on: ubuntu-latest\n    needs: quality\n    timeout-minutes: 30\n    strategy:\n      fail-fast: false\n      matrix:\n        include:\n          - app: api\n            dockerfile: infra/docker/node-app.Dockerfile\n          - app: connector-hub\n            dockerfile: infra/docker/node-app.Dockerfile\n          - app: designer-web\n            dockerfile: infra/docker/web-app.Dockerfile\n          - app: agent-web\n            dockerfile: infra/docker/web-app.Dockerfile\n          - app: admin-web\n            dockerfile: infra/docker/web-app.Dockerfile\n    steps:\n      - uses: actions/checkout@v7\n      - uses: docker/setup-buildx-action@v4\n      - name: Build image\n        uses: docker/build-push-action@v7\n        with:\n          context: .\n          file: ${{ matrix.dockerfile }}\n          build-args: APP=${{ matrix.app }}\n          tags: verbis/${{ matrix.app }}:ci\n          load: true\n          push: false\n          cache-from: type=gha,scope=${{ matrix.app }}\n          cache-to: type=gha,mode=max,scope=${{ matrix.app }}\n      - name: CycloneDX image SBOM (OS and npm packages)\n        uses: aquasecurity/trivy-action@v0.36.0\n        with:\n          image-ref: verbis/${{ matrix.app }}:ci\n          format: cyclonedx\n          output: image.cyclonedx.json\n          exit-code: \'0\'\n      - uses: actions/upload-artifact@v7\n        with:\n          name: sbom-${{ matrix.app }}\n          path: image.cyclonedx.json\n          retention-days: 30\n      - name: Trivy image scan\n        uses: aquasecurity/trivy-action@v0.36.0\n        with:\n          image-ref: verbis/${{ matrix.app }}:ci\n          severity: CRITICAL,HIGH\n          ignore-unfixed: false\n          exit-code: \'1\'\n          format: table\n\n  trivy-fs:\n    name: Trivy filesystem scan (deps + IaC)\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    steps:\n      - uses: actions/checkout@v7\n      - name: Trivy fs scan\n        uses: aquasecurity/trivy-action@v0.36.0\n        with:\n          scan-type: fs\n          scan-ref: .\n          scanners: vuln,secret,misconfig\n          severity: CRITICAL,HIGH\n          ignore-unfixed: false\n          exit-code: \'1\'\n          skip-dirs: node_modules\n\n  dependency-audit:\n    name: Dependency audit and CycloneDX SBOM\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    steps:\n      - uses: actions/checkout@v7\n      - uses: pnpm/action-setup@v6\n      - uses: actions/setup-node@v7\n        with:\n          node-version-file: .nvmrc\n          cache: pnpm\n      - run: pnpm install --frozen-lockfile\n      - name: Audit all npm dependencies (pnpm lockfile)\n        run: node scripts/dependency-security.mjs --output npm-audit.json\n      - name: CycloneDX dependency inventory\n        if: always()\n        uses: aquasecurity/trivy-action@v0.36.0\n        with:\n          scan-type: fs\n          scan-ref: .\n          format: cyclonedx\n          output: sbom.cyclonedx.json\n          exit-code: \'0\'\n      - uses: actions/upload-artifact@v7\n        if: always()\n        with:\n          name: dependency-security\n          path: |\n            npm-audit.json\n            sbom.cyclonedx.json\n          retention-days: 30\n\n  zap-baseline:\n    name: ZAP baseline (ephemeral production web images)\n    runs-on: ubuntu-latest\n    timeout-minutes: 25\n    strategy:\n      fail-fast: false\n      matrix:\n        app: [agent-web, designer-web, admin-web]\n    steps:\n      - uses: actions/checkout@v7\n      - uses: pnpm/action-setup@v6\n      - uses: actions/setup-node@v7\n        with:\n          node-version-file: .nvmrc\n          cache: pnpm\n      - run: pnpm install --frozen-lockfile\n      - run: pnpm --filter @verbis/agent-web exec playwright install --with-deps chromium\n      - name: Build production web image\n        run: docker build -f infra/docker/web-app.Dockerfile --build-arg APP=${{ matrix.app }} -t verbis/zap-web:ci .\n      - name: Start isolated read-only target\n        run: |\n          docker network create verbis-zap\n          docker run -d --name web --network verbis-zap -p 127.0.0.1:18080:8080 --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop ALL --security-opt no-new-privileges:true verbis/zap-web:ci\n          mkdir -p zap-report\n          chmod 777 zap-report\n      - name: Production header and Trusted Types browser assertions\n        r'... 643 more characters,
+    expected: /uses: \.\/\.github\/workflows\/verification\.yml/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at scripts/quality-gates.spec.mjs:17:1
+✖ missing live configuration fails before browser execution (23.174667ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /AGENT_E2E_SESSION_ID/. Input:
+  
+  'file:///Users/ardamoustafa/agent%20scripting/scripts/live-acceptance.mjs:27\n' +
+    "  throw new Error(`Live acceptance cannot silently skip: missing ${missing.join(', ')}`);\n" +
+    '        ^\n' +
+    '\n' +
+    'Error: Live acceptance cannot silently skip: missing ADMIN_E2E_BASE_URL, DESIGNER_E2E_BASE_URL, AGENT_E2E_BASE_URL, ADMIN_E2E_STORAGE_STATE, AUDIT_E2E_FROM_SEQ, AUDIT_E2E_TO_SEQ, SAML_E2E_TENANT, SAML_E2E_IDP_ID, SAML_E2E_USERNAME, SAML_E2E_PASSWORD, SAML_E2E_IDP_ORIGIN, DESIGNER_E2E_AUTHOR_STATE, DESIGNER_E2E_PEER_STATE, DESIGNER_E2E_SCRIPT_ID, DESIGNER_E2E_DRAFT_NUMBER, AGENT_E2E_CONNECTOR_ID, AGENT_E2E_PLATFORM_USER, AGENT_E2E_STORAGE_STATE\n' +
+    '    at file:///Users/ardamoustafa/agent%20scripting/scripts/live-acceptance.mjs:27:9\n' +
+    '\n' +
+    'Node.js v24.11.1\n'
+  
+      at TestContext.<anonymous> (file:///Users/ardamoustafa/agent%20scripting/scripts/quality-gates.spec.mjs:23:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "file:///Users/ardamoustafa/agent%20scripting/scripts/live-acceptance.mjs:27\n  throw new Error(`Live acceptance cannot silently skip: missing ${missing.join(', ')}`);\n        ^\n\nError: Live acceptance cannot silently skip: missing ADMIN_E2E_BASE_URL, DESIGNER_E2E_BASE_URL, AGENT_E2E_BASE_URL, ADMIN_E2E_STORAGE_STATE, AUDIT_E2E_FROM_SEQ, AUDIT_E2E_TO_SEQ, SAML_E2E_TENANT, SAML_E2E_IDP_ID, SAML_E2E_USERNAME, SAML_E2E_PASSWORD, SAML_E2E_IDP_ORIGIN, DESIGNER_E2E_AUTHOR_STATE, DESIGNER_E2E_PEER_STATE, DESIGNER_E2E_SCRIPT_ID, DESIGNER_E2E_DRAFT_NUMBER, AGENT_E2E_CONNECTOR_ID, AGENT_E2E_PLATFORM_USER, AGENT_E2E_STORAGE_STATE\n    at file:///Users/ardamoustafa/agent%20scripting/scripts/live-acceptance.mjs:27:9\n\nNode.js v24.11.1\n",
+    expected: /AGENT_E2E_SESSION_ID/,
+    operator: 'match',
+    diff: 'simple'
+  }

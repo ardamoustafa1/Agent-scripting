@@ -1,0 +1,4 @@
+
+> verbis@ test:typecheck /Users/ardamoustafa/agent scripting
+> tsc -p tests/tsconfig.json --noEmit && tsc -p tests/verification/tsconfig.json --noEmit
+

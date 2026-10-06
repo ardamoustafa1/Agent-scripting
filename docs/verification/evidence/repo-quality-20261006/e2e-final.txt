@@ -1,0 +1,854 @@
+
+> verbis@ e2e /Users/ardamoustafa/agent scripting
+> turbo run e2e
+
+
+   • turbo 2.11.6
+   • Packages in scope: @verbis/admin-web, @verbis/agent-web, @verbis/api, @verbis/authz, @verbis/collaboration, @verbis/components, @verbis/config-eslint, @verbis/config-ts, @verbis/connector-hub, @verbis/core-runtime, @verbis/designer-web, @verbis/docs-site, @verbis/expr, @verbis/i18n, @verbis/observability, @verbis/script-schema, @verbis/sdk-component, @verbis/sdk-connector, @verbis/shared-types, @verbis/test-utils, @verbis/ui
+   • Running e2e in 21 packages
+   • Remote caching disabled
+
+@verbis/test-utils:build: cache hit, replaying logs 1d8d7fac39b0d746
+@verbis/test-utils:build: 
+@verbis/test-utils:build: > @verbis/test-utils@0.0.0 build /Users/ardamoustafa/agent scripting/packages/test-utils
+@verbis/authz:build: cache hit, replaying logs d36e695eda65d732
+@verbis/test-utils:build: > tsc -b tsconfig.build.json
+@verbis/test-utils:build: 
+@verbis/authz:build: 
+@verbis/authz:build: > @verbis/authz@0.0.0 build /Users/ardamoustafa/agent scripting/packages/authz
+@verbis/authz:build: > tsc -b tsconfig.build.json
+@verbis/authz:build: 
+@verbis/i18n:build: cache hit, replaying logs 14b9696baf1ac9e8
+@verbis/shared-types:build: cache hit, replaying logs a59d18304710396a
+@verbis/i18n:build: 
+@verbis/i18n:build: > @verbis/i18n@0.0.0 build /Users/ardamoustafa/agent scripting/packages/i18n
+@verbis/i18n:build: > tsc -b tsconfig.build.json
+@verbis/i18n:build: 
+@verbis/shared-types:build: 
+@verbis/shared-types:build: > @verbis/shared-types@0.0.0 build /Users/ardamoustafa/agent scripting/packages/shared-types
+@verbis/shared-types:build: > tsc -b tsconfig.build.json
+@verbis/shared-types:build: 
+@verbis/collaboration:build: cache hit, replaying logs 95bafeb273f627e5
+@verbis/expr:build: cache hit, replaying logs d6f95e2ce0d9b3fa
+@verbis/observability:build: cache hit, replaying logs b2bea1a812c74aef
+@verbis/collaboration:build: 
+@verbis/collaboration:build: > @verbis/collaboration@0.0.0 build /Users/ardamoustafa/agent scripting/packages/collaboration
+@verbis/collaboration:build: > tsc -b tsconfig.build.json
+@verbis/collaboration:build: 
+@verbis/observability:build: 
+@verbis/observability:build: > @verbis/observability@0.0.0 build /Users/ardamoustafa/agent scripting/packages/observability
+@verbis/observability:build: > tsc -b tsconfig.build.json
+@verbis/observability:build: 
+@verbis/expr:build: 
+@verbis/expr:build: > @verbis/expr@0.0.0 build /Users/ardamoustafa/agent scripting/packages/expr
+@verbis/expr:build: > tsc -b tsconfig.build.json
+@verbis/expr:build: 
+@verbis/ui:build: cache hit, replaying logs 683820bca1e08c52
+@verbis/sdk-connector:build: cache hit, replaying logs 0a052c5829c65918
+@verbis/ui:build: 
+@verbis/ui:build: > @verbis/ui@0.0.0 build /Users/ardamoustafa/agent scripting/packages/ui
+@verbis/ui:build: > tsc -b tsconfig.build.json
+@verbis/ui:build: 
+@verbis/script-schema:build: cache hit, replaying logs 9499b4adb69efe58
+@verbis/sdk-connector:build: 
+@verbis/sdk-connector:build: > @verbis/sdk-connector@0.0.0 build /Users/ardamoustafa/agent scripting/packages/sdk-connector
+@verbis/sdk-connector:build: > tsc -b tsconfig.build.json
+@verbis/sdk-connector:build: 
+@verbis/script-schema:build: 
+@verbis/script-schema:build: > @verbis/script-schema@0.0.0 build /Users/ardamoustafa/agent scripting/packages/script-schema
+@verbis/script-schema:build: > tsc -b tsconfig.build.json
+@verbis/script-schema:build: 
+@verbis/admin-web:build: cache hit, replaying logs 438acb4adf7f2ebf
+@verbis/core-runtime:build: cache hit, replaying logs 7ec53c7293f81488
+@verbis/admin-web:build: 
+@verbis/admin-web:build: > @verbis/admin-web@0.0.0 build /Users/ardamoustafa/agent scripting/apps/admin-web
+@verbis/admin-web:build: > tsc -b && vite build
+@verbis/admin-web:build: 
+@verbis/admin-web:build: vite v8.3.1 building client environment for production...
+@verbis/admin-web:build: transforming...
+@verbis/admin-web:build: ✓ 3908 modules transformed.
+@verbis/admin-web:build: rendering chunks...
+@verbis/admin-web:build: computing gzip size...
+@verbis/admin-web:build: dist/index.html                             1.69 kB │ gzip:   0.58 kB
+@verbis/admin-web:build: dist/assets/index-ChvMuHah.css             67.02 kB │ gzip:  11.99 kB
+@verbis/admin-web:build: dist/assets/iso-D-uwRTlb.js                 0.13 kB │ gzip:   0.12 kB
+@verbis/admin-web:build: dist/assets/x-Jiwxjcdn.js                   0.18 kB │ gzip:   0.16 kB
+@verbis/admin-web:build: dist/assets/rolldown-runtime-hePW80VL.js    0.71 kB │ gzip:   0.42 kB
+@verbis/admin-web:build: dist/assets/users-CBVuk6D6.js               0.84 kB │ gzip:   0.47 kB
+@verbis/admin-web:build: dist/assets/access-CsSfXcAY.js              2.06 kB │ gzip:   0.82 kB
+@verbis/admin-web:build: dist/assets/useMutation-CyzsGMmT.js         5.72 kB │ gzip:   1.83 kB
+@verbis/admin-web:build: dist/assets/overlays-DPrw5th5.js            5.90 kB │ gzip:   2.10 kB
+@verbis/admin-web:build: dist/assets/fields-BPJHVEVX.js             10.59 kB │ gzip:   4.02 kB
+@verbis/admin-web:build: dist/assets/tenant-pages-CpK9Nmx-.js       11.47 kB │ gzip:   3.50 kB
+@verbis/admin-web:build: dist/assets/identity-pages-B4VxXQ9Y.js     13.13 kB │ gzip:   4.14 kB
+@verbis/admin-web:build: dist/assets/es2015-Cbwh-52i.js             22.69 kB │ gzip:   8.15 kB
+@verbis/admin-web:build: dist/assets/ai-page-BVZLiGZX.js            24.73 kB │ gzip:   8.64 kB
+@verbis/admin-web:build: dist/assets/provider-Bn5s3Tbl.js           32.11 kB │ gzip:  12.45 kB
+@verbis/admin-web:build: dist/assets/operations-pages-Cjw8UMTx.js   36.14 kB │ gzip:   9.43 kB
+@verbis/admin-web:build: dist/assets/widgets-CLIhZsns.js            84.21 kB │ gzip:  23.23 kB
+@verbis/admin-web:build: dist/assets/index-BNWBKJtz.js             248.51 kB │ gzip:  86.71 kB
+@verbis/admin-web:build: dist/assets/api-DvIiLTMv.js               285.13 kB │ gzip:  89.41 kB
+@verbis/admin-web:build: dist/assets/analytics-page-CCZW5MXP.js    337.32 kB │ gzip: 101.38 kB
+@verbis/admin-web:build: 
+@verbis/admin-web:build: ✓ built in 415ms
+@verbis/core-runtime:build: 
+@verbis/core-runtime:build: > @verbis/core-runtime@0.0.0 build /Users/ardamoustafa/agent scripting/packages/core-runtime
+@verbis/core-runtime:build: > tsc -b tsconfig.build.json
+@verbis/core-runtime:build: 
+@verbis/admin-web:e2e: cache bypass, force executing 3555a17cdc1636c8
+@verbis/connector-hub:build: cache hit, replaying logs 668e899dc15da64a
+@verbis/connector-hub:build: 
+@verbis/connector-hub:build: > @verbis/connector-hub@0.0.0 build /Users/ardamoustafa/agent scripting/apps/connector-hub
+@verbis/connector-hub:build: > tsc -b tsconfig.build.json
+@verbis/connector-hub:build: 
+@verbis/sdk-component:build: cache hit, replaying logs 72b0cee352fec463
+@verbis/sdk-component:build: 
+@verbis/sdk-component:build: > @verbis/sdk-component@0.0.0 build /Users/ardamoustafa/agent scripting/packages/sdk-component
+@verbis/sdk-component:build: > tsc -b tsconfig.build.json
+@verbis/sdk-component:build: 
+@verbis/components:build: cache hit, replaying logs f9d3c90d7683f147
+@verbis/components:build: 
+@verbis/components:build: > @verbis/components@0.0.0 build /Users/ardamoustafa/agent scripting/packages/components
+@verbis/components:build: > tsc -b tsconfig.build.json
+@verbis/components:build: 
+@verbis/agent-web:build: cache hit, replaying logs 46f71cb5e2b9af38
+@verbis/agent-web:build: 
+@verbis/agent-web:build: > @verbis/agent-web@0.0.0 build /Users/ardamoustafa/agent scripting/apps/agent-web
+@verbis/agent-web:build: > tsc -b && vite build
+@verbis/agent-web:build: 
+@verbis/agent-web:build: vite v8.3.1 building client environment for production...
+@verbis/agent-web:build: transforming...
+@verbis/agent-web:build: ✓ 4267 modules transformed.
+@verbis/agent-web:build: rendering chunks...
+@verbis/agent-web:build: computing gzip size...
+@verbis/agent-web:build: dist/index.html                              1.16 kB │ gzip:   0.51 kB
+@verbis/agent-web:build: dist/assets/index-SAfE6ZRj.css              66.56 kB │ gzip:  11.89 kB
+@verbis/agent-web:build: dist/assets/rolldown-runtime-hePW80VL.js     0.71 kB │ gzip:   0.42 kB
+@verbis/agent-web:build: dist/assets/web-vitals-T56GecVW.js           5.62 kB │ gzip:   2.35 kB
+@verbis/agent-web:build: dist/assets/trace-api-8Y8zsXbv.js            9.32 kB │ gzip:   3.24 kB
+@verbis/agent-web:build: dist/assets/observability-sdk-CQzXYJxu.js   48.11 kB │ gzip:  15.59 kB
+@verbis/agent-web:build: dist/assets/index-CPJ75ycs.js              217.53 kB │ gzip:  74.13 kB
+@verbis/agent-web:build: dist/assets/failure-i7dxCT0G.js            488.38 kB │ gzip: 156.40 kB
+@verbis/agent-web:build: dist/assets/session-view-DlbTzdjQ.js       546.88 kB │ gzip: 162.11 kB
+@verbis/agent-web:build: 
+@verbis/agent-web:build: [plugin builtin:vite-reporter] 
+@verbis/agent-web:build: (!) Some chunks are larger than 500 kB after minification. Consider:
+@verbis/agent-web:build: - Using dynamic import() to code-split the application
+@verbis/agent-web:build: - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+@verbis/agent-web:build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+@verbis/agent-web:build: ✓ built in 463ms
+@verbis/agent-web:e2e: cache bypass, force executing 342e253e85ee73ed
+@verbis/docs-site:build: cache hit, replaying logs d09c91c0abada634
+@verbis/designer-web:build: cache hit, replaying logs 06356c47b02e7540
+@verbis/docs-site:build: 
+@verbis/designer-web:build: 
+@verbis/designer-web:build: > @verbis/designer-web@0.0.0 build /Users/ardamoustafa/agent scripting/apps/designer-web
+@verbis/designer-web:build: > tsc -b && vite build
+@verbis/designer-web:build: 
+@verbis/designer-web:build: vite v8.3.1 building client environment for production...
+@verbis/designer-web:build: transforming...
+@verbis/designer-web:build: ✓ 4309 modules transformed.
+@verbis/designer-web:build: rendering chunks...
+@verbis/designer-web:build: computing gzip size...
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-ext-400-normal-C_uLvvQ5.woff2      1.16 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-ext-500-normal-C9ShMxGR.woff2      1.17 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-ext-500-normal-CEVyPk4Y.woff       1.74 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-ext-400-normal-Bh0R7Dhr.woff       1.74 kB
+@verbis/designer-web:build: dist/index.html                                                        2.90 kB │ gzip:   0.75 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-vietnamese-400-normal-ByoDsISC.woff2        3.92 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-vietnamese-500-normal-BvH7FW2L.woff2        4.04 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-greek-400-normal-C190GLew.woff2             4.22 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-greek-500-normal-JpySY46c.woff2             4.28 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-400-normal-BEIGL1Tu.woff2          5.32 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-500-normal-DmUKJPL_.woff2          5.35 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-vietnamese-400-normal-CqNFfHCs.woff         5.37 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-vietnamese-500-normal-DNRqzVM1.woff         5.47 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-greek-400-normal-B9oWc5Lo.woff              5.66 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-greek-500-normal-D7SFKleX.woff              5.72 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-400-normal-ugxPyKxw.woff           6.97 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-cyrillic-500-normal-DJqRU3vO.woff           7.02 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-ext-400-normal-Bc8Ftmh3.woff2         7.33 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-ext-500-normal-Cut-4mMH.woff2         7.52 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-ext-400-normal-fXTG6kC5.woff         10.12 kB
+@verbis/designer-web:build: dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2               10.25 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-ext-500-normal-ckzbgY84.woff         10.33 kB
+@verbis/designer-web:build: dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2                11.23 kB
+@verbis/designer-web:build: dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2                 18.74 kB
+@verbis/designer-web:build: dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2                    18.99 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-400-normal-V6pRDFza.woff2            21.16 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-500-normal-BWZEU5yA.woff2            21.83 kB
+@verbis/designer-web:build: dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2             25.96 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-400-normal-6-qcROiO.woff             27.49 kB
+@verbis/designer-web:build: dist/assets/jetbrains-mono-latin-500-normal-CJOVTJB7.woff             28.20 kB
+@verbis/designer-web:build: dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                    48.25 kB
+@verbis/designer-web:build: dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2                85.06 kB
+@verbis/designer-web:build: dist/assets/regression-panel-CHyle7PY.css                              0.99 kB │ gzip:   0.41 kB
+@verbis/designer-web:build: dist/assets/campaign-aAb3R1yb.css                                      1.17 kB │ gzip:   0.46 kB
+@verbis/designer-web:build: dist/assets/studio-B1eRorrU.css                                        2.31 kB │ gzip:   0.63 kB
+@verbis/designer-web:build: dist/assets/styles-BVOoOVOY.css                                        3.00 kB │ gzip:   0.86 kB
+@verbis/designer-web:build: dist/assets/styles-Bv2jS1t5.css                                        4.06 kB │ gzip:   1.06 kB
+@verbis/designer-web:build: dist/assets/styles-TkgPOYJF.css                                        6.75 kB │ gzip:   1.52 kB
+@verbis/designer-web:build: dist/assets/editor-D2hWhRgU.css                                       12.61 kB │ gzip:   2.71 kB
+@verbis/designer-web:build: dist/assets/style-CHpVij2M.css                                        15.39 kB │ gzip:   2.55 kB
+@verbis/designer-web:build: dist/assets/index-BiTtCTGk.css                                        90.76 kB │ gzip:  15.63 kB
+@verbis/designer-web:build: dist/assets/useQuery-DV4W8y__.js                                       0.10 kB │ gzip:   0.11 kB
+@verbis/designer-web:build: dist/assets/iso-JsNgfvKC.js                                            0.13 kB │ gzip:   0.12 kB
+@verbis/designer-web:build: dist/assets/plus-Bjvo0N4i.js                                           0.18 kB │ gzip:   0.17 kB
+@verbis/designer-web:build: dist/assets/x-CPxi8C_J.js                                              0.18 kB │ gzip:   0.17 kB
+@verbis/designer-web:build: dist/assets/arrow-left-BYYT18Sb.js                                     0.19 kB │ gzip:   0.18 kB
+@verbis/designer-web:build: dist/assets/arrow-right-CN47k32F.js                                    0.19 kB │ gzip:   0.18 kB
+@verbis/designer-web:build: dist/assets/arrow-up-right-CDSCGfaX.js                                 0.19 kB │ gzip:   0.17 kB
+@verbis/designer-web:build: dist/assets/search-DihD4aA4.js                                         0.20 kB │ gzip:   0.18 kB
+@verbis/designer-web:build: dist/assets/context-BX7piq-V.js                                        0.25 kB │ gzip:   0.20 kB
+@verbis/designer-web:build: dist/assets/git-branch-J7x7kBLc.js                                     0.26 kB │ gzip:   0.21 kB
+@verbis/designer-web:build: dist/assets/activity-DT-lSNXl.js                                       0.26 kB │ gzip:   0.22 kB
+@verbis/designer-web:build: dist/assets/workflow-t7m1Jsog.js                                       0.29 kB │ gzip:   0.22 kB
+@verbis/designer-web:build: dist/assets/pencil-8cVwo9gD.js                                         0.30 kB │ gzip:   0.24 kB
+@verbis/designer-web:build: dist/assets/shield-check-CPCBTEYn.js                                   0.35 kB │ gzip:   0.27 kB
+@verbis/designer-web:build: dist/assets/megaphone-DwaKdMQ1.js                                      0.37 kB │ gzip:   0.26 kB
+@verbis/designer-web:build: dist/assets/QueryClientProvider-BNHQ4L64.js                            0.42 kB │ gzip:   0.29 kB
+@verbis/designer-web:build: dist/assets/earth-C_nnsBXh.js                                          0.44 kB │ gzip:   0.30 kB
+@verbis/designer-web:build: dist/assets/layers-D0NBrKH1.js                                         0.47 kB │ gzip:   0.27 kB
+@verbis/designer-web:build: dist/assets/theme-CFR_5put.js                                          0.66 kB │ gzip:   0.40 kB
+@verbis/designer-web:build: dist/assets/json-field-DBzBqpwt.js                                     0.76 kB │ gzip:   0.48 kB
+@verbis/designer-web:build: dist/assets/settings-DwYdpAcA.js                                       0.95 kB │ gzip:   0.40 kB
+@verbis/docs-site:build: > @verbis/docs-site@0.0.0 build /Users/ardamoustafa/agent scripting/apps/docs-site
+@verbis/docs-site:build: > node scripts/generate-reference.mjs && astro build
+@verbis/docs-site:build: 
+@verbis/docs-site:build: 12:44:47 [content] Syncing content
+@verbis/docs-site:build: 12:44:48 [content] Synced content
+@verbis/docs-site:build: 12:44:48 [types] Generated 1.38s
+@verbis/docs-site:build: 12:44:48 [build] output: "static"
+@verbis/docs-site:build: 12:44:48 [build] mode: "static"
+@verbis/docs-site:build: 12:44:48 [build] directory: /Users/ardamoustafa/agent scripting/apps/docs-site/dist/
+@verbis/docs-site:build: 12:44:48 [build] Collecting build info...
+@verbis/docs-site:build: 12:44:48 [build] ✓ Completed in 1.54s.
+@verbis/docs-site:build: 12:44:48 [build] Building static entrypoints...
+@verbis/docs-site:build: 12:44:50 [vite] ✓ built in 1.64s
+@verbis/docs-site:build: 12:44:50 [vite] ✓ built in 56ms
+@verbis/docs-site:build: 12:44:50 [build] Rearranging server assets...
+@verbis/docs-site:build: 
+@verbis/docs-site:build:  generating static routes 
+@verbis/docs-site:build: 12:44:50   ├─ /404.html12:44:50 [WARN] [content] Entry docs → 404 was not found.
+@verbis/docs-site:build:  (+15ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/index.html (+8ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/adfs/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/entra/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/keycloak/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/okta/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/roles-audit-security/index.html (+5ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/scim/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/admin/sso/index.html (+5ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/agent/quick-start/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/amazon-connect/index.html (+5ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/avaya-aacc/index.html (+32ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/avaya-aes/index.html (+37ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/avaya-axp/index.html (+70ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/cisco-finesse/index.html (+18ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/cisco-webex/index.html (+16ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/dynamics-365/index.html (+13ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/five9/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/genesys-cloud/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/genesys-engage/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/nice-cxone/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/salesforce/index.html (+4ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/connectors/setup/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/demo/index.html (+6ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/best-practices/index.html (+6ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/components/index.html (+15ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/first-script/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/flow/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/functions/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/rules-expressions/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/testing-publishing/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/designer/web-services/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/developer/component-sdk/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/developer/connector-sdk/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/developer/rest-api/index.html (+97ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /en/developer/webhooks/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/adfs/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/entra/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/keycloak/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/okta/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/roles-audit-security/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/scim/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/admin/sso/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/agent/quick-start/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/amazon-connect/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/avaya-aacc/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/avaya-aes/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/avaya-axp/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/cisco-finesse/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/cisco-webex/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/dynamics-365/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/five9/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/genesys-cloud/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/genesys-engage/index.html (+30ms) 
+@verbis/docs-site:build: 12:44:50   ├─ /tr/connectors/nice-cxone/index.html (+13ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/connectors/salesforce/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/connectors/setup/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/demo/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/best-practices/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/components/index.html (+5ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/first-script/index.html (+5ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/flow/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/functions/index.html (+6ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/rules-expressions/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/testing-publishing/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/designer/web-services/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/developer/component-sdk/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/developer/connector-sdk/index.html (+2ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/developer/rest-api/index.html (+124ms) 
+@verbis/docs-site:build: 12:44:51   ├─ /tr/developer/webhooks/index.html (+3ms) 
+@verbis/docs-site:build: 12:44:51 ✓ Completed in 1.05s.
+@verbis/docs-site:build: 
+@verbis/docs-site:build: 12:44:51 [build] ✓ Completed in 2.84s.
+@verbis/docs-site:build: 12:44:51 [starlight:pagefind] Building search index with Pagefind...
+@verbis/docs-site:build: 12:44:52 [starlight:pagefind] Found 71 HTML files.
+@verbis/docs-site:build: 12:44:52 [starlight:pagefind] Finished building search index in 1.73s.
+@verbis/docs-site:build: 12:44:52 [@astrojs/sitemap] `sitemap-index.xml` created at `dist`
+@verbis/docs-site:build: 12:44:52 [build] 71 page(s) built in 6.16s
+@verbis/docs-site:build: 12:44:52 [build] Complete!
+@verbis/designer-web:build: dist/assets/rolldown-runtime-Dd_uD5pT.js                               1.10 kB │ gzip:   0.62 kB
+@verbis/designer-web:build: dist/assets/useInfiniteQuery-rVlxrrcd.js                               1.12 kB │ gzip:   0.47 kB
+@verbis/designer-web:build: dist/assets/lint-BFip8zln.js                                           1.14 kB │ gzip:   0.63 kB
+@verbis/designer-web:build: dist/assets/preload-helper-BZ1Pz5am.js                                 1.21 kB │ gzip:   0.69 kB
+@verbis/designer-web:build: dist/assets/lifecycle-tTuQdHwz.js                                      1.21 kB │ gzip:   0.61 kB
+@verbis/designer-web:build: dist/assets/manager-V4zvd2Xh.js                                        1.62 kB │ gzip:   0.78 kB
+@verbis/designer-web:build: dist/assets/analytics---oMJqoX.js                                      2.01 kB │ gzip:   1.06 kB
+@verbis/designer-web:build: dist/assets/overlays-BYxvJVGE.js                                       2.28 kB │ gzip:   0.90 kB
+@verbis/designer-web:build: dist/assets/useMutation-DkWLvV2O.js                                    2.46 kB │ gzip:   1.02 kB
+@verbis/designer-web:build: dist/assets/rules-B2JtF4n8.js                                          2.56 kB │ gzip:   1.17 kB
+@verbis/designer-web:build: dist/assets/comments-CJ_9CizA.js                                       3.20 kB │ gzip:   1.41 kB
+@verbis/designer-web:build: dist/assets/rule-CpDNZKYq.js                                           3.24 kB │ gzip:   1.50 kB
+@verbis/designer-web:build: dist/assets/mutation-DF2WBM_q.js                                       3.44 kB │ gzip:   1.14 kB
+@verbis/designer-web:build: dist/assets/client-DtYg9ccq.js                                         3.55 kB │ gzip:   1.69 kB
+@verbis/designer-web:build: dist/assets/styles-CfZ77TcY.js                                         3.63 kB │ gzip:   1.64 kB
+@verbis/designer-web:build: dist/assets/regression-panel-CnGhWWOY.js                               3.98 kB │ gzip:   1.61 kB
+@verbis/designer-web:build: dist/assets/list-FGPw_uS1.js                                           4.41 kB │ gzip:   1.78 kB
+@verbis/designer-web:build: dist/assets/templates-DpCz9HMf.js                                      5.20 kB │ gzip:   1.99 kB
+@verbis/designer-web:build: dist/assets/dist-AjX8W7jl.js                                           5.45 kB │ gzip:   2.23 kB
+@verbis/designer-web:build: dist/assets/ai-CjB5BSMT.js                                             5.88 kB │ gzip:   2.43 kB
+@verbis/designer-web:build: dist/assets/packages-X57aqJON.js                                       5.93 kB │ gzip:   2.22 kB
+@verbis/designer-web:build: dist/assets/builder-CyIqwkGl.js                                        6.59 kB │ gzip:   2.24 kB
+@verbis/designer-web:build: dist/assets/analysis-DKDEpW11.js                                       6.70 kB │ gzip:   2.64 kB
+@verbis/designer-web:build: dist/assets/sortable.esm-BVY0zHRf.js                                   6.98 kB │ gzip:   2.91 kB
+@verbis/designer-web:build: dist/assets/document-WFeg9soy.js                                       6.99 kB │ gzip:   2.79 kB
+@verbis/designer-web:build: dist/assets/jsx-runtime-BShSzW0e.js                                    7.11 kB │ gzip:   2.72 kB
+@verbis/designer-web:build: dist/assets/removable-ybvVlAM9.js                                      7.16 kB │ gzip:   2.73 kB
+@verbis/designer-web:build: dist/assets/login-CgUWyR6Z.js                                          8.56 kB │ gzip:   2.79 kB
+@verbis/designer-web:build: dist/assets/script-tMiIdhcH.js                                         8.89 kB │ gzip:   3.07 kB
+@verbis/designer-web:build: dist/assets/assignments-B9skK3FH.js                                    8.91 kB │ gzip:   3.25 kB
+@verbis/designer-web:build: dist/assets/library-BNgOJrjL.js                                        9.07 kB │ gzip:   2.85 kB
+@verbis/designer-web:build: dist/assets/variable-manager-DS-g6ZAA.js                               9.18 kB │ gzip:   3.48 kB
+@verbis/designer-web:build: dist/assets/dist-CcDWp-J_.js                                           9.22 kB │ gzip:   2.48 kB
+@verbis/designer-web:build: dist/assets/disclosure-BxIvU_gy.js                                     9.59 kB │ gzip:   3.22 kB
+@verbis/designer-web:build: dist/assets/value-BPmTLx1z.js                                         10.19 kB │ gzip:   4.43 kB
+@verbis/designer-web:build: dist/assets/campaign-TC5bsWpn.js                                      11.27 kB │ gzip:   3.75 kB
+@verbis/designer-web:build: dist/assets/index-RODl6aGS.js                                         11.70 kB │ gzip:   4.16 kB
+@verbis/designer-web:build: dist/assets/immer-CtAi3CKT.js                                         13.02 kB │ gzip:   5.15 kB
+@verbis/designer-web:build: dist/assets/dist-CXO4YUG8.js                                          13.30 kB │ gzip:   5.18 kB
+@verbis/designer-web:build: dist/assets/release-dyGkDKG7.js                                       14.35 kB │ gzip:   4.61 kB
+@verbis/designer-web:build: dist/assets/useBaseQuery-CcFsZV1j.js                                  15.72 kB │ gzip:   5.30 kB
+@verbis/designer-web:build: dist/assets/react-ZkMeJG2Q.js                                         16.07 kB │ gzip:   5.90 kB
+@verbis/designer-web:build: dist/assets/studio-B-mG8q4W.js                                        18.61 kB │ gzip:   6.32 kB
+@verbis/designer-web:build: dist/assets/states-CvadbQ8c.js                                        20.12 kB │ gzip:   6.88 kB
+@verbis/designer-web:build: dist/assets/designer-Dz_s9Odu.js                                      21.87 kB │ gzip:   6.86 kB
+@verbis/designer-web:build: dist/assets/editor-cCzSHHTQ.js                                        28.31 kB │ gzip:   8.64 kB
+@verbis/designer-web:build: dist/assets/security-C-sYc17a.js                                      29.11 kB │ gzip:  11.59 kB
+@verbis/designer-web:build: dist/assets/fields-hSvofypB.js                                        29.40 kB │ gzip:   8.67 kB
+@verbis/designer-web:build: dist/assets/select-Ku7N93y1.js                                        37.16 kB │ gzip:  12.94 kB
+@verbis/designer-web:build: dist/assets/shell-7cf6-1TP.js                                         39.35 kB │ gzip:  12.31 kB
+@verbis/designer-web:build: dist/assets/core.esm-DsOjmCeV.js                                      42.50 kB │ gzip:  13.84 kB
+@verbis/designer-web:build: dist/assets/provider-BPLo3-ZO.js                                      44.55 kB │ gzip:  16.16 kB
+@verbis/designer-web:build: dist/assets/runtime-CSrN23G6.js                                       71.86 kB │ gzip:  21.92 kB
+@verbis/designer-web:build: dist/assets/data-table-OX-Oy2g4.js                                    79.33 kB │ gzip:  21.75 kB
+@verbis/designer-web:build: dist/assets/chunk-OB3PAWPO-Dm9u06CR.js                                93.94 kB │ gzip:  31.00 kB
+@verbis/designer-web:build: dist/assets/browser-CGIpxNSg.js                                       96.24 kB │ gzip:  29.98 kB
+@verbis/designer-web:build: dist/assets/schemas-CSYboedc.js                                       97.32 kB │ gzip:  27.52 kB
+@verbis/designer-web:build: dist/assets/registry-RNS9Aese.js                                     159.53 kB │ gzip:  49.33 kB
+@verbis/designer-web:build: dist/assets/style-Bx9U9v9z.js                                        162.02 kB │ gzip:  51.20 kB
+@verbis/designer-web:build: dist/assets/feedback-BJnpGwgf.js                                     162.32 kB │ gzip:  54.15 kB
+@verbis/designer-web:build: dist/assets/store-BiejDuDo.js                                        162.44 kB │ gzip:  49.34 kB
+@verbis/designer-web:build: dist/assets/i18n-DnZ4alj1.js                                         171.11 kB │ gzip:  59.60 kB
+@verbis/designer-web:build: dist/assets/editor-DPHAVZJ1.js                                       185.11 kB │ gzip:  55.40 kB
+@verbis/designer-web:build: dist/assets/expression-CVHym48J.js                                   300.25 kB │ gzip:  97.08 kB
+@verbis/designer-web:build: dist/assets/analytics-BzAZOEEv.js                                    316.08 kB │ gzip:  92.84 kB
+@verbis/designer-web:build: dist/assets/elk.bundled-CVOErv1M.js                                1,429.64 kB │ gzip: 441.60 kB
+@verbis/designer-web:build: 
+@verbis/designer-web:build: [plugin builtin:vite-reporter] 
+@verbis/designer-web:build: (!) Some chunks are larger than 500 kB after minification. Consider:
+@verbis/designer-web:build: - Using dynamic import() to code-split the application
+@verbis/designer-web:build: - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+@verbis/designer-web:build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+@verbis/designer-web:build: ✓ built in 1.38s
+@verbis/docs-site:e2e: cache bypass, force executing 4e16dec7f9338063
+@verbis/designer-web:e2e: cache bypass, force executing c94f0a9527faa326
+@verbis/agent-web:e2e: 
+@verbis/agent-web:e2e: > @verbis/agent-web@0.0.0 e2e /Users/ardamoustafa/agent scripting/apps/agent-web
+@verbis/agent-web:e2e: > playwright test --project=chromium
+@verbis/agent-web:e2e: 
+@verbis/docs-site:e2e: 
+@verbis/docs-site:e2e: > @verbis/docs-site@0.0.0 e2e /Users/ardamoustafa/agent scripting/apps/docs-site
+@verbis/docs-site:e2e: > playwright test --workers=1
+@verbis/docs-site:e2e: 
+@verbis/admin-web:e2e: 
+@verbis/admin-web:e2e: > @verbis/admin-web@0.0.0 e2e /Users/ardamoustafa/agent scripting/apps/admin-web
+@verbis/admin-web:e2e: > playwright test --project=chromium
+@verbis/admin-web:e2e: 
+@verbis/designer-web:e2e: 
+@verbis/designer-web:e2e: > @verbis/designer-web@0.0.0 e2e /Users/ardamoustafa/agent scripting/apps/designer-web
+@verbis/designer-web:e2e: > playwright test --project=chromium
+@verbis/designer-web:e2e: 
+@verbis/api:build: cache hit, replaying logs a6b32f542c9604cc
+@verbis/api:build: 
+@verbis/api:build: > @verbis/api@0.0.0 build /Users/ardamoustafa/agent scripting/apps/api
+@verbis/api:build: > prisma generate && tsc -b tsconfig.build.json
+@verbis/api:build: 
+@verbis/api:build: Loaded Prisma config from prisma.config.ts.
+@verbis/api:build: 
+@verbis/api:build: Prisma schema loaded from prisma/schema.prisma.
+@verbis/api:build: 
+@verbis/api:build: ✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 887ms
+@verbis/api:build: 
+@verbis/admin-web:e2e: [WebServer] (node:60097) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/admin-web:e2e: [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/agent-web:e2e: [WebServer] (node:60098) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/agent-web:e2e: [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/designer-web:e2e: [WebServer] (node:60099) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/designer-web:e2e: [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/docs-site:e2e: [WebServer] (node:60100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/docs-site:e2e: [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/agent-web:e2e: [WebServer] (node:60107) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/agent-web:e2e: [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/admin-web:e2e: [WebServer] (node:60105) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/admin-web:e2e: [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/designer-web:e2e: [WebServer] (node:60114) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/designer-web:e2e: [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/admin-web:e2e: 
+@verbis/admin-web:e2e: Running 22 tests using 5 workers
+@verbis/admin-web:e2e: 
+@verbis/agent-web:e2e: 
+@verbis/agent-web:e2e: Running 35 tests using 5 workers
+@verbis/agent-web:e2e: 
+@verbis/docs-site:e2e: [WebServer] (node:60123) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/docs-site:e2e: [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/admin-web:e2e: (node:60136) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/admin-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/admin-web:e2e: (node:60137) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/admin-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/admin-web:e2e: (node:60140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/admin-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/agent-web:e2e: (node:60144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/agent-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/admin-web:e2e: (node:60138) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/admin-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/admin-web:e2e: (node:60139) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/admin-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/agent-web:e2e: (node:60142) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/agent-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/agent-web:e2e: (node:60141) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/agent-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/agent-web:e2e: (node:60143) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/agent-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/agent-web:e2e: (node:60145) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/agent-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/docs-site:e2e: 
+@verbis/docs-site:e2e: Running 12 tests using 1 worker
+@verbis/docs-site:e2e: 
+@verbis/agent-web:e2e: [WebServer] 12:49:41 PM [vite] http proxy error: /v1/sessions/01928f3a-0000-7000-8000-000000000001/release
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e:   ✓   3 [chromium] › e2e/desktop.spec.ts:89:1 › failed logout keeps the interaction visible and permits another attempt (2.6s)
+@verbis/admin-web:e2e:   ✓   4 [chromium] › e2e/analytics.spec.ts:30:1 › read-only analytics uses BFF, exposes empty state, hides export/scheduling and has no axe violations (2.6s)
+@verbis/docs-site:e2e: (node:60175) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/docs-site:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/agent-web:e2e:   ✓   5 [chromium] › e2e/desktop.spec.ts:109:1 › empty live monitoring explains availability and prevents an empty dropdown (3.3s)
+@verbis/admin-web:e2e:   ✓   5 [chromium] › e2e/hello.spec.ts:42:3 › workspace keyboard and axe (light) (3.9s)
+@verbis/agent-web:e2e:   ✓   4 [chromium] › e2e/access-design.spec.ts:8:3 › shared access 768: TR/EN, motion and preserved authentication input (4.8s)
+@verbis/agent-web:e2e:   ✓   2 [chromium] › e2e/access-design.spec.ts:8:3 › shared access 320: TR/EN, motion and preserved authentication input (4.9s)
+@verbis/admin-web:e2e:   ✓   2 [chromium] › e2e/access-design.spec.ts:8:3 › shared access 768: TR/EN, motion and preserved authentication input (5.2s)
+@verbis/admin-web:e2e:   ✓   3 [chromium] › e2e/access-design.spec.ts:8:3 › shared access 1440: TR/EN, motion and preserved authentication input (5.2s)
+@verbis/admin-web:e2e:   ✓   1 [chromium] › e2e/access-design.spec.ts:8:3 › shared access 320: TR/EN, motion and preserved authentication input (5.2s)
+@verbis/agent-web:e2e:   ✓   6 [chromium] › e2e/desktop.spec.ts:134:3 › desktop keyboard and axe (light) (2.5s)
+@verbis/agent-web:e2e:   ✓   1 [chromium] › e2e/access-design.spec.ts:8:3 › shared access 1440: TR/EN, motion and preserved authentication input (5.4s)
+@verbis/agent-web:e2e:   ✓   7 [chromium] › e2e/desktop.spec.ts:134:3 › desktop keyboard and axe (dark) (2.5s)
+@verbis/admin-web:e2e:   ✓   6 [chromium] › e2e/hello.spec.ts:42:3 › workspace keyboard and axe (dark) (3.4s)
+@verbis/agent-web:e2e: [WebServer] 12:49:46 PM [vite] http proxy error: /v1/sessions/01928f3a-0000-7000-8000-000000000001/release
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e:   ✓  12 [chromium] › e2e/hello.spec.ts:8:1 › requires SSO and ignores arbitrary script launch parameters (837ms)
+@verbis/admin-web:e2e:   ✓   8 [chromium] › e2e/hello.spec.ts:56:1 › version conflict does not overwrite policy or claim success (1.4s)
+@verbis/agent-web:e2e:   ✓  10 [chromium] › e2e/desktop.spec.ts:199:3 › @visual agent-web main screen light (1.7s)
+@verbis/admin-web:e2e:   ✓   7 [chromium] › e2e/hello.spec.ts:42:3 › workspace keyboard and axe (high-contrast) (2.9s)
+@verbis/agent-web:e2e:   ✓   9 [chromium] › e2e/desktop.spec.ts:134:3 › desktop keyboard and axe (high-contrast) (2.1s)
+@verbis/docs-site:e2e:   ✓   1 [chromium] › e2e/design.spec.ts:7:7 › documentation identity tr/320/light (2.3s)
+@verbis/admin-web:e2e:   ✓  10 [chromium] › e2e/hello.spec.ts:68:1 › secret values are cleared after rotation and never rendered in metadata (1.6s)
+@verbis/agent-web:e2e:   ✓   8 [chromium] › e2e/desktop.spec.ts:151:1 › retains encrypted note across a browser refresh without storing capabilities (2.3s)
+@verbis/agent-web:e2e:   ✓  11 [chromium] › e2e/desktop.spec.ts:199:3 › @visual agent-web main screen dark (1.9s)
+@verbis/admin-web:e2e:   ✓  12 [chromium] › e2e/hello.spec.ts:117:3 › audit verification distinguishes valid=true, truncated=false (913ms)
+@verbis/agent-web:e2e: [WebServer] 12:49:47 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e: [WebServer] 12:49:47 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/admin-web:e2e:   ✓  11 [chromium] › e2e/hello.spec.ts:99:3 › @visual admin-web main screen dark (1.9s)
+@verbis/admin-web:e2e:   ✓  13 [chromium] › e2e/hello.spec.ts:117:3 › audit verification distinguishes valid=false, truncated=false (1.2s)
+@verbis/agent-web:e2e:   ✓  13 [chromium] › e2e/hello.spec.ts:19:3 › SSO accessibility (light) (1.4s)
+@verbis/admin-web:e2e:   ✓   9 [chromium] › e2e/hello.spec.ts:99:3 › @visual admin-web main screen light (2.8s)
+@verbis/agent-web:e2e:   ✓  14 [chromium] › e2e/hello.spec.ts:19:3 › SSO accessibility (dark) (1.3s)
+@verbis/agent-web:e2e:   ✓  16 [chromium] › e2e/launch.spec.ts:84:1 › opens a session from a fragment code and scrubs it from the URL immediately (1.2s)
+@verbis/agent-web:e2e: [WebServer] 12:49:48 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/admin-web:e2e:   ✓  14 [chromium] › e2e/hello.spec.ts:117:3 › audit verification distinguishes valid=true, truncated=true (1.3s)
+@verbis/admin-web:e2e:   ✓  15 [chromium] › e2e/hello.spec.ts:139:1 › audit explorer displays event sequence, action and correlation without raw customer data (844ms)
+@verbis/agent-web:e2e: [WebServer] 12:49:48 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e:   ✓  18 [chromium] › e2e/launch.spec.ts:120:3 › refuses a replayed code without opening anything (517ms)
+@verbis/agent-web:e2e:   ✓  17 [chromium] › e2e/launch.spec.ts:98:1 › fake URL parameters never open a script and are reported as a signal (1.5s)
+@verbis/agent-web:e2e:   ✓  19 [chromium] › e2e/launch.spec.ts:120:3 › refuses an expired code without opening anything (507ms)
+@verbis/agent-web:e2e: [WebServer] 12:49:48 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e:   ✓  15 [chromium] › e2e/hello.spec.ts:19:3 › SSO accessibility (high-contrast) (1.9s)
+@verbis/agent-web:e2e: [WebServer] 12:49:48 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e: [WebServer] 12:49:49 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e: [WebServer] 12:49:49 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e:   ✓  22 [chromium] › e2e/launch.spec.ts:129:1 › refuses a tampered CTI-less token (623ms)
+@verbis/agent-web:e2e:   ✓  20 [chromium] › e2e/launch.spec.ts:120:3 › refuses another user's code without opening anything (863ms)
+@verbis/agent-web:e2e: [WebServer] 12:49:49 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e:   ✓  24 [chromium] › e2e/launch.spec.ts:147:1 › rate limiting is explained (714ms)
+@verbis/docs-site:e2e:   ✓   2 [chromium] › e2e/design.spec.ts:7:7 › documentation identity tr/320/dark (2.6s)
+@verbis/agent-web:e2e:   ✓  23 [chromium] › e2e/launch.spec.ts:137:1 › rejects malformed CTI-less material before sending any redemption request (818ms)
+@verbis/agent-web:e2e: [WebServer] 12:49:49 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e:   ✓  21 [chromium] › e2e/launch.spec.ts:120:3 › refuses a code from another tenant without opening anything (654ms)
+@verbis/admin-web:e2e:   ✓  17 [chromium] › e2e/hello.spec.ts:208:1 › a session service outage shows retry and recovers without a false sign-in form (1.9s)
+@verbis/admin-web:e2e:   ✓  19 [chromium] › e2e/hello.spec.ts:246:1 › deleting a different SIEM destination requires its own confirmation (1.7s)
+@verbis/agent-web:e2e:   ✓  26 [chromium] › e2e/launch.spec.ts:165:3 › requires an SSO session: none cannot launch (602ms)
+@verbis/agent-web:e2e: [WebServer] 12:49:50 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e:   ✓  25 [chromium] › e2e/launch.spec.ts:153:1 › embedded hint is sent for server-side platform verification only (707ms)
+@verbis/admin-web:e2e:   ✓  16 [chromium] › e2e/hello.spec.ts:164:1 › changing sign-in email discards completed and late SSO discovery (2.3s)
+@verbis/admin-web:e2e:   ✓  18 [chromium] › e2e/hello.spec.ts:227:1 › branding preview opens unsaved values, closes by keyboard and keeps the form (2.2s)
+@verbis/agent-web:e2e: [WebServer] 12:49:50 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e:   ✓  27 [chromium] › e2e/launch.spec.ts:165:3 › requires an SSO session: break_glass cannot launch (629ms)
+@verbis/agent-web:e2e: [WebServer] 12:49:50 PM [vite] ws proxy error:
+@verbis/agent-web:e2e: [WebServer] Error: connect ECONNREFUSED 127.0.0.1:4000
+@verbis/agent-web:e2e: [WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+@verbis/agent-web:e2e:   ✓  28 [chromium] › e2e/launch.spec.ts:173:1 › launch page has no WCAG 2.2 AA violations (1.5s)
+@verbis/admin-web:e2e:   ✓  20 [chromium] › e2e/hello.spec.ts:283:1 › super-admin tenant management shares the product frame and accessible surfaces (2.7s)
+@verbis/admin-web:e2e:   ✓  22 [chromium] › e2e/simulator.spec.ts:124:1 › creates a simulated chat and drives it through its lifecycle (1.4s)
+@verbis/admin-web:e2e:   ✓  21 [chromium] › e2e/simulator.spec.ts:153:1 › simulator is keyboard operable and has no WCAG 2.2 AA violations (1.8s)
+@verbis/agent-web:e2e:   ✓  29 [chromium] › e2e/recovery.spec.ts:158:3 › multiple sessions: labeled tabs, inert panels, deferred attach and keyboard/axe at 390px (2.1s)
+@verbis/docs-site:e2e:   ✓   3 [chromium] › e2e/design.spec.ts:7:7 › documentation identity tr/1440/light (2.2s)
+@verbis/agent-web:e2e:   ✓  30 [chromium] › e2e/recovery.spec.ts:158:3 › multiple sessions: labeled tabs, inert panels, deferred attach and keyboard/axe at 1440px (1.8s)
+@verbis/admin-web:e2e: 
+@verbis/admin-web:e2e:   22 passed (14.5s)
+@verbis/agent-web:e2e:   ✓  32 [chromium] › e2e/recovery.spec.ts:185:3 › safe script failure includes support code and passes axe (1.6s)
+@verbis/agent-web:e2e:   ✓  33 [chromium] › e2e/recovery.spec.ts:196:3 › on-enter datasource block recovery preserves the session and author policy (1.3s)
+@verbis/agent-web:e2e:   ✓  31 [chromium] › e2e/recovery.spec.ts:185:3 › safe 403 failure includes support code and passes axe (2.6s)
+@verbis/agent-web:e2e:   ✓  34 [chromium] › e2e/recovery.spec.ts:196:3 › on-enter datasource continue recovery preserves the session and author policy (1.1s)
+@verbis/docs-site:e2e:   ✓   4 [chromium] › e2e/design.spec.ts:7:7 › documentation identity tr/1440/dark (1.1s)
+@verbis/agent-web:e2e:   ✓  35 [chromium] › e2e/recovery.spec.ts:196:3 › on-enter datasource manual recovery preserves the session and author policy (1.1s)
+@verbis/agent-web:e2e: 
+@verbis/agent-web:e2e:   35 passed (15.6s)
+@verbis/designer-web:e2e: 
+@verbis/designer-web:e2e: Running 251 tests using 5 workers
+@verbis/designer-web:e2e: 
+@verbis/designer-web:e2e: (node:60347) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/designer-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/designer-web:e2e: (node:60349) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/designer-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/designer-web:e2e: (node:60348) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/designer-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/designer-web:e2e: (node:60350) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/designer-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/designer-web:e2e: (node:60351) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/designer-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/docs-site:e2e:   ✓   5 [chromium] › e2e/design.spec.ts:7:7 › documentation identity en/320/light (636ms)
+@verbis/docs-site:e2e:   ✓   6 [chromium] › e2e/design.spec.ts:7:7 › documentation identity en/320/dark (725ms)
+@verbis/docs-site:e2e:   ✓   7 [chromium] › e2e/design.spec.ts:7:7 › documentation identity en/1440/light (1.3s)
+@verbis/designer-web:e2e:   ✓    5 [chromium] › e2e/ai.spec.ts:13:1 › AI suggestions do not save or publish until a human approves (1.6s)
+@verbis/docs-site:e2e:   ✓   8 [chromium] › e2e/design.spec.ts:7:7 › documentation identity en/1440/dark (1.3s)
+@verbis/designer-web:e2e:   ✓    3 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights tr › dark 320: empty and populated design retain report tools (3.9s)
+@verbis/designer-web:e2e:   ✓    1 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights tr › light 320: empty and populated design retain report tools (4.0s)
+@verbis/designer-web:e2e:   ✓    2 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights tr › light 768: empty and populated design retain report tools (4.2s)
+@verbis/designer-web:e2e:   ✓    4 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights tr › light 1440: empty and populated design retain report tools (4.5s)
+@verbis/docs-site:e2e:   ✓   9 [chromium] › e2e/navigation.spec.ts:6:3 › tr documentation navigation and search (2.6s)
+@verbis/designer-web:e2e:   ✓    6 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights tr › dark 768: empty and populated design retain report tools (4.0s)
+@verbis/docs-site:e2e:   ✓  10 [chromium] › e2e/navigation.spec.ts:6:3 › en documentation navigation and search (858ms)
+@verbis/docs-site:e2e:   ✓  11 [chromium] › e2e/navigation.spec.ts:24:3 › tr documentation theme and language controls (371ms)
+@verbis/docs-site:e2e:   ✓  12 [chromium] › e2e/navigation.spec.ts:24:3 › en documentation theme and language controls (350ms)
+@verbis/docs-site:e2e: 
+@verbis/docs-site:e2e:   12 passed (23.7s)
+@verbis/designer-web:e2e:   ✓    8 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights tr › high-contrast 320: empty and populated design retain report tools (3.5s)
+@verbis/designer-web:e2e:   ✓    9 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights tr › high-contrast 768: empty and populated design retain report tools (3.5s)
+@verbis/designer-web:e2e:   ✓    7 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights tr › dark 1440: empty and populated design retain report tools (3.9s)
+@verbis/designer-web:e2e:   ✓   10 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights tr › high-contrast 1440: empty and populated design retain report tools (3.7s)
+@verbis/designer-web:e2e:   ✓   11 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights en › light 320: empty and populated design retain report tools (3.2s)
+@verbis/designer-web:e2e:   ✓   12 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights en › light 768: empty and populated design retain report tools (3.0s)
+@verbis/designer-web:e2e:   ✓   14 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights en › dark 320: empty and populated design retain report tools (2.9s)
+@verbis/designer-web:e2e:   ✓   13 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights en › light 1440: empty and populated design retain report tools (3.3s)
+@verbis/designer-web:e2e:   ✓   15 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights en › dark 768: empty and populated design retain report tools (3.1s)
+@verbis/designer-web:e2e:   ✓   16 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights en › dark 1440: empty and populated design retain report tools (3.1s)
+@verbis/designer-web:e2e:   ✓   20 [chromium] › e2e/analytics-design.spec.ts:113:1 › all workspace commands and report operations remain usable (1.9s)
+@verbis/designer-web:e2e:   ✓   17 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights en › high-contrast 320: empty and populated design retain report tools (2.9s)
+@verbis/designer-web:e2e:   ✓   18 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights en › high-contrast 768: empty and populated design retain report tools (3.2s)
+@verbis/designer-web:e2e:   ✓   21 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring tr › light 320: translated search, page filter and read-only navigation (1.8s)
+@verbis/designer-web:e2e:   ✓   19 [chromium] › e2e/analytics-design.spec.ts:21:9 › insights en › high-contrast 1440: empty and populated design retain report tools (3.1s)
+@verbis/designer-web:e2e:   ✓   22 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring tr › light 1440: translated search, page filter and read-only navigation (1.9s)
+@verbis/designer-web:e2e:   ✓   23 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring tr › dark 320: translated search, page filter and read-only navigation (1.9s)
+@verbis/designer-web:e2e:   ✓   24 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring tr › high-contrast 320: translated search, page filter and read-only navigation (2.1s)
+@verbis/designer-web:e2e:   ✓   25 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring tr › dark 1440: translated search, page filter and read-only navigation (2.0s)
+@verbis/designer-web:e2e:   ✓   26 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring tr › high-contrast 1440: translated search, page filter and read-only navigation (2.2s)
+@verbis/designer-web:e2e:   ✓   27 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring en › light 320: translated search, page filter and read-only navigation (2.0s)
+@verbis/designer-web:e2e:   ✓   28 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring en › light 1440: translated search, page filter and read-only navigation (2.1s)
+@verbis/designer-web:e2e:   ✓   29 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring en › dark 320: translated search, page filter and read-only navigation (2.0s)
+@verbis/designer-web:e2e:   ✓   30 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring en › dark 1440: translated search, page filter and read-only navigation (2.0s)
+@verbis/designer-web:e2e:   ✓   31 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring en › high-contrast 320: translated search, page filter and read-only navigation (1.9s)
+@verbis/designer-web:e2e:   ✓   33 [chromium] › e2e/competitive-authoring.spec.ts:98:1 › large component search keeps every match reachable with bounded result DOM (1.2s)
+@verbis/designer-web:e2e:   ✓   34 [chromium] › e2e/competitive-authoring.spec.ts:133:1 › failed or stale regression revokes publish readiness and a valid rerun recovers (1.1s)
+@verbis/designer-web:e2e:   ✓   32 [chromium] › e2e/competitive-authoring.spec.ts:20:9 › competitive authoring en › high-contrast 1440: translated search, page filter and read-only navigation (1.9s)
+@verbis/designer-web:e2e:   ✓   35 [chromium] › e2e/editor-layout.spec.ts:16:5 › editor controls light 320 (2.4s)
+@verbis/designer-web:e2e:   ✓   37 [chromium] › e2e/editor-layout.spec.ts:16:5 › editor controls light 1440 (2.2s)
+@verbis/designer-web:e2e:   ✓   36 [chromium] › e2e/editor-layout.spec.ts:16:5 › editor controls light 768 (2.4s)
+@verbis/designer-web:e2e:   ✓   38 [chromium] › e2e/editor-layout.spec.ts:16:5 › editor controls dark 320 (2.1s)
+@verbis/designer-web:e2e:   ✓   39 [chromium] › e2e/editor-layout.spec.ts:16:5 › editor controls dark 768 (2.1s)
+@verbis/designer-web:e2e:   ✓   40 [chromium] › e2e/editor-layout.spec.ts:16:5 › editor controls dark 1440 (2.1s)
+@verbis/designer-web:e2e:   ✓   41 [chromium] › e2e/editor-layout.spec.ts:16:5 › editor controls high-contrast 320 (1.8s)
+@verbis/designer-web:e2e:   ✓   42 [chromium] › e2e/editor-layout.spec.ts:16:5 › editor controls high-contrast 768 (1.9s)
+@verbis/designer-web:e2e:   ✓   43 [chromium] › e2e/editor-layout.spec.ts:16:5 › editor controls high-contrast 1440 (1.8s)
+@verbis/designer-web:e2e:   ✓   44 [chromium] › e2e/editor-layout.spec.ts:90:1 › desktop editor uses viewport height and fullscreen retains the editing state (3.3s)
+@verbis/designer-web:e2e:   ✓   47 [chromium] › e2e/editor.spec.ts:108:1 › initial preview handles Next without first changing language or restarting (848ms)
+@verbis/designer-web:e2e:   ✓   45 [chromium] › e2e/editor.spec.ts:80:1 › undo and redo keep the canvas content visibly laid out (1.1s)
+@verbis/designer-web:e2e:   ✓   46 [chromium] › e2e/editor.spec.ts:43:1 › grouping reverse-selected siblings preserves canvas order through ungroup and undo (1.2s)
+@verbis/designer-web:e2e:   ✓   49 [chromium] › e2e/editor.spec.ts:232:1 › palette drag creates a node; undo and redo restore it (947ms)
+@verbis/designer-web:e2e:   ✓   50 [chromium] › e2e/editor.spec.ts:251:3 › editor light keyboard and axe (1.3s)
+@verbis/designer-web:e2e:   ✓   51 [chromium] › e2e/editor.spec.ts:251:3 › editor dark keyboard and axe (1.4s)
+@verbis/designer-web:e2e:   ✓   52 [chromium] › e2e/editor.spec.ts:251:3 › editor high-contrast keyboard and axe (1.3s)
+@verbis/designer-web:e2e:   ✓   53 [chromium] › e2e/editor.spec.ts:262:1 › virtual layer drag reorders siblings in one undo step (884ms)
+@verbis/designer-web:e2e:   ✓   48 [chromium] › e2e/editor.spec.ts:121:1 › reopening an edited script uses the latest server revision for autosave (2.8s)
+@verbis/designer-web:e2e:   ✓   54 [chromium] › e2e/editor.spec.ts:291:1 › draft writes carry CSRF, optimistic version and linked screen pins (1.5s)
+@verbis/designer-web:e2e:   ✓   56 [chromium] › e2e/editor.spec.ts:332:3 › @visual designer-web main screen light (739ms)
+@verbis/designer-web:e2e:   ✓   57 [chromium] › e2e/editor.spec.ts:332:3 › @visual designer-web main screen dark (881ms)
+@verbis/designer-web:e2e:   ✓   59 [chromium] › e2e/editor.spec.ts:487:1 › finds a component on a different page and focuses its inspector (908ms)
+@verbis/designer-web:e2e:   ✓   55 [chromium] › e2e/editor.spec.ts:158:1 › rule operator changes and undo keep the visible value and saved predicate consistent (1.9s)
+@verbis/designer-web:e2e:   ✓   60 [chromium] › e2e/editor.spec.ts:505:3 › palette box: insert, five inspector tabs, undo and redo (1.2s)
+@verbis/designer-web:e2e:   ✓   61 [chromium] › e2e/editor.spec.ts:505:3 › palette button: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   62 [chromium] › e2e/editor.spec.ts:505:3 › palette webService: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   63 [chromium] › e2e/editor.spec.ts:505:3 › palette scriptText: insert, five inspector tabs, undo and redo (1.2s)
+@verbis/designer-web:e2e:   ✓   64 [chromium] › e2e/editor.spec.ts:505:3 › palette privacyNotice: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   65 [chromium] › e2e/editor.spec.ts:505:3 › palette explicitConsent: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   66 [chromium] › e2e/editor.spec.ts:505:3 › palette callout: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   67 [chromium] › e2e/editor.spec.ts:505:3 › palette objectionHandler: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   68 [chromium] › e2e/editor.spec.ts:505:3 › palette checklist: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   69 [chromium] › e2e/editor.spec.ts:505:3 › palette knowledgeLink: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   71 [chromium] › e2e/editor.spec.ts:505:3 › palette heading: insert, five inspector tabs, undo and redo (1.2s)
+@verbis/designer-web:e2e:   ✓   70 [chromium] › e2e/editor.spec.ts:505:3 › palette text: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   72 [chromium] › e2e/editor.spec.ts:505:3 › palette richContent: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   73 [chromium] › e2e/editor.spec.ts:505:3 › palette alert: insert, five inspector tabs, undo and redo (1.2s)
+@verbis/designer-web:e2e:   ✓   74 [chromium] › e2e/editor.spec.ts:505:3 › palette textInput: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   75 [chromium] › e2e/editor.spec.ts:505:3 › palette textArea: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   58 [chromium] › e2e/editor.spec.ts:345:1 › creates a script from scratch, drags a component, builds decision/service flow and a rule (7.2s)
+@verbis/designer-web:e2e:   ✓   76 [chromium] › e2e/editor.spec.ts:505:3 › palette numberInput: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   77 [chromium] › e2e/editor.spec.ts:505:3 › palette currencyInput: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   78 [chromium] › e2e/editor.spec.ts:505:3 › palette select: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   79 [chromium] › e2e/editor.spec.ts:505:3 › palette multiSelect: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓   80 [chromium] › e2e/editor.spec.ts:505:3 › palette radioGroup: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   81 [chromium] › e2e/editor.spec.ts:505:3 › palette checkboxGroup: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   82 [chromium] › e2e/editor.spec.ts:505:3 › palette checkbox: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓   83 [chromium] › e2e/editor.spec.ts:505:3 › palette toggle: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   84 [chromium] › e2e/editor.spec.ts:505:3 › palette datePicker: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   85 [chromium] › e2e/editor.spec.ts:505:3 › palette timePicker: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   86 [chromium] › e2e/editor.spec.ts:505:3 › palette rating: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   87 [chromium] › e2e/editor.spec.ts:505:3 › palette slider: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓   88 [chromium] › e2e/editor.spec.ts:505:3 › palette phoneInput: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓   89 [chromium] › e2e/editor.spec.ts:505:3 › palette emailInput: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   91 [chromium] › e2e/editor.spec.ts:505:3 › palette addressInput: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   90 [chromium] › e2e/editor.spec.ts:505:3 › palette maskedInput: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓   92 [chromium] › e2e/editor.spec.ts:505:3 › palette tcknInput: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   93 [chromium] › e2e/editor.spec.ts:505:3 › palette vknInput: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓   94 [chromium] › e2e/editor.spec.ts:505:3 › palette ibanInput: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓   95 [chromium] › e2e/editor.spec.ts:505:3 › palette creditCardInput: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   96 [chromium] › e2e/editor.spec.ts:505:3 › palette section: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   97 [chromium] › e2e/editor.spec.ts:505:3 › palette card: insert, five inspector tabs, undo and redo (1.3s)
+@verbis/designer-web:e2e:   ✓   98 [chromium] › e2e/editor.spec.ts:505:3 › palette columns: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓   99 [chromium] › e2e/editor.spec.ts:505:3 › palette tabs: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  100 [chromium] › e2e/editor.spec.ts:505:3 › palette accordion: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  101 [chromium] › e2e/editor.spec.ts:505:3 › palette stepper: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  102 [chromium] › e2e/editor.spec.ts:505:3 › palette wizard: insert, five inspector tabs, undo and redo (1.6s)
+@verbis/designer-web:e2e:   ✓  103 [chromium] › e2e/editor.spec.ts:505:3 › palette modal: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  104 [chromium] › e2e/editor.spec.ts:505:3 › palette divider: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  105 [chromium] › e2e/editor.spec.ts:505:3 › palette spacer: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  106 [chromium] › e2e/editor.spec.ts:505:3 › palette repeater: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  107 [chromium] › e2e/editor.spec.ts:505:3 › palette lookup: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  108 [chromium] › e2e/editor.spec.ts:505:3 › palette autoComplete: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  109 [chromium] › e2e/editor.spec.ts:505:3 › palette dataGrid: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  110 [chromium] › e2e/editor.spec.ts:505:3 › palette keyValueList: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  111 [chromium] › e2e/editor.spec.ts:505:3 › palette customerCard: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  112 [chromium] › e2e/editor.spec.ts:505:3 › palette timeline: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  113 [chromium] › e2e/editor.spec.ts:505:3 › palette chart: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  114 [chromium] › e2e/editor.spec.ts:505:3 › palette table: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  115 [chromium] › e2e/editor.spec.ts:505:3 › palette actionButton: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  116 [chromium] › e2e/editor.spec.ts:505:3 › palette nextButton: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  117 [chromium] › e2e/editor.spec.ts:505:3 › palette backButton: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  118 [chromium] › e2e/editor.spec.ts:505:3 › palette buttonGroup: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  119 [chromium] › e2e/editor.spec.ts:505:3 › palette dispositionPicker: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  120 [chromium] › e2e/editor.spec.ts:505:3 › palette outcomeSubmit: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  121 [chromium] › e2e/editor.spec.ts:505:3 › palette transferHint: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  122 [chromium] › e2e/editor.spec.ts:505:3 › palette callbackScheduler: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  123 [chromium] › e2e/editor.spec.ts:505:3 › palette image: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  124 [chromium] › e2e/editor.spec.ts:505:3 › palette video: insert, five inspector tabs, undo and redo (1.6s)
+@verbis/designer-web:e2e:   ✓  125 [chromium] › e2e/editor.spec.ts:505:3 › palette iframe: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  126 [chromium] › e2e/editor.spec.ts:505:3 › palette timer: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  127 [chromium] › e2e/editor.spec.ts:505:3 › palette countdown: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  128 [chromium] › e2e/editor.spec.ts:505:3 › palette note: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  129 [chromium] › e2e/editor.spec.ts:505:3 › palette badge: insert, five inspector tabs, undo and redo (1.4s)
+@verbis/designer-web:e2e:   ✓  130 [chromium] › e2e/editor.spec.ts:505:3 › palette progressIndicator: insert, five inspector tabs, undo and redo (1.5s)
+@verbis/designer-web:e2e:   ✓  131 [chromium] › e2e/editor.spec.ts:505:3 › palette signature: insert, five inspector tabs, undo and redo (1.6s)
+@verbis/designer-web:e2e:   ✓  132 [chromium] › e2e/flow.spec.ts:49:1 › add, arrange, drag and undo a flow node; Page double-click opens its canvas (2.0s)
+@verbis/designer-web:e2e:   ✓  133 [chromium] › e2e/flow.spec.ts:79:1 › rename commits all references atomically and uses CSRF + optimistic version (2.1s)
+@verbis/designer-web:e2e:   ✓  134 [chromium] › e2e/flow.spec.ts:97:5 › Flow light keyboard and axe (1.7s)
+@verbis/designer-web:e2e:   ✓  135 [chromium] › e2e/flow.spec.ts:97:5 › Flow dark keyboard and axe (1.8s)
+@verbis/designer-web:e2e:   ✓  136 [chromium] › e2e/flow.spec.ts:97:5 › Flow high-contrast keyboard and axe (1.9s)
+@verbis/designer-web:e2e:   ✓  137 [chromium] › e2e/flow.spec.ts:97:5 › Rules light keyboard and axe (1.5s)
+@verbis/designer-web:e2e:   ✓  139 [chromium] › e2e/flow.spec.ts:97:5 › Rules high-contrast keyboard and axe (1.7s)
+@verbis/designer-web:e2e:   ✓  138 [chromium] › e2e/flow.spec.ts:97:5 › Rules dark keyboard and axe (1.7s)
+@verbis/designer-web:e2e:   ✓  140 [chromium] › e2e/flow.spec.ts:97:5 › Variables light keyboard and axe (1.8s)
+@verbis/designer-web:e2e:   ✓  141 [chromium] › e2e/flow.spec.ts:97:5 › Variables dark keyboard and axe (1.7s)
+@verbis/designer-web:e2e:   ✓  143 [chromium] › e2e/hello.spec.ts:32:1 › new workspace stays light on a dark operating system with a navy rail (1.1s)
+@verbis/designer-web:e2e:   ✓  142 [chromium] › e2e/flow.spec.ts:97:5 › Variables high-contrast keyboard and axe (1.8s)
+@verbis/designer-web:e2e:   ✓  144 [chromium] › e2e/hello.spec.ts:44:3 › sidebar footer stays visible and usable at 320px (1.3s)
+@verbis/designer-web:e2e:   ✓  145 [chromium] › e2e/hello.spec.ts:44:3 › sidebar footer stays visible and usable at 1440px (1.5s)
+@verbis/designer-web:e2e:   ✓  150 [chromium] › e2e/hello.spec.ts:91:1 › direct forbidden routes cannot expose the campaigns list (321ms)
+@verbis/designer-web:e2e:   ✓  151 [chromium] › e2e/hello.spec.ts:102:1 › health endpoint responds (95ms)
+@verbis/designer-web:e2e:   ✓  149 [chromium] › e2e/hello.spec.ts:83:1 › campaign assignments and mappings are reachable by keyboard (1.3s)
+@verbis/designer-web:e2e:   ✓  146 [chromium] › e2e/hello.spec.ts:69:3 › workspace light: axe, command navigation and cards (1.9s)
+@verbis/designer-web:e2e:   ✓  147 [chromium] › e2e/hello.spec.ts:69:3 › workspace dark: axe, command navigation and cards (1.9s)
+@verbis/designer-web:e2e:   ✓  148 [chromium] › e2e/hello.spec.ts:69:3 › workspace high-contrast: axe, command navigation and cards (2.0s)
+@verbis/designer-web:e2e:   ✓  153 [chromium] › e2e/hello.spec.ts:151:1 › SSO sign-out follows the identity provider logout URL returned by the BFF (796ms)
+@verbis/designer-web:e2e:   ✓  152 [chromium] › e2e/hello.spec.ts:107:1 › changing sign-in email discards completed and late SSO discovery (1.4s)
+@verbis/designer-web:e2e:   ✓  154 [chromium] › e2e/hello.spec.ts:168:3 › navigation remains reachable in a short 320px viewport (1.2s)
+@verbis/designer-web:e2e:   ✓  155 [chromium] › e2e/hello.spec.ts:168:3 › navigation remains reachable in a short 768px viewport (1.2s)
+@verbis/designer-web:e2e:   ✓  156 [chromium] › e2e/hello.spec.ts:168:3 › navigation remains reachable in a short 1440px viewport (1.2s)
+@verbis/designer-web:e2e:   ✓  158 [chromium] › e2e/hello.spec.ts:231:5 › sidebar toggle light 320: width, navigation and persistence (1.9s)
+@verbis/designer-web:e2e:   ✓  159 [chromium] › e2e/hello.spec.ts:231:5 › sidebar toggle light 1440: width, navigation and persistence (1.8s)
+@verbis/designer-web:e2e:   ✓  160 [chromium] › e2e/hello.spec.ts:231:5 › sidebar toggle dark 320: width, navigation and persistence (1.8s)
+@verbis/designer-web:e2e:   ✓  157 [chromium] › e2e/hello.spec.ts:185:1 › a failed library page preserves cards and recovers without losing filters (2.7s)
+@verbis/designer-web:e2e:   ✓  161 [chromium] › e2e/hello.spec.ts:231:5 › sidebar toggle dark 1440: width, navigation and persistence (1.9s)
+@verbis/designer-web:e2e:   ✓  165 [chromium] › e2e/integrations.spec.ts:115:1 › cURL import is data-only and rejects embedded credentials (615ms)
+@verbis/designer-web:e2e:   ✓  164 [chromium] › e2e/integrations.spec.ts:102:1 › opens protocol, health and consumer list, then edits a service (751ms)
+@verbis/designer-web:e2e:   ✓  166 [chromium] › e2e/integrations.spec.ts:123:1 › production profiles are read-only and promotion requires a saved draft and reason (735ms)
+@verbis/designer-web:e2e:   ✓  162 [chromium] › e2e/hello.spec.ts:231:5 › sidebar toggle high-contrast 320: width, navigation and persistence (1.9s)
+@verbis/designer-web:e2e:   ✓  163 [chromium] › e2e/hello.spec.ts:231:5 › sidebar toggle high-contrast 1440: width, navigation and persistence (2.0s)
+@verbis/designer-web:e2e:   ✓  167 [chromium] › e2e/integrations.spec.ts:136:3 › integration editor light keyboard and axe (1.1s)
+@verbis/designer-web:e2e:   ✓  170 [chromium] › e2e/integrations.spec.ts:148:1 › creates a REST service without exposing credentials to the script (576ms)
+@verbis/designer-web:e2e:   ✓  168 [chromium] › e2e/integrations.spec.ts:136:3 › integration editor dark keyboard and axe (1.3s)
+@verbis/designer-web:e2e:   ✓  169 [chromium] › e2e/integrations.spec.ts:136:3 › integration editor high-contrast keyboard and axe (1.3s)
+@verbis/designer-web:e2e:   ✓  172 [chromium] › e2e/integrations.spec.ts:202:1 › console refuses malformed JSON instead of executing its previous valid input (639ms)
+@verbis/designer-web:e2e:   ✓  171 [chromium] › e2e/integrations.spec.ts:176:1 › restores saved visual mappings across tabs and preserves fields when extending them (1.8s)
+@verbis/designer-web:e2e:   ✓  173 [chromium] › e2e/lifecycle-layout.spec.ts:21:3 › lifecycle controls stay readable tr light 320 (2.3s)
+@verbis/designer-web:e2e:   ✓  174 [chromium] › e2e/lifecycle-layout.spec.ts:21:3 › lifecycle controls stay readable tr light 768 (2.4s)
+@verbis/designer-web:e2e:   ✓  176 [chromium] › e2e/lifecycle-layout.spec.ts:21:3 › lifecycle controls stay readable tr dark 320 (2.3s)
+@verbis/designer-web:e2e:   ✓  175 [chromium] › e2e/lifecycle-layout.spec.ts:21:3 › lifecycle controls stay readable tr light 1440 (2.5s)
+@verbis/designer-web:e2e:   ✓  177 [chromium] › e2e/lifecycle-layout.spec.ts:21:3 › lifecycle controls stay readable tr dark 768 (2.4s)
+@verbis/designer-web:e2e:   ✓  178 [chromium] › e2e/lifecycle-layout.spec.ts:21:3 › lifecycle controls stay readable tr dark 1440 (2.5s)
+@verbis/designer-web:e2e:   ✓  179 [chromium] › e2e/lifecycle-layout.spec.ts:21:3 › lifecycle controls stay readable tr high-contrast 320 (2.3s)
+@verbis/designer-web:e2e:   ✓  181 [chromium] › e2e/lifecycle-layout.spec.ts:21:3 › lifecycle controls stay readable tr high-contrast 1440 (2.5s)
+@verbis/designer-web:e2e:   ✓  180 [chromium] › e2e/lifecycle-layout.spec.ts:21:3 › lifecycle controls stay readable tr high-contrast 768 (2.7s)
+@verbis/designer-web:e2e:   ✓  183 [chromium] › e2e/lifecycle.spec.ts:111:1 › requires a change note and submits it with the BFF CSRF token (670ms)
+@verbis/designer-web:e2e:   ✓  184 [chromium] › e2e/lifecycle.spec.ts:126:1 › continues authoring a published script in a new draft (807ms)
+@verbis/designer-web:e2e:   ✓  185 [chromium] › e2e/lifecycle.spec.ts:155:1 › exposes semantic and JSON diff modes with keyboard navigation (685ms)
+@verbis/designer-web:e2e:   ✓  182 [chromium] › e2e/lifecycle-layout.spec.ts:21:3 › lifecycle controls stay readable en light 1440 (2.5s)
+@verbis/designer-web:e2e:   ✓  186 [chromium] › e2e/lifecycle.spec.ts:164:1 › filters the six industry templates without losing tenant gallery access (1.0s)
+@verbis/designer-web:e2e:   ✓  190 [chromium] › e2e/lifecycle.spec.ts:188:1 › mention notification target opens the matching node thread (628ms)
+@verbis/designer-web:e2e:   ✓  187 [chromium] › e2e/lifecycle.spec.ts:178:3 › release accessibility in Light (2.0s)
+@verbis/designer-web:e2e:   ✓  188 [chromium] › e2e/lifecycle.spec.ts:178:3 › release accessibility in Dark (1.8s)
+@verbis/designer-web:e2e:   ✓  189 [chromium] › e2e/lifecycle.spec.ts:178:3 › release accessibility in High contrast (1.8s)
+@verbis/designer-web:e2e:   ✓  191 [chromium] › e2e/lifecycle.spec.ts:218:1 › approval and publication require passed regression, then update release state (1.3s)
+@verbis/designer-web:e2e:   ✓  192 [chromium] › e2e/lifecycle.spec.ts:273:1 › assigns the script to a campaign using the BFF CSRF boundary (869ms)
+@verbis/designer-web:e2e:   ✓  197 [chromium] › e2e/login-design.spec.ts:42:1 › reduced motion stops decorative effects; keyboard submits real provider discovery (896ms)
+@verbis/designer-web:e2e:   ✓  193 [chromium] › e2e/login-design.spec.ts:12:3 › entry design 320: accessible and no horizontal overflow (2.1s)
+@verbis/designer-web:e2e:   ✓  194 [chromium] › e2e/login-design.spec.ts:12:3 › entry design 390: accessible and no horizontal overflow (2.1s)
+@verbis/designer-web:e2e:   ✓  198 [chromium] › e2e/login-design.spec.ts:77:1 › script atlas moves, pauses completely and resumes without interrupting the email (885ms)
+@verbis/designer-web:e2e:   ✓  195 [chromium] › e2e/login-design.spec.ts:12:3 › entry design 768: accessible and no horizontal overflow (2.1s)
+@verbis/designer-web:e2e:   ✓  196 [chromium] › e2e/login-design.spec.ts:12:3 › entry design 1440: accessible and no horizontal overflow (2.3s)
+@verbis/designer-web:e2e:   ✓  199 [chromium] › e2e/login-design.spec.ts:107:1 › a device without WebGL retains the complete sign-in form and static artwork (922ms)
+@verbis/designer-web:e2e:   ✓  201 [chromium] › e2e/preview.spec.ts:57:1 › runs actual runtime in a device frame and restores a selected state (1.7s)
+@verbis/designer-web:e2e:   ✓  202 [chromium] › e2e/preview.spec.ts:72:1 › device preview blocks scripts and inline event handlers from frame content (1.7s)
+@verbis/designer-web:e2e:   ✓  200 [chromium] › e2e/login-design.spec.ts:128:1 › discovery failure explains recovery and retry preserves the work email (2.6s)
+@verbis/designer-web:e2e:   ✓  203 [chromium] › e2e/preview.spec.ts:103:1 › records a synthetic session with CSRF and disables live mode without permission (2.8s)
+@verbis/designer-web:e2e:   ✓  207 [chromium] › e2e/publication-gate.spec.ts:17:5 › campaign-scoped creation and explanatory 403 en 390 (998ms)
+@verbis/designer-web:e2e:   ✓  204 [chromium] › e2e/preview.spec.ts:124:3 › preview light keyboard and accessibility (3.5s)
+@verbis/designer-web:e2e:   ✓  208 [chromium] › e2e/publication-gate.spec.ts:17:5 › campaign-scoped creation and explanatory 403 en 1440 (1.2s)
+@verbis/designer-web:e2e:   ✓  209 [chromium] › e2e/publication-gate.spec.ts:17:5 › campaign-scoped creation and explanatory 403 tr 390 (1.2s)
+@verbis/designer-web:e2e:   ✓  210 [chromium] › e2e/publication-gate.spec.ts:17:5 › campaign-scoped creation and explanatory 403 tr 1440 (1.3s)
+@verbis/designer-web:e2e:   ✓  205 [chromium] › e2e/preview.spec.ts:124:3 › preview dark keyboard and accessibility (4.7s)
+@verbis/designer-web:e2e:   ✓  206 [chromium] › e2e/preview.spec.ts:124:3 › preview high-contrast keyboard and accessibility (4.8s)
+@verbis/designer-web:e2e:   ✓  211 [chromium] › e2e/script-detail-design.spec.ts:20:3 › script detail tr light 320 (4.0s)
+@verbis/designer-web:e2e:   ✓  212 [chromium] › e2e/script-detail-design.spec.ts:20:3 › script detail tr light 768 (4.3s)
+@verbis/designer-web:e2e:   ✓  213 [chromium] › e2e/script-detail-design.spec.ts:20:3 › script detail tr light 1440 (3.9s)
+@verbis/designer-web:e2e:   ✓  214 [chromium] › e2e/script-detail-design.spec.ts:20:3 › script detail tr dark 320 (3.2s)
+@verbis/designer-web:e2e:   ✓  215 [chromium] › e2e/script-detail-design.spec.ts:20:3 › script detail tr dark 768 (3.6s)
+@verbis/designer-web:e2e:   ✓  216 [chromium] › e2e/script-detail-design.spec.ts:20:3 › script detail tr dark 1440 (3.7s)
+@verbis/designer-web:e2e:   ✓  217 [chromium] › e2e/script-detail-design.spec.ts:20:3 › script detail tr high-contrast 320 (3.3s)
+@verbis/designer-web:e2e:   ✓  218 [chromium] › e2e/script-detail-design.spec.ts:20:3 › script detail tr high-contrast 768 (3.2s)
+@verbis/designer-web:e2e:   ✓  219 [chromium] › e2e/script-detail-design.spec.ts:20:3 › script detail tr high-contrast 1440 (3.5s)
+@verbis/designer-web:e2e:   ✓  221 [chromium] › e2e/visual-hierarchy.spec.ts:9:5 › library hierarchy light 320 (1.6s)
+@verbis/designer-web:e2e:   ✓  222 [chromium] › e2e/visual-hierarchy.spec.ts:9:5 › library hierarchy light 768 (1.5s)
+@verbis/designer-web:e2e:   ✓  220 [chromium] › e2e/script-detail-design.spec.ts:20:3 › script detail en light 1440 (3.7s)
+@verbis/designer-web:e2e:   ✓  223 [chromium] › e2e/visual-hierarchy.spec.ts:9:5 › library hierarchy light 1440 (1.6s)
+@verbis/designer-web:e2e:   ✓  224 [chromium] › e2e/visual-hierarchy.spec.ts:9:5 › library hierarchy dark 320 (1.4s)
+@verbis/designer-web:e2e:   ✓  225 [chromium] › e2e/visual-hierarchy.spec.ts:9:5 › library hierarchy dark 768 (1.6s)
+@verbis/designer-web:e2e:   ✓  227 [chromium] › e2e/visual-hierarchy.spec.ts:9:5 › library hierarchy high-contrast 320 (1.6s)
+@verbis/designer-web:e2e:   ✓  226 [chromium] › e2e/visual-hierarchy.spec.ts:9:5 › library hierarchy dark 1440 (1.8s)
+@verbis/designer-web:e2e:   ✓  228 [chromium] › e2e/visual-hierarchy.spec.ts:9:5 › library hierarchy high-contrast 768 (1.9s)
+@verbis/designer-web:e2e:   ✓  229 [chromium] › e2e/visual-hierarchy.spec.ts:9:5 › library hierarchy high-contrast 1440 (1.8s)
+@verbis/designer-web:e2e:   ✓  230 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide tr › light 320: all steps, keyboard, restart and axe (3.0s)
+@verbis/designer-web:e2e:   ✓  232 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide tr › dark 320: all steps, keyboard, restart and axe (3.2s)
+@verbis/designer-web:e2e:   ✓  231 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide tr › light 1440: all steps, keyboard, restart and axe (3.4s)
+@verbis/designer-web:e2e:   ✓  233 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide tr › dark 1440: all steps, keyboard, restart and axe (3.6s)
+@verbis/designer-web:e2e:   ✓  234 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide tr › high-contrast 320: all steps, keyboard, restart and axe (3.4s)
+@verbis/designer-web:e2e:   ✓  235 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide tr › high-contrast 1440: all steps, keyboard, restart and axe (3.3s)
+@verbis/designer-web:e2e:   ✓  237 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide en › light 1440: all steps, keyboard, restart and axe (3.2s)
+@verbis/designer-web:e2e:   ✓  236 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide en › light 320: all steps, keyboard, restart and axe (3.2s)
+@verbis/designer-web:e2e:   ✓  238 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide en › dark 320: all steps, keyboard, restart and axe (3.0s)
+@verbis/designer-web:e2e:   ✓  239 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide en › dark 1440: all steps, keyboard, restart and axe (3.3s)
+@verbis/designer-web:e2e:   ✓  240 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide en › high-contrast 320: all steps, keyboard, restart and axe (2.8s)
+@verbis/designer-web:e2e:   ✓  241 [chromium] › e2e/welcome-tour.spec.ts:12:9 › welcome guide en › high-contrast 1440: all steps, keyboard, restart and axe (2.9s)
+@verbis/designer-web:e2e:   ✓  242 [chromium] › e2e/workspace-forms-layout.spec.ts:15:5 › workspace forms fit and actions keep their hierarchy light 390 (8.1s)
+@verbis/designer-web:e2e:   ✓  243 [chromium] › e2e/workspace-forms-layout.spec.ts:15:5 › workspace forms fit and actions keep their hierarchy light 768 (8.1s)
+@verbis/designer-web:e2e:   ✓  244 [chromium] › e2e/workspace-forms-layout.spec.ts:15:5 › workspace forms fit and actions keep their hierarchy light 1440 (8.1s)
+@verbis/designer-web:e2e:   ✓  245 [chromium] › e2e/workspace-forms-layout.spec.ts:15:5 › workspace forms fit and actions keep their hierarchy dark 390 (7.9s)
+@verbis/designer-web:e2e:   ✓  246 [chromium] › e2e/workspace-forms-layout.spec.ts:15:5 › workspace forms fit and actions keep their hierarchy dark 768 (7.8s)
+@verbis/designer-web:e2e: (node:61289) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+@verbis/designer-web:e2e: (Use `node --trace-warnings ...` to show where the warning was created)
+@verbis/designer-web:e2e:   ✓  251 [chromium] › e2e/performance.spec.ts:37:1 › 1000 nodes keep the layer DOM bounded and record a drag frame budget (2.9s)
+@verbis/designer-web:e2e:   ✓  247 [chromium] › e2e/workspace-forms-layout.spec.ts:15:5 › workspace forms fit and actions keep their hierarchy dark 1440 (7.3s)
+@verbis/designer-web:e2e:   ✓  248 [chromium] › e2e/workspace-forms-layout.spec.ts:15:5 › workspace forms fit and actions keep their hierarchy high-contrast 390 (7.2s)
+@verbis/designer-web:e2e:   ✓  249 [chromium] › e2e/workspace-forms-layout.spec.ts:15:5 › workspace forms fit and actions keep their hierarchy high-contrast 768 (7.0s)
+@verbis/designer-web:e2e:   ✓  250 [chromium] › e2e/workspace-forms-layout.spec.ts:15:5 › workspace forms fit and actions keep their hierarchy high-contrast 1440 (6.6s)
+@verbis/designer-web:e2e: 
+@verbis/designer-web:e2e:   251 passed (2.1m)
+
+ Tasks:    23 successful, 23 total
+Cached:    19 cached, 23 total
+  Time:    2m9.277s 
+

@@ -1,0 +1,106 @@
+
+> verbis@ test:verification /Users/ardamoustafa/agent scripting
+> pnpm --filter @verbis/api exec vitest run --config ../../tests/verification/v2.config.mjs --reporter=default --reporter=json --outputFile=reports/verification/results.json && node scripts/assert-test-results.mjs reports/verification/results.json vitest
+
+
+ RUN  v5.0.3 /Users/ardamoustafa/agent scripting
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Product audit: local API ready
+Product audit: Vite apps ready
+Product audit: collaboration case starting
+Product audit: flushing room and awaiting navigation
+stderr | tests/verification/product-browser.audit.spec.ts > Real frontend / API / PostgreSQL / Redis product audit (no response mocks) > synchronizes two distinct real users and persists peer edits after closing the collaboration room
+[onStoreDocument] Collaboration lease expired
+
+stderr | tests/verification/product-browser.audit.spec.ts > Real frontend / API / PostgreSQL / Redis product audit (no response mocks) > synchronizes two distinct real users and persists peer edits after closing the collaboration room
+Caught error during storeDocumentHooks. Document stays in memory to avoid data loss DomainError: Collaboration lease expired
+    at DraftLeaseService.renew (/Users/ardamoustafa/agent scripting/apps/api/src/modules/scripts/draft-lease.service.ts:32:13)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/ardamoustafa/agent scripting/apps/api/src/modules/scripts/collaboration.service.ts:331:9
+    at CollaborationService.persist (/Users/ardamoustafa/agent scripting/apps/api/src/modules/scripts/collaboration.service.ts:414:7)
+    at Object.onStoreDocument (/Users/ardamoustafa/agent scripting/apps/api/src/modules/scripts/collaboration.service.ts:275:9)
+    at file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/@hocuspocus+server@4.7.0_y-protocols@1.0.7_yjs@13.6.33__yjs@13.6.33/node_modules/@hocuspocus/server/dist/hocuspocus-server.esm.js:1537:6 {
+  code: 'VERBIS_SCRIPT_INVALID_TRANSITION',
+  detail: 'Collaboration lease expired',
+  errors: undefined,
+  headers: undefined
+}
+
+Product audit: flushing room and awaiting navigation
+Product audit: browser closed
+Product audit: closing API
+Product audit: API closed
+ ✓ tests/verification/product-browser.audit.spec.ts (45 tests) 82796ms
+   ✓ Real frontend / API / PostgreSQL / Redis product audit (no response mocks) (45)
+     ✓ loads all three applications with actual BFF sessions and checks responsive horizontal overflow 3594ms
+     ✓ admin analytics: real API, responsive layout and no browser exception 1468ms
+     ✓ admin identity: real API, responsive layout and no browser exception 1558ms
+     ✓ admin users: real API, responsive layout and no browser exception 1992ms
+     ✓ admin connectors: real API, responsive layout and no browser exception 1371ms
+     ✓ admin secrets: real API, responsive layout and no browser exception 1266ms
+     ✓ admin ai: real API, responsive layout and no browser exception 1268ms
+     ✓ admin audit: real API, responsive layout and no browser exception 1484ms
+     ✓ admin security: real API, responsive layout and no browser exception 1294ms
+     ✓ admin data: real API, responsive layout and no browser exception 1374ms
+     ✓ admin branding: real API, responsive layout and no browser exception 1188ms
+     ✓ admin simulator: real API, responsive layout and no browser exception 1249ms
+     ✓ admin systemHealth: real API, responsive layout and no browser exception 1306ms
+     ✓ designer analytics: real API, responsive layout and no browser exception 1357ms
+     ✓ designer campaigns: real API, responsive layout and no browser exception 1368ms
+     ✓ designer scripts: real API, responsive layout and no browser exception 1329ms
+     ✓ designer screens: real API, responsive layout and no browser exception 1310ms
+     ✓ designer integrations: real API, responsive layout and no browser exception 1265ms
+     ✓ designer variables: real API, responsive layout and no browser exception 1353ms
+     ✓ designer ai: real API, responsive layout and no browser exception 1276ms
+     ✓ designer templates: real API, responsive layout and no browser exception 1314ms
+     ✓ designer releases: real API, responsive layout and no browser exception 1316ms
+     ✓ designer settings: real API, responsive layout and no browser exception 1238ms
+     ✓ designer detailed script: responsive controls remain reachable 1539ms
+     ✓ designer detailed edit: responsive controls remain reachable 1859ms
+     ✓ designer detailed release: responsive controls remain reachable 1453ms
+     ✓ designer detailed assignments: responsive controls remain reachable 1348ms
+     ✓ designer detailed packages: responsive controls remain reachable 1247ms
+     ✓ designer detailed new-integration: responsive controls remain reachable 1275ms
+     ✓ creates a script and its first draft through browser forms and verifies persisted database records 589ms
+     ✓ creates and activates a campaign with outcome requirements through the real browser and database 3686ms
+     ✓ creates and rotates a secret without displaying its value after save or reload 692ms
+     ✓ tenant_admin: authenticated navigation and denied script writes match role permissions 1709ms
+     ✓ security_auditor: authenticated navigation and denied script writes match role permissions 1737ms
+     ✓ script_designer: authenticated navigation and denied script writes match role permissions 1680ms
+     ✓ script_approver: authenticated navigation and denied script writes match role permissions 1724ms
+     ✓ integration_engineer: authenticated navigation and denied script writes match role permissions 1721ms
+     ✓ campaign_manager: authenticated navigation and denied script writes match role permissions 1749ms
+     ✓ supervisor: authenticated navigation and denied script writes match role permissions 1747ms
+     ✓ agent: authenticated navigation and denied script writes match role permissions 1695ms
+     ✓ report_viewer: authenticated navigation and denied script writes match role permissions 1652ms
+     ✓ api_client: authenticated navigation and denied script writes match role permissions 1749ms
+     ✓ saves branding through the real API and retains it after reload 454ms
+     ✓ synchronizes two distinct real users and persists peer edits after closing the collaboration room 9332ms
+     ✓ authors a delivery support story using real controls, persists bilingual text and exercises editing and preview 4719ms
+ ✓ tests/verification/agent-live-local.audit.spec.ts (3 tests) 15001ms
+   ✓ chromium: real simulator → mTLS → launch → runtime → hub ACK 3741ms
+   ✓ firefox: real simulator → mTLS → launch → runtime → hub ACK 5392ms
+   ✓ webkit: real simulator → mTLS → launch → runtime → hub ACK 4788ms
+ ✓ tests/verification/keycloak.audit.spec.ts (2 tests) 15817ms
+   ✓ V2 real Keycloak browser E2E (2)
+     ✓ OIDC authorization code PKCE real browser login, refresh rotation and logout 808ms
+     ✓ SAML SP initiated real browser signed assertion login and RP logout 538ms
+ ✓ tests/verification/runtime-ws.audit.spec.ts (4 tests) 2088ms
+   ✓ V2 real WebSocket disconnect reconnect (4)
+     ✓ real nginx agent bundle blocks a foreign iframe and must audit the rejection 1625ms
+ ✓ tests/verification/routes.audit.spec.ts (233 tests) 18802ms
+ ✓ tests/verification/vault-transit.audit.spec.ts (11 tests) 2881ms
+   ✓ refuses writes and reads during a real Vault outage without local fallback 433ms
+ ✓ tests/verification/expr-browser.audit.spec.ts (8 tests) 1400ms
+ ✓ tests/verification/siem-network.audit.spec.ts (28 tests) 429ms
+ ✓ tests/verification/scripting-benchmark.audit.spec.ts (11 tests) 55ms
+
+ Test Files  9 passed (9)
+      Tests  345 passed (345)
+   Start at  12:47:20
+   Duration  176.36s (tests 82%, import 15%, transform 3%)
+
+JSON report written to /Users/ardamoustafa/agent scripting/reports/verification/results.json

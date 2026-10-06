@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-06",
+  "remoteCi": "pending: no Git remote or run URL",
+  "liveStaging": "pending: disposable staging configuration required",
+  "verification": {
+    "passed": 345,
+    "skipped": 0,
+    "failed": 0,
+    "suites": 9
+  },
+  "rootTasks": {
+    "lint": 33,
+    "typecheck": 32,
+    "build": 19,
+    "test": 32,
+    "testCacheHits": 25
+  },
+  "vitestPassedIncludingCachedTasks": 5126,
+  "coverageWorkspaces": 18,
+  "criticalApiLineCoverage": {
+    "launch": 96.69,
+    "authz": 98.98,
+    "audit": 95.66,
+    "transport": 100,
+    "idpEgress": 100
+  },
+  "agentBrowserMeasurements": [
+    {
+      "engine": "chromium",
+      "launchMs": 225,
+      "coldRenderMs": 199,
+      "warmRenderMs": 171,
+      "pageTransitionMs": 18.4,
+      "writebackMs": 159
+    },
+    {
+      "engine": "firefox",
+      "launchMs": 196,
+      "coldRenderMs": 264,
+      "warmRenderMs": 248,
+      "pageTransitionMs": 23,
+      "writebackMs": 184
+    },
+    {
+      "engine": "webkit",
+      "launchMs": 207,
+      "coldRenderMs": 437,
+      "warmRenderMs": 218,
+      "pageTransitionMs": 24,
+      "writebackMs": 174
+    }
+  ],
+  "chromiumBrowserTests": {
+    "passed": 320,
+    "skipped": 0,
+    "failed": 0,
+    "admin": 22,
+    "agent": 35,
+    "designer": 251,
+    "docs": 12,
+    "tasks": 23,
+    "taskCacheHits": 19
+  }
+}
