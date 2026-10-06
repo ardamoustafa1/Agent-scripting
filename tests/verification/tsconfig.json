@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "paths": {
+      "vitest": ["../../apps/api/node_modules/vitest/dist/index.d.ts"],
+      "jose": ["../../apps/api/node_modules/jose/dist/types/index.d.ts"],
+      "testcontainers": ["../../apps/api/node_modules/testcontainers/build/index.d.ts"]
+    }
+  },
+  "include": ["./**/*.ts", "../../apps/api/test/integration/global-setup.ts"]
+}

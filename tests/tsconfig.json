@@ -1,0 +1,12 @@
+{
+  "extends": "../packages/config-ts/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["node"],
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": ["playwright/**/*.ts", "demo-smoke/**/*.ts"]
+}
