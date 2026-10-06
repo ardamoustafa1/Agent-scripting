@@ -251,6 +251,15 @@ const mode = async (page: Page, name: string) => {
   await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
   await page.getByRole('option', { name, exact: true }).click();
 };
+/** Names the elements wider than the viewport so CI failures say what overflowed. */
+const WIDE_ELEMENTS = `(() => {
+  const width = document.documentElement.clientWidth;
+  return [...document.querySelectorAll('body *')]
+    .filter((element) => element.getBoundingClientRect().right > width + 1)
+    .slice(0, 6)
+    .map((element) => element.tagName + '.' + String(element.className).slice(0, 60) + ' right=' + Math.round(element.getBoundingClientRect().right));
+})()`;
+
 describe('Real frontend / API / PostgreSQL / Redis product audit (no response mocks)', () => {
   it('loads all three applications with actual BFF sessions and checks responsive horizontal overflow', async () => {
     for (const kind of ['admin', 'designer', 'agent'] as const) {
@@ -277,7 +286,10 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
           '({ width: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth })',
         );
         expect
-          .soft(size.scroll, `${kind} ${width}px document overflow`)
+          .soft(
+            size.scroll,
+            `${kind} ${width}px document overflow: ${(await page.evaluate<string[]>(WIDE_ELEMENTS)).join(' | ')}`,
+          )
           .toBeLessThanOrEqual(size.width + 1);
       }
     }
@@ -346,7 +358,10 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
             '({ width: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth })',
           );
           expect
-            .soft(size.scroll, `${kind}/${route} ${width}px overflow`)
+            .soft(
+              size.scroll,
+              `${kind}/${route} ${width}px overflow: ${(await page.evaluate<string[]>(WIDE_ELEMENTS)).join(' | ')}`,
+            )
             .toBeLessThanOrEqual(size.width + 1);
         }
         expect(await new AxeBuilder({ page }).analyze()).toMatchObject({ violations: [] });

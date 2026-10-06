@@ -34,7 +34,7 @@
       "controller": "AnalyticsController",
       "handler": "deleteSchedule",
       "file": "apps/api/src/modules/analytics/analytics.controller.ts",
-      "line": 63,
+      "line": 93,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -113,6 +113,19 @@
       "handler": "removeCredential",
       "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
       "line": 190,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/locations/:id",
+      "controller": "LocationsController",
+      "handler": "remove",
+      "file": "apps/api/src/modules/tenancy/locations/locations.controller.ts",
+      "line": 78,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -264,6 +277,19 @@
     },
     {
       "method": "PATCH",
+      "path": "/v1/locations/:id",
+      "controller": "LocationsController",
+      "handler": "update",
+      "file": "apps/api/src/modules/tenancy/locations/locations.controller.ts",
+      "line": 62,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
       "path": "/v1/scripts/:id",
       "controller": "ScriptsController",
       "handler": "update",
@@ -307,7 +333,7 @@
       "controller": "TenancyController",
       "handler": "updateSettings",
       "file": "apps/api/src/modules/tenancy/tenancy.controller.ts",
-      "line": 33,
+      "line": 57,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -335,7 +361,7 @@
       "controller": "AuthController",
       "handler": "discover",
       "file": "apps/api/src/modules/identity/login/auth.controller.ts",
-      "line": 98,
+      "line": 106,
       "decorators": [
         "Public"
       ],
@@ -348,7 +374,7 @@
       "controller": "AuthController",
       "handler": "logout",
       "file": "apps/api/src/modules/identity/login/auth.controller.ts",
-      "line": 249,
+      "line": 293,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -361,7 +387,7 @@
       "controller": "AuthController",
       "handler": "backchannelLogout",
       "file": "apps/api/src/modules/identity/login/auth.controller.ts",
-      "line": 161,
+      "line": 169,
       "decorators": [
         "Public"
       ],
@@ -621,7 +647,7 @@
       "controller": "AnalyticsController",
       "handler": "schedule",
       "file": "apps/api/src/modules/analytics/analytics.controller.ts",
-      "line": 57,
+      "line": 87,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -656,11 +682,24 @@
     },
     {
       "method": "POST",
+      "path": "/v1/audit-events/certificate",
+      "controller": "AuditController",
+      "handler": "certificate",
+      "file": "apps/api/src/modules/audit/audit.controller.ts",
+      "line": 113,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
       "path": "/v1/audit-events/verify",
       "controller": "AuditController",
       "handler": "verify",
       "file": "apps/api/src/modules/audit/audit.controller.ts",
-      "line": 100,
+      "line": 101,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -717,6 +756,21 @@
       "strategy": "transaction-interceptor",
       "auditEvidence": [
         "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/connector-dead-letters/replay",
+      "controller": "DeadLettersController",
+      "handler": "replay",
+      "file": "apps/api/src/modules/connectors/dead-letters.controller.ts",
+      "line": 30,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
       ]
     },
     {
@@ -1047,6 +1101,19 @@
       "handler": "ticket",
       "file": "apps/api/src/modules/launch/launch.controller.ts",
       "line": 112,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/locations",
+      "controller": "LocationsController",
+      "handler": "create",
+      "file": "apps/api/src/modules/tenancy/locations/locations.controller.ts",
+      "line": 43,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1681,6 +1748,19 @@
       "handler": "instantiate",
       "file": "apps/api/src/modules/scripts/authoring.controller.ts",
       "line": 110,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/tenant/onboarding",
+      "controller": "TenancyController",
+      "handler": "bootstrap",
+      "file": "apps/api/src/modules/tenancy/tenancy.controller.ts",
+      "line": 32,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [

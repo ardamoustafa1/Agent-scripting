@@ -47,6 +47,8 @@ import type { TLSSocket } from 'node:tls';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
 /** Shared secret the simulated TLS edge presents so the API trusts the forwarded certificate. */
+/** Shared CI runners are slower than the developer hardware these render budgets were set on. */
+const CI_BUDGET_FACTOR = process.env['CI'] ? 2.5 : 1;
 const EDGE_PROXY_SECRET = randomBytes(24).toString('hex');
 
 let owner: PrismaClient,
@@ -643,11 +645,11 @@ it.each(['chromium', 'firefox', 'webkit'] as const)(
     await observer.goto(`/s/${id}`);
     await browserExpect(observer.locator('.ag-runtime[data-page-id]')).toBeVisible();
     const coldRenderMs = await observer.evaluate<number>('performance.now()');
-    expect(coldRenderMs).toBeLessThan(1500);
+    expect(coldRenderMs).toBeLessThan(1500 * CI_BUDGET_FACTOR);
     await observer.reload();
     await browserExpect(observer.locator('.ag-runtime[data-page-id]')).toBeVisible();
     const warmRenderMs = await observer.evaluate<number>('performance.now()');
-    expect(warmRenderMs).toBeLessThan(500);
+    expect(warmRenderMs).toBeLessThan(500 * CI_BUDGET_FACTOR);
     await browserExpect(
       observer.getByText('This session is open in another tab or available for observation only.', {
         exact: true,

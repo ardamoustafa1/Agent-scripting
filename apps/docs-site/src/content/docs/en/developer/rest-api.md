@@ -629,6 +629,43 @@ Current BFF session (and its CSRF token)
 }
 ```
 
+## GET /auth/session/status
+
+Session probe that answers 200 {authenticated:false} when signed out (no 401)
+
+```json
+{
+  "operationId": "Auth.sessionStatus",
+  "security": [],
+  "parameters": [],
+  "responses": {
+    "200": {
+      "description": "Signed-in session or {authenticated:false}",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/AuthSessionStatus"
+          }
+        }
+      }
+    },
+    "429": {
+      "description": "Too many session checks (RFC 7807, VERBIS_HTTP_RATE_LIMITED); shares the /auth/session budget. Clients must not treat this as a signed-out state."
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## GET /health
 
 Health summary
@@ -34124,6 +34161,138 @@ Requires: update:User
       "csrfToken"
     ],
     "additionalProperties": false
+  },
+  "AuthSessionStatus": {
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "authenticated": {
+            "type": "boolean",
+            "const": false
+          }
+        },
+        "required": [
+          "authenticated"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "tenantId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "authMethod": {
+                "type": "string",
+                "enum": [
+                  "sso",
+                  "break_glass"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "tenantId",
+              "authMethod"
+            ],
+            "additionalProperties": false
+          },
+          "session": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "sso",
+                  "break_glass"
+                ]
+              },
+              "protocol": {
+                "type": "string",
+                "enum": [
+                  "oidc",
+                  "saml",
+                  "local"
+                ]
+              },
+              "idpId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "app": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "lastSeenAt": {
+                "type": "string"
+              },
+              "expiresAt": {
+                "type": "string"
+              },
+              "ip": {
+                "type": "string"
+              },
+              "userAgent": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "protocol",
+              "idpId",
+              "app",
+              "createdAt",
+              "lastSeenAt",
+              "expiresAt",
+              "ip",
+              "userAgent"
+            ],
+            "additionalProperties": false
+          },
+          "csrfToken": {
+            "type": "string"
+          },
+          "authenticated": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "user",
+          "session",
+          "csrfToken",
+          "authenticated"
+        ],
+        "additionalProperties": false
+      }
+    ]
   },
   "BatchAssignments": {
     "type": "object",

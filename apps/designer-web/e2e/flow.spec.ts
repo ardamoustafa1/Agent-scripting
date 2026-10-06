@@ -63,7 +63,14 @@ test('add, arrange, drag and undo a flow node; Page double-click opens its canva
   if (!rectangle) throw new Error('Missing node');
   const position = () =>
     node.evaluate((element: { style: { transform: string } }) => element.style.transform);
-  const before = await position();
+  // The layout worker can still be settling after the button re-enables (slow CI runners).
+  let before = await position();
+  for (let stable = 0; stable < 3;) {
+    await page.waitForTimeout(150);
+    const current = await position();
+    stable = current === before ? stable + 1 : 0;
+    before = current;
+  }
   const x = rectangle.x + rectangle.width / 2;
   const y = rectangle.y + rectangle.height / 2;
   await page.mouse.move(x, y);
