@@ -29,11 +29,15 @@ jobs:
       AGENT_E2E_PLATFORM_USER: ${{ vars.AGENT_E2E_PLATFORM_USER }}
       AUDIT_E2E_FROM_SEQ: ${{ vars.AUDIT_E2E_FROM_SEQ }}
       AUDIT_E2E_TO_SEQ: ${{ vars.AUDIT_E2E_TO_SEQ }}
-      ADMIN_E2E_STORAGE_STATE: ${{ runner.temp }}/admin-state.json
-      DESIGNER_E2E_AUTHOR_STATE: ${{ runner.temp }}/author-state.json
-      DESIGNER_E2E_PEER_STATE: ${{ runner.temp }}/peer-state.json
-      AGENT_E2E_STORAGE_STATE: ${{ runner.temp }}/agent-state.json
     steps:
+      - name: Point ephemeral auth states at the runner temp directory
+        run: |
+          {
+            echo "ADMIN_E2E_STORAGE_STATE=$RUNNER_TEMP/admin-state.json"
+            echo "DESIGNER_E2E_AUTHOR_STATE=$RUNNER_TEMP/author-state.json"
+            echo "DESIGNER_E2E_PEER_STATE=$RUNNER_TEMP/peer-state.json"
+            echo "AGENT_E2E_STORAGE_STATE=$RUNNER_TEMP/agent-state.json"
+          } >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7

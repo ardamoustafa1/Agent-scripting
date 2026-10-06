@@ -42,6 +42,8 @@ jobs:
     uses: ./.github/workflows/verification.yml
   live:
     name: Live projects including SAML and performance
+    # Needs the synthetic staging tenant (repo variables/secrets); skipped, never faked, without it.
+    if: ${{ vars.ADMIN_E2E_BASE_URL != '' }}
     uses: ./.github/workflows/live-acceptance.yml
     secrets: inherit
   quality:
