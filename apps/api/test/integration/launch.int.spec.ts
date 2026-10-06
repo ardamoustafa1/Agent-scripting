@@ -3,6 +3,7 @@ import { X509Certificate } from 'node:crypto';
 import { exportJWK, generateKeyPair, SignJWT, type CryptoKey } from 'jose';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
+import { ScriptDocumentSchema, TestScenarioSchema } from '@verbis/script-schema';
 import { surveyScript } from '@verbis/script-schema/fixtures';
 
 import { RedisService } from '../../src/infra/redis/redis.service.js';
@@ -76,6 +77,43 @@ beforeAll(async () => {
     isActiveParticipant: () => Promise.resolve(platformSaysYes),
   });
 
+  await owner.dataSource.create({
+    data: {
+      tenantId: a.tenantId,
+      key: 'survey-submit',
+      protocol: 'rest',
+      version: 1,
+      definition: {
+        baseUrl: 'https://example.test',
+        endpoint: '/survey',
+        auth: { type: 'none' },
+        profiles: { prod: { baseUrl: 'https://example.test', auth: { type: 'none' } } },
+      },
+      secretRefs: [],
+      createdBy: 'fixture-approved',
+      updatedBy: 'fixture-approved',
+    },
+  });
+  const document = ScriptDocumentSchema.parse(surveyScript);
+  document.testScenarios = [
+    TestScenarioSchema.parse({
+      id: 'surveyEnd',
+      name: 'Synthetic promoter survey',
+      synthetic: true,
+      context: {},
+      dataSources: { submitSurvey: { kind: 'success', outputs: { responseId: 'synthetic-id' } } },
+      steps: [
+        { type: 'event', node: 'btn-intro-start', event: 'onPress' },
+        { type: 'variable', variable: 'npsScore', value: 10 },
+        { type: 'event', node: 'btn-nps-next', event: 'onPress' },
+        { type: 'variable', variable: 'reasons', value: ['speed'] },
+        { type: 'event', node: 'btn-reasons-high-next', event: 'onPress' },
+        { type: 'event', node: 'btn-submit', event: 'onPress' },
+        { type: 'event', node: 'btn-thanks', event: 'onPress' },
+      ],
+      expected: { ended: true, variables: { npsSegment: 'promoter' } },
+    }),
+  ];
   // Published script assigned to an active campaign (admin authors, designer approves/publishes).
   const admin = { ...json, ...(await a.auth()) };
   const designer = { ...json, ...(await a.auth(a.designerId)) };
@@ -94,7 +132,7 @@ beforeAll(async () => {
       method: 'POST',
       url: `/v1/scripts/${script.id}/versions`,
       headers: admin,
-      payload: { document: surveyScript, screens: [] },
+      payload: { document, screens: [] },
     })
   ).json<{ id: string }>();
   await app.inject({
