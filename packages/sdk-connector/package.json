@@ -1,0 +1,55 @@
+{
+  "name": "@verbis/sdk-connector",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Connector adapter SDK (ADR-0008).",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing/contract-kit.d.ts",
+      "default": "./dist/testing/contract-kit.js"
+    },
+    "./launch": {
+      "types": "./dist/platforms/marketplace-launch.d.ts",
+      "default": "./dist/platforms/marketplace-launch.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "dev": "tsc -b tsconfig.build.json --watch --preserveWatchOutput",
+    "lint": "eslint --max-warnings=0 .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --coverage",
+    "clean": "rm -rf dist coverage"
+  },
+  "dependencies": {
+    "@verbis/shared-types": "workspace:*",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@verbis/config-eslint": "workspace:*",
+    "@verbis/config-ts": "workspace:*",
+    "@verbis/test-utils": "workspace:*",
+    "@vitest/coverage-v8": "^5.0.3",
+    "eslint": "^9.39.5",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.3"
+  },
+  "peerDependencies": {
+    "vitest": "^5.0.3"
+  },
+  "peerDependenciesMeta": {
+    "vitest": {
+      "optional": true
+    }
+  }
+}

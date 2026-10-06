@@ -1,0 +1,30 @@
+{
+  "extends": "@verbis/config-ts/library-react.json",
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": true,
+    "rootDir": ".",
+    "types": ["node", "vite/client"]
+  },
+  "include": ["src", "*.config.ts", ".storybook/**/*.ts", ".storybook/**/*.tsx", "e2e"],
+  "references": [
+    {
+      "path": "../core-runtime/tsconfig.build.json"
+    },
+    {
+      "path": "../ui/tsconfig.build.json"
+    },
+    {
+      "path": "../i18n/tsconfig.build.json"
+    },
+    {
+      "path": "../script-schema/tsconfig.build.json"
+    },
+    {
+      "path": "../expr/tsconfig.build.json"
+    },
+    {
+      "path": "../sdk-component/tsconfig.build.json"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "@verbis/config-ts/library.json",
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": true,
+    "rootDir": ".",
+    "types": ["node"]
+  },
+  "include": ["src", "*.config.ts"],
+  "references": [
+    {
+      "path": "../shared-types/tsconfig.build.json"
+    }
+  ]
+}

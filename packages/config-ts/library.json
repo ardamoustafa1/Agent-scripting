@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Verbis isomorphic library (Node + browser)",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "composite": true
+  }
+}

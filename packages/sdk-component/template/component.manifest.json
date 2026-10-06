@@ -1,0 +1,7 @@
+{
+  "type": "__COMPONENT_TYPE__",
+  "version": "1.0.0",
+  "builtOn": ["box", "button"],
+  "integrity": "sha384-REPLACE_AFTER_BUILD",
+  "permissions": { "props": ["labelKey", "value"], "write": ["value"], "events": ["onPress"] }
+}

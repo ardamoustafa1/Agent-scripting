@@ -1,0 +1,18 @@
+{
+  "extends": "@verbis/config-ts/library-react.json",
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": true,
+    "rootDir": ".",
+    "types": ["node"]
+  },
+  "include": ["src", "*.config.ts", ".storybook/*.ts", ".storybook/*.tsx", "e2e"],
+  "references": [
+    {
+      "path": "../i18n/tsconfig.build.json"
+    },
+    {
+      "path": "../shared-types/tsconfig.build.json"
+    }
+  ]
+}

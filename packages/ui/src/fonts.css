@@ -1,0 +1,4 @@
+/* Optional self-hosted fonts; never request tenant fonts from third-party CDNs. */
+@import '@fontsource-variable/inter';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';

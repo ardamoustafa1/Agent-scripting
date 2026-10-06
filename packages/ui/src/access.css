@@ -1,0 +1,563 @@
+/* Entry identity: a flowing script atlas and an uninterrupted access surface. */
+.vb-access {
+  --vb-color-bg: var(--vb-entry-paper);
+  --vb-color-surface: var(--vb-entry-white);
+  --vb-color-surface-raised: var(--vb-entry-paper);
+  --vb-color-text: var(--vb-entry-ink);
+  --vb-color-text-muted: var(--vb-entry-muted);
+  --vb-color-border: var(--vb-entry-line);
+  --vb-color-border-strong: var(--vb-entry-muted);
+  --vb-color-primary: var(--vb-entry-accent);
+  --vb-color-primary-contrast: var(--vb-entry-white);
+  --vb-color-focus: var(--vb-entry-accent);
+  display: grid;
+  grid-template-columns: minmax(0, 1.38fr) minmax(400px, 1fr);
+  min-height: 100dvh;
+  background: var(--vb-entry-deep);
+  color: var(--vb-entry-paper);
+  overflow: clip;
+}
+.vb-access-art {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 40px clamp(32px, 5.1vw, 88px) 28px;
+  min-width: 0;
+  background: radial-gradient(ellipse at 55% 68%, var(--vb-entry-panel), transparent 70%);
+}
+.vb-access-brand {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.vb-access .vb-access-wordmark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 29px;
+  font-weight: 600;
+  letter-spacing: -0.055em;
+}
+.vb-access .vb-access-wordmark svg {
+  width: 29px;
+  height: 29px;
+  color: var(--vb-entry-metal);
+  stroke-width: 1.5;
+}
+.vb-access-edition {
+  font-size: 12px;
+  color: var(--vb-entry-soft);
+  border-left: 1px solid var(--vb-entry-night-line);
+  padding-left: 22px;
+}
+.vb-access-story {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 68px;
+  isolation: isolate;
+}
+.vb-access-stage-index {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--vb-entry-soft);
+  margin: 0 0 27px;
+  font-weight: 600;
+}
+.vb-access-stage-index::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vb-entry-signal);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--vb-entry-signal) 45%, transparent);
+}
+.vb-access-story h1 {
+  font-size: clamp(42px, 4.5vw, 78px);
+  line-height: 1.06;
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  margin: 0;
+}
+.vb-access-story h1 span {
+  display: block;
+  animation: vb-access-reveal 0.9s cubic-bezier(0.2, 0.65, 0.3, 1) both;
+}
+.vb-access-story h1 span:last-child {
+  color: var(--vb-entry-signal);
+  animation-delay: 0.1s;
+}
+.vb-access-description {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--vb-entry-soft);
+  max-width: 370px;
+  margin: 23px 0 0;
+}
+.vb-access-signal-stage {
+  position: relative;
+  height: clamp(250px, 35vh, 410px);
+  margin: 12px -32px 0;
+}
+.vb-script-atlas {
+  position: absolute;
+  inset: 0;
+}
+.vb-script-atlas-fallback {
+  width: 100%;
+  height: 100%;
+}
+.vb-script-atlas-fallback svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.vb-atlas-packet {
+  animation: vb-atlas-travel 12s linear infinite;
+}
+@keyframes vb-atlas-travel {
+  from {
+    stroke-dashoffset: 734;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.vb-access-signal-caption {
+  display: none;
+}
+.vb-access-capabilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 10px 0 36px;
+}
+.vb-access-capabilities span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--vb-entry-soft);
+}
+.vb-access-capabilities svg {
+  color: var(--vb-entry-metal);
+  stroke-width: 1.5;
+}
+.vb-access-art-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--vb-entry-night-line);
+  font-size: 11px;
+  color: var(--vb-entry-soft);
+}
+.vb-access .vb-access-motion-toggle {
+  color: var(--vb-entry-soft);
+  padding: 8px;
+  border: 1px solid var(--vb-entry-night-line);
+  border-radius: 50%;
+  min-width: 34px;
+  min-height: 34px;
+}
+.vb-access .vb-access-motion-toggle.vb-button[data-variant='ghost']:hover:not(:disabled) {
+  background: var(--vb-entry-panel);
+  color: var(--vb-entry-white);
+}
+.vb-access[data-motion='paused'] *,
+.vb-access[data-motion='paused'] *::before {
+  animation-play-state: paused !important;
+}
+.vb-access-access {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 40px clamp(32px, 4vw, 72px) 28px;
+  background: var(--vb-entry-paper);
+  color: var(--vb-entry-ink);
+}
+.vb-access-access-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--vb-entry-muted);
+  min-height: 36px;
+}
+.vb-access .vb-access-language {
+  color: var(--vb-entry-muted);
+  padding: 8px 10px;
+  gap: 7px;
+  font-size: 11px;
+  border: 1px solid var(--vb-entry-line);
+  border-radius: 30px;
+}
+.vb-access .vb-access-language.vb-button[data-variant='ghost']:hover:not(:disabled) {
+  background: var(--vb-entry-white);
+  color: var(--vb-entry-ink);
+}
+.vb-access-form {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: 70px auto;
+  color: var(--vb-entry-ink);
+  animation: vb-access-reveal 0.9s ease-out both;
+}
+.vb-access-form-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  line-height: 1.6;
+  color: var(--vb-entry-muted);
+  margin: 0 0 24px;
+  font-weight: 600;
+}
+.vb-access-form-eyebrow::before {
+  content: '';
+  width: 22px;
+  height: 2px;
+  background: var(--vb-entry-accent);
+}
+.vb-access-form h2 {
+  font-size: clamp(30px, 3vw, 42px);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 1.2;
+  margin: 0;
+}
+.vb-access-form-description {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--vb-entry-muted);
+  margin: 16px 0 38px;
+  max-width: 300px;
+}
+.vb-access-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.vb-access-form label {
+  font-size: 12px;
+  font-weight: 500;
+}
+.vb-access-form input {
+  min-height: 56px;
+  border-radius: 8px;
+  border: 1px solid var(--vb-entry-line);
+  padding-inline: 17px;
+  background: var(--vb-entry-white);
+  font-size: 14px;
+  box-shadow: 0 2px 3px color-mix(in srgb, var(--vb-entry-ink) 2%, transparent);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.vb-access-form input:hover {
+  border-color: var(--vb-entry-muted);
+}
+.vb-access-form input:focus-visible {
+  border-color: var(--vb-entry-accent);
+  outline-offset: 4px;
+}
+.vb-access-form form > .vb-button {
+  min-height: 54px;
+  border-radius: 8px;
+  justify-content: space-between;
+  padding-inline: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--vb-entry-ink);
+  border: 1px solid var(--vb-entry-ink);
+  color: var(--vb-entry-white);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--vb-entry-ink) 12%, transparent);
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+}
+.vb-access-form form > .vb-button:hover {
+  background: var(--vb-entry-accent-hover);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--vb-entry-accent) 18%, transparent);
+}
+.vb-access-form form > .vb-button svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.5;
+  transition: transform 0.25s;
+}
+.vb-access-form form > .vb-button:hover svg {
+  transform: translateX(3px);
+}
+.vb-access-provider-list {
+  display: grid;
+  gap: 8px;
+}
+.vb-access-form > .vb-alert {
+  margin-top: 18px;
+}
+.vb-access-provider-hint {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--vb-entry-muted);
+  margin: 6px 0 2px;
+}
+.vb-access-provider-list:not(:empty) {
+  margin-top: 18px;
+}
+.dw-provider {
+  text-decoration: none;
+  justify-content: space-between;
+  border-radius: 8px;
+}
+.vb-access-trust {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--vb-entry-line);
+  color: var(--vb-entry-muted);
+}
+.vb-access-trust svg {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.5;
+  margin-top: 2px;
+}
+.vb-access-trust small {
+  font-size: 11px;
+  line-height: 1.8;
+}
+.vb-access-access-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding-top: 20px;
+  min-height: 55px;
+  font-size: 10px;
+  color: var(--vb-entry-muted);
+  border-top: 1px solid var(--vb-entry-line);
+}
+.vb-access-access-footer span:last-child {
+  display: none;
+}
+@keyframes vb-access-reveal {
+  from {
+    transform: translateY(16px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@media (max-width: 1100px) {
+  .vb-access {
+    grid-template-columns: minmax(0, 1.2fr) minmax(350px, 1fr);
+  }
+  .vb-access-art {
+    padding-inline: 32px;
+  }
+  .vb-access-access {
+    padding-inline: 32px;
+  }
+  .vb-access-story h1 {
+    font-size: 44px;
+  }
+  .vb-access-capabilities {
+    gap: 14px;
+  }
+}
+@media (max-width: 900px) {
+  .vb-access {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .vb-access-art {
+    padding: 24px 32px 20px;
+  }
+  .vb-access-brand {
+    height: 36px;
+  }
+  .vb-access-edition {
+    display: none;
+  }
+  .vb-access-story {
+    padding-top: 38px;
+  }
+  .vb-access-story h1 {
+    font-size: clamp(36px, 7vw, 54px);
+  }
+  .vb-access-stage-index {
+    margin-bottom: 18px;
+    font-size: 9px;
+  }
+  .vb-access-description {
+    margin-top: 16px;
+    font-size: 13px;
+  }
+  .vb-access-signal-stage {
+    height: 210px;
+    margin: 0 -16px;
+  }
+  .vb-access-capabilities {
+    display: none;
+  }
+  .vb-access-art-footer {
+    position: absolute;
+    top: 25px;
+    right: 94px;
+    border: 0;
+    padding: 0;
+  }
+  .vb-access-art-footer > span {
+    display: none;
+  }
+  .vb-access-access {
+    padding: 34px 32px 18px;
+  }
+  .vb-access-access-top {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+  }
+  .vb-access-access-top > span {
+    display: none;
+  }
+  .vb-access .vb-access-language {
+    color: var(--vb-entry-soft);
+    border-color: var(--vb-entry-night-line);
+  }
+  .vb-access .vb-access-language.vb-button[data-variant='ghost']:hover:not(:disabled) {
+    background: var(--vb-entry-panel);
+    color: var(--vb-entry-white);
+  }
+  .vb-access-form {
+    max-width: 500px;
+    margin: 0 auto 36px;
+  }
+  .vb-access-form h2 {
+    font-size: 32px;
+  }
+  .vb-access-form-eyebrow {
+    margin-bottom: 16px;
+  }
+  .vb-access-form-description {
+    margin-bottom: 28px;
+  }
+  .vb-access-access-footer {
+    justify-content: center;
+    min-height: 44px;
+  }
+}
+@media (max-width: 400px) {
+  .vb-access-art {
+    padding-inline: 24px;
+  }
+  .vb-access-access {
+    padding-inline: 24px;
+  }
+  .vb-access .vb-access-wordmark {
+    font-size: 25px;
+    gap: 7px;
+  }
+  .vb-access .vb-access-wordmark svg {
+    width: 24px;
+    height: 24px;
+  }
+  .vb-access-story h1 {
+    font-size: 36px;
+  }
+  .vb-access-signal-stage {
+    height: 180px;
+    margin: 6px -20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vb-access *,
+  .vb-access *::before,
+  .vb-access *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .vb-access .vb-access-motion-toggle {
+    display: none;
+  }
+}
+@media (forced-colors: active) {
+  .vb-access,
+  .vb-access-art,
+  .vb-access-access {
+    background: Canvas;
+    color: CanvasText;
+  }
+  .vb-script-atlas {
+    display: none;
+  }
+}
+.vb-access-form > .vb-card {
+  background: transparent;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+}
+.vb-access-form :is(.vb-card, .vb-stack) > p {
+  color: var(--vb-entry-muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.vb-access-form :is(.vb-card, .vb-stack) > h2 {
+  margin-block-end: 20px;
+}
+.vb-access-form > .vb-stack > .vb-button {
+  min-block-size: 54px;
+  justify-content: space-between;
+  background: var(--vb-entry-ink);
+  color: var(--vb-entry-white);
+}
+.vb-access-form details {
+  margin-block-start: 24px;
+  font-size: 12px;
+  color: var(--vb-entry-muted);
+}
+.vb-access-form summary {
+  cursor: pointer;
+  min-block-size: 32px;
+}
+.vb-access-form details form {
+  margin-block-start: 16px;
+}
+.vb-access-form nav ul {
+  list-style: none;
+  padding: 0;
+}
+.vb-access-provider {
+  text-decoration: none;
+  justify-content: space-between;
+  border-radius: 8px;
+}
+.vb-access-description {
+  display: block;
+}
+@media (max-width: 700px) {
+  .vb-access-description {
+    display: none;
+  }
+}
+.vb-script-atlas[data-motion='paused'] .vb-atlas-packet {
+  animation-play-state: paused;
+}

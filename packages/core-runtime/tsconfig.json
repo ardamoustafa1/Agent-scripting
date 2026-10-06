@@ -1,0 +1,24 @@
+{
+  "extends": "@verbis/config-ts/library-react.json",
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": true,
+    "rootDir": ".",
+    "types": ["node", "vite/client"]
+  },
+  "include": ["src", "*.config.ts", "benchmark"],
+  "references": [
+    {
+      "path": "../script-schema/tsconfig.build.json"
+    },
+    {
+      "path": "../expr/tsconfig.build.json"
+    },
+    {
+      "path": "../ui/tsconfig.build.json"
+    },
+    {
+      "path": "../i18n/tsconfig.build.json"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "__PACKAGE_NAME__",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node hash.mjs",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@verbis/sdk-component": "workspace:*",
+    "@verbis/ui": "workspace:*",
+    "@verbis/i18n": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "vite": "6.4.3",
+    "vitest": "^5.0.3",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7"
+  }
+}

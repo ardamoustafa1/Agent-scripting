@@ -1,0 +1,51 @@
+{
+  "name": "@verbis/script-schema",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Single source of truth for the Verbis script JSON model: zod schemas, JSON Schema, semantic validator, migrations, tree helpers (docs/SCRIPT_MODEL.md, ADR-0010).",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./fixtures": {
+      "types": "./dist/fixtures/index.d.ts",
+      "default": "./dist/fixtures/index.js"
+    },
+    "./script-document.schema.json": "./schema/script-document.schema.json"
+  },
+  "files": [
+    "dist",
+    "schema"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "dev": "tsc -b tsconfig.build.json --watch --preserveWatchOutput",
+    "generate:json-schema": "node scripts/generate-json-schema.mjs",
+    "lint": "eslint --max-warnings=0 .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --coverage",
+    "clean": "rm -rf dist coverage",
+    "test:mutation": "stryker run"
+  },
+  "dependencies": {
+    "immer": "^11.1.18",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "10.0.0",
+    "@stryker-mutator/vitest-runner": "10.0.0",
+    "@types/node": "^24.10.1",
+    "@verbis/config-eslint": "workspace:*",
+    "@verbis/config-ts": "workspace:*",
+    "@verbis/i18n": "workspace:^",
+    "@verbis/test-utils": "workspace:*",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "^9.39.5",
+    "react": "^18.3.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
+  }
+}
