@@ -1,0 +1,1796 @@
+
+> verbis@ test /Users/ardamoustafa/agent scripting
+> turbo run test --concurrency=1 --continue=dependencies-successful
+
+
+   • turbo 2.11.6
+   • Packages in scope: @verbis/admin-web, @verbis/agent-web, @verbis/api, @verbis/authz, @verbis/collaboration, @verbis/components, @verbis/config-eslint, @verbis/config-ts, @verbis/connector-hub, @verbis/core-runtime, @verbis/designer-web, @verbis/docs-site, @verbis/expr, @verbis/i18n, @verbis/observability, @verbis/script-schema, @verbis/sdk-component, @verbis/sdk-connector, @verbis/shared-types, @verbis/test-utils, @verbis/ui
+   • Running test in 21 packages
+   • Remote caching disabled
+
+@verbis/authz:build: cache hit, replaying logs d36e695eda65d732
+@verbis/authz:build: 
+@verbis/authz:build: > @verbis/authz@0.0.0 build /Users/ardamoustafa/agent scripting/packages/authz
+@verbis/authz:build: > tsc -b tsconfig.build.json
+@verbis/authz:build: 
+@verbis/test-utils:build: cache hit, replaying logs 1d8d7fac39b0d746
+@verbis/test-utils:build: 
+@verbis/test-utils:build: > @verbis/test-utils@0.0.0 build /Users/ardamoustafa/agent scripting/packages/test-utils
+@verbis/test-utils:build: > tsc -b tsconfig.build.json
+@verbis/test-utils:build: 
+@verbis/authz:test: cache hit, replaying logs e35726493f366ac8
+@verbis/authz:test: 
+@verbis/authz:test: > @verbis/authz@0.0.0 test /Users/ardamoustafa/agent scripting/packages/authz
+@verbis/authz:test: > vitest run --coverage
+@verbis/authz:test: 
+@verbis/authz:test: 
+@verbis/authz:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/authz
+@verbis/authz:test:       Coverage enabled with v8
+@verbis/authz:test: 
+@verbis/authz:test:  ✓ src/sod.spec.ts (5 tests) 5ms
+@verbis/authz:test:  ✓ src/ability.spec.ts (13 tests) 15ms
+@verbis/authz:test:  ✓ src/matrix.spec.ts (21 tests) 10ms
+@verbis/authz:test:  ✓ src/roles.spec.ts (549 tests) 29ms
+@verbis/authz:test:  ✓ src/react.spec.tsx (2 tests) 15ms
+@verbis/authz:test: 
+@verbis/authz:test:  Test Files  5 passed (5)
+@verbis/authz:test:       Tests  590 passed (590)
+@verbis/authz:test:    Start at  10:53:02
+@verbis/authz:test:    Duration  892ms (environment 36%, import 32%, transform 16%, worker 11%, tests 6%)
+@verbis/authz:test: 
+@verbis/authz:test:  % Coverage report from v8
+@verbis/authz:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/authz:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/authz:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/authz:test: All files          |   99.03 |    94.36 |     100 |   98.88 |                   
+@verbis/authz:test:  ability.ts        |   97.43 |    88.88 |     100 |   97.14 | 98                
+@verbis/authz:test:  legacy.ts         |     100 |      100 |     100 |     100 |                   
+@verbis/authz:test:  matrix.ts         |     100 |    94.44 |     100 |     100 | 137-139,164       
+@verbis/authz:test:  ...issions-dto.ts |       0 |      100 |     100 |       0 | 7                 
+@verbis/authz:test:  react.tsx         |     100 |      100 |     100 |     100 |                   
+@verbis/authz:test:  roles.ts          |     100 |      100 |     100 |     100 |                   
+@verbis/authz:test:  rules.ts          |     100 |    93.33 |     100 |     100 | 119,128,159       
+@verbis/authz:test:  sod.ts            |     100 |      100 |     100 |     100 |                   
+@verbis/authz:test:  vocabulary.ts     |     100 |      100 |     100 |     100 |                   
+@verbis/authz:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/test-utils:test: cache hit, replaying logs 397020b1da22c93e
+@verbis/test-utils:test: 
+@verbis/test-utils:test: > @verbis/test-utils@0.0.0 test /Users/ardamoustafa/agent scripting/packages/test-utils
+@verbis/test-utils:test: > vitest run --coverage
+@verbis/test-utils:test: 
+@verbis/test-utils:test: 
+@verbis/test-utils:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/test-utils
+@verbis/test-utils:test:       Coverage enabled with v8
+@verbis/test-utils:test: 
+@verbis/test-utils:test:  ✓ src/test-utils.spec.ts (3 tests) 3ms
+@verbis/test-utils:test: 
+@verbis/test-utils:test:  Test Files  1 passed (1)
+@verbis/test-utils:test:       Tests  3 passed (3)
+@verbis/test-utils:test:    Start at  10:52:58
+@verbis/test-utils:test:    Duration  111ms (transform 41%, worker 32%, import 19%, tests 8%)
+@verbis/test-utils:test: 
+@verbis/test-utils:test:  % Coverage report from v8
+@verbis/test-utils:test: ----------|---------|----------|---------|---------|-------------------
+@verbis/test-utils:test: File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/test-utils:test: ----------|---------|----------|---------|---------|-------------------
+@verbis/test-utils:test: All files |     100 |      100 |     100 |     100 |                   
+@verbis/test-utils:test:  clock.ts |     100 |      100 |     100 |     100 |                   
+@verbis/test-utils:test:  ids.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/test-utils:test: ----------|---------|----------|---------|---------|-------------------
+@verbis/observability:test: cache hit, replaying logs d1dbcaa3dfc121bc
+@verbis/observability:test: 
+@verbis/observability:test: > @verbis/observability@0.0.0 test /Users/ardamoustafa/agent scripting/packages/observability
+@verbis/observability:test: > vitest run --coverage
+@verbis/observability:test: 
+@verbis/observability:test: 
+@verbis/observability:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/observability
+@verbis/observability:test:       Coverage enabled with v8
+@verbis/observability:test: 
+@verbis/observability:test:  ✓ src/messaging.spec.ts (2 tests) 8ms
+@verbis/observability:test:  ✓ src/privacy.spec.ts (8 tests) 19ms
+@verbis/observability:test:  ✓ src/node.spec.ts (3 tests) 18ms
+@verbis/observability:test:  ✓ src/metrics.spec.ts (2 tests) 75ms
+@verbis/observability:test: 
+@verbis/observability:test:  Test Files  4 passed (4)
+@verbis/observability:test:       Tests  15 passed (15)
+@verbis/observability:test:    Start at  10:53:08
+@verbis/observability:test:    Duration  330ms (import 58%, transform 19%, tests 18%, worker 6%)
+@verbis/observability:test: 
+@verbis/observability:test:  % Coverage report from v8
+@verbis/observability:test: --------------|---------|----------|---------|---------|-------------------
+@verbis/observability:test: File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/observability:test: --------------|---------|----------|---------|---------|-------------------
+@verbis/observability:test: All files     |   98.93 |      100 |   97.77 |     100 |                   
+@verbis/observability:test:  messaging.ts |     100 |      100 |     100 |     100 |                   
+@verbis/observability:test:  metrics.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/observability:test:  node.ts      |      96 |      100 |    87.5 |     100 |                   
+@verbis/observability:test:  privacy.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/observability:test: --------------|---------|----------|---------|---------|-------------------
+@verbis/observability:build: cache hit, replaying logs b2bea1a812c74aef
+@verbis/observability:build: 
+@verbis/observability:build: > @verbis/observability@0.0.0 build /Users/ardamoustafa/agent scripting/packages/observability
+@verbis/observability:build: > tsc -b tsconfig.build.json
+@verbis/observability:build: 
+@verbis/expr:build: cache hit, replaying logs d6f95e2ce0d9b3fa
+@verbis/expr:build: 
+@verbis/expr:build: > @verbis/expr@0.0.0 build /Users/ardamoustafa/agent scripting/packages/expr
+@verbis/expr:build: > tsc -b tsconfig.build.json
+@verbis/expr:build: 
+@verbis/i18n:test: cache hit, replaying logs 6e546c06ed89f766
+@verbis/i18n:test: 
+@verbis/i18n:test: > @verbis/i18n@0.0.0 test /Users/ardamoustafa/agent scripting/packages/i18n
+@verbis/i18n:test: > vitest run --coverage
+@verbis/i18n:test: 
+@verbis/i18n:test: 
+@verbis/i18n:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/i18n
+@verbis/i18n:test:       Coverage enabled with v8
+@verbis/i18n:test: 
+@verbis/i18n:test:  ✓ src/i18n.spec.ts (8 tests) 8ms
+@verbis/i18n:test: 
+@verbis/i18n:test:  Test Files  1 passed (1)
+@verbis/i18n:test:       Tests  8 passed (8)
+@verbis/i18n:test:    Start at  12:19:32
+@verbis/i18n:test:    Duration  167ms (transform 54%, import 27%, tests 10%, worker 9%)
+@verbis/i18n:test: 
+@verbis/i18n:test:  % Coverage report from v8
+@verbis/i18n:test: -------------|---------|----------|---------|---------|-------------------
+@verbis/i18n:test: File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/i18n:test: -------------|---------|----------|---------|---------|-------------------
+@verbis/i18n:test: All files    |     100 |    91.66 |     100 |     100 |                   
+@verbis/i18n:test:  src         |     100 |    91.66 |     100 |     100 |                   
+@verbis/i18n:test:   i18n.ts    |     100 |    91.66 |     100 |     100 | 23                
+@verbis/i18n:test:  src/locales |     100 |      100 |     100 |     100 |                   
+@verbis/i18n:test:   en.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/i18n:test:   tr.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/i18n:test: -------------|---------|----------|---------|---------|-------------------
+@verbis/i18n:build: cache hit, replaying logs 14b9696baf1ac9e8
+@verbis/i18n:build: 
+@verbis/i18n:build: > @verbis/i18n@0.0.0 build /Users/ardamoustafa/agent scripting/packages/i18n
+@verbis/i18n:build: > tsc -b tsconfig.build.json
+@verbis/i18n:build: 
+@verbis/shared-types:build: cache hit, replaying logs a59d18304710396a
+@verbis/shared-types:build: 
+@verbis/shared-types:build: > @verbis/shared-types@0.0.0 build /Users/ardamoustafa/agent scripting/packages/shared-types
+@verbis/shared-types:build: > tsc -b tsconfig.build.json
+@verbis/shared-types:build: 
+@verbis/collaboration:build: cache hit, replaying logs 95bafeb273f627e5
+@verbis/collaboration:build: 
+@verbis/collaboration:build: > @verbis/collaboration@0.0.0 build /Users/ardamoustafa/agent scripting/packages/collaboration
+@verbis/collaboration:build: > tsc -b tsconfig.build.json
+@verbis/collaboration:build: 
+@verbis/expr:test: cache hit, replaying logs 318709dd39a4fe4e
+@verbis/expr:test: 
+@verbis/expr:test: > @verbis/expr@0.0.0 test /Users/ardamoustafa/agent scripting/packages/expr
+@verbis/expr:test: > vitest run --coverage
+@verbis/expr:test: 
+@verbis/expr:test: 
+@verbis/expr:test:  RUN  v4.1.11 /Users/ardamoustafa/agent scripting/packages/expr
+@verbis/expr:test:       Coverage enabled with v8
+@verbis/expr:test: 
+@verbis/expr:test:  ✓ src/rewrite.spec.ts (5 tests) 5ms
+@verbis/expr:test:  ✓ src/analysis-contracts.spec.ts (30 tests) 38ms
+@verbis/expr:test:  ✓ src/boundary-contracts.spec.ts (26 tests) 24ms
+@verbis/expr:test:  ✓ src/mutation-boundaries.spec.ts (14 tests) 8ms
+@verbis/expr:test:  ✓ src/security.spec.ts (33 tests) 38ms
+@verbis/expr:test:  ✓ src/edge-cases.spec.ts (55 tests) 34ms
+@verbis/expr:test:  ✓ src/limits.spec.ts (5 tests) 3ms
+@verbis/expr:test:  ✓ src/engine.spec.ts (138 tests) 46ms
+@verbis/expr:test:  ✓ src/rule-roundtrip.spec.ts (58 tests) 33ms
+@verbis/expr:test:  ✓ src/fuzz.spec.ts (6 tests) 247ms
+@verbis/expr:test: 
+@verbis/expr:test:  Test Files  10 passed (10)
+@verbis/expr:test:       Tests  370 passed (370)
+@verbis/expr:test:    Start at  10:53:09
+@verbis/expr:test:    Duration  653ms (transform 455ms, setup 0ms, import 1.43s, tests 475ms, environment 1ms)
+@verbis/expr:test: 
+@verbis/expr:test:  % Coverage report from v8
+@verbis/expr:test: ----------------|---------|----------|---------|---------|----------------------
+@verbis/expr:test: File            | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s    
+@verbis/expr:test: ----------------|---------|----------|---------|---------|----------------------
+@verbis/expr:test: All files       |   98.95 |    95.75 |     100 |   99.51 |                      
+@verbis/expr:test:  analysis.ts    |      98 |    95.23 |     100 |   99.19 | 127                  
+@verbis/expr:test:  dates.ts       |     100 |    95.74 |     100 |     100 | 30,43                
+@verbis/expr:test:  interpreter.ts |   96.66 |    92.02 |     100 |   97.16 | 53,146,174           
+@verbis/expr:test:  limits.ts      |     100 |      100 |     100 |     100 |                      
+@verbis/expr:test:  parser.ts      |   99.46 |    95.42 |     100 |     100 | ...,54,59,76,112,132 
+@verbis/expr:test:  registry.ts    |     100 |    97.32 |     100 |     100 | 234,271              
+@verbis/expr:test:  rewrite.ts     |     100 |      100 |     100 |     100 |                      
+@verbis/expr:test:  rules.ts       |     100 |     98.9 |     100 |     100 | 136                  
+@verbis/expr:test:  runtime.ts     |   98.91 |    97.72 |     100 |     100 | 35,72                
+@verbis/expr:test:  templates.ts   |   97.91 |    94.87 |     100 |     100 | 37,64                
+@verbis/expr:test:  types.ts       |     100 |      100 |     100 |     100 |                      
+@verbis/expr:test:  validators.ts  |     100 |    95.74 |     100 |     100 | 33-34                
+@verbis/expr:test: ----------------|---------|----------|---------|---------|----------------------
+@verbis/shared-types:test: cache hit, replaying logs a7f466c7c031e20b
+@verbis/shared-types:test: 
+@verbis/shared-types:test: > @verbis/shared-types@0.0.0 test /Users/ardamoustafa/agent scripting/packages/shared-types
+@verbis/shared-types:test: > vitest run --coverage
+@verbis/shared-types:test: 
+@verbis/shared-types:test: 
+@verbis/shared-types:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/shared-types
+@verbis/shared-types:test:       Coverage enabled with v8
+@verbis/shared-types:test: 
+@verbis/shared-types:test:  ✓ src/cti-identities.spec.ts (2 tests) 7ms
+@verbis/shared-types:test:  ✓ src/health.spec.ts (3 tests) 3ms
+@verbis/shared-types:test:  ✓ src/lifecycle.spec.ts (3 tests) 12ms
+@verbis/shared-types:test:  ✓ src/admin.spec.ts (7 tests) 7ms
+@verbis/shared-types:test:  ✓ src/problem.spec.ts (8 tests) 10ms
+@verbis/shared-types:test:  ✓ src/analytics.spec.ts (7 tests) 8ms
+@verbis/shared-types:test:  ✓ src/env.spec.ts (9 tests) 9ms
+@verbis/shared-types:test:  ✓ src/ai.spec.ts (3 tests) 7ms
+@verbis/shared-types:test:  ✓ src/integration.spec.ts (4 tests) 7ms
+@verbis/shared-types:test: 
+@verbis/shared-types:test:  Test Files  9 passed (9)
+@verbis/shared-types:test:       Tests  46 passed (46)
+@verbis/shared-types:test:    Start at  12:19:31
+@verbis/shared-types:test:    Duration  282ms (import 49%, transform 34%, worker 10%, tests 7%)
+@verbis/shared-types:test: 
+@verbis/shared-types:test:  % Coverage report from v8
+@verbis/shared-types:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/shared-types:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/shared-types:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/shared-types:test: All files          |     100 |    95.23 |     100 |     100 |                   
+@verbis/shared-types:test:  admin.ts          |     100 |    94.11 |     100 |     100 | 25                
+@verbis/shared-types:test:  ai.ts             |     100 |      100 |     100 |     100 |                   
+@verbis/shared-types:test:  analytics.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/shared-types:test:  brand.ts          |       0 |        0 |       0 |       0 |                   
+@verbis/shared-types:test:  cti-identities.ts |     100 |      100 |     100 |     100 |                   
+@verbis/shared-types:test:  env.ts            |     100 |    88.88 |     100 |     100 | 14                
+@verbis/shared-types:test:  health.ts         |     100 |      100 |     100 |     100 |                   
+@verbis/shared-types:test:  integration.ts    |     100 |       75 |     100 |     100 | 109               
+@verbis/shared-types:test:  lifecycle.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/shared-types:test:  preview.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/shared-types:test:  problem.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/shared-types:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/collaboration:test: cache hit, replaying logs e6ed6bcda6850d4c
+@verbis/collaboration:test: 
+@verbis/collaboration:test: > @verbis/collaboration@0.0.0 test /Users/ardamoustafa/agent scripting/packages/collaboration
+@verbis/collaboration:test: > vitest run --coverage
+@verbis/collaboration:test: 
+@verbis/collaboration:test: 
+@verbis/collaboration:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/collaboration
+@verbis/collaboration:test:       Coverage enabled with v8
+@verbis/collaboration:test: 
+@verbis/collaboration:test:  ✓ src/document.spec.ts (9 tests) 13ms
+@verbis/collaboration:test: 
+@verbis/collaboration:test:  Test Files  1 passed (1)
+@verbis/collaboration:test:       Tests  9 passed (9)
+@verbis/collaboration:test:    Start at  10:53:04
+@verbis/collaboration:test:    Duration  141ms (import 37%, transform 31%, tests 20%, worker 12%)
+@verbis/collaboration:test: 
+@verbis/collaboration:test:  % Coverage report from v8
+@verbis/collaboration:test: ----------|---------|----------|---------|---------|----------------------------
+@verbis/collaboration:test: File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s          
+@verbis/collaboration:test: ----------|---------|----------|---------|---------|----------------------------
+@verbis/collaboration:test: All files |   97.63 |    91.59 |     100 |     100 |                            
+@verbis/collaboration:test:  index.ts |   97.63 |    91.59 |     100 |     100 | ...7,92-97,103-104,114,124 
+@verbis/collaboration:test: ----------|---------|----------|---------|---------|----------------------------
+@verbis/script-schema:test: cache hit, replaying logs fcf5b77cca165f07
+@verbis/script-schema:test: 
+@verbis/script-schema:test: > @verbis/script-schema@0.0.0 test /Users/ardamoustafa/agent scripting/packages/script-schema
+@verbis/script-schema:test: > vitest run --coverage
+@verbis/script-schema:test: 
+@verbis/script-schema:test: 
+@verbis/script-schema:test:  RUN  v4.1.11 /Users/ardamoustafa/agent scripting/packages/script-schema
+@verbis/script-schema:test:       Coverage enabled with v8
+@verbis/script-schema:test: 
+@verbis/script-schema:test:  ✓ src/validation/graph.spec.ts (4 tests) 42ms
+@verbis/script-schema:test:  ✓ src/tree/json-patch.spec.ts (15 tests) 4ms
+@verbis/script-schema:test:  ✓ src/schema/schemas.spec.ts (85 tests) 21ms
+@verbis/script-schema:test:  ✓ src/validation/collect.spec.ts (24 tests) 25ms
+@verbis/script-schema:test:  ✓ src/migrations/migrate.spec.ts (24 tests) 15ms
+@verbis/script-schema:test:  ✓ src/schema/preview.spec.ts (2 tests) 11ms
+@verbis/script-schema:test:  ✓ src/validation/validate.spec.ts (17 tests) 37ms
+@verbis/script-schema:test:  ✓ src/validation/semantic.spec.ts (48 tests) 76ms
+@verbis/script-schema:test:  ✓ src/tree/patch-boundaries.spec.ts (8 tests) 7ms
+@verbis/script-schema:test:  ✓ src/helpers.spec.ts (6 tests) 4ms
+@verbis/script-schema:test:  ✓ src/version.spec.ts (3 tests) 14ms
+@verbis/script-schema:test:  ✓ src/fixtures/fixtures.spec.ts (24 tests) 103ms
+@verbis/script-schema:test:  ✓ src/ids.spec.ts (10 tests) 7ms
+@verbis/script-schema:test:  ✓ src/validation/issues.spec.ts (5 tests) 13ms
+@verbis/script-schema:test:  ✓ src/validation/consent-security.spec.ts (2 tests) 8ms
+@verbis/script-schema:test:  ✓ src/json-schema.spec.ts (4 tests) 4ms
+@verbis/script-schema:test:  ✓ src/validation/references.spec.ts (6 tests) 2ms
+@verbis/script-schema:test:  ✓ src/tree/tree.spec.ts (26 tests) 310ms
+@verbis/script-schema:test: 
+@verbis/script-schema:test:  Test Files  18 passed (18)
+@verbis/script-schema:test:       Tests  313 passed (313)
+@verbis/script-schema:test:    Start at  12:19:32
+@verbis/script-schema:test:    Duration  853ms (transform 1.73s, setup 0ms, import 3.47s, tests 703ms, environment 3ms)
+@verbis/script-schema:test: 
+@verbis/script-schema:test:  % Coverage report from v8
+@verbis/script-schema:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/script-schema:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/script-schema:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/script-schema:test: All files          |   98.02 |    93.41 |   96.68 |   98.89 |                   
+@verbis/script-schema:test:  src               |   96.87 |       90 |     100 |     100 |                   
+@verbis/script-schema:test:   components.ts    |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   ids.ts           |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   json-schema.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   json.ts          |     100 |     87.5 |     100 |     100 | 10                
+@verbis/script-schema:test:   pointer.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   version.ts       |   88.88 |     87.5 |     100 |     100 | 18                
+@verbis/script-schema:test:  src/fixtures      |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   broken.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   collections.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   ...card-sales.ts |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   legacy-draft.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   minimal.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   survey.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   ...iff-change.ts |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:  src/migrations    |     100 |    95.83 |     100 |     100 |                   
+@verbis/script-schema:test:   migrate.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   semver.ts        |     100 |       75 |     100 |     100 | 13                
+@verbis/script-schema:test:   types.ts         |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   ...-to-v1-0-0.ts |     100 |    96.07 |     100 |     100 | 102-107           
+@verbis/script-schema:test:   ...-to-v1-1-0.ts |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:  src/schema        |     100 |    81.81 |     100 |     100 |                   
+@verbis/script-schema:test:   actions.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   data-source.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   document.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   flow.ts          |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   node.ts          |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   page.ts          |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   preview.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   primitives.ts    |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   rule.ts          |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   variable.ts      |     100 |    71.42 |     100 |     100 | 53                
+@verbis/script-schema:test:  src/tree          |    98.9 |    96.72 |     100 |     100 |                   
+@verbis/script-schema:test:   json-patch.ts    |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   tree.ts          |   98.56 |     95.4 |     100 |     100 | 202-206,281       
+@verbis/script-schema:test:  src/validation    |   96.94 |    92.28 |   94.11 |   97.96 |                   
+@verbis/script-schema:test:   collect.ts       |     100 |    98.82 |     100 |     100 | 245               
+@verbis/script-schema:test:   graph.ts         |     100 |    95.65 |     100 |     100 | 12                
+@verbis/script-schema:test:   issues.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test:   references.ts    |     100 |    97.36 |     100 |     100 | 66                
+@verbis/script-schema:test:   semantic.ts      |   93.43 |    87.32 |   89.09 |   95.53 | ...97-500,503-508 
+@verbis/script-schema:test:   validate.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/script-schema:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/script-schema:build: cache hit, replaying logs 9499b4adb69efe58
+@verbis/script-schema:build: 
+@verbis/script-schema:build: > @verbis/script-schema@0.0.0 build /Users/ardamoustafa/agent scripting/packages/script-schema
+@verbis/script-schema:build: > tsc -b tsconfig.build.json
+@verbis/script-schema:build: 
+@verbis/ui:test: cache hit, replaying logs 198656fa10038779
+@verbis/ui:test: 
+@verbis/ui:test: > @verbis/ui@0.0.0 test /Users/ardamoustafa/agent scripting/packages/ui
+@verbis/ui:test: > vitest run --coverage
+@verbis/ui:test: 
+@verbis/ui:test: 
+@verbis/ui:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/ui
+@verbis/ui:test:       Coverage enabled with v8
+@verbis/ui:test: 
+@verbis/ui:test:  ✓ src/ui.spec.tsx (7 tests) 243ms
+@verbis/ui:test:  ✓ src/components/access-layout.spec.tsx (3 tests) 422ms
+@verbis/ui:test:    ✓ shares branding and switches language without replacing application form state 317ms
+@verbis/ui:test:  ✓ src/components/tree-keyboard.spec.tsx (3 tests) 659ms
+@verbis/ui:test:    ✓ supports the complete ltr tree keyboard protocol and skips disabled nodes 454ms
+@verbis/ui:test:  ✓ src/components/components.spec.tsx (8 tests) 708ms
+@verbis/ui:test:  ✓ src/security.spec.tsx (9 tests) 84ms
+@verbis/ui:test:  ✓ src/components/data-table-behavior.spec.tsx (4 tests) 802ms
+@verbis/ui:test:    ✓ sorts, filters and resizes columns with the ltr keyboard 448ms
+@verbis/ui:test:  ✓ src/brand.spec.ts (26 tests) 12ms
+@verbis/ui:test:  ✓ src/components/analytics-dashboard.spec.tsx (9 tests) 772ms
+@verbis/ui:test:  ✓ src/tokens.spec.ts (5 tests) 6ms
+@verbis/ui:test: stderr | src/components/behavior.spec.tsx > split pane exposes a labeled keyboard resize handle
+@verbis/ui:test: WARNING: Panel defaultSize prop recommended to avoid layout shift after server rendering
+@verbis/ui:test: 
+@verbis/ui:test:  ✓ src/components/ai-assistant.spec.tsx (13 tests) 1108ms
+@verbis/ui:test:    ✓ keeps generation separate from human review and application 378ms
+@verbis/ui:test:  ✓ src/components/behavior.spec.tsx (18 tests) 1302ms
+@verbis/ui:test:    ✓ popover portals inherit tenant theme and can be dismissed with keyboard 309ms
+@verbis/ui:test:  ✓ src/components/date-picker.spec.tsx (2 tests) 264ms
+@verbis/ui:test: 
+@verbis/ui:test:  Test Files  12 passed (12)
+@verbis/ui:test:       Tests  107 passed (107)
+@verbis/ui:test:    Start at  12:19:34
+@verbis/ui:test:    Duration  3.10s (tests 32%, environment 30%, import 22%, transform 7%, setup 6%, worker 3%)
+@verbis/ui:test: 
+@verbis/ui:test:  % Coverage report from v8
+@verbis/ui:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/ui:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/ui:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/ui:test: All files          |   96.27 |    90.54 |   96.46 |   96.53 |                   
+@verbis/ui:test:  src               |   97.67 |    84.88 |     100 |   99.12 |                   
+@verbis/ui:test:   app-shell.tsx    |     100 |      100 |     100 |     100 |                   
+@verbis/ui:test:   brand.ts         |     100 |    89.65 |     100 |     100 | 17                
+@verbis/ui:test:   provider.tsx     |    97.5 |       72 |     100 |     100 | 38,50-58,84,115   
+@verbis/ui:test:   security.tsx     |      95 |       90 |     100 |     100 | 20,36             
+@verbis/ui:test:   select-field.tsx |     100 |      100 |     100 |     100 |                   
+@verbis/ui:test:   status-badge.tsx |     100 |      100 |     100 |     100 |                   
+@verbis/ui:test:   ...-modules.d.ts |       0 |        0 |       0 |       0 |                   
+@verbis/ui:test:   theme.ts         |   95.45 |     87.5 |     100 |   95.23 | 34                
+@verbis/ui:test:   tokens.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/ui:test:  src/components    |   95.86 |    91.54 |   95.69 |   95.81 |                   
+@verbis/ui:test:   ...ss-layout.tsx |     100 |      100 |     100 |     100 |                   
+@verbis/ui:test:   ai-assistant.tsx |   88.88 |    94.91 |   77.77 |   88.67 | 74-76,84,96,134   
+@verbis/ui:test:   ...dashboard.tsx |   98.75 |      100 |   97.82 |   98.68 | 369               
+@verbis/ui:test:   button.tsx       |     100 |      100 |     100 |     100 |                   
+@verbis/ui:test:   combobox.tsx     |   95.45 |       75 |    90.9 |   95.23 | 143               
+@verbis/ui:test:   ...d-palette.tsx |    82.6 |     61.9 |     100 |   85.71 | 41-43             
+@verbis/ui:test:   data-table.tsx   |   96.07 |    92.06 |      95 |   95.74 | 108-109           
+@verbis/ui:test:   date-picker.tsx  |     100 |      100 |     100 |     100 |                   
+@verbis/ui:test:   disclosure.tsx   |     100 |       50 |     100 |     100 | 19                
+@verbis/ui:test:   feedback.tsx     |     100 |    73.91 |     100 |     100 | 24,47,72-91       
+@verbis/ui:test:   fields.tsx       |     100 |    97.29 |     100 |     100 | 204               
+@verbis/ui:test:   layout.tsx       |     100 |    93.75 |     100 |     100 | 45                
+@verbis/ui:test:   menus.tsx        |     100 |    78.94 |     100 |     100 | 32-37,88-93       
+@verbis/ui:test:   overlays.tsx     |     100 |    91.42 |     100 |     100 | 43,70,103         
+@verbis/ui:test:   script-atlas.tsx |     100 |      100 |     100 |     100 |                   
+@verbis/ui:test:   select.tsx       |      60 |       50 |   66.66 |      60 | 54-57             
+@verbis/ui:test:   tree.tsx         |     100 |      100 |     100 |     100 |                   
+@verbis/ui:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/ui:build: cache hit, replaying logs 683820bca1e08c52
+@verbis/ui:build: 
+@verbis/ui:build: > @verbis/ui@0.0.0 build /Users/ardamoustafa/agent scripting/packages/ui
+@verbis/ui:build: > tsc -b tsconfig.build.json
+@verbis/ui:build: 
+@verbis/sdk-connector:test: cache hit, replaying logs 9350c2f2fd7285d3
+@verbis/sdk-connector:test: 
+@verbis/sdk-connector:test: > @verbis/sdk-connector@0.0.0 test /Users/ardamoustafa/agent scripting/packages/sdk-connector
+@verbis/sdk-connector:test: > vitest run --coverage
+@verbis/sdk-connector:test: 
+@verbis/sdk-connector:test: 
+@verbis/sdk-connector:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/sdk-connector
+@verbis/sdk-connector:test:       Coverage enabled with v8
+@verbis/sdk-connector:test: 
+@verbis/sdk-connector:test:  ✓ src/platforms/marketplace-launch.spec.ts (1 test) 4ms
+@verbis/sdk-connector:test:  ✓ src/webhook-signature.spec.ts (2 tests) 4ms
+@verbis/sdk-connector:test:  ✓ src/platforms/genesys-engage.spec.ts (1 test) 9ms
+@verbis/sdk-connector:test:  ✓ src/channel-context.spec.ts (8 tests) 7ms
+@verbis/sdk-connector:test:  ✓ src/interaction.spec.ts (3 tests) 7ms
+@verbis/sdk-connector:test:  ✓ src/mapper.spec.ts (1 test) 11ms
+@verbis/sdk-connector:test:  ✓ src/platforms/marketplace-ports.spec.ts (14 tests) 9ms
+@verbis/sdk-connector:test:  ✓ src/platforms/amazon-contact-events.spec.ts (5 tests) 12ms
+@verbis/sdk-connector:test:  ✓ src/testing/contract-kit.spec.ts (11 tests) 13ms
+@verbis/sdk-connector:test:  ✓ src/adapter.spec.ts (3 tests) 5ms
+@verbis/sdk-connector:test:  ✓ src/capabilities.spec.ts (2 tests) 3ms
+@verbis/sdk-connector:test:  ✓ src/errors.spec.ts (1 test) 2ms
+@verbis/sdk-connector:test:  ✓ src/platforms/agent-event-poller.spec.ts (2 tests) 7ms
+@verbis/sdk-connector:test:  ✓ src/backoff.spec.ts (1 test) 2ms
+@verbis/sdk-connector:test:  ✓ src/platforms/genesys-cloud.spec.ts (3 tests) 3ms
+@verbis/sdk-connector:test: 
+@verbis/sdk-connector:test:  Test Files  15 passed (15)
+@verbis/sdk-connector:test:       Tests  58 passed (58)
+@verbis/sdk-connector:test:    Start at  12:19:33
+@verbis/sdk-connector:test:    Duration  448ms (transform 53%, import 27%, worker 13%, tests 6%)
+@verbis/sdk-connector:test: 
+@verbis/sdk-connector:test:  % Coverage report from v8
+@verbis/sdk-connector:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/sdk-connector:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/sdk-connector:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/sdk-connector:test: All files          |   98.38 |    92.75 |   94.79 |   98.21 |                   
+@verbis/sdk-connector:test:  src               |   99.12 |    92.07 |     100 |   99.03 |                   
+@verbis/sdk-connector:test:   adapter.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:   backoff.ts       |     100 |    85.71 |     100 |     100 | 14                
+@verbis/sdk-connector:test:   capabilities.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:   ...el-context.ts |     100 |    85.29 |     100 |     100 | ...07,127,141,149 
+@verbis/sdk-connector:test:   connector.ts     |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:   errors.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:   interaction.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:   mapper.ts        |   92.85 |       80 |     100 |    92.3 | 45                
+@verbis/sdk-connector:test:   ...-signature.ts |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:  src/platforms     |   97.95 |    98.82 |   93.33 |    97.7 |                   
+@verbis/sdk-connector:test:   ...ent-poller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:   ...act-events.ts |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:   genesys-cloud.ts |   94.44 |      100 |      80 |   93.75 | 83                
+@verbis/sdk-connector:test:   ...sys-engage.ts |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:   ...ace-launch.ts |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:   ...lace-ports.ts |    97.1 |    96.42 |   92.59 |   96.77 | 103,181           
+@verbis/sdk-connector:test:   marketplace.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-connector:test:  src/testing       |   98.18 |    71.42 |      92 |   98.01 |                   
+@verbis/sdk-connector:test:   contract-kit.ts  |   98.18 |    71.42 |      92 |   98.01 | 46,57             
+@verbis/sdk-connector:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/sdk-connector:build: cache hit, replaying logs 0a052c5829c65918
+@verbis/sdk-connector:build: 
+@verbis/sdk-connector:build: > @verbis/sdk-connector@0.0.0 build /Users/ardamoustafa/agent scripting/packages/sdk-connector
+@verbis/sdk-connector:build: > tsc -b tsconfig.build.json
+@verbis/sdk-connector:build: 
+@verbis/core-runtime:test: cache hit, replaying logs bd9bef2f3b3d4469
+@verbis/core-runtime:test: 
+@verbis/core-runtime:test: > @verbis/core-runtime@0.0.0 test /Users/ardamoustafa/agent scripting/packages/core-runtime
+@verbis/core-runtime:test: > vitest run --coverage
+@verbis/core-runtime:test: 
+@verbis/core-runtime:test: 
+@verbis/core-runtime:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/core-runtime
+@verbis/core-runtime:test:       Coverage enabled with v8
+@verbis/core-runtime:test: 
+@verbis/core-runtime:test:  ✓ src/store.spec.ts (10 tests) 37ms
+@verbis/core-runtime:test:  ✓ src/styles.spec.ts (2 tests) 10ms
+@verbis/core-runtime:test:  ✓ src/primitives.spec.ts (4 tests) 5ms
+@verbis/core-runtime:test:  ✓ src/registry.spec.ts (9 tests) 25ms
+@verbis/core-runtime:test:  ✓ src/validation.spec.ts (14 tests) 60ms
+@verbis/core-runtime:test:  ✓ src/scenarios.spec.ts (8 tests) 43ms
+@verbis/core-runtime:test:  ✓ src/privacy.spec.ts (12 tests) 25ms
+@verbis/core-runtime:test:  ✓ src/debugger.spec.ts (8 tests) 98ms
+@verbis/core-runtime:test:  ✓ src/runtime.spec.ts (38 tests) 173ms
+@verbis/core-runtime:test: Error: synthetic leaf error
+@verbis/core-runtime:test:     at /Users/ardamoustafa/agent scripting/packages/core-runtime/src/renderer.spec.tsx:122:17
+@verbis/core-runtime:test:     at renderWithHooks (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+@verbis/core-runtime:test:     at mountIndeterminateComponent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:20103:13)
+@verbis/core-runtime:test:     at beginWork (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21626:16)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callCallback (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callTheUserObjectsOperation (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+@verbis/core-runtime:test:     at innerInvokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+@verbis/core-runtime:test:     at invokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:296:3)
+@verbis/core-runtime:test:     at HTMLUnknownElementImpl._dispatch (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:243:9)
+@verbis/core-runtime:test:     at HTMLUnknownElementImpl.dispatchEvent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:114:17)
+@verbis/core-runtime:test: Error: synthetic leaf error
+@verbis/core-runtime:test:     at /Users/ardamoustafa/agent scripting/packages/core-runtime/src/renderer.spec.tsx:122:17
+@verbis/core-runtime:test:     at renderWithHooks (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+@verbis/core-runtime:test:     at mountIndeterminateComponent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:20103:13)
+@verbis/core-runtime:test:     at beginWork (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21626:16)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callCallback (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callTheUserObjectsOperation (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+@verbis/core-runtime:test:     at innerInvokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+@verbis/core-runtime:test:     at invokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:296:3)
+@verbis/core-runtime:test:     at HTMLUnknownElementImpl._dispatch (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:243:9)
+@verbis/core-runtime:test:     at HTMLUnknownElementImpl.dispatchEvent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:114:17)
+@verbis/core-runtime:test: Error: synthetic failure
+@verbis/core-runtime:test:     at mount.telemetry.telemetry (/Users/ardamoustafa/agent scripting/packages/core-runtime/src/renderer.spec.tsx:275:27)
+@verbis/core-runtime:test:     at renderWithHooks (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+@verbis/core-runtime:test:     at mountIndeterminateComponent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:20103:13)
+@verbis/core-runtime:test:     at beginWork (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21626:16)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callCallback (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callTheUserObjectsOperation (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+@verbis/core-runtime:test:     at innerInvokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+@verbis/core-runtime:test:     at invokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:296:3)
+@verbis/core-runtime:test:     at HTMLUnknownElementImpl._dispatch (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:243:9)
+@verbis/core-runtime:test:     at HTMLUnknownElementImpl.dispatchEvent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:114:17)
+@verbis/core-runtime:test: Error: synthetic failure
+@verbis/core-runtime:test:     at mount.telemetry.telemetry (/Users/ardamoustafa/agent scripting/packages/core-runtime/src/renderer.spec.tsx:275:27)
+@verbis/core-runtime:test:     at renderWithHooks (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+@verbis/core-runtime:test:     at mountIndeterminateComponent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:20103:13)
+@verbis/core-runtime:test:     at beginWork (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21626:16)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callCallback (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callTheUserObjectsOperation (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+@verbis/core-runtime:test:     at innerInvokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+@verbis/core-runtime:test:     at invokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:296:3)
+@verbis/core-runtime:test:     at HTMLUnknownElementImpl._dispatch (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:243:9)
+@verbis/core-runtime:test:     at HTMLUnknownElementImpl.dispatchEvent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:114:17)
+@verbis/core-runtime:test: RuntimeProblem: VERBIS_SENSITIVE_DISPLAY
+@verbis/core-runtime:test:     at NodeContent2 (/Users/ardamoustafa/agent scripting/packages/core-runtime/src/renderer.tsx:128:15)
+@verbis/core-runtime:test:     at renderWithHooks (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+@verbis/core-runtime:test:     at updateFunctionComponent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19617:20)
+@verbis/core-runtime:test:     at updateSimpleMemoComponent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19454:10)
+@verbis/core-runtime:test:     at beginWork (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21717:16)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callCallback (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callTheUserObjectsOperation (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+@verbis/core-runtime:test:     at innerInvokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+@verbis/core-runtime:test:     at invokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:296:3)
+@verbis/core-runtime:test:     at HTMLUnknownElementImpl._dispatch (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:243:9)
+@verbis/core-runtime:test: RuntimeProblem: VERBIS_SENSITIVE_DISPLAY
+@verbis/core-runtime:test:     at NodeContent2 (/Users/ardamoustafa/agent scripting/packages/core-runtime/src/renderer.tsx:128:15)
+@verbis/core-runtime:test:     at renderWithHooks (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+@verbis/core-runtime:test:     at updateFunctionComponent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19617:20)
+@verbis/core-runtime:test:     at updateSimpleMemoComponent (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19454:10)
+@verbis/core-runtime:test:     at beginWork (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21717:16)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callCallback (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+@verbis/core-runtime:test:     at HTMLUnknownElement.callTheUserObjectsOperation (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+@verbis/core-runtime:test:     at innerInvokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+@verbis/core-runtime:test:     at invokeEventListeners (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:296:3)
+@verbis/core-runtime:test:     at HTMLUnknownElementImpl._dispatch (/Users/ardamoustafa/agent scripting/node_modules/.pnpm/jsdom@27.4.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:243:9)
+@verbis/core-runtime:test:  ✓ src/renderer.spec.tsx (15 tests) 404ms
+@verbis/core-runtime:test:  ✓ src/core-component-behavior.spec.tsx (11 tests) 529ms
+@verbis/core-runtime:test: 
+@verbis/core-runtime:test:  Test Files  11 passed (11)
+@verbis/core-runtime:test:       Tests  131 passed (131)
+@verbis/core-runtime:test:    Start at  12:44:30
+@verbis/core-runtime:test:    Duration  4.31s (import 65%, environment 17%, transform 9%, tests 4%, setup 4%, worker 1%)
+@verbis/core-runtime:test: 
+@verbis/core-runtime:test:  % Coverage report from v8
+@verbis/core-runtime:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/core-runtime:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/core-runtime:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/core-runtime:test: All files          |   94.78 |    90.36 |   94.92 |   96.69 |                   
+@verbis/core-runtime:test:  ...components.tsx |   93.49 |    92.52 |   83.87 |   99.02 | 117               
+@verbis/core-runtime:test:  executor.ts       |   89.38 |    83.49 |   88.46 |   90.18 | ...85,295,307-308 
+@verbis/core-runtime:test:  expressions.ts    |   98.68 |    96.11 |     100 |     100 | 20,36,100,114     
+@verbis/core-runtime:test:  fixtures.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/core-runtime:test:  ports.ts          |       0 |        0 |       0 |       0 |                   
+@verbis/core-runtime:test:  primitives.ts     |     100 |      100 |     100 |     100 |                   
+@verbis/core-runtime:test:  problem.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/core-runtime:test:  registry.ts       |     100 |    94.28 |     100 |     100 | 109-116           
+@verbis/core-runtime:test:  renderer.tsx      |   96.96 |    92.22 |     100 |   97.72 | 122-123           
+@verbis/core-runtime:test:  runtime.ts        |   91.81 |    86.07 |   94.44 |   95.07 | ...67-369,491,612 
+@verbis/core-runtime:test:  scenarios.ts      |   98.87 |    93.54 |     100 |     100 | 71,116,121,152    
+@verbis/core-runtime:test:  store.ts          |     100 |       94 |     100 |     100 | ...09,123,168,199 
+@verbis/core-runtime:test:  styles.ts         |   98.03 |    90.19 |     100 |     100 | 83,86-87,125-128  
+@verbis/core-runtime:test:  validation.ts     |   98.27 |    93.54 |   94.11 |   98.11 | 73                
+@verbis/core-runtime:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/admin-web:test: cache hit, replaying logs e7da538adb5f2aa5
+@verbis/admin-web:test: 
+@verbis/admin-web:test: > @verbis/admin-web@0.0.0 test /Users/ardamoustafa/agent scripting/apps/admin-web
+@verbis/admin-web:test: > vitest run --coverage
+@verbis/admin-web:test: 
+@verbis/admin-web:test: 
+@verbis/admin-web:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/admin-web
+@verbis/admin-web:test:       Coverage enabled with v8
+@verbis/admin-web:test: 
+@verbis/admin-web:test:  ✓ src/workspace/ai-analytics-behavior.spec.tsx (6 tests) 1837ms
+@verbis/admin-web:test:    ✓ edits validated AI configuration and secret references with CSRF, reconciles usage and recovers save failures 502ms
+@verbis/admin-web:test:    ✓ downloads authorized analytics blobs, revokes their object URLs and surfaces export failures 1105ms
+@verbis/admin-web:test:  ✓ src/workspace/identity-behavior.spec.tsx (10 tests) 1908ms
+@verbis/admin-web:test:    ✓ probes provider connectivity and shows delegated SCIM credentials once before revocation 320ms
+@verbis/admin-web:test:    ✓ updates manual roles without replacing SSO assignments, saves explicit scopes and terminates selected sessions with confirmation 600ms
+@verbis/admin-web:test:  ✓ src/workspace/simulator-behavior.spec.tsx (6 tests) 734ms
+@verbis/admin-web:test:    ✓ limits actions by interaction status and sends customer messages and transfer targets 400ms
+@verbis/admin-web:test:  ✓ src/workspace/operations-behavior.spec.tsx (17 tests) 1568ms
+@verbis/admin-web:test:    ✓ creates and edits versioned connector configurations, probes connectivity and opens audit diagnostics 377ms
+@verbis/admin-web:test:  ✓ src/workspace/tenant-behavior.spec.tsx (11 tests) 732ms
+@verbis/admin-web:test:  ✓ src/workspace/widgets-behavior.spec.tsx (15 tests) 464ms
+@verbis/admin-web:test:  ✓ src/workspace/mappings-behavior.spec.tsx (13 tests) 414ms
+@verbis/admin-web:test:  ✓ src/app.spec.tsx (3 tests) 250ms
+@verbis/admin-web:test:  ✓ src/auth/auth-section.spec.tsx (10 tests) 280ms
+@verbis/admin-web:test:  ✓ src/workspace/api.spec.ts (4 tests) 8ms
+@verbis/admin-web:test:  ✓ src/genesys/genesys-mapping-api.spec.ts (3 tests) 4ms
+@verbis/admin-web:test:  ✓ src/avaya/avaya-routing.spec.ts (2 tests) 4ms
+@verbis/admin-web:test:  ✓ src/engage/attached-data-api.spec.ts (1 test) 3ms
+@verbis/admin-web:test: 
+@verbis/admin-web:test:  Test Files  13 passed (13)
+@verbis/admin-web:test:       Tests  101 passed (101)
+@verbis/admin-web:test:    Start at  12:19:38
+@verbis/admin-web:test:    Duration  12.62s (import 46%, tests 35%, environment 12%, transform 3%, setup 3%, worker 1%)
+@verbis/admin-web:test: 
+@verbis/admin-web:test:      Import  108 modules were evaluated 576 times · 10.93s total, 46% of tracked time
+@verbis/admin-web:test:              ~3.61s faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+@verbis/admin-web:test:              learn more: https://vitest.dev/guide/improving-performance#test-isolation
+@verbis/admin-web:test: 
+@verbis/admin-web:test:  % Coverage report from v8
+@verbis/admin-web:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/admin-web:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/admin-web:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/admin-web:test: All files          |   92.12 |    88.14 |      87 |   94.64 |                   
+@verbis/admin-web:test:  src               |   23.07 |        0 |      40 |      30 |                   
+@verbis/admin-web:test:   app.tsx          |       0 |        0 |       0 |       0 |                   
+@verbis/admin-web:test:   providers.tsx    |     100 |      100 |     100 |     100 |                   
+@verbis/admin-web:test:   ...api-health.ts |       0 |        0 |       0 |       0 | 11-25             
+@verbis/admin-web:test:  src/auth          |   89.01 |    72.88 |    86.2 |    93.5 |                   
+@verbis/admin-web:test:   auth-api.ts      |   89.74 |       85 |      75 |     100 | 40,72-95          
+@verbis/admin-web:test:   auth-section.tsx |   88.46 |    66.66 |   94.11 |   89.36 | 22-25,77          
+@verbis/admin-web:test:  src/avaya         |     100 |     93.1 |     100 |     100 |                   
+@verbis/admin-web:test:   ...g-section.tsx |     100 |       92 |     100 |     100 | 57,81             
+@verbis/admin-web:test:   avaya-routing.ts |     100 |      100 |     100 |     100 |                   
+@verbis/admin-web:test:  src/engage        |    97.1 |    89.13 |   93.54 |   98.36 |                   
+@verbis/admin-web:test:   ...d-data-api.ts |   93.54 |    86.66 |   85.71 |   96.29 | 42                
+@verbis/admin-web:test:   ...a-section.tsx |     100 |    90.32 |     100 |     100 | 26,35             
+@verbis/admin-web:test:  src/genesys       |   95.94 |    89.83 |   92.85 |   98.48 |                   
+@verbis/admin-web:test:   ...apping-api.ts |   93.93 |    89.47 |   84.61 |   96.55 | 44                
+@verbis/admin-web:test:   ...g-section.tsx |   97.56 |       90 |     100 |     100 | 19,48,83,155      
+@verbis/admin-web:test:  src/simulator     |   95.52 |    88.52 |   93.75 |   98.41 |                   
+@verbis/admin-web:test:   simulator-api.ts |   90.47 |     90.9 |      80 |      95 | 80                
+@verbis/admin-web:test:   ...r-section.tsx |   97.82 |       88 |     100 |     100 | 30,32,53-72,249   
+@verbis/admin-web:test:  src/workspace     |   92.05 |    90.88 |   85.01 |   94.31 |                   
+@verbis/admin-web:test:   access.tsx       |     100 |      100 |     100 |     100 |                   
+@verbis/admin-web:test:   ai-page.tsx      |    97.5 |    88.57 |   95.23 |   97.29 | 147               
+@verbis/admin-web:test:   ...tics-page.tsx |     100 |    92.85 |     100 |     100 | 28                
+@verbis/admin-web:test:   api.ts           |   75.51 |    86.36 |   81.25 |   78.72 | 60,118-126        
+@verbis/admin-web:test:   ...ity-pages.tsx |   96.31 |     85.1 |   92.42 |   98.02 | 287,336,441       
+@verbis/admin-web:test:   ...ons-pages.tsx |    97.6 |    92.43 |   93.75 |   97.54 | 72,230,366        
+@verbis/admin-web:test:   tenant-pages.tsx |   99.15 |    96.55 |    97.5 |   99.11 | 446               
+@verbis/admin-web:test:   widgets.tsx      |   97.77 |    96.92 |   97.22 |   98.79 | 281               
+@verbis/admin-web:test:   workspace.tsx    |   65.59 |    86.48 |   38.29 |   75.64 | ...30-243,276-279 
+@verbis/admin-web:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/core-runtime:build: cache hit, replaying logs 7ec53c7293f81488
+@verbis/core-runtime:build: 
+@verbis/core-runtime:build: > @verbis/core-runtime@0.0.0 build /Users/ardamoustafa/agent scripting/packages/core-runtime
+@verbis/core-runtime:build: > tsc -b tsconfig.build.json
+@verbis/core-runtime:build: 
+@verbis/connector-hub:test: cache miss, executing 4c4dd2f986a60200
+@verbis/connector-hub:test: 
+@verbis/connector-hub:test: > @verbis/connector-hub@0.0.0 test /Users/ardamoustafa/agent scripting/apps/connector-hub
+@verbis/connector-hub:test: > vitest run --coverage
+@verbis/connector-hub:test: 
+@verbis/connector-hub:test: 
+@verbis/connector-hub:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/connector-hub
+@verbis/connector-hub:test:       Coverage enabled with v8
+@verbis/connector-hub:test: 
+@verbis/connector-hub:test:  ✓ src/connectors/genesys-engage/workspace/workspace-events.spec.ts (29 tests) 109ms
+@verbis/connector-hub:test:  ✓ src/api/verbis-api.spec.ts (7 tests) 55ms
+@verbis/connector-hub:test:  ✓ src/connectors/avaya/axp/axp-notifications.spec.ts (10 tests) 169ms
+@verbis/connector-hub:test:  ✓ src/connectors/genesys-engage/workspace/workspace-session.spec.ts (2 tests) 92ms
+@verbis/connector-hub:test:  ✓ src/connectors/genesys-cloud/notifications.spec.ts (7 tests) 469ms
+@verbis/connector-hub:test:    ✓ genesys notifications channel (7)
+@verbis/connector-hub:test:      ✓ renews before the 24 h channel expiry 375ms
+@verbis/connector-hub:test:  ✓ src/connectors/avaya/avaya-sidecar.connector.spec.ts (60 tests) 93ms
+@verbis/connector-hub:test:  ✓ src/connectors/genesys-engage/genesys-engage.connector.spec.ts (89 tests) 123ms
+@verbis/connector-hub:test:  ✓ src/connectors/genesys-cloud/genesys-cloud.connector.spec.ts (85 tests) 192ms
+@verbis/connector-hub:test:  ✓ src/connectors/salesforce/salesforce.connector.spec.ts (13 tests) 101ms
+@verbis/connector-hub:test:  ✓ src/connectors/generic-webhook/generic-webhook.connector.spec.ts (42 tests) 64ms
+@verbis/connector-hub:test:  ✓ src/connectors/avaya/axp/axp.connector.spec.ts (35 tests) 58ms
+@verbis/connector-hub:test:  ✓ src/runtime/delivery-queue.spec.ts (4 tests) 11ms
+@verbis/connector-hub:test:  ✓ src/connectors/simulator/simulator.connector.spec.ts (20 tests) 75ms
+@verbis/connector-hub:test:  ✓ src/connectors/shared/recording-hook.spec.ts (2 tests) 51ms
+@verbis/connector-hub:test:  ✓ src/connectors/avaya/axp/axp-client.spec.ts (17 tests) 21ms
+@verbis/connector-hub:test:  ✓ src/connectors/marketplace/marketplace.connector.spec.ts (36 tests) 127ms
+@verbis/connector-hub:test:  ✓ src/connectors/twilio-flex/twilio-flex.connector.spec.ts (13 tests) 45ms
+@verbis/connector-hub:test:  ✓ src/app.spec.ts (6 tests) 158ms
+@verbis/connector-hub:test:  ✓ src/connectors/nice-cxone/nice-cxone.connector.spec.ts (13 tests) 39ms
+@verbis/connector-hub:test:  ✓ src/http/hub.http.spec.ts (9 tests) 254ms
+@verbis/connector-hub:test:  ✓ src/connectors/dynamics-365/dynamics-365.connector.spec.ts (13 tests) 63ms
+@verbis/connector-hub:test:  ✓ src/connectors/amazon-connect/amazon-connect.connector.spec.ts (13 tests) 82ms
+@verbis/connector-hub:test:  ✓ src/connectors/genesys-cloud/genesys-client.spec.ts (4 tests) 31ms
+@verbis/connector-hub:test:  ✓ src/connectors/cisco-finesse/cisco-finesse.connector.spec.ts (13 tests) 20ms
+@verbis/connector-hub:test:  ✓ src/connectors/genesys-engage/workspace/workspace-pool.spec.ts (5 tests) 13ms
+@verbis/connector-hub:test:  ✓ src/connectors/genesys-cloud/mapper.spec.ts (11 tests) 21ms
+@verbis/connector-hub:test:  ✓ src/connectors/cisco-webex/cisco-webex.connector.spec.ts (13 tests) 22ms
+@verbis/connector-hub:test:  ✓ src/connectors/five9/five9.connector.spec.ts (13 tests) 21ms
+@verbis/connector-hub:test:  ✓ src/connectors/genesys-engage/mapper.spec.ts (4 tests) 15ms
+@verbis/connector-hub:test:  ✓ src/problem.filter.spec.ts (3 tests) 3ms
+@verbis/connector-hub:test:  ✓ src/http/errors.spec.ts (9 tests) 3ms
+@verbis/connector-hub:test:  ✓ src/connectors/avaya/uui.spec.ts (4 tests) 5ms
+@verbis/connector-hub:test:  ✓ src/runtime/connector-supervisor.spec.ts (4 tests) 27ms
+@verbis/connector-hub:test:  ✓ src/connectors/registry-contract.spec.ts (18 tests) 9ms
+@verbis/connector-hub:test:  ✓ src/runtime/event-pipeline.spec.ts (4 tests) 6ms
+@verbis/connector-hub:test:  ✓ src/connectors/shared/nats-sidecar-transport.int.spec.ts (1 test) 2536ms
+@verbis/connector-hub:test:    ✓ NATS sidecar transport (integration) (1)
+@verbis/connector-hub:test:      ✓ consumes envelopes durably, redelivers on backpressure, answers commands and verify 1118ms
+@verbis/connector-hub:test: 
+@verbis/connector-hub:test:  Test Files  36 passed (36)
+@verbis/connector-hub:test:       Tests  631 passed (631)
+@verbis/connector-hub:test:    Start at  13:13:44
+@verbis/connector-hub:test:    Duration  3.57s (import 54%, tests 26%, transform 18%, worker 3%)
+@verbis/connector-hub:test: 
+@verbis/connector-hub:test:     Isolate  36 workers spawned · ~90ms startup each (spawn + environment, per file)
+@verbis/connector-hub:test:              at least ~270ms faster with isolate: false — reuses workers across files instead of one per file
+@verbis/connector-hub:test: 
+@verbis/connector-hub:test:  % Coverage report from v8
+@verbis/connector-hub:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/connector-hub:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/connector-hub:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/connector-hub:test: All files          |   83.43 |    75.09 |   81.74 |   86.36 |                   
+@verbis/connector-hub:test:  src               |   85.71 |    71.05 |     100 |   87.03 |                   
+@verbis/connector-hub:test:   app.module.ts    |    92.3 |    66.66 |     100 |     100 | 44-45,72          
+@verbis/connector-hub:test:   bootstrap.ts     |   82.35 |    66.66 |     100 |   82.35 | 35-36,42          
+@verbis/connector-hub:test:   env.ts           |      75 |      100 |     100 |      75 | 20-21             
+@verbis/connector-hub:test:   ...fy-options.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ...lem.filter.ts |   92.85 |    73.91 |     100 |   92.85 | 48                
+@verbis/connector-hub:test:   telemetry.ts     |       0 |      100 |     100 |       0 | 3                 
+@verbis/connector-hub:test:  src/api           |    97.4 |    82.22 |   95.83 |     100 |                   
+@verbis/connector-hub:test:   verbis-api.ts    |    97.4 |    82.22 |   95.83 |     100 | ...92,252,270-274 
+@verbis/connector-hub:test:  src/connectors    |   85.71 |    83.01 |     100 |   89.18 |                   
+@verbis/connector-hub:test:   ...tion-state.ts |   73.91 |       60 |     100 |      80 | 37-38,48-49       
+@verbis/connector-hub:test:   registry.ts      |     100 |    96.96 |     100 |     100 | 49                
+@verbis/connector-hub:test:  ...amazon-connect |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ....connector.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:  ...nnectors/avaya |   88.83 |     76.6 |   86.11 |   93.04 |                   
+@verbis/connector-hub:test:   ....connector.ts |   83.18 |     70.4 |      84 |      89 | ...71-272,284,290 
+@verbis/connector-hub:test:   config.ts        |   83.33 |      100 |       0 |     100 |                   
+@verbis/connector-hub:test:   envelope.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   mapper.ts        |   95.34 |    79.22 |     100 |      95 | 97-103            
+@verbis/connector-hub:test:   uui.ts           |   95.55 |    86.04 |     100 |     100 | 8,29,32,41,48     
+@verbis/connector-hub:test:  ...tors/avaya/axp |   91.02 |    77.49 |   87.69 |   92.96 |                   
+@verbis/connector-hub:test:   axp-client.ts    |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ...ifications.ts |   97.64 |     92.5 |     100 |     100 | 82,150-156        
+@verbis/connector-hub:test:   axp.connector.ts |    81.9 |     62.5 |   73.07 |   83.15 | ...69,277,283,289 
+@verbis/connector-hub:test:   config.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   mapper.ts        |   86.95 |    71.79 |   85.71 |    92.5 | 59,90,124         
+@verbis/connector-hub:test:  .../cisco-finesse |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ....connector.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:  ...rs/cisco-webex |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ....connector.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:  ...s/dynamics-365 |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ....connector.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:  ...nnectors/five9 |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ....connector.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:  ...eneric-webhook |   94.36 |    82.22 |     100 |   93.84 |                   
+@verbis/connector-hub:test:   ....connector.ts |   93.84 |    75.86 |     100 |   93.22 | 164,190,193,203   
+@verbis/connector-hub:test:   mapper.ts        |     100 |    93.75 |     100 |     100 | 84                
+@verbis/connector-hub:test:  .../genesys-cloud |   77.17 |       69 |   76.22 |   80.92 |                   
+@verbis/connector-hub:test:   config.ts        |      40 |        0 |       0 |      40 | 58-61             
+@verbis/connector-hub:test:   ...sys-client.ts |   76.82 |    66.23 |      75 |   80.55 | ...67,176,212-215 
+@verbis/connector-hub:test:   ....connector.ts |   64.25 |    55.62 |    61.7 |   67.92 | ...88-489,495,501 
+@verbis/connector-hub:test:   mapper.ts        |   96.89 |    85.39 |     100 |   99.15 | 120               
+@verbis/connector-hub:test:   notifications.ts |   84.42 |    60.86 |    86.2 |   88.39 | ...97-198,221,241 
+@verbis/connector-hub:test:  ...genesys-engage |   85.65 |    72.15 |   75.55 |   89.95 |                   
+@verbis/connector-hub:test:   config.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   envelope.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ....connector.ts |   81.76 |    67.33 |   68.57 |   87.07 | ...64,383,410,416 
+@verbis/connector-hub:test:   mapper.ts        |   94.11 |    80.45 |     100 |   95.83 | 119-125           
+@verbis/connector-hub:test:  ...gage/workspace |   83.91 |    74.46 |   80.43 |   86.43 |                   
+@verbis/connector-hub:test:   ...ent-tokens.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ...ace-events.ts |     100 |    97.53 |     100 |     100 | 207,212           
+@verbis/connector-hub:test:   ...space-pool.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ...ce-session.ts |   69.42 |    50.53 |   57.14 |   75.22 | ...55,276-277,299 
+@verbis/connector-hub:test:  ...rs/marketplace |   58.88 |    60.19 |   72.22 |   61.66 |                   
+@verbis/connector-hub:test:   ...place-test.ts |   90.47 |      100 |    87.5 |      90 | 15-16             
+@verbis/connector-hub:test:   ....connector.ts |    82.2 |    73.75 |   90.47 |   86.11 | ...87,291-292,301 
+@verbis/connector-hub:test:   sdk-bridge.ts    |       0 |        0 |       0 |       0 | 19-117            
+@verbis/connector-hub:test:  ...ors/nice-cxone |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ....connector.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:  ...ors/salesforce |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ....connector.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:  ...nectors/shared |    73.8 |     61.7 |   70.58 |   77.33 |                   
+@verbis/connector-hub:test:   ...-transport.ts |   71.42 |    36.36 |   66.66 |      75 | ...79,186,202-204 
+@verbis/connector-hub:test:   ...rding-hook.ts |   80.95 |       84 |     100 |   84.21 | 77,87-88          
+@verbis/connector-hub:test:  ...tors/simulator |   92.75 |    82.97 |     100 |   95.23 |                   
+@verbis/connector-hub:test:   ....connector.ts |   92.75 |    82.97 |     100 |   95.23 | 166-172,280,440   
+@verbis/connector-hub:test:  ...rs/twilio-flex |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ....connector.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:  src/health        |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:  src/http          |   94.79 |    84.37 |   94.11 |   97.64 |                   
+@verbis/connector-hub:test:   errors.ts        |   93.33 |    94.44 |     100 |   92.85 | 25                
+@verbis/connector-hub:test:   ...auth.guard.ts |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test:   ...controller.ts |   94.54 |    83.33 |   91.66 |   97.87 | 83                
+@verbis/connector-hub:test:   ...controller.ts |    92.3 |    66.66 |     100 |     100 | 46,52-58          
+@verbis/connector-hub:test:  src/runtime       |   78.57 |    73.77 |   67.69 |    82.4 |                   
+@verbis/connector-hub:test:   ...t-workload.ts |   94.73 |       80 |     100 |     100 | 33-35             
+@verbis/connector-hub:test:   ...supervisor.ts |   63.63 |    59.61 |   51.35 |      70 | ...39,254,272-286 
+@verbis/connector-hub:test:   ...very-queue.ts |   98.33 |    91.17 |    90.9 |   98.07 | 87                
+@verbis/connector-hub:test:   ...t-pipeline.ts |   90.24 |    76.92 |   83.33 |   89.47 | 30-31,49,102      
+@verbis/connector-hub:test:  src/test          |   91.74 |    88.58 |      82 |   92.26 |                   
+@verbis/connector-hub:test:   fake-api.ts      |   93.54 |       75 |   77.77 |   93.54 | 65-68             
+@verbis/connector-hub:test:   fake-avaya.ts    |   94.36 |     92.3 |      75 |   94.02 | 35-39,63,159      
+@verbis/connector-hub:test:   fake-engage.ts   |   78.12 |       95 |      60 |   76.66 | 48-52,57-59,79-83 
+@verbis/connector-hub:test:   fake-genesys.ts  |    94.2 |    86.74 |     100 |   96.87 | 96,124            
+@verbis/connector-hub:test:   scenario.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/connector-hub:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/sdk-component:test: cache hit, replaying logs d52110c2c9095d3a
+@verbis/sdk-component:test: 
+@verbis/sdk-component:test: > @verbis/sdk-component@0.0.0 test /Users/ardamoustafa/agent scripting/packages/sdk-component
+@verbis/sdk-component:test: > vitest run --coverage
+@verbis/sdk-component:test: 
+@verbis/sdk-component:test: 
+@verbis/sdk-component:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/sdk-component
+@verbis/sdk-component:test:       Coverage enabled with v8
+@verbis/sdk-component:test: 
+@verbis/sdk-component:test:  ✓ src/cli.spec.ts (1 test) 276ms
+@verbis/sdk-component:test:  ✓ src/guest.spec.ts (3 tests) 12ms
+@verbis/sdk-component:test:  ✓ src/manifest.spec.ts (2 tests) 3ms
+@verbis/sdk-component:test:  ✓ src/security.spec.ts (4 tests) 3ms
+@verbis/sdk-component:test:  ✓ src/bundle.spec.ts (17 tests) 26ms
+@verbis/sdk-component:test:  ✓ src/firewall.spec.ts (7 tests) 24ms
+@verbis/sdk-component:test:  ✓ src/sdk.spec.ts (8 tests) 28ms
+@verbis/sdk-component:test:  ✓ src/host.spec.tsx (8 tests) 186ms
+@verbis/sdk-component:test: 
+@verbis/sdk-component:test:  Test Files  8 passed (8)
+@verbis/sdk-component:test:       Tests  50 passed (50)
+@verbis/sdk-component:test:    Start at  12:44:35
+@verbis/sdk-component:test:    Duration  3.29s (import 62%, environment 17%, transform 12%, setup 4%, tests 3%, worker 1%)
+@verbis/sdk-component:test: 
+@verbis/sdk-component:test:  % Coverage report from v8
+@verbis/sdk-component:test: -------------|---------|----------|---------|---------|-------------------
+@verbis/sdk-component:test: File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/sdk-component:test: -------------|---------|----------|---------|---------|-------------------
+@verbis/sdk-component:test: All files    |    99.3 |    97.03 |   98.03 |   99.61 |                   
+@verbis/sdk-component:test:  bridge.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-component:test:  bundle.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-component:test:  guest.tsx   |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-component:test:  host.tsx    |   97.89 |     86.2 |   95.23 |   98.88 | 85                
+@verbis/sdk-component:test:  manifest.ts |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-component:test:  protocol.ts |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-component:test:  tenant.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/sdk-component:test: -------------|---------|----------|---------|---------|-------------------
+@verbis/sdk-component:build: cache hit, replaying logs 72b0cee352fec463
+@verbis/sdk-component:build: 
+@verbis/sdk-component:build: > @verbis/sdk-component@0.0.0 build /Users/ardamoustafa/agent scripting/packages/sdk-component
+@verbis/sdk-component:build: > tsc -b tsconfig.build.json
+@verbis/sdk-component:build: 
+@verbis/components:test: cache hit, replaying logs dfb7fdf5e07e13b4
+@verbis/components:test: 
+@verbis/components:test: > @verbis/components@0.0.0 test /Users/ardamoustafa/agent scripting/packages/components
+@verbis/components:test: > vitest run --coverage
+@verbis/components:test: 
+@verbis/components:test: 
+@verbis/components:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/components
+@verbis/components:test:       Coverage enabled with v8
+@verbis/components:test: 
+@verbis/components:test:  ✓ src/script-text-behavior.spec.tsx (8 tests) 900ms
+@verbis/components:test:    ✓ checks and unchecks checklist choices while retaining other selections (bound=true) 384ms
+@verbis/components:test:  ✓ src/privacy-security.spec.tsx (7 tests) 772ms
+@verbis/components:test:    ✓ consent is optional, initially false, and notification is a separate component 485ms
+@verbis/components:test:  ✓ src/data-behavior.spec.tsx (9 tests) 1067ms
+@verbis/components:test:    ✓ formats populated table data without exposing malformed dates 382ms
+@verbis/components:test:  ✓ src/action-behavior.spec.tsx (10 tests) 1097ms
+@verbis/components:test:    ✓ persists disposition selection and executes its write-back action, reporting downstream failures safely 323ms
+@verbis/components:test:  ✓ src/template-bindings.spec.tsx (2 tests) 802ms
+@verbis/components:test:    ✓ loads select options from a bound source and writes the chosen value 555ms
+@verbis/components:test:  ✓ src/layout-behavior.spec.tsx (9 tests) 1323ms
+@verbis/components:test:    ✓ switches bound tabs, emits changes and respects disabled items 484ms
+@verbis/components:test:  ✓ src/exports.spec.tsx (67 tests) 1485ms
+@verbis/components:test:  ✓ src/input-behavior.spec.tsx (18 tests) 1902ms
+@verbis/components:test:    ✓ input value contracts (15)
+@verbis/components:test:      ✓ writes select choices 314ms
+@verbis/components:test:  ✓ src/catalog.spec.tsx (154 tests) 2434ms
+@verbis/components:test:  ✓ src/registry.spec.ts (5 tests) 9ms
+@verbis/components:test:  ✓ src/media-behavior.spec.tsx (6 tests) 290ms
+@verbis/components:test: 
+@verbis/components:test:  Test Files  11 passed (11)
+@verbis/components:test:       Tests  295 passed (295)
+@verbis/components:test:    Start at  12:44:39
+@verbis/components:test:    Duration  9.15s (import 60%, tests 21%, environment 9%, transform 7%, setup 2%, worker 1%)
+@verbis/components:test: 
+@verbis/components:test:  % Coverage report from v8
+@verbis/components:test: -----------------|---------|----------|---------|---------|---------------------
+@verbis/components:test: File             | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s   
+@verbis/components:test: -----------------|---------|----------|---------|---------|---------------------
+@verbis/components:test: All files        |   96.14 |    90.55 |   95.65 |   97.85 |                     
+@verbis/components:test:  actions.tsx     |   98.14 |    82.22 |     100 |     100 | ...5,45,109,147-148 
+@verbis/components:test:  catalog.ts      |   97.56 |    98.63 |   94.11 |   97.29 | 125                 
+@verbis/components:test:  components.tsx  |     100 |      100 |     100 |     100 |                     
+@verbis/components:test:  data.tsx        |   96.22 |    93.54 |   94.11 |   98.07 | 79                  
+@verbis/components:test:  environment.tsx |   89.47 |    95.45 |     100 |   94.44 | 49                  
+@verbis/components:test:  inputs.tsx      |   96.12 |    89.87 |    92.1 |    97.5 | 42,127,428          
+@verbis/components:test:  layout.tsx      |   91.46 |    84.52 |   95.45 |   95.77 | 20,48,62            
+@verbis/components:test:  media.tsx       |   94.73 |       85 |   89.47 |   97.18 | 125-131             
+@verbis/components:test:  privacy.tsx     |     100 |      100 |     100 |     100 |                     
+@verbis/components:test:  registry.ts     |     100 |      100 |     100 |     100 |                     
+@verbis/components:test:  schemas.ts      |     100 |      100 |     100 |     100 |                     
+@verbis/components:test:  script-text.tsx |   98.46 |    86.95 |   95.23 |     100 | ...5-17,32,37-46,75 
+@verbis/components:test:  shared.tsx      |   94.11 |    88.57 |   88.88 |   93.54 | 122,131             
+@verbis/components:test: -----------------|---------|----------|---------|---------|---------------------
+@verbis/components:build: cache hit, replaying logs f9d3c90d7683f147
+@verbis/components:build: 
+@verbis/components:build: > @verbis/components@0.0.0 build /Users/ardamoustafa/agent scripting/packages/components
+@verbis/components:build: > tsc -b tsconfig.build.json
+@verbis/components:build: 
+@verbis/designer-web:test: cache hit, replaying logs 30be0d4d1f86b42b
+@verbis/designer-web:test: 
+@verbis/designer-web:test: > @verbis/designer-web@0.0.0 test /Users/ardamoustafa/agent scripting/apps/designer-web
+@verbis/designer-web:test: > vitest run --coverage
+@verbis/designer-web:test: 
+@verbis/designer-web:test: 
+@verbis/designer-web:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/designer-web
+@verbis/designer-web:test:       Coverage enabled with v8
+@verbis/designer-web:test: 
+@verbis/designer-web:test:  ✓ src/flow/designer-behavior.spec.tsx (14 tests) 3454ms
+@verbis/designer-web:test:    ✓ adds and edits a decision flow node 421ms
+@verbis/designer-web:test:    ✓ adds and edits a dataSource flow node 370ms
+@verbis/designer-web:test:    ✓ lays out the graph using the actual ELK engine and switches embedded subflows 313ms
+@verbis/designer-web:test:    ✓ edits edge iteration guards, attaches a rule and deletes the selected edge 469ms
+@verbis/designer-web:test:  ✓ src/integrations/editor-behavior.spec.tsx (22 tests) 3412ms
+@verbis/designer-web:test:    ✓ saves a versioned integration request and protects unsaved changes 351ms
+@verbis/designer-web:test:    ✓ edits resilience policies and named mock scenarios before saving 434ms
+@verbis/designer-web:test: Not implemented: navigation to another Document
+@verbis/designer-web:test:  ✓ src/editor/editor-behavior.spec.tsx (13 tests) 12028ms
+@verbis/designer-web:test:    ✓ waits for the fresh server revision before reopening a cached editor 1562ms
+@verbis/designer-web:test:    ✓ inserts a real component, autosaves with version and CSRF, and supports undo/redo 1318ms
+@verbis/designer-web:test:    ✓ switches to pages, adds a page and prevents unload while edits are unsaved 1025ms
+@verbis/designer-web:test:    ✓ switches rules, variables, flow and preview without losing the document 772ms
+@verbis/designer-web:test:    ✓ disables unavailable selection commands and enables paste only after copying 1941ms
+@verbis/designer-web:test:    ✓ supports copy, paste, duplicate, delete, undo and zoom keyboard shortcuts 576ms
+@verbis/designer-web:test:    ✓ preserves a dirty draft after autosave HTTP 409 1080ms
+@verbis/designer-web:test:    ✓ preserves a dirty draft after autosave HTTP 412 1078ms
+@verbis/designer-web:test:    ✓ preserves a dirty draft after autosave HTTP 503 1075ms
+@verbis/designer-web:test:    ✓ inserts a component through keyboard drag and drop into the live canvas 463ms
+@verbis/designer-web:test:    ✓ attaches a pinned shared screen with version protection, handling HTTP 200 515ms
+@verbis/designer-web:test:    ✓ attaches a pinned shared screen with version protection, handling HTTP 503 487ms
+@verbis/designer-web:test:  ✓ src/workspace/shell-behavior.spec.tsx (28 tests) 2196ms
+@verbis/designer-web:test:  ✓ src/preview/studio-behavior.spec.tsx (6 tests) 2391ms
+@verbis/designer-web:test:    ✓ controls real runtime debugger and sets bounded device dimensions 746ms
+@verbis/designer-web:test:    ✓ records watch edits, masks sensitive variables and saves only explicitly synthetic scenarios 302ms
+@verbis/designer-web:test:    ✓ sets mock outcomes and debugger breakpoints without making live calls 473ms
+@verbis/designer-web:test:    ✓ loads an existing scenario and edits channel and interaction context before restarting 440ms
+@verbis/designer-web:test:  ✓ src/editor/inspector-behavior.spec.tsx (12 tests) 2816ms
+@verbis/designer-web:test:    ✓ creates and removes two-way variable bindings 437ms
+@verbis/designer-web:test:    ✓ attaches and clears rule references for component visibility 491ms
+@verbis/designer-web:test:    ✓ edits JSON, enum and tone properties and preserves the last valid JSON value 322ms
+@verbis/designer-web:test:  ✓ src/lifecycle/assignments-behavior.spec.tsx (6 tests) 1696ms
+@verbis/designer-web:test:    ✓ edits versioned assignments, A/B weights and pinned versions 463ms
+@verbis/designer-web:test:    ✓ creates campaign assignments with A/B disabled and validates date windows 307ms
+@verbis/designer-web:test:    ✓ simulates resolver decisions with synthetic attributes and rejects malformed JSON 399ms
+@verbis/designer-web:test:  ✓ src/lifecycle/packages-behavior.spec.tsx (6 tests) 1757ms
+@verbis/designer-web:test:    ✓ checks dependencies, invalidates verified plans after remapping, and imports a draft 378ms
+@verbis/designer-web:test:    ✓ downloads only approved or published versions and revokes the Blob URL 1172ms
+@verbis/designer-web:test:  ✓ src/app.spec.tsx (8 tests) 1619ms
+@verbis/designer-web:test:    ✓ designer workspace shell (8)
+@verbis/designer-web:test:      ✓ loads BFF session, packed permissions and campaigns 450ms
+@verbis/designer-web:test:  ✓ src/rules/behavior.spec.tsx (18 tests) 1525ms
+@verbis/designer-web:test:  ✓ src/integrations/auth-behavior.spec.tsx (13 tests) 1221ms
+@verbis/designer-web:test:  ✓ src/editor/layers-behavior.spec.tsx (8 tests) 1157ms
+@verbis/designer-web:test:    ✓ bounds large search result lists and keeps later matches reachable without editing 393ms
+@verbis/designer-web:test:  ✓ src/pages/campaign-behavior.spec.tsx (6 tests) 1095ms
+@verbis/designer-web:test:    ✓ lets campaign managers activate a campaign and define outcomes using versioned writes 388ms
+@verbis/designer-web:test:  ✓ src/flow/manager-behavior.spec.tsx (7 tests) 858ms
+@verbis/designer-web:test:    ✓ creates collision-free variables, validates defaults, edits enum type and privacy classification 446ms
+@verbis/designer-web:test:  ✓ src/editor/expression-behavior.spec.tsx (3 tests) 968ms
+@verbis/designer-web:test:    ✓ lints invalid expressions and respects disabled parent fieldsets 756ms
+@verbis/designer-web:test:  ✓ src/lifecycle/templates-behavior.spec.tsx (6 tests) 806ms
+@verbis/designer-web:test:    ✓ creates a tenant template from a pinned script version 339ms
+@verbis/designer-web:test:  ✓ src/lifecycle/release-behavior.spec.tsx (7 tests) 782ms
+@verbis/designer-web:test:  ✓ src/integrations/list-mapping-behavior.spec.tsx (9 tests) 759ms
+@verbis/designer-web:test:  ✓ src/pages/library-behavior.spec.tsx (6 tests) 760ms
+@verbis/designer-web:test: Not implemented: navigation to another Document
+@verbis/designer-web:test:  ✓ src/lifecycle/collaboration-behavior.spec.tsx (10 tests) 436ms
+@verbis/designer-web:test:  ✓ src/workspace/create-dialog-behavior.spec.tsx (5 tests) 475ms
+@verbis/designer-web:test:  ✓ src/pages/ai-behavior.spec.tsx (7 tests) 495ms
+@verbis/designer-web:test:  ✓ src/pages/script-settings-behavior.spec.tsx (9 tests) 511ms
+@verbis/designer-web:test:  ✓ src/editor/canvas-behavior.spec.tsx (6 tests) 412ms
+@verbis/designer-web:test:  ✓ src/editor/screens-behavior.spec.tsx (7 tests) 328ms
+@verbis/designer-web:test:  ✓ src/pages/login-behavior.spec.tsx (4 tests) 238ms
+@verbis/designer-web:test:  ✓ src/lifecycle/visual-diff-behavior.spec.tsx (1 test) 267ms
+@verbis/designer-web:test:  ✓ src/pages/analytics-behavior.spec.tsx (3 tests) 256ms
+@verbis/designer-web:test:  ✓ src/editor/actions-behavior.spec.tsx (3 tests) 313ms
+@verbis/designer-web:test:  ✓ src/preview/regression-behavior.spec.tsx (11 tests) 271ms
+@verbis/designer-web:test:  ✓ src/lifecycle/comments-behavior.spec.tsx (5 tests) 243ms
+@verbis/designer-web:test:  ✓ src/api-health.spec.tsx (5 tests) 276ms
+@verbis/designer-web:test:  ✓ src/editor/drop-guides-behavior.spec.tsx (2 tests) 163ms
+@verbis/designer-web:test:  ✓ src/rules/builder.spec.tsx (2 tests) 115ms
+@verbis/designer-web:test:  ✓ src/flow/variables.spec.ts (14 tests) 111ms
+@verbis/designer-web:test:  ✓ src/editor/heatmap-behavior.spec.tsx (3 tests) 110ms
+@verbis/designer-web:test:  ✓ src/integrations/json-field.spec.tsx (2 tests) 87ms
+@verbis/designer-web:test:  ✓ src/flow/import-behavior.spec.ts (6 tests) 48ms
+@verbis/designer-web:test:  ✓ src/editor/store.spec.ts (12 tests) 33ms
+@verbis/designer-web:test:  ✓ src/flow/model.spec.ts (9 tests) 18ms
+@verbis/designer-web:test:  ✓ src/preview/controller.spec.ts (4 tests) 15ms
+@verbis/designer-web:test:  ✓ src/flow/template-compatibility.spec.ts (1 test) 17ms
+@verbis/designer-web:test:  ✓ src/preview/controller-safety.spec.ts (4 tests) 15ms
+@verbis/designer-web:test:  ✓ src/editor/store-lifecycle.spec.ts (8 tests) 14ms
+@verbis/designer-web:test:  ✓ src/lifecycle/diff.spec.ts (3 tests) 12ms
+@verbis/designer-web:test:  ✓ src/rules/fields.spec.ts (2 tests) 9ms
+@verbis/designer-web:test:  ✓ src/integrations/importers.spec.ts (10 tests) 7ms
+@verbis/designer-web:test:  ✓ src/editor/new-document.spec.ts (2 tests) 9ms
+@verbis/designer-web:test:  ✓ src/api/client.spec.ts (4 tests) 6ms
+@verbis/designer-web:test:  ✓ src/editor/search.spec.ts (5 tests) 8ms
+@verbis/designer-web:test: 
+@verbis/designer-web:test:  Test Files  50 passed (50)
+@verbis/designer-web:test:       Tests  367 passed (367)
+@verbis/designer-web:test:    Start at  12:44:58
+@verbis/designer-web:test:    Duration  63.12s (import 48%, tests 39%, environment 9%, setup 2%, transform 2%, worker 1%)
+@verbis/designer-web:test: 
+@verbis/designer-web:test:      Import  296 modules were evaluated 4798 times · 58.14s total, 48% of tracked time
+@verbis/designer-web:test:              ~25.95s faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+@verbis/designer-web:test:              learn more: https://vitest.dev/guide/improving-performance#test-isolation
+@verbis/designer-web:test: 
+@verbis/designer-web:test:  % Coverage report from v8
+@verbis/designer-web:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/designer-web:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/designer-web:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/designer-web:test: All files          |   89.66 |    81.33 |   87.55 |   91.67 |                   
+@verbis/designer-web:test:  src               |   82.05 |     86.2 |   73.68 |   79.41 |                   
+@verbis/designer-web:test:   app.tsx          |   73.07 |    80.95 |   64.28 |   70.83 | 39,54-79,97-98    
+@verbis/designer-web:test:   deployment.d.ts  |       0 |        0 |       0 |       0 |                   
+@verbis/designer-web:test:   providers.tsx    |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   ...api-health.ts |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:  src/api           |    85.1 |    78.43 |   66.66 |   85.71 |                   
+@verbis/designer-web:test:   client.ts        |    85.1 |    78.43 |   66.66 |   85.71 | 129-137,140-149   
+@verbis/designer-web:test:  src/editor        |   90.93 |     80.6 |   91.07 |   92.77 |                   
+@verbis/designer-web:test:   actions.tsx      |      95 |    88.46 |   93.33 |   97.43 | 67                
+@verbis/designer-web:test:   canvas.tsx       |   97.87 |    78.26 |   97.29 |   99.24 | 98                
+@verbis/designer-web:test:   drop-guides.tsx  |   95.16 |    76.92 |     100 |     100 | 21-28,38,55-72    
+@verbis/designer-web:test:   editor.tsx       |   75.29 |    74.39 |   70.73 |    78.6 | ...47-648,661-683 
+@verbis/designer-web:test:   ...sion-lazy.tsx |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   expression.tsx   |   91.11 |    77.27 |     100 |   97.29 | 111               
+@verbis/designer-web:test:   fixtures.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   heatmap.tsx      |     100 |    94.11 |     100 |     100 | 37                
+@verbis/designer-web:test:   inspector.tsx    |   87.95 |    81.54 |   90.14 |   89.79 | ...30,581,601-603 
+@verbis/designer-web:test:   layers.tsx       |   98.26 |    86.51 |   95.34 |   98.05 | 235,265           
+@verbis/designer-web:test:   ...d-screens.tsx |     100 |    94.73 |     100 |     100 | 103               
+@verbis/designer-web:test:   new-document.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   reuse-screen.tsx |      96 |    81.81 |     100 |     100 | 57,78             
+@verbis/designer-web:test:   search.ts        |     100 |    70.58 |     100 |     100 | 16-25,33          
+@verbis/designer-web:test:   store.ts         |   95.45 |    84.65 |     100 |   96.35 | ...73-474,502,530 
+@verbis/designer-web:test:  src/flow          |   91.72 |    81.13 |   91.11 |   93.78 |                   
+@verbis/designer-web:test:   designer.tsx     |      86 |    75.35 |    86.3 |   89.34 | ...84,697,725,771 
+@verbis/designer-web:test:   ...rt-dialog.tsx |    87.5 |    70.58 |   91.66 |   96.55 | 43                
+@verbis/designer-web:test:   import.ts        |   95.16 |     83.6 |   94.11 |   96.11 | 135-138           
+@verbis/designer-web:test:   model.ts         |    90.9 |    83.33 |      96 |   90.56 | 80,111-118        
+@verbis/designer-web:test:   ...e-manager.tsx |   98.52 |    88.09 |   97.22 |   98.36 | 202               
+@verbis/designer-web:test:   variables.ts     |   99.25 |    95.23 |     100 |   99.17 | 144               
+@verbis/designer-web:test:  src/integrations  |   87.07 |    80.95 |   81.62 |   90.39 |                   
+@verbis/designer-web:test:   auth.tsx         |   96.66 |    92.85 |      96 |   98.14 | 92                
+@verbis/designer-web:test:   editor.tsx       |   84.08 |    78.02 |   72.27 |   85.46 | ...1035,1085-1104 
+@verbis/designer-web:test:   importers.ts     |   83.82 |    75.92 |   94.73 |   93.69 | ...27,149,158-159 
+@verbis/designer-web:test:   json-field.tsx   |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   list.tsx         |   93.33 |      100 |      88 |   92.68 | 123,143,149       
+@verbis/designer-web:test:   mapping.tsx      |   89.65 |    78.94 |   91.66 |   92.59 | 67-68             
+@verbis/designer-web:test:  src/lifecycle     |   93.83 |    86.42 |    90.7 |   94.73 |                   
+@verbis/designer-web:test:   assignments.tsx  |   90.99 |    83.33 |   87.17 |   92.45 | ...95,225-226,341 
+@verbis/designer-web:test:   ...aboration.tsx |   92.22 |    75.94 |   89.74 |   93.41 | ...93-194,218-225 
+@verbis/designer-web:test:   comments.tsx     |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   diff.ts          |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   ...fications.tsx |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   packages.tsx     |   92.63 |    85.71 |   90.62 |   94.44 | 129,193,241-243   
+@verbis/designer-web:test:   release.tsx      |   94.28 |    90.66 |    86.2 |   95.45 | 323-331,370       
+@verbis/designer-web:test:   templates.tsx    |     100 |    90.69 |     100 |     100 | 80-85,197,222     
+@verbis/designer-web:test:   visual-diff.tsx  |   90.56 |    85.71 |   84.84 |   89.58 | ...82,196,202,254 
+@verbis/designer-web:test:  src/pages         |   84.39 |    75.67 |   80.27 |   84.46 |                   
+@verbis/designer-web:test:   ai.tsx           |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   analytics.tsx    |   68.75 |    78.57 |      80 |   70.96 | 58-69             
+@verbis/designer-web:test:   ...-settings.tsx |   89.47 |    83.33 |   85.29 |   89.58 | ...40,174-181,210 
+@verbis/designer-web:test:   campaign.tsx     |   81.08 |    67.64 |   78.26 |      80 | ...31,141,208-209 
+@verbis/designer-web:test:   library.tsx      |   78.78 |    73.46 |   71.79 |   79.03 | ...05-319,329,346 
+@verbis/designer-web:test:   ...sculpture.tsx |       0 |        0 |       0 |       0 |                   
+@verbis/designer-web:test:   login.tsx        |     100 |    66.66 |     100 |     100 | 24-48,67          
+@verbis/designer-web:test:   script.tsx       |   87.93 |    76.38 |      80 |   87.71 | ...81,295,332,353 
+@verbis/designer-web:test:   settings.tsx     |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:  src/preview       |   89.36 |    82.82 |    91.4 |   92.26 |                   
+@verbis/designer-web:test:   controller.ts    |   92.53 |    84.72 |     100 |   96.55 | 107,119,139-140   
+@verbis/designer-web:test:   device.tsx       |   86.95 |    83.33 |      80 |   90.47 | 37,40             
+@verbis/designer-web:test:   lint.ts          |      92 |    85.71 |   77.77 |   91.66 | 38,51             
+@verbis/designer-web:test:   ...ion-panel.tsx |   96.22 |    96.34 |     100 |     100 | 61,83-88          
+@verbis/designer-web:test:   studio.tsx       |   84.37 |    70.64 |   89.04 |   86.52 | ...61,586,630-639 
+@verbis/designer-web:test:  src/rules         |   87.58 |    80.57 |   92.64 |   88.97 |                   
+@verbis/designer-web:test:   ...ment-rule.tsx |     100 |    89.47 |     100 |     100 | 35,124            
+@verbis/designer-web:test:   builder.tsx      |   77.77 |    77.41 |   85.29 |   79.45 | ...87-297,310-319 
+@verbis/designer-web:test:   fields.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   manager.tsx      |   96.15 |    76.47 |     100 |     100 | 64-85             
+@verbis/designer-web:test:  src/workspace     |   79.58 |    81.15 |   72.28 |   85.71 |                   
+@verbis/designer-web:test:   context.tsx      |      80 |       50 |     100 |     100 | 11                
+@verbis/designer-web:test:   ...te-dialog.tsx |    91.3 |    86.04 |   91.66 |   95.34 | 73,160            
+@verbis/designer-web:test:   deployment.ts    |      25 |    33.33 |       0 |   33.33 | 10-11             
+@verbis/designer-web:test:   navigation.ts    |     100 |      100 |     100 |     100 |                   
+@verbis/designer-web:test:   shell.tsx        |   75.22 |    83.09 |   64.28 |   81.44 | ...91,434,460,564 
+@verbis/designer-web:test:   states.tsx       |      90 |       50 |     100 |      90 | 49                
+@verbis/designer-web:test:   welcome-tour.tsx |   83.33 |    85.71 |   85.71 |      90 | 34                
+@verbis/designer-web:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/api:test: cache miss, executing 3bb8818da54850bc
+@verbis/api:test: 
+@verbis/api:test: > @verbis/api@0.0.0 test /Users/ardamoustafa/agent scripting/apps/api
+@verbis/api:test: > prisma generate && vitest run --project unit --project integration --coverage
+@verbis/api:test: 
+@verbis/api:test: Loaded Prisma config from prisma.config.ts.
+@verbis/api:test: 
+@verbis/api:test: Prisma schema loaded from prisma/schema.prisma.
+@verbis/api:test: 
+@verbis/api:test: ✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 258ms
+@verbis/api:test: 
+@verbis/api:test: 
+@verbis/api:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+@verbis/api:test:       Coverage enabled with v8
+@verbis/api:test: 
+@verbis/api:test: Loaded Prisma config from prisma.config.ts.
+@verbis/api:test: 
+@verbis/api:test: Prisma schema loaded from prisma/schema.prisma.
+@verbis/api:test:  ✓ |unit| src/modules/audit/core/chain-verifier.spec.ts (15 tests) 229ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/oidc/oidc.service.spec.ts (27 tests) 236ms
+@verbis/api:test:  ✓ |unit| src/modules/routing/domain/resolver.spec.ts (61 tests) 186ms
+@verbis/api:test:  ✓ |unit| src/modules/integrations/engine/executor.spec.ts (36 tests) 98ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/saml/saml.service.spec.ts (21 tests) 812ms
+@verbis/api:test: [Nest] 67221  - 10/06/2026, 1:13:55 PM    WARN [LoginFlowService] OIDC callback rejected (synthetic)
+@verbis/api:test: [Nest] 67221  - 10/06/2026, 1:13:55 PM    WARN [LoginFlowService] OIDC callback rejected (VERBIS_IDENTITY_IDP_CONFIG_INVALID)
+@verbis/api:test: [Nest] 67221  - 10/06/2026, 1:13:55 PM    WARN [LoginFlowService] IdP logout URL unavailable (Error)
+@verbis/api:test: [Nest] 67221  - 10/06/2026, 1:13:55 PM    WARN [LoginFlowService] SAML response rejected (synthetic-rejected)
+@verbis/api:test:  ✓ |unit| src/modules/identity/login/login-flow.service.spec.ts (51 tests) 165ms
+@verbis/api:test:  ✓ |unit| src/modules/analytics/storage.spec.ts (17 tests) 1691ms
+@verbis/api:test:    ✓ refuses truncated cohorts rather than silently returning misleading analytics 1522ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/runtime-engine.service.spec.ts (62 tests) 129ms
+@verbis/api:test:  ✓ |unit| src/modules/admin/workspace.service.spec.ts (15 tests) 119ms
+@verbis/api:test:  ✓ |unit| src/modules/integrations/engine/auth.spec.ts (11 tests) 140ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/admin/idp-admin.service.spec.ts (24 tests) 1140ms
+@verbis/api:test:    ✓ generates a new encryption credential while refusing a duplicate next signing key 350ms
+@verbis/api:test:    ✓ generates both managed credentials for a new SAML provider without disclosing private keys 568ms
+@verbis/api:test:  ✓ |unit| src/modules/integrations/integration-engine.service.spec.ts (19 tests) 128ms
+@verbis/api:test:  ✓ |unit| src/demo-seed.spec.ts (5 tests) 188ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/admin/service-clients.service.spec.ts (20 tests) 333ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/egress/idp-fetch.spec.ts (23 tests) 150ms
+@verbis/api:test: [Nest] 67230  - 10/06/2026, 1:13:57 PM   ERROR [AuditWorker:t] tick failed: Error
+@verbis/api:test:  ✓ |unit| src/modules/analytics/reports.spec.ts (3 tests) 50ms
+@verbis/api:test:  ✓ |unit| src/audit-worker/worker.spec.ts (11 tests) 102ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/crypto/crypto.spec.ts (12 tests) 76ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/collaboration-hooks.spec.ts (22 tests) 60ms
+@verbis/api:test:  ✓ |unit| src/modules/integrations/engine/transport.spec.ts (27 tests) 65ms
+@verbis/api:test:  ✓ |unit| src/modules/ai/ai.service.spec.ts (39 tests) 152ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/domain/domain.spec.ts (75 tests) 111ms
+@verbis/api:test:  ✓ |unit| src/common/http/rate-limit.spec.ts (3 tests) 81ms
+@verbis/api:test:  ✓ |unit| src/modules/integrations/authoring.spec.ts (5 tests) 28ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/security.spec.ts (4 tests) 66ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/scim/scim.spec.ts (25 tests) 67ms
+@verbis/api:test:  ✓ |unit| src/modules/integrations/engine/vault-provider.spec.ts (2 tests) 38ms
+@verbis/api:test:  ✓ |unit| src/modules/connectors/hub-client.spec.ts (15 tests) 67ms
+@verbis/api:test:  ✓ |unit| src/modules/connectors/genesys-engage/engage-agent-link.spec.ts (17 tests) 48ms
+@verbis/api:test:  ✓ |unit| src/common/http/json-security.spec.ts (1 test) 50ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/package-dependencies.spec.ts (4 tests) 61ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/collaboration.service.spec.ts (4 tests) 32ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/packages.service.spec.ts (24 tests) 143ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/templates.service.spec.ts (8 tests) 67ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/siem/sinks.spec.ts (38 tests) 41ms
+@verbis/api:test:  ✓ |unit| src/modules/analytics/report-delivery.spec.ts (17 tests) 39ms
+@verbis/api:test:  ✓ |unit| src/modules/admin/privacy.service.spec.ts (13 tests) 36ms
+@verbis/api:test:  ✓ |unit| src/common/security/principal.spec.ts (12 tests) 45ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/audit-query.service.spec.ts (13 tests) 54ms
+@verbis/api:test:  ✓ |unit| src/modules/launch/domain/launch-jws.spec.ts (7 tests) 34ms
+@verbis/api:test:  ✓ |unit| src/env.spec.ts (9 tests) 16ms
+@verbis/api:test:  ✓ |unit| src/modules/connectors/genesys-engage/attached-data-map.service.spec.ts (3 tests) 8ms
+@verbis/api:test:  ✓ |unit| src/audit-worker/health.spec.ts (4 tests) 29ms
+@verbis/api:test:  ✓ |unit| src/modules/authz/access.guard.spec.ts (7 tests) 12ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/audit.service.spec.ts (11 tests) 88ms
+@verbis/api:test:  ✓ |unit| src/modules/integrations/engine/mapping.spec.ts (15 tests) 67ms
+@verbis/api:test:  ✓ |unit| src/modules/connectors/connector-hub.service.spec.ts (12 tests) 15ms
+@verbis/api:test:  ✓ |unit| src/modules/authz/roles.service.spec.ts (9 tests) 19ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/runtime-jobs.service.spec.ts (15 tests) 19ms
+@verbis/api:test:  ✓ |unit| src/openapi/openapi.spec.ts (7 tests) 216ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/preview.service.spec.ts (10 tests) 32ms
+@verbis/api:test:  ✓ |unit| src/modules/ai/safety.spec.ts (6 tests) 22ms
+@verbis/api:test:  ✓ |unit| src/modules/connectors/genesys-cloud/genesys-user-link.spec.ts (9 tests) 41ms
+@verbis/api:test: [Nest] 67268  - 10/06/2026, 1:14:03 PM     LOG [PartitionLifecycleJob] Dropped archived partition audit_events_y2026m05
+@verbis/api:test: [Nest] 67268  - 10/06/2026, 1:14:03 PM    WARN [PartitionLifecycleJob] Partition audit_events_y2026m05 not dropped: Error
+@verbis/api:test:  ✓ |unit| src/audit-worker/archive.job.spec.ts (17 tests) 12ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/team.service.spec.ts (13 tests) 40ms
+@verbis/api:test: [Nest] 67269  - 10/06/2026, 1:14:03 PM   ERROR [AuditFailureInterceptor] Failed to audit a failed request (correlationId=c)
+@verbis/api:test:  ✓ |unit| src/modules/runtime/domain/runtime.spec.ts (15 tests) 9ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/audit.interceptors.spec.ts (12 tests) 8ms
+@verbis/api:test:  ✓ |unit| src/infra/outbox/outbox.relay.spec.ts (5 tests) 13ms
+@verbis/api:test:  ✓ |unit| src/modules/admin/workspace.spec.ts (5 tests) 63ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/security-reports.spec.ts (5 tests) 14ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/runtime-state.store.spec.ts (4 tests) 25ms
+@verbis/api:test:  ✓ |unit| src/modules/launch/launch-lifecycle.spec.ts (4 tests) 13ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/archive/s3-worm.client.spec.ts (4 tests) 34ms
+@verbis/api:test:  ✓ |unit| src/modules/assignments/assignments.dto.spec.ts (20 tests) 21ms
+@verbis/api:test:  ✓ |unit| src/modules/ai/providers.spec.ts (4 tests) 11ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/agent-desktop.controller.spec.ts (9 tests) 57ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/scim/scim-patch.spec.ts (44 tests) 14ms
+@verbis/api:test:  ✓ |unit| src/modules/analytics/metrics.spec.ts (15 tests) 31ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/script-validation.spec.ts (9 tests) 92ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/runtime-reconnect.spec.ts (5 tests) 8ms
+@verbis/api:test:  ✓ |unit| src/infra/events/event-consumer.spec.ts (6 tests) 7ms
+@verbis/api:test:  ✓ |unit| src/modules/integrations/engine/transport-lifecycle.spec.ts (4 tests) 26ms
+@verbis/api:test:  ✓ |unit| src/common/http/http.spec.ts (8 tests) 21ms
+@verbis/api:test:  ✓ |unit| src/common/pagination/pagination.spec.ts (19 tests) 14ms
+@verbis/api:test:  ✓ |unit| src/infra/nats/streams.spec.ts (10 tests) 17ms
+@verbis/api:test:  ✓ |unit| src/modules/connectors/hub-runtime-bridge.spec.ts (8 tests) 10ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/scim/scim-bulk.spec.ts (11 tests) 33ms
+@verbis/api:test:  ✓ |unit| src/modules/assignments/assignments.service.spec.ts (16 tests) 44ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/document-storage.spec.ts (4 tests) 18ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/idp/idp-config.spec.ts (6 tests) 15ms
+@verbis/api:test:  ✓ |unit| src/common/ids/ulid.spec.ts (4 tests) 9ms
+@verbis/api:test:  ✓ |unit| src/modules/routing/domain/support.spec.ts (15 tests) 13ms
+@verbis/api:test:  ✓ |unit| src/modules/integrations/authoring.service.spec.ts (7 tests) 76ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/runtime-cipher.spec.ts (5 tests) 26ms
+@verbis/api:test:  ✓ |unit| src/modules/authz/authz.service.spec.ts (8 tests) 16ms
+@verbis/api:test:  ✓ |unit| src/modules/screens/screens.service.spec.ts (3 tests) 11ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/scim/scim.filter.spec.ts (20 tests) 8ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/core/formats.spec.ts (33 tests) 11ms
+@verbis/api:test:  ✓ |unit| src/modules/authz/ability.factory.spec.ts (12 tests) 33ms
+@verbis/api:test:  ✓ |unit| src/modules/tenancy/ip-policy.spec.ts (3 tests) 18ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/core/checkpoint-signer.spec.ts (4 tests) 16ms
+@verbis/api:test:  ✓ |unit| src/modules/tenancy/quota.spec.ts (5 tests) 8ms
+@verbis/api:test:  ✓ |unit| src/modules/integrations/engine/vault.spec.ts (6 tests) 13ms
+@verbis/api:test:  ✓ |unit| src/common/logging/logger.spec.ts (3 tests) 15ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/core/identity-core.spec.ts (13 tests) 11ms
+@verbis/api:test:  ✓ |unit| src/common/validation/zod.spec.ts (3 tests) 6ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/core/scalar-boundaries.spec.ts (2 tests) 6ms
+@verbis/api:test:  ✓ |unit| src/modules/launch/launch-ports.spec.ts (3 tests) 12ms
+@verbis/api:test:  ✓ |unit| src/modules/ai/transport.spec.ts (8 tests) 6ms
+@verbis/api:test:  ✓ |unit| src/modules/connectors/user-mapping.spec.ts (4 tests) 8ms
+@verbis/api:test: [Nest] 67315  - 10/06/2026, 1:14:05 PM    WARN [ResolverCache] Resolver cache invalidation failed; entries expire by TTL
+@verbis/api:test:  ✓ |unit| src/modules/routing/resolver.cache.spec.ts (8 tests) 16ms
+@verbis/api:test:  ✓ |unit| src/modules/analytics/session.consumer.spec.ts (4 tests) 9ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/core/audit-event.spec.ts (26 tests) 9ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/session-events/session-chain.spec.ts (3 tests) 13ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/domain/version-diff.spec.ts (15 tests) 12ms
+@verbis/api:test:  ✓ |unit| src/modules/connectors/hub-platform-verifier.spec.ts (3 tests) 17ms
+@verbis/api:test:  ✓ |unit| src/common/errors/to-problem.spec.ts (14 tests) 8ms
+@verbis/api:test:  ✓ |unit| src/modules/routing/domain/predicate.spec.ts (27 tests) 8ms
+@verbis/api:test:  ✓ |unit| src/modules/launch/domain/launch.spec.ts (17 tests) 7ms
+@verbis/api:test:  ✓ |unit| src/demo-identity.spec.ts (6 tests) 5ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/runtime.gateway.spec.ts (3 tests) 33ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/draft-lease.service.spec.ts (3 tests) 4ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/scripts.dto.spec.ts (2 tests) 5ms
+@verbis/api:test:  ✓ |unit| src/app.spec.ts (15 tests) 4411ms
+@verbis/api:test:    ✓ health (5)
+@verbis/api:test:      ✓ live is ok without dependency checks 658ms
+@verbis/api:test:      ✓ ready reports every dependency 362ms
+@verbis/api:test:      ✓ returns 503 when redis is down 332ms
+@verbis/api:test:      ✓ returns 503 when nats is down 307ms
+@verbis/api:test:    ✓ cross-cutting HTTP behaviour (7)
+@verbis/api:test:      ✓ returns RFC 7807 404s without echoing the query string 301ms
+@verbis/api:test:      ✓ rate limits per principal or IP with a problem response 365ms
+@verbis/api:test:  ✓ |unit| src/modules/launch/domain/frame-policy.spec.ts (13 tests) 9ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/runtime-jobs.spec.ts (2 tests) 5ms
+@verbis/api:test:  ✓ |unit| src/modules/analytics/analytics.service.spec.ts (1 test) 47ms
+@verbis/api:test:  ✓ |unit| src/modules/launch/domain/preview.spec.ts (2 tests) 3ms
+@verbis/api:test:  ✓ |unit| src/common/crypto/crypto.spec.ts (5 tests) 7ms
+@verbis/api:test:  ✓ |unit| src/modules/ai/archive.spec.ts (3 tests) 5ms
+@verbis/api:test:  ✓ |unit| src/modules/audit/core/diff.spec.ts (6 tests) 6ms
+@verbis/api:test:  ✓ |unit| src/modules/identity/session/session-cookie.spec.ts (1 test) 6ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/runtime-ports.spec.ts (2 tests) 6ms
+@verbis/api:test:  ✓ |unit| src/modules/authz/permissions.spec.ts (15 tests) 6ms
+@verbis/api:test:  ✓ |unit| src/modules/launch/launch-attempts.spec.ts (2 tests) 6ms
+@verbis/api:test:  ✓ |unit| src/modules/authz/authz.controller.spec.ts (1 test) 9ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/runtime-concurrency.spec.ts (2 tests) 2ms
+@verbis/api:test:  ✓ |unit| src/modules/runtime/runtime-platform-state.spec.ts (3 tests) 4ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/release-jobs.service.spec.ts (15 tests) 9ms
+@verbis/api:test:  ✓ |unit| src/modules/scripts/team-lifecycle.spec.ts (12 tests) 7ms
+@verbis/api:test:  ✓ |integration| test/integration/runtime.int.spec.ts (10 tests) 19794ms
+@verbis/api:test:    ✓ runtime PostgreSQL / Redis boundaries (10)
+@verbis/api:test:      ✓ recovers an acknowledged durable field on a fresh API instance after losing the hot cache 325ms
+@verbis/api:test:      ✓ recovers HTTP-acknowledged encrypted state after SIGKILL (hot cache evicted=false) 9557ms
+@verbis/api:test:      ✓ recovers HTTP-acknowledged encrypted state after SIGKILL (hot cache evicted=true) 4714ms
+@verbis/api:test:      ✓ fences racing HTTP commands from two independent API processes to one durable winner 4390ms
+@verbis/api:test:  ✓ |integration| test/integration/identity-saml.int.spec.ts (11 tests) 2511ms
+@verbis/api:test:    ✓ SAML 2.0 SP-initiated login (9)
+@verbis/api:test:      ✓ refuses IdP-initiated (unsolicited) responses unless the tenant enables them 483ms
+@verbis/api:test:    ✓ SAML encrypted assertions and certificate rotation (1)
+@verbis/api:test:      ✓ requires encryption when configured and decrypts with active and retired keys 835ms
+@verbis/api:test:  ✓ |integration| test/integration/authoring-routing.int.spec.ts (16 tests) 1969ms
+@verbis/api:test:    ✓ campaigns, assignments and the resolver (2)
+@verbis/api:test:      ✓ resolves deterministically with a trace, warns about conflicts, caches and invalidates 319ms
+@verbis/api:test:  ✓ |integration| test/integration/connector-hub.int.spec.ts (7 tests) 594ms
+@verbis/api:test:  ✓ |integration| test/integration/api.int.spec.ts (35 tests) 1530ms
+@verbis/api:test:  ✓ |integration| test/integration/outbox.int.spec.ts (6 tests) 1254ms
+@verbis/api:test:    ✓ idempotent consumers (at-least-once delivery) (2)
+@verbis/api:test:      ✓ applies each event exactly once, even when it is delivered again 366ms
+@verbis/api:test:  ✓ |integration| test/integration/audit.int.spec.ts (32 tests) 1372ms
+@verbis/api:test:  ✓ |integration| test/integration/launch.int.spec.ts (17 tests) 1108ms
+@verbis/api:test:  ✓ |integration| test/integration/admin-privacy.int.spec.ts (5 tests) 477ms
+@verbis/api:test:  ✓ |integration| test/integration/identity-local-service.int.spec.ts (9 tests) 892ms
+@verbis/api:test:  ✓ |integration| test/integration/identity-oidc.int.spec.ts (15 tests) 1003ms
+@verbis/api:test:  ✓ |integration| test/integration/identity-scim.int.spec.ts (32 tests) 897ms
+@verbis/api:test: Loaded Prisma config from prisma.config.ts.
+@verbis/api:test: 
+@verbis/api:test: Prisma schema loaded from prisma/schema.prisma.
+@verbis/api:test:  ✓ |integration| test/integration/migrations.int.spec.ts (8 tests) 994ms
+@verbis/api:test:    ✓ migrations (3)
+@verbis/api:test:      ✓ are idempotent (re-deploy is a no-op) 495ms
+@verbis/api:test:      ✓ leave no drift between the database and schema.prisma 465ms
+@verbis/api:test:  ✓ |integration| test/integration/publication-gate.int.spec.ts (14 tests) 785ms
+@verbis/api:test:  ✓ |integration| test/integration/rls.int.spec.ts (17 tests) 228ms
+@verbis/api:test:  ✓ |integration| test/integration/ai.int.spec.ts (2 tests) 143ms
+@verbis/api:test:  ✓ |integration| test/integration/observability.int.spec.ts (2 tests) 96ms
+@verbis/api:test:  ✓ |integration| test/integration/admin-workspace.int.spec.ts (4 tests) 147ms
+@verbis/api:test:  ✓ |integration| test/integration/analytics.int.spec.ts (1 test) 134ms
+@verbis/api:test:  ✓ |integration| test/integration/session-store.int.spec.ts (40 tests) 115ms
+@verbis/api:test:  ✓ |integration| test/integration/engage-link-store.int.spec.ts (6 tests) 29ms
+@verbis/api:test: 
+@verbis/api:test:  Test Files  151 passed (151)
+@verbis/api:test:       Tests  1888 passed (1888)
+@verbis/api:test:    Start at  13:13:49
+@verbis/api:test:    Duration  93.43s (import 62%, tests 29%, transform 9%, worker 1%)
+@verbis/api:test: 
+@verbis/api:test:  % Coverage report from v8
+@verbis/api:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/api:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/api:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/api:test: All files          |    90.9 |    85.85 |   88.89 |   93.03 |                   
+@verbis/api:test:  src               |   75.21 |     83.6 |   86.11 |   74.76 |                   
+@verbis/api:test:   app.module.ts    |     100 |       50 |     100 |     100 | 57                
+@verbis/api:test:   audit-worker.ts  |       0 |        0 |       0 |       0 | 3-25              
+@verbis/api:test:   bootstrap.ts     |   84.31 |    82.35 |   77.77 |    85.1 | 82,90-93,134-138  
+@verbis/api:test:   env.ts           |   92.68 |    94.73 |      95 |   91.66 | 43-44,115         
+@verbis/api:test:   ...fy-options.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  src/audit-worker  |    77.2 |    72.42 |   74.71 |      82 |                   
+@verbis/api:test:   archive.job.ts   |   94.23 |     87.3 |   96.29 |   98.91 | 103               
+@verbis/api:test:   ...ker.module.ts |   13.04 |    22.22 |   13.33 |   16.21 | 49-127            
+@verbis/api:test:   bootstrap.ts     |       0 |      100 |       0 |       0 | 13-19             
+@verbis/api:test:   ...kpoint.job.ts |      80 |    72.34 |   71.42 |   89.65 | 54-55,121,152-159 
+@verbis/api:test:   ...it.handler.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   health.ts        |   86.95 |       70 |   83.33 |      85 | 16-17,28          
+@verbis/api:test:   interval-job.ts  |   85.71 |    66.66 |   88.88 |   89.65 | 40-41,48          
+@verbis/api:test:   ...t-resolver.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...dispatcher.ts |   76.81 |    48.14 |   76.92 |   81.25 | ...00-208,212,215 
+@verbis/api:test:   tenants.ts       |     100 |     87.5 |     100 |     100 | 31                
+@verbis/api:test:  src/common        |   91.66 |       75 |     100 |     100 |                   
+@verbis/api:test:   actor.ts         |      75 |       50 |     100 |     100 | 7                 
+@verbis/api:test:   dto.ts           |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  ...common/context |   89.47 |       70 |    87.5 |   94.44 |                   
+@verbis/api:test:   context.hook.ts  |     100 |       75 |     100 |     100 | 17,33             
+@verbis/api:test:   ...st-context.ts |      80 |       50 |      80 |   88.88 | 39                
+@verbis/api:test:  src/common/crypto |     100 |    96.15 |     100 |     100 |                   
+@verbis/api:test:   ...nical-json.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   redact.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   uuid.ts          |     100 |       60 |     100 |     100 | 8-9               
+@verbis/api:test:  src/common/errors |   97.43 |    93.75 |     100 |   97.29 |                   
+@verbis/api:test:   domain-errors.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...lem.filter.ts |      80 |       25 |     100 |      80 | 34-35             
+@verbis/api:test:   to-problem.ts    |     100 |     97.1 |     100 |     100 | 58,91             
+@verbis/api:test:  src/common/http   |   98.18 |    96.87 |   94.11 |   97.95 |                   
+@verbis/api:test:   cors.ts          |   96.29 |      100 |   83.33 |   95.65 | 51                
+@verbis/api:test:   if-match.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   json-security.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   rate-limit.ts    |     100 |     87.5 |     100 |     100 | 47                
+@verbis/api:test:  ...on/idempotency |   92.15 |    72.72 |     100 |   97.72 |                   
+@verbis/api:test:   ...nterceptor.ts |   92.15 |    72.72 |     100 |   97.72 | 59                
+@verbis/api:test:  src/common/ids    |     100 |    84.21 |     100 |     100 |                   
+@verbis/api:test:   ulid.ts          |     100 |    84.21 |     100 |     100 | 18-46,72          
+@verbis/api:test:  ...common/logging |     100 |       75 |     100 |     100 |                   
+@verbis/api:test:   logger.ts        |     100 |       75 |     100 |     100 | 67-69             
+@verbis/api:test:  ...mon/pagination |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   pagination.ts    |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  ...ommon/security |   96.92 |    91.83 |      90 |   96.55 |                   
+@verbis/api:test:   auth.hook.ts     |   95.65 |     92.3 |   66.66 |   95.23 | 36                
+@verbis/api:test:   ...tion.guard.ts |     100 |       90 |     100 |     100 | 35                
+@verbis/api:test:   principal.ts     |   96.29 |     92.3 |     100 |   95.83 | 107               
+@verbis/api:test:   ....decorator.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  ...mon/validation |     100 |     62.5 |     100 |     100 |                   
+@verbis/api:test:   zod.ts           |     100 |     62.5 |     100 |     100 | 40-56             
+@verbis/api:test:  src/health        |      96 |      100 |    90.9 |   95.83 |                   
+@verbis/api:test:   ...controller.ts |      96 |      100 |    90.9 |   95.83 | 37                
+@verbis/api:test:  src/infra         |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   infra.module.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  ...infra/database |   80.64 |    76.19 |      85 |   85.71 |                   
+@verbis/api:test:   ...ma.service.ts |   67.85 |       75 |   66.66 |   70.37 | ...31,36-37,55,88 
+@verbis/api:test:   tenant-db.ts     |   83.33 |    71.42 |     100 |     100 | 36-43             
+@verbis/api:test:   ...nterceptor.ts |   95.45 |    83.33 |     100 |     100 | 46                
+@verbis/api:test:  src/infra/events  |   91.56 |    76.66 |   84.61 |   95.94 |                   
+@verbis/api:test:   ...t-consumer.ts |     100 |    88.88 |     100 |     100 | 116               
+@verbis/api:test:   ...rs.service.ts |      86 |    71.42 |      80 |   92.85 | 44,99-100         
+@verbis/api:test:  src/infra/nats    |   96.55 |       92 |     100 |   97.91 |                   
+@verbis/api:test:   nats.service.ts  |      95 |       90 |     100 |   97.14 | 109               
+@verbis/api:test:   streams.ts       |     100 |    93.33 |     100 |     100 | 65                
+@verbis/api:test:  src/infra/outbox  |    90.9 |    78.12 |   91.66 |    96.1 |                   
+@verbis/api:test:   ...ay.service.ts |   83.33 |    64.28 |   86.66 |   90.32 | 100,107-108       
+@verbis/api:test:   outbox.relay.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   outbox.types.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   outbox.writer.ts |   77.77 |       50 |     100 |     100 | 19-21             
+@verbis/api:test:  src/infra/redis   |     100 |       75 |     100 |     100 |                   
+@verbis/api:test:   redis.service.ts |     100 |       75 |     100 |     100 | 41                
+@verbis/api:test:  src/modules/admin |   83.98 |       87 |   77.63 |    85.4 |                   
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   admin.dto.ts     |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   admin.module.ts  |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   admin.service.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...cy.service.ts |   96.96 |     87.5 |     100 |     100 | ...14,211,228-229 
+@verbis/api:test:   ...controller.ts |    37.5 |      100 |   28.57 |    37.5 | 52-177            
+@verbis/api:test:   workspace.dto.ts |   78.57 |    84.61 |   83.33 |   80.48 | 28,35-39,43-45,68 
+@verbis/api:test:   ...ce.service.ts |   82.03 |     86.4 |   95.23 |   83.67 | 77-108,374        
+@verbis/api:test:  src/modules/ai    |   70.62 |    79.18 |      60 |   73.59 |                   
+@verbis/api:test:   ai.controller.ts |   14.28 |      100 |   14.28 |   14.28 | 30-72             
+@verbis/api:test:   ai.module.ts     |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ai.service.ts    |   97.26 |    95.73 |     100 |    99.4 | 191               
+@verbis/api:test:   archive.ts       |      88 |       80 |     100 |      90 | 20,22             
+@verbis/api:test:   import-worker.ts |       0 |        0 |       0 |       0 | 12-45             
+@verbis/api:test:   import.ts        |       0 |        0 |       0 |       0 | 8-30              
+@verbis/api:test:   providers.ts     |   93.75 |    81.25 |     100 |     100 | 78-88             
+@verbis/api:test:   safety.ts        |   77.77 |    72.22 |     100 |    87.5 | 56-57             
+@verbis/api:test:   transport.ts     |   21.05 |    51.85 |      20 |   22.22 | 29-75             
+@verbis/api:test:  ...ules/analytics |   89.14 |       86 |   81.25 |   89.84 |                   
+@verbis/api:test:   ...s.consumer.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...controller.ts |      20 |        0 |   28.57 |      20 | 31-68             
+@verbis/api:test:   analytics.dto.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...ics.module.ts |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |     100 |       50 |     100 |     100 | 13-18             
+@verbis/api:test:   ...cs.service.ts |   46.66 |    23.07 |   58.33 |   51.21 | 54,58-96          
+@verbis/api:test:   export.ts        |   97.29 |    94.11 |     100 |   97.05 | 11                
+@verbis/api:test:   fixtures.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   metrics.ts       |   98.66 |    95.79 |     100 |     100 | ...01,178-179,224 
+@verbis/api:test:   ...controller.ts |      20 |        0 |   16.66 |   22.22 | 35-65             
+@verbis/api:test:   reports.ts       |    97.8 |    95.12 |    87.5 |   97.43 | 64-65             
+@verbis/api:test:   ...n.consumer.ts |   90.32 |    68.42 |   85.71 |   96.42 | 136               
+@verbis/api:test:   storage.ts       |     100 |    98.03 |     100 |     100 | 116               
+@verbis/api:test:  ...es/assignments |   96.79 |    87.78 |   91.48 |   97.08 |                   
+@verbis/api:test:   ...controller.ts |   92.85 |      100 |   85.71 |   92.85 | 114               
+@verbis/api:test:   ...nments.dto.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...nts.module.ts |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |   84.21 |    60.52 |   77.77 |   84.21 | 70,164-168        
+@verbis/api:test:   ...ts.service.ts |   98.76 |    97.72 |   94.44 |     100 | 60                
+@verbis/api:test:  src/modules/audit |    93.9 |    85.75 |   95.45 |   97.97 |                   
+@verbis/api:test:   ...ry.service.ts |   98.13 |    92.75 |     100 |   98.91 | 136               
+@verbis/api:test:   ...controller.ts |   79.16 |    86.36 |   66.66 |    82.6 | 49,117-130        
+@verbis/api:test:   ...decorators.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   audit.dto.ts     |     100 |       75 |     100 |     100 | 67,109-168,191    
+@verbis/api:test:   ...terceptors.ts |   97.36 |    90.41 |     100 |     100 | ...1-35,83,85,154 
+@verbis/api:test:   audit.module.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...repository.ts |   79.16 |    70.45 |   88.88 |     100 | ...,60,78,120-130 
+@verbis/api:test:   audit.service.ts |   95.87 |    85.56 |     100 |     100 | ...82,196,245-256 
+@verbis/api:test:   checkpoints.ts   |   84.61 |       75 |   85.71 |   84.61 | 73-78             
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  .../audit/archive |   97.56 |       90 |   92.85 |   97.22 |                   
+@verbis/api:test:   ...orm.client.ts |   97.56 |       90 |   92.85 |   97.22 | 27                
+@verbis/api:test:  ...les/audit/core |   98.73 |    94.88 |     100 |    99.5 |                   
+@verbis/api:test:   audit-event.ts   |     100 |    94.11 |     100 |     100 | 165               
+@verbis/api:test:   ...n-verifier.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...int-signer.ts |   96.42 |      100 |     100 |   96.15 | 63                
+@verbis/api:test:   diff.ts          |   98.46 |    92.68 |     100 |     100 | ...83,110,152,158 
+@verbis/api:test:   formats.ts       |   97.72 |    90.24 |     100 |     100 | 10,29,152,172     
+@verbis/api:test:   masking.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   sanitize.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   scalars.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  ...session-events |   93.82 |    79.06 |     100 |   98.46 |                   
+@verbis/api:test:   session-chain.ts |     100 |    84.21 |     100 |     100 | 29-75             
+@verbis/api:test:   ...ent.writer.ts |   91.52 |       75 |     100 |   97.82 | 59                
+@verbis/api:test:  ...les/audit/siem |   75.57 |       70 |   78.37 |   79.82 |                   
+@verbis/api:test:   kafka.sink.ts    |   85.71 |       50 |     100 |     100 | 27                
+@verbis/api:test:   ...controller.ts |   44.44 |      100 |      40 |   44.44 | 29,57-72          
+@verbis/api:test:   ...ns.service.ts |      45 |       35 |      50 |   51.42 | 105-110,150-194   
+@verbis/api:test:   sink.ts          |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   syslog.sink.ts   |    92.5 |    82.35 |   92.85 |   97.14 | 36                
+@verbis/api:test:   webhook.sink.ts  |   96.66 |    95.23 |   85.71 |     100 | 51                
+@verbis/api:test:  src/modules/authz |   99.06 |    91.47 |   98.14 |   98.98 |                   
+@verbis/api:test:   ...ty.factory.ts |     100 |    89.28 |     100 |     100 | 55,62,103         
+@verbis/api:test:   access.guard.ts  |   95.23 |    84.61 |   85.71 |   94.87 | 58,75             
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   authz.dto.ts     |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   authz.module.ts  |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   authz.service.ts |     100 |    96.77 |     100 |     100 | 49                
+@verbis/api:test:   permissions.ts   |     100 |     87.5 |     100 |     100 | 62-63             
+@verbis/api:test:   roles.service.ts |     100 |    96.15 |     100 |     100 | 56                
+@verbis/api:test:  ...ules/campaigns |   93.96 |       70 |   94.87 |   97.19 |                   
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   campaigns.dto.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...gns.module.ts |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |    90.9 |     65.9 |   85.71 |   96.66 | 169               
+@verbis/api:test:   ...ns.service.ts |   91.48 |    66.66 |     100 |   95.12 | 84,115            
+@verbis/api:test:  ...les/connectors |   90.69 |     88.8 |   81.03 |   92.46 |                   
+@verbis/api:test:   ...controller.ts |   88.88 |      100 |      80 |   88.88 | 62                
+@verbis/api:test:   ...ub.service.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...ectors.dto.ts |   76.92 |      100 |       0 |     100 |                   
+@verbis/api:test:   ...ors.module.ts |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |     100 |       50 |     100 |     100 | 42-66             
+@verbis/api:test:   ...rs.service.ts |      75 |      100 |      60 |     100 |                   
+@verbis/api:test:   hub-client.ts    |     100 |    96.87 |     100 |     100 | 103               
+@verbis/api:test:   ...m-verifier.ts |     100 |       90 |     100 |     100 | 28                
+@verbis/api:test:   ...ime-bridge.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...controller.ts |   36.36 |        0 |   16.66 |   36.36 | 83-141            
+@verbis/api:test:   user-mapping.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  .../genesys-cloud |   73.98 |    58.62 |   73.07 |   77.67 |                   
+@verbis/api:test:   ...controller.ts |   22.22 |        0 |   33.33 |      25 | 47-82             
+@verbis/api:test:   ...nk.service.ts |   76.36 |    68.96 |      70 |   78.43 | 37-56,118,194     
+@verbis/api:test:   ...-user-link.ts |      90 |       70 |   84.61 |   95.55 | 147,162           
+@verbis/api:test:  ...genesys-engage |   86.02 |    75.57 |   78.84 |    88.2 |                   
+@verbis/api:test:   ...ap.service.ts |   90.47 |    56.25 |     100 |     100 | 31-33,44-76       
+@verbis/api:test:   ...nk.service.ts |   98.44 |    88.31 |   95.83 |   99.17 | 416               
+@verbis/api:test:   ...agent-link.ts |    91.3 |    75.86 |   84.61 |   95.23 | 215,218           
+@verbis/api:test:   ...controller.ts |   27.27 |        0 |   27.27 |   29.03 | ...31-145,160-179 
+@verbis/api:test:  ...dules/identity |    91.8 |     62.5 |    86.2 |     100 |                   
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   identity.dto.ts  |   94.73 |      100 |      80 |     100 |                   
+@verbis/api:test:   ...ity.module.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...repository.ts |     100 |    66.66 |     100 |     100 | 50,85             
+@verbis/api:test:   ...ty.service.ts |      80 |       50 |    62.5 |     100 | 45                
+@verbis/api:test:  ...identity/admin |   93.81 |    92.13 |    88.5 |   94.62 |                   
+@verbis/api:test:   ...controller.ts |   68.33 |       25 |   64.28 |   68.96 | ...88-316,350-383 
+@verbis/api:test:   idp-admin.dto.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...in.service.ts |   99.51 |    95.79 |     100 |     100 | ...65,340,518,526 
+@verbis/api:test:   ...ts.service.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...es.service.ts |   86.95 |       50 |     100 |     100 | 33-58             
+@verbis/api:test:  ...ty/break-glass |   75.63 |    78.46 |    61.9 |   81.48 |                   
+@verbis/api:test:   ...controller.ts |   88.23 |       50 |   66.66 |   88.23 | 91,127            
+@verbis/api:test:   ...ss.service.ts |   73.52 |    79.36 |      60 |   80.21 | ...71,258,284-318 
+@verbis/api:test:  .../identity/core |   91.95 |    80.43 |     100 |   97.36 |                   
+@verbis/api:test:   app-origins.ts   |   96.29 |    95.83 |     100 |     100 | 50                
+@verbis/api:test:   ...ty-secrets.ts |      80 |       50 |     100 |   85.71 | 38-48             
+@verbis/api:test:   identity-tx.ts   |   95.45 |       50 |     100 |     100 | 30-80             
+@verbis/api:test:   ...ity.tokens.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...t-resolver.ts |   88.88 |       80 |     100 |     100 | 30,38             
+@verbis/api:test:  ...dentity/crypto |   97.03 |    88.57 |     100 |     100 |                   
+@verbis/api:test:   keyring.ts       |   94.11 |    88.88 |     100 |     100 | 37-60             
+@verbis/api:test:   password.ts      |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   random.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   totp.ts          |   98.24 |    83.33 |     100 |     100 | 17-21,52          
+@verbis/api:test:  ...dentity/egress |     100 |    96.87 |     100 |     100 |                   
+@verbis/api:test:   idp-fetch.ts     |     100 |    96.87 |     100 |     100 | 115,130           
+@verbis/api:test:  ...s/identity/idp |     100 |    90.24 |     100 |     100 |                   
+@verbis/api:test:   idp-config.ts    |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   idp-presets.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...repository.ts |     100 |       60 |     100 |     100 | 66-88             
+@verbis/api:test:   role-mapping.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  ...identity/login |   95.01 |    81.81 |   98.85 |   96.26 |                   
+@verbis/api:test:   ...controller.ts |   88.88 |    66.66 |    90.9 |   94.11 | 180,195,217       
+@verbis/api:test:   ...-responder.ts |     100 |    83.33 |     100 |     100 | 24                
+@verbis/api:test:   ...ow.service.ts |    97.9 |    84.02 |     100 |   98.61 | 342,496,564       
+@verbis/api:test:   ...ransaction.ts |   95.23 |    88.88 |     100 |   94.44 | 62                
+@verbis/api:test:   login.service.ts |   89.41 |    82.75 |     100 |   91.35 | ...63,326,347-351 
+@verbis/api:test:   role-sync.ts     |   97.05 |       90 |     100 |   96.42 | 43                
+@verbis/api:test:  .../identity/oidc |    96.1 |    94.04 |    90.9 |   98.52 |                   
+@verbis/api:test:   oidc.service.ts  |    96.1 |    94.04 |    90.9 |   98.52 | 178               
+@verbis/api:test:  .../identity/saml |   93.61 |    81.29 |   97.14 |   96.92 |                   
+@verbis/api:test:   ...controller.ts |   81.25 |       50 |   85.71 |   81.25 | 83-89             
+@verbis/api:test:   saml.service.ts  |   94.23 |    82.92 |     100 |   98.92 | 317               
+@verbis/api:test:   ...redentials.ts |     100 |    66.66 |     100 |     100 | 36-53             
+@verbis/api:test:   sp-metadata.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  .../identity/scim |   95.42 |    92.97 |   96.12 |   96.49 |                   
+@verbis/api:test:   scim-bulk.ts     |   97.39 |    97.36 |     100 |     100 | 197,205,220       
+@verbis/api:test:   scim-filter.ts   |   95.73 |    91.17 |    91.3 |   97.05 | 221,241,255,270   
+@verbis/api:test:   scim-patch.ts    |   99.25 |    99.21 |     100 |   99.15 | 234               
+@verbis/api:test:   ...henticator.ts |   87.09 |     87.5 |     100 |    93.1 | 45-46             
+@verbis/api:test:   ...controller.ts |   95.23 |      100 |   94.73 |   95.12 | 304-305           
+@verbis/api:test:   scim.errors.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   scim.filter.ts   |     100 |    97.72 |     100 |     100 | 37                
+@verbis/api:test:   ....resources.ts |     100 |    92.85 |     100 |     100 | 99,162            
+@verbis/api:test:   scim.service.ts  |   91.09 |    83.33 |   95.55 |   91.81 | ...95,556-558,588 
+@verbis/api:test:  ...y/service-auth |    89.1 |    81.37 |     100 |   92.47 |                   
+@verbis/api:test:   ...ls.service.ts |      90 |    79.68 |     100 |   92.42 | 73,81,92,99,141   
+@verbis/api:test:   ...controller.ts |   87.09 |    84.21 |     100 |   92.59 | 34,75             
+@verbis/api:test:  ...entity/session |   92.39 |    83.94 |   98.36 |   94.07 |                   
+@verbis/api:test:   ...henticator.ts |   83.33 |    74.54 |     100 |   84.61 | ...30-131,152-158 
+@verbis/api:test:   ...-refresher.ts |   84.09 |    79.16 |     100 |    87.8 | 60,66-67,98-99    
+@verbis/api:test:   ...ion-cookie.ts |     100 |    78.57 |     100 |     100 | 26-68             
+@verbis/api:test:   ...ion-policy.ts |     100 |    94.73 |     100 |     100 | 9                 
+@verbis/api:test:   session-store.ts |    97.1 |    91.48 |   97.05 |   97.98 | 257-259,337       
+@verbis/api:test:   ...on.service.ts |    92.3 |       60 |     100 |     100 | 44-48,84-97       
+@verbis/api:test:   session.types.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  ...s/integrations |   77.04 |    76.68 |   61.29 |    80.8 |                   
+@verbis/api:test:   ...ne.service.ts |   79.71 |     77.7 |   79.41 |   84.35 | ...31-532,535-561 
+@verbis/api:test:   ...controller.ts |   21.05 |      100 |   16.66 |   21.05 | 73-238            
+@verbis/api:test:   ...ations.dto.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...ons.module.ts |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |     100 |       50 |     100 |     100 | 45-64             
+@verbis/api:test:   ...ns.service.ts |   81.81 |      100 |      60 |     100 |                   
+@verbis/api:test:  ...rations/engine |   92.33 |    88.53 |   92.38 |   94.74 |                   
+@verbis/api:test:   auth.ts          |   93.42 |    81.57 |     100 |   98.55 | 139               
+@verbis/api:test:   contracts.ts     |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   executor.ts      |   95.33 |    92.15 |    92.3 |   97.79 | 65-66,248         
+@verbis/api:test:   mapping.ts       |   95.06 |    92.13 |   90.47 |   95.58 | 28-29,32          
+@verbis/api:test:   protocols.ts     |   85.18 |     82.6 |    92.3 |   87.75 | 23,38-39,66-67,72 
+@verbis/api:test:   transport.ts     |      98 |    92.15 |     100 |     100 | 41,54-62,119      
+@verbis/api:test:   uuid.ts          |     100 |       50 |     100 |     100 | 6-7               
+@verbis/api:test:   ...sit-client.ts |   79.41 |    77.77 |   72.72 |   81.25 | ...01-102,147-157 
+@verbis/api:test:   vault.ts         |   97.29 |       50 |     100 |     100 | 26                
+@verbis/api:test:  ...modules/launch |   91.86 |     76.5 |   98.41 |   95.89 |                   
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...h-attempts.ts |     100 |    66.66 |     100 |     100 | 44-45             
+@verbis/api:test:   ...ts.handler.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   launch-ports.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...h-realtime.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   launch-replay.ts |   83.33 |      100 |     100 |      80 | 27                
+@verbis/api:test:   ...controller.ts |   88.23 |       50 |      90 |   93.75 | 121               
+@verbis/api:test:   launch.dto.ts    |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...ch.gateway.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   launch.module.ts |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...ch.service.ts |   87.36 |    70.83 |     100 |   93.97 | ...60,366,579-581 
+@verbis/api:test:  .../launch/domain |     100 |    98.46 |     100 |     100 |                   
+@verbis/api:test:   frame-policy.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   launch-jws.ts    |     100 |       96 |     100 |     100 | 57                
+@verbis/api:test:   launch.ts        |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   preview.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  ...odules/routing |   94.28 |    76.69 |   97.22 |   97.84 |                   
+@verbis/api:test:   ...nvalidator.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...lver.cache.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...er.service.ts |    92.1 |    76.05 |     100 |     100 | ...1-82,89,96,126 
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   routing.dto.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...ing.module.ts |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |   88.88 |    70.83 |   88.88 |   91.66 | 58,117            
+@verbis/api:test:  ...routing/domain |   97.57 |    95.38 |     100 |   99.15 |                   
+@verbis/api:test:   ab.ts            |    92.3 |      100 |     100 |      90 | 40                
+@verbis/api:test:   conflicts.ts     |   94.33 |    93.65 |     100 |     100 | 30-31,64-70       
+@verbis/api:test:   predicate.ts     |   97.67 |    94.11 |     100 |     100 | 37-39,49-50,87    
+@verbis/api:test:   resolver.ts      |   99.15 |    96.71 |     100 |      99 | 355               
+@verbis/api:test:   working-hours.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:  ...odules/runtime |   90.78 |    88.77 |   83.33 |   93.42 |                   
+@verbis/api:test:   ...controller.ts |   90.32 |    81.35 |   91.66 |   91.37 | 163-167           
+@verbis/api:test:   ...ime-cipher.ts |   89.28 |    77.77 |     100 |   92.59 | 58-59             
+@verbis/api:test:   ...controller.ts |   27.77 |      100 |   13.33 |   27.77 | 41-147,163-182    
+@verbis/api:test:   ...ne.service.ts |   96.41 |    94.14 |   95.65 |   97.37 | ...10,329,466,499 
+@verbis/api:test:   ...ts.handler.ts |     100 |       50 |     100 |     100 | 28                
+@verbis/api:test:   ...ns.handler.ts |   77.77 |    83.87 |     100 |   80.85 | ...73,127,154-157 
+@verbis/api:test:   ...bs.service.ts |   91.66 |    96.15 |   68.42 |     100 | 75,112            
+@verbis/api:test:   runtime-ports.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...me.service.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...tate.store.ts |   86.11 |     87.5 |      90 |   88.57 | 42-44,111         
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   runtime.dto.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...me.gateway.ts |   89.58 |       50 |   84.61 |   97.43 | 58                
+@verbis/api:test:   ...ime.module.ts |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |     100 |    81.81 |     100 |     100 | 49,55             
+@verbis/api:test:   ...me.service.ts |   88.88 |    61.11 |   83.33 |   95.45 | 51                
+@verbis/api:test:   ...re.service.ts |   82.85 |    78.57 |      75 |   87.09 | 47,52,61-62       
+@verbis/api:test:  ...runtime/domain |     100 |    94.73 |     100 |     100 |                   
+@verbis/api:test:   runtime.ts       |     100 |    94.73 |     100 |     100 | 104-107           
+@verbis/api:test:  ...odules/screens |   86.04 |       60 |   76.47 |    92.1 |                   
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   screens.dto.ts   |    90.9 |      100 |      75 |   88.88 | 41                
+@verbis/api:test:   ...ens.module.ts |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |      75 |       50 |      50 |      75 | 40-42             
+@verbis/api:test:   ...ns.service.ts |   85.71 |    66.66 |   83.33 |     100 | 41,58             
+@verbis/api:test:  ...odules/scripts |   92.07 |    83.43 |   86.39 |   94.04 |                   
+@verbis/api:test:   ...controller.ts |   85.71 |      100 |   83.33 |   85.71 | 44,107            
+@verbis/api:test:   ...controller.ts |      75 |      100 |   66.66 |      75 | 43                
+@verbis/api:test:   ...on.service.ts |   95.81 |    91.58 |    87.5 |   95.69 | ...75,291,323,349 
+@verbis/api:test:   ...nt-storage.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...se.service.ts |    64.7 |    64.28 |   83.33 |    64.7 | 13-19             
+@verbis/api:test:   ...es.service.ts |   93.06 |    79.83 |     100 |   95.74 | ...42-245,287,428 
+@verbis/api:test:   ...ew.service.ts |   88.23 |       70 |   88.88 |   96.66 | 90                
+@verbis/api:test:   projection.ts    |     100 |    81.25 |     100 |     100 | 21,43-56          
+@verbis/api:test:   ...bs.service.ts |   90.58 |    94.59 |    62.5 |   97.29 | 136-137           
+@verbis/api:test:   ...validation.ts |     100 |    93.75 |     100 |     100 | 33,99             
+@verbis/api:test:   ...controller.ts |    90.9 |      100 |   84.21 |    90.9 | 97,233,265        
+@verbis/api:test:   scripts.dto.ts   |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...pts.module.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...repository.ts |     100 |    66.66 |     100 |     100 | 79-85,133,198     
+@verbis/api:test:   ...ts.service.ts |   86.42 |    73.33 |   70.83 |   91.33 | ...37,373,386,393 
+@verbis/api:test:   ...ns.service.ts |   85.07 |       60 |      80 |   90.16 | ...7,69,86-97,118 
+@verbis/api:test:   ...controller.ts |   69.23 |      100 |      60 |   69.23 | 48-84             
+@verbis/api:test:   team.service.ts  |   99.13 |    92.15 |   94.11 |   99.04 | 285               
+@verbis/api:test:   ...es.service.ts |     100 |    95.83 |     100 |     100 | 59,260            
+@verbis/api:test:   ...le.service.ts |   87.11 |       80 |   89.28 |   88.81 | ...59,421-423,462 
+@verbis/api:test:  ...scripts/domain |   97.98 |    91.59 |   98.55 |   97.83 |                   
+@verbis/api:test:   lifecycle.ts     |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   ...age-format.ts |   94.02 |    90.47 |     100 |   93.75 | 182,268,271,275   
+@verbis/api:test:   ...omposition.ts |   98.57 |    73.91 |   93.33 |   98.24 | 149               
+@verbis/api:test:   semver.ts        |      96 |    98.07 |     100 |   97.05 | 44                
+@verbis/api:test:   version-diff.ts  |     100 |       96 |     100 |     100 | 58,175-178        
+@verbis/api:test:  ...odules/tenancy |   90.78 |     82.6 |     100 |   98.43 |                   
+@verbis/api:test:   ip-policy.ts     |      90 |       90 |     100 |     100 | 19,21             
+@verbis/api:test:   quota.ts         |   91.66 |    92.85 |     100 |     100 | 16                
+@verbis/api:test:   ...controller.ts |     100 |      100 |     100 |     100 |                   
+@verbis/api:test:   tenancy.dto.ts   |     100 |       50 |     100 |     100 | 106               
+@verbis/api:test:   ...ncy.module.ts |       0 |        0 |       0 |       0 |                   
+@verbis/api:test:   ...repository.ts |   83.33 |       50 |     100 |     100 | 38                
+@verbis/api:test:   ...cy.service.ts |   86.95 |     62.5 |     100 |      95 | 47                
+@verbis/api:test:  src/openapi       |    93.7 |     87.5 |   97.22 |   95.45 |                   
+@verbis/api:test:   docs.ts          |    92.3 |    91.66 |   85.71 |   95.65 | 75                
+@verbis/api:test:   generator.ts     |   93.54 |    86.04 |     100 |   94.18 | 98-99,137-139     
+@verbis/api:test:   metadata.ts      |   95.83 |    92.85 |     100 |     100 | 40                
+@verbis/api:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/docs-site:test: cache hit, replaying logs 9b490d51317855c2
+@verbis/docs-site:test: 
+@verbis/docs-site:test: > @verbis/docs-site@0.0.0 test /Users/ardamoustafa/agent scripting/apps/docs-site
+@verbis/docs-site:test: > node scripts/generate-reference.mjs && node --test scripts/*.spec.mjs
+@verbis/docs-site:test: 
+@verbis/docs-site:test: ✔ TR and EN guides have identical routes and all requested connector guides (2.508125ms)
+@verbis/docs-site:test: ✔ all expression functions have executable documented examples (4.675334ms)
+@verbis/docs-site:test: ✔ downloadable OpenAPI equals the committed contract (11.680875ms)
+@verbis/docs-site:test: ✔ capture refuses credential leaks, foreign origins and repository auth states (0.48575ms)
+@verbis/docs-site:test: ℹ tests 4
+@verbis/docs-site:test: ℹ suites 0
+@verbis/docs-site:test: ℹ pass 4
+@verbis/docs-site:test: ℹ fail 0
+@verbis/docs-site:test: ℹ cancelled 0
+@verbis/docs-site:test: ℹ skipped 0
+@verbis/docs-site:test: ℹ todo 0
+@verbis/docs-site:test: ℹ duration_ms 75.935958
+@verbis/agent-web:test: cache hit, replaying logs 510280f9a1022b94
+@verbis/agent-web:test: 
+@verbis/agent-web:test: > @verbis/agent-web@0.0.0 test /Users/ardamoustafa/agent scripting/apps/agent-web
+@verbis/agent-web:test: > vitest run --coverage
+@verbis/agent-web:test: 
+@verbis/agent-web:test: 
+@verbis/agent-web:test:  RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/agent-web
+@verbis/agent-web:test:       Coverage enabled with v8
+@verbis/agent-web:test: 
+@verbis/agent-web:test:  ✓ src/launch/launch-lifecycle.spec.tsx (13 tests) 850ms
+@verbis/agent-web:test:  ✓ src/desktop/vault-persistence.spec.ts (12 tests) 242ms
+@verbis/agent-web:test:  ✓ src/observability-lifecycle.spec.ts (5 tests) 26ms
+@verbis/agent-web:test:  ✓ src/desktop/vault.spec.ts (1 test) 8ms
+@verbis/agent-web:test:  ✓ src/launch/launch-pages.spec.tsx (10 tests) 555ms
+@verbis/agent-web:test:  ✓ src/desktop/controller.spec.ts (4 tests) 133ms
+@verbis/agent-web:test:  ✓ src/api-health.spec.tsx (7 tests) 337ms
+@verbis/agent-web:test:  ✓ src/app.spec.tsx (2 tests) 462ms
+@verbis/agent-web:test:    ✓ agent SSO boundary (2)
+@verbis/agent-web:test:      ✓ shows SSO discovery when no authenticated browser session exists 410ms
+@verbis/agent-web:test:  ✓ src/observability.spec.ts (1 test) 2ms
+@verbis/agent-web:test:  ✓ src/launch/launch-fragment.spec.ts (4 tests) 6ms
+@verbis/agent-web:test:  ✓ src/launch/genesys-link.spec.ts (3 tests) 8ms
+@verbis/agent-web:test:  ✓ src/launch/engage-links.spec.ts (2 tests) 8ms
+@verbis/agent-web:test:  ✓ src/desktop/ai-panel-behavior.spec.tsx (9 tests) 1366ms
+@verbis/agent-web:test:    ✓ copies only a human-reviewed reply with session binding and CSRF 366ms
+@verbis/agent-web:test:  ✓ src/desktop/controller-lifecycle.spec.ts (39 tests) 1084ms
+@verbis/agent-web:test:  ✓ src/desktop/workspace-behavior.spec.tsx (9 tests) 1904ms
+@verbis/agent-web:test:    ✓ explains an empty supervisor session list and disables its selector 540ms
+@verbis/agent-web:test:    ✓ waits for authorized interactions, reports socket state, and persists accessible display preferences 637ms
+@verbis/agent-web:test:    ✓ restricts supervisor controls to authorized roles and renders watched variables without writer mutations 327ms
+@verbis/agent-web:test:  ✓ src/desktop/session-view.spec.tsx (24 tests) 2096ms
+@verbis/agent-web:test:    ✓ loads the actual authorized session, exposes progress and shortcut help, and reports interaction status 439ms
+@verbis/agent-web:test: 
+@verbis/agent-web:test:  Test Files  16 passed (16)
+@verbis/agent-web:test:       Tests  145 passed (145)
+@verbis/agent-web:test:    Start at  12:44:49
+@verbis/agent-web:test:    Duration  8.75s (import 50%, environment 15%, transform 15%, tests 14%, setup 4%, worker 2%)
+@verbis/agent-web:test: 
+@verbis/agent-web:test:     Isolate  16 workers spawned · ~718ms startup each (spawn + environment, per file)
+@verbis/agent-web:test:              at least ~558ms faster with isolate: false — reuses workers across files instead of one per file
+@verbis/agent-web:test: 
+@verbis/agent-web:test:  % Coverage report from v8
+@verbis/agent-web:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/agent-web:test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+@verbis/agent-web:test: -------------------|---------|----------|---------|---------|-------------------
+@verbis/agent-web:test: All files          |   90.41 |    83.42 |   85.56 |   92.68 |                   
+@verbis/agent-web:test:  src               |   96.36 |    96.15 |   95.45 |   96.66 |                   
+@verbis/agent-web:test:   app.tsx          |       0 |        0 |       0 |       0 |                   
+@verbis/agent-web:test:   ...bility-sdk.ts |       0 |      100 |       0 |       0 | 8-15              
+@verbis/agent-web:test:   observability.ts |   98.93 |    95.45 |     100 |     100 | 39,60             
+@verbis/agent-web:test:   providers.tsx    |     100 |      100 |     100 |     100 |                   
+@verbis/agent-web:test:   ...api-health.ts |     100 |      100 |     100 |     100 |                   
+@verbis/agent-web:test:  src/desktop       |   87.87 |    80.35 |   82.35 |   90.39 |                   
+@verbis/agent-web:test:   ai-panel.tsx     |     100 |    96.55 |     100 |     100 | 62                
+@verbis/agent-web:test:   api.ts           |     100 |      100 |     100 |     100 |                   
+@verbis/agent-web:test:   controller.ts    |   93.02 |    85.32 |   90.42 |   94.84 | ...93,698,702,719 
+@verbis/agent-web:test:   ...re-notice.tsx |      75 |       75 |      75 |   85.71 | 32                
+@verbis/agent-web:test:   failure.ts       |     100 |      100 |     100 |     100 |                   
+@verbis/agent-web:test:   session-view.tsx |   90.35 |    87.32 |   89.87 |   93.52 | ...74-275,602,631 
+@verbis/agent-web:test:   vault.ts         |   98.64 |    89.65 |   96.29 |   98.46 | 119               
+@verbis/agent-web:test:   workspace.tsx    |   68.91 |    49.29 |   58.44 |   72.72 | ...19-401,444,451 
+@verbis/agent-web:test:  src/launch        |   97.39 |     93.5 |   96.82 |     100 |                   
+@verbis/agent-web:test:   ...inks-card.tsx |     100 |      100 |     100 |     100 |                   
+@verbis/agent-web:test:   engage-links.ts  |   91.66 |      100 |      75 |     100 |                   
+@verbis/agent-web:test:   genesys-link.ts  |     100 |      100 |     100 |     100 |                   
+@verbis/agent-web:test:   ...nked-page.tsx |     100 |      100 |     100 |     100 |                   
+@verbis/agent-web:test:   launch-api.ts    |     100 |      100 |     100 |     100 |                   
+@verbis/agent-web:test:   ...h-fragment.ts |     100 |      100 |     100 |     100 |                   
+@verbis/agent-web:test:   launch-page.tsx  |     100 |    96.42 |     100 |     100 | 66                
+@verbis/agent-web:test:   session-page.tsx |     100 |      100 |     100 |     100 |                   
+@verbis/agent-web:test:   ...nch-offers.ts |   97.22 |    83.33 |   92.85 |     100 | 58-60             
+@verbis/agent-web:test:   use-launch.ts    |   92.59 |    80.64 |     100 |     100 | 58,72,78,95-98    
+@verbis/agent-web:test: -------------------|---------|----------|---------|---------|-------------------
+
+ Tasks:    32 successful, 32 total
+Cached:    30 cached, 32 total
+  Time:    1m40.273s 
+

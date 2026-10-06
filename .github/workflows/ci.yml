@@ -16,6 +16,27 @@ env:
   TURBO_TELEMETRY_DISABLED: '1'
 
 jobs:
+  bootstrap:
+    name: Clean README bootstrap and worker acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:bootstrap
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: bootstrap-acceptance
+          path: reports/bootstrap/summary.json
+          if-no-files-found: error
+          retention-days: 14
   verification:
     name: Real infrastructure acceptance
     uses: ./.github/workflows/verification.yml

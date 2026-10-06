@@ -10,7 +10,10 @@ try {
   const env = loadApiEnv();
   const app = await createWorker(env);
   const health = createWorkerHealthServer(app);
-  health.listen(env.AUDIT_WORKER_HEALTH_PORT, '0.0.0.0');
+  health.listen(
+    env.AUDIT_WORKER_HEALTH_PORT,
+    env.NODE_ENV === 'development' ? '127.0.0.1' : '0.0.0.0',
+  );
   const stop = (): void => {
     health.close();
     void app.close().then(() => process.exit(0));

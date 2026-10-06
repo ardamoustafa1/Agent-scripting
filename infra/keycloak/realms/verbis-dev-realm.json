@@ -72,16 +72,16 @@
       "serviceAccountsEnabled": false,
       "frontchannelLogout": false,
       "redirectUris": [
-        "http://localhost:5173/api/auth/oidc/callback",
-        "http://localhost:5174/api/auth/oidc/callback",
-        "http://localhost:5175/api/auth/oidc/callback"
+        "http://localhost:${DESIGNER_WEB_PORT}/api/auth/oidc/callback",
+        "http://localhost:${AGENT_WEB_PORT}/api/auth/oidc/callback",
+        "http://localhost:${ADMIN_WEB_PORT}/api/auth/oidc/callback"
       ],
       "webOrigins": ["+"],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:5173/*##http://localhost:5174/*##http://localhost:5175/*",
+        "post.logout.redirect.uris": "http://localhost:${DESIGNER_WEB_PORT}/*##http://localhost:${AGENT_WEB_PORT}/*##http://localhost:${ADMIN_WEB_PORT}/*",
         "backchannel.logout.session.required": "true",
-        "backchannel.logout.url": "http://host.docker.internal:4000/auth/oidc/verbis-dev/01928f3a-0000-7000-8000-00000000d201/backchannel-logout",
+        "backchannel.logout.url": "http://host.docker.internal:${API_PORT}/auth/oidc/verbis-dev/01928f3a-0000-7000-8000-00000000d201/backchannel-logout",
         "backchannel.logout.revoke.offline.tokens": "true"
       },
       "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "email", "basic"],

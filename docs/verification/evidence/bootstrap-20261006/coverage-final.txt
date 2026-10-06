@@ -1,0 +1,22 @@
+
+> verbis@ coverage:check /Users/ardamoustafa/agent scripting
+> node scripts/coverage-gate.mjs
+
+packages/authz: lines=98.88% statements=99.03% functions=100% branches=94.36%
+packages/collaboration: lines=100% statements=97.63% functions=100% branches=91.59%
+packages/components: lines=97.85% statements=96.14% functions=95.65% branches=90.55%
+packages/core-runtime: lines=96.69% statements=94.78% functions=94.92% branches=90.36%
+packages/expr: lines=99.51% statements=98.95% functions=100% branches=95.75%
+packages/i18n: lines=100% statements=100% functions=100% branches=91.66%
+packages/observability: lines=100% statements=98.93% functions=97.77% branches=100%
+packages/script-schema: lines=98.89% statements=98.02% functions=96.68% branches=93.41%
+packages/sdk-component: lines=99.61% statements=99.3% functions=98.03% branches=97.03%
+packages/sdk-connector: lines=98.21% statements=98.38% functions=94.79% branches=92.75%
+packages/shared-types: lines=100% statements=100% functions=100% branches=95.23%
+packages/test-utils: lines=100% statements=100% functions=100% branches=100%
+packages/ui: lines=96.53% statements=96.27% functions=96.46% branches=90.54%
+apps/admin-web: lines=94.64% statements=92.12% functions=87% branches=88.14%
+apps/agent-web: lines=92.68% statements=90.41% functions=85.56% branches=83.42%
+apps/api: lines=93.03% statements=90.9% functions=88.89% branches=85.85%
+apps/connector-hub: lines=86.36% statements=83.43% functions=81.74% branches=75.09%
+apps/designer-web: lines=91.67% statements=89.66% functions=87.55% branches=81.33%

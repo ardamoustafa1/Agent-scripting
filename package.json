@@ -22,7 +22,7 @@
     "format:check": "prettier --check .",
     "db:migrate": "pnpm --filter @verbis/api db:migrate",
     "db:migrate:dev": "pnpm --filter @verbis/api db:migrate:dev",
-    "seed": "pnpm --filter @verbis/api seed",
+    "seed": "turbo run build --filter=@verbis/api^... && pnpm --filter @verbis/api seed",
     "infra:up": "docker compose up -d",
     "infra:down": "docker compose down",
     "clean": "turbo run clean && rm -rf node_modules/.cache",
@@ -43,7 +43,7 @@
     "test:flaky": "node scripts/playwright-lanes.mjs flaky",
     "test:quarantine": "node scripts/playwright-lanes.mjs quarantine",
     "test:visual": "node scripts/playwright-lanes.mjs visual",
-    "test:policy": "node --test scripts/coverage-gate.spec.mjs scripts/flaky-policy.spec.mjs infra/k6/profile.spec.mjs scripts/k6-preflight.spec.mjs scripts/quality-gates.spec.mjs scripts/secret-scan.spec.mjs",
+    "test:policy": "node --test scripts/coverage-gate.spec.mjs scripts/flaky-policy.spec.mjs infra/k6/profile.spec.mjs scripts/k6-preflight.spec.mjs scripts/quality-gates.spec.mjs scripts/secret-scan.spec.mjs scripts/dev-bootstrap.spec.mjs scripts/dev-mtls-proxy.spec.mjs",
     "quarantine:check": "node scripts/flaky-policy.mjs",
     "test:live": "node scripts/live-acceptance.mjs",
     "test:typecheck": "tsc -p tests/tsconfig.json --noEmit && tsc -p tests/verification/tsconfig.json --noEmit",
@@ -55,7 +55,9 @@
     "test:audit": "node --test scripts/final-audit.spec.mjs",
     "audit:inventory": "node scripts/audit-route-inventory.mjs && node scripts/i18n-inventory.mjs",
     "test:demo-smoke": "node scripts/demo-smoke.mjs",
-    "test:verification": "pnpm --filter @verbis/api exec vitest run --config ../../tests/verification/v2.config.mjs --reporter=default --reporter=json --outputFile=reports/verification/results.json && node scripts/assert-test-results.mjs reports/verification/results.json vitest"
+    "test:verification": "pnpm --filter @verbis/api exec vitest run --config ../../tests/verification/v2.config.mjs --reporter=default --reporter=json --outputFile=reports/verification/results.json && node scripts/assert-test-results.mjs reports/verification/results.json vitest",
+    "dev:bootstrap": "node scripts/dev-bootstrap.mjs",
+    "test:bootstrap": "node scripts/dev-bootstrap-smoke.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",

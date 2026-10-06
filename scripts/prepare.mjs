@@ -11,7 +11,8 @@ if (process.env.CI) {
   process.exit(0);
 }
 
-await import('./ensure-env.mjs');
+const { ensureEnv } = await import('./ensure-env.mjs');
+ensureEnv(root);
 if (!existsSync(resolve(root, '.git'))) {
   console.log('[verbis] No .git directory; skipping git hooks.');
   process.exit(0);

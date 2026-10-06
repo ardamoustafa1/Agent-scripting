@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "prisma generate && tsc -b tsconfig.build.json",
-    "dev": "concurrently -k -n tsc,api -c blue,green \"tsc -b tsconfig.build.json --watch --preserveWatchOutput\" \"node --watch --env-file-if-exists=../../.env dist/main.js\"",
+    "dev": "concurrently -k -n tsc,api,audit,mtls -c blue,green,magenta,cyan \"tsc -b tsconfig.build.json --watch --preserveWatchOutput\" \"node --watch --env-file-if-exists=../../.env dist/main.js\" \"node --watch --env-file-if-exists=../../.env dist/audit-worker.js\" \"node --watch --env-file-if-exists=../../.env ../../scripts/dev-mtls-proxy.mjs\"",
     "start": "node dist/main.js",
     "lint": "eslint --max-warnings=0 .",
     "typecheck": "prisma generate && tsc -p tsconfig.json --noEmit",
@@ -16,7 +16,7 @@
     "openapi:generate": "tsx scripts/generate-openapi.ts",
     "db:migrate": "prisma migrate deploy && tsx scripts/db-app-role.ts",
     "db:migrate:dev": "prisma migrate dev && tsx scripts/db-app-role.ts",
-    "seed": "prisma db seed",
+    "seed": "prisma generate && prisma db seed",
     "dev:token": "tsx scripts/dev-token.ts",
     "clean": "rm -rf dist coverage src/generated",
     "start:audit-worker": "node dist/audit-worker.js",

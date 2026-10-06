@@ -1,0 +1,10 @@
+
+> verbis@ test:bootstrap /Users/ardamoustafa/agent scripting
+> node scripts/dev-bootstrap-smoke.mjs
+
+[bootstrap acceptance] pnpm install --frozen-lockfile
+[bootstrap acceptance] pnpm dev:bootstrap
+[bootstrap acceptance] pnpm seed
+[bootstrap acceptance] pnpm dev:bootstrap
+[bootstrap acceptance] pnpm --filter @verbis/admin-web exec playwright test --project=keycloak
+[bootstrap acceptance] clean install, repeated bootstrap, six health endpoints, simulator mTLS, signed audit checkpoint and Keycloak/axe passed

@@ -160,6 +160,13 @@ describe('generic webhook endpoint', () => {
   });
 });
 
+it('exposes the same liveness payload at /health and /health/live', async () => {
+  const alias = await app.inject({ method: 'GET', url: '/health' });
+  const live = await app.inject({ method: 'GET', url: '/health/live' });
+  expect(alias.statusCode).toBe(200);
+  expect(alias.json()).toEqual(live.json());
+});
+
 describe('internal API (API → hub)', () => {
   it('requires a valid API token', async () => {
     expect((await app.inject({ method: 'GET', url: '/internal/v1/connectors' })).statusCode).toBe(

@@ -25,3 +25,8 @@ reports/verification/
 # Generated local audit runs; preserve them on disk.
 artifacts/
 npm-audit.json
+
+# Local bootstrap secrets and certificates.
+.dev/
+
+reports/bootstrap/

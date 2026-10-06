@@ -1,0 +1,184 @@
+
+> verbis@ typecheck /Users/ardamoustafa/agent scripting
+> turbo run typecheck
+
+
+   • turbo 2.11.6
+   • Packages in scope: @verbis/admin-web, @verbis/agent-web, @verbis/api, @verbis/authz, @verbis/collaboration, @verbis/components, @verbis/config-eslint, @verbis/config-ts, @verbis/connector-hub, @verbis/core-runtime, @verbis/designer-web, @verbis/docs-site, @verbis/expr, @verbis/i18n, @verbis/observability, @verbis/script-schema, @verbis/sdk-component, @verbis/sdk-connector, @verbis/shared-types, @verbis/test-utils, @verbis/ui
+   • Running typecheck in 21 packages
+   • Remote caching disabled
+
+@verbis/authz:build: cache hit, replaying logs d36e695eda65d732
+@verbis/test-utils:build: cache hit, replaying logs 1d8d7fac39b0d746
+@verbis/authz:typecheck: cache hit, replaying logs 3e643943ec55d5a5
+@verbis/test-utils:build: 
+@verbis/test-utils:build: > @verbis/test-utils@0.0.0 build /Users/ardamoustafa/agent scripting/packages/test-utils
+@verbis/test-utils:build: > tsc -b tsconfig.build.json
+@verbis/test-utils:build: 
+@verbis/authz:build: 
+@verbis/authz:build: > @verbis/authz@0.0.0 build /Users/ardamoustafa/agent scripting/packages/authz
+@verbis/authz:typecheck: 
+@verbis/authz:typecheck: > @verbis/authz@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/authz
+@verbis/authz:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/authz:typecheck: 
+@verbis/authz:build: > tsc -b tsconfig.build.json
+@verbis/authz:build: 
+@verbis/test-utils:typecheck: cache hit, replaying logs a0b2e615d4f32296
+@verbis/test-utils:typecheck: 
+@verbis/test-utils:typecheck: > @verbis/test-utils@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/test-utils
+@verbis/test-utils:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/test-utils:typecheck: 
+@verbis/observability:build: cache hit, replaying logs b2bea1a812c74aef
+@verbis/collaboration:build: cache hit, replaying logs 95bafeb273f627e5
+@verbis/collaboration:build: 
+@verbis/observability:build: 
+@verbis/observability:build: > @verbis/observability@0.0.0 build /Users/ardamoustafa/agent scripting/packages/observability
+@verbis/observability:build: > tsc -b tsconfig.build.json
+@verbis/observability:build: 
+@verbis/shared-types:build: cache hit, replaying logs a59d18304710396a
+@verbis/shared-types:build: 
+@verbis/shared-types:build: > @verbis/shared-types@0.0.0 build /Users/ardamoustafa/agent scripting/packages/shared-types
+@verbis/shared-types:build: > tsc -b tsconfig.build.json
+@verbis/shared-types:build: 
+@verbis/i18n:typecheck: cache hit, replaying logs 8924462c172632c2
+@verbis/expr:typecheck: cache hit, replaying logs 1b321835fcaf09ca
+@verbis/collaboration:typecheck: cache hit, replaying logs 797342faf100894e
+@verbis/collaboration:build: > @verbis/collaboration@0.0.0 build /Users/ardamoustafa/agent scripting/packages/collaboration
+@verbis/collaboration:build: > tsc -b tsconfig.build.json
+@verbis/collaboration:build: 
+@verbis/i18n:build: cache hit, replaying logs 14b9696baf1ac9e8
+@verbis/observability:typecheck: cache hit, replaying logs 08888fb3f15d046b
+@verbis/i18n:typecheck: 
+@verbis/i18n:typecheck: > @verbis/i18n@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/i18n
+@verbis/expr:build: cache hit, replaying logs d6f95e2ce0d9b3fa
+@verbis/expr:build: 
+@verbis/expr:build: > @verbis/expr@0.0.0 build /Users/ardamoustafa/agent scripting/packages/expr
+@verbis/expr:build: > tsc -b tsconfig.build.json
+@verbis/i18n:build: 
+@verbis/i18n:build: > @verbis/i18n@0.0.0 build /Users/ardamoustafa/agent scripting/packages/i18n
+@verbis/i18n:build: > tsc -b tsconfig.build.json
+@verbis/i18n:build: 
+@verbis/shared-types:typecheck: cache hit, replaying logs 0aa3c3b06dd50e53
+@verbis/collaboration:typecheck: 
+@verbis/collaboration:typecheck: > @verbis/collaboration@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/collaboration
+@verbis/collaboration:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/collaboration:typecheck: 
+@verbis/shared-types:typecheck: 
+@verbis/shared-types:typecheck: > @verbis/shared-types@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/shared-types
+@verbis/shared-types:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/shared-types:typecheck: 
+@verbis/expr:build: 
+@verbis/expr:typecheck: 
+@verbis/expr:typecheck: > @verbis/expr@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/expr
+@verbis/expr:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/expr:typecheck: 
+@verbis/i18n:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/i18n:typecheck: 
+@verbis/observability:typecheck: 
+@verbis/observability:typecheck: > @verbis/observability@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/observability
+@verbis/observability:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/observability:typecheck: 
+@verbis/sdk-connector:build: cache hit, replaying logs 0a052c5829c65918
+@verbis/sdk-connector:build: 
+@verbis/sdk-connector:build: > @verbis/sdk-connector@0.0.0 build /Users/ardamoustafa/agent scripting/packages/sdk-connector
+@verbis/sdk-connector:build: > tsc -b tsconfig.build.json
+@verbis/sdk-connector:build: 
+@verbis/ui:typecheck: cache hit, replaying logs 5381870e0521d229
+@verbis/sdk-connector:typecheck: cache hit, replaying logs a40fb33f75720baa
+@verbis/ui:typecheck: 
+@verbis/ui:typecheck: > @verbis/ui@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/ui
+@verbis/ui:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/ui:typecheck: 
+@verbis/ui:build: cache hit, replaying logs 683820bca1e08c52
+@verbis/ui:build: 
+@verbis/ui:build: > @verbis/ui@0.0.0 build /Users/ardamoustafa/agent scripting/packages/ui
+@verbis/ui:build: > tsc -b tsconfig.build.json
+@verbis/ui:build: 
+@verbis/sdk-connector:typecheck: 
+@verbis/sdk-connector:typecheck: > @verbis/sdk-connector@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/sdk-connector
+@verbis/sdk-connector:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/sdk-connector:typecheck: 
+@verbis/script-schema:typecheck: cache hit, replaying logs 87778aa2014a7056
+@verbis/connector-hub:typecheck: cache hit, replaying logs 56a2f3766718edf6
+@verbis/script-schema:build: cache hit, replaying logs 9499b4adb69efe58
+@verbis/script-schema:typecheck: 
+@verbis/script-schema:typecheck: > @verbis/script-schema@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/script-schema
+@verbis/script-schema:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/script-schema:typecheck: 
+@verbis/script-schema:build: 
+@verbis/script-schema:build: > @verbis/script-schema@0.0.0 build /Users/ardamoustafa/agent scripting/packages/script-schema
+@verbis/script-schema:build: > tsc -b tsconfig.build.json
+@verbis/script-schema:build: 
+@verbis/connector-hub:typecheck: 
+@verbis/connector-hub:typecheck: > @verbis/connector-hub@0.0.0 typecheck /Users/ardamoustafa/agent scripting/apps/connector-hub
+@verbis/connector-hub:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/connector-hub:typecheck: 
+@verbis/core-runtime:build: cache hit, replaying logs 7ec53c7293f81488
+@verbis/core-runtime:build: 
+@verbis/core-runtime:build: > @verbis/core-runtime@0.0.0 build /Users/ardamoustafa/agent scripting/packages/core-runtime
+@verbis/core-runtime:build: > tsc -b tsconfig.build.json
+@verbis/core-runtime:build: 
+@verbis/core-runtime:typecheck: cache hit, replaying logs 2f8b8dc932a4e6ac
+@verbis/admin-web:typecheck: cache hit, replaying logs ed52c0d06777dcd0
+@verbis/core-runtime:typecheck: 
+@verbis/core-runtime:typecheck: > @verbis/core-runtime@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/core-runtime
+@verbis/core-runtime:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/core-runtime:typecheck: 
+@verbis/admin-web:typecheck: 
+@verbis/admin-web:typecheck: > @verbis/admin-web@0.0.0 typecheck /Users/ardamoustafa/agent scripting/apps/admin-web
+@verbis/admin-web:typecheck: > tsc -b
+@verbis/admin-web:typecheck: 
+@verbis/sdk-component:build: cache hit, replaying logs 72b0cee352fec463
+@verbis/sdk-component:build: 
+@verbis/sdk-component:build: > @verbis/sdk-component@0.0.0 build /Users/ardamoustafa/agent scripting/packages/sdk-component
+@verbis/sdk-component:build: > tsc -b tsconfig.build.json
+@verbis/sdk-component:build: 
+@verbis/sdk-component:typecheck: cache hit, replaying logs 132fd26f10959b49
+@verbis/sdk-component:typecheck: 
+@verbis/sdk-component:typecheck: > @verbis/sdk-component@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/sdk-component
+@verbis/sdk-component:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/sdk-component:typecheck: 
+@verbis/components:build: cache hit, replaying logs f9d3c90d7683f147
+@verbis/components:build: 
+@verbis/components:build: > @verbis/components@0.0.0 build /Users/ardamoustafa/agent scripting/packages/components
+@verbis/components:build: > tsc -b tsconfig.build.json
+@verbis/components:build: 
+@verbis/components:typecheck: cache hit, replaying logs d48e47b3bb931549
+@verbis/api:typecheck: cache miss, executing 2797c370e92799ae
+@verbis/components:typecheck: 
+@verbis/components:typecheck: > @verbis/components@0.0.0 typecheck /Users/ardamoustafa/agent scripting/packages/components
+@verbis/components:typecheck: > tsc -p tsconfig.json --noEmit
+@verbis/components:typecheck: 
+@verbis/docs-site:typecheck: cache hit, replaying logs 5eff1fe3b93ecbde
+@verbis/agent-web:typecheck: cache hit, replaying logs e013ba98d06ed9f6
+@verbis/agent-web:typecheck: 
+@verbis/agent-web:typecheck: > @verbis/agent-web@0.0.0 typecheck /Users/ardamoustafa/agent scripting/apps/agent-web
+@verbis/agent-web:typecheck: > tsc -b
+@verbis/agent-web:typecheck: 
+@verbis/docs-site:typecheck: 
+@verbis/docs-site:typecheck: > @verbis/docs-site@0.0.0 typecheck /Users/ardamoustafa/agent scripting/apps/docs-site
+@verbis/docs-site:typecheck: > astro sync && tsc --noEmit
+@verbis/docs-site:typecheck: 
+@verbis/docs-site:typecheck: 12:43:16 [content] Syncing content
+@verbis/docs-site:typecheck: 12:43:17 [content] Synced content
+@verbis/docs-site:typecheck: 12:43:17 [types] Generated 3.68s
+@verbis/designer-web:typecheck: cache hit, replaying logs 53c8b730f662012d
+@verbis/designer-web:typecheck: 
+@verbis/designer-web:typecheck: > @verbis/designer-web@0.0.0 typecheck /Users/ardamoustafa/agent scripting/apps/designer-web
+@verbis/designer-web:typecheck: > tsc -b
+@verbis/designer-web:typecheck: 
+@verbis/api:typecheck: 
+@verbis/api:typecheck: > @verbis/api@0.0.0 typecheck /Users/ardamoustafa/agent scripting/apps/api
+@verbis/api:typecheck: > prisma generate && tsc -p tsconfig.json --noEmit
+@verbis/api:typecheck: 
+@verbis/api:typecheck: Loaded Prisma config from prisma.config.ts.
+@verbis/api:typecheck: 
+@verbis/api:typecheck: Prisma schema loaded from prisma/schema.prisma.
+@verbis/api:typecheck: 
+@verbis/api:typecheck: ✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 272ms
+@verbis/api:typecheck: 
+
+ Tasks:    32 successful, 32 total
+Cached:    31 cached, 32 total
+  Time:    6.583s 
+

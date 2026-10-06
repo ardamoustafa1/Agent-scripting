@@ -6,35 +6,28 @@ Roadmap and status: [docs/PROGRESS.md](docs/PROGRESS.md).
 TR/EN guides: [docs-site](apps/docs-site/README.md) (`pnpm docs:dev`, port 5176).
 Sales demo: [3-minute walkthrough](docs/DEMO.md); provision an isolated local bundle with `pnpm seed:demo`.
 
-## 5-minute setup
+## Local development setup
 
 **Prerequisites:** Node.js ≥ 22.12 (24 recommended, see `.nvmrc`), pnpm 9 (`corepack enable`),
-Docker with Compose v2.20+.
+Docker with Compose v2.20+ and OpenSSL on `PATH`.
 
 ```bash
-pnpm install
-```
-
-```bash
-docker compose up -d
-```
-
-```bash
-pnpm db:migrate && pnpm seed
-```
-
-```bash
+pnpm install --frozen-lockfile
+pnpm dev:bootstrap
 pnpm dev
 ```
 
-- `pnpm install` also creates `.env` from `.env.example` (dev-only values), adds variables introduced
-  later to an existing `.env`, generates a local Ed25519 key pair for internal JWTs, and installs git hooks.
-- `pnpm db:migrate` applies the migrations as the schema owner (`DATABASE_URL`) and enables login for
-  the least-privilege runtime role `verbis_app`. The API connects only as that role (`DATABASE_APP_URL`)
-  and refuses to start as a superuser, an owner, or a role that bypasses Row-Level Security.
-- `pnpm dev` builds the shared packages, then runs every app in watch mode.
-- The first `docker compose up -d` pulls images and Keycloak needs ~30–60 s to become healthy.
-  Check with `docker compose ps`.
+- `pnpm install` creates a private `.env` with local defaults and internal/audit signing keys, and installs Git hooks. CI can skip this prepare step; explicit bootstrap also creates the environment.
+- `pnpm dev:bootstrap` provisions a local mTLS CA, hub client and API edge certificate, independent integration/analytics keys, package signing and trusted JWKS. It starts the Compose stack, waits for PostgreSQL/Redis/NATS/Keycloak, builds the workspace, migrates and seeds `verbis-dev` with an active simulator and certificate-bound service client. `HUB_TENANTS` is configured from the seed. Generated material stays in ignored `.env` and `.dev/` (files `0600`, TLS directory `0700`).
+- Repeating bootstrap preserves existing signing/encryption keys, certificates and seed IDs. Existing custom endpoints/keys are preserved. Bootstrap is restricted to development and loopback API/database/hub connections.
+- `pnpm dev` runs the browser apps, API, connector hub, local mTLS edge and **audit worker** in watch mode. The worker uses `verbis_audit_worker` and signs checkpoints; the API uses `verbis_app`. The owner connection is used only for migrations/seeding.
+- The first run pulls images and builds all packages; duration depends on the machine and network. `pnpm seed` also builds its workspace dependencies, so it works before a full application build.
+
+### A second isolated stack or port conflicts
+
+Set `COMPOSE_PROJECT_NAME` to a distinct name in `.env`, change only the `*_PORT` values, then run `pnpm dev:bootstrap`. Bootstrap derives connection URLs, browser origins and OIDC settings from those ports. Keycloak realm import uses the configured browser/API ports too. Later port edits refresh previously managed URLs; explicit custom URLs remain yours to maintain. Keycloak realm changes require a fresh realm import (use a new Compose project for a new isolated stack).
+
+`pnpm test:bootstrap` verifies the same install → bootstrap → dev sequence in a disposable clean source copy, with distinct ports and volumes. It also checks standalone seed with missing generated/build prerequisites, repeated bootstrap, six health endpoints, real simulator mTLS, a valid signed checkpoint and Keycloak login/logout with axe. It removes only its generated Compose project and temp copy; logs and a safe summary are under `reports/bootstrap/`.
 
 ### What runs where
 
@@ -44,7 +37,9 @@ pnpm dev
 | Agent desktop (agent-web)     | http://localhost:5174               | `/health`                                   |
 | Admin (admin-web)             | http://localhost:5175               | `/health`                                   |
 | Core API (api)                | http://localhost:4000               | `/health/live`, `/health/ready`             |
-| Connector hub                 | http://localhost:4100               | `/health/live`, `/health/ready`             |
+| Connector hub                 | http://localhost:4100               | `/health`, `/health/live`, `/health/ready`  |
+| Local mTLS API edge           | https://localhost:4443              | client certificate required                 |
+| Audit worker                  | http://localhost:4200               | `/health/live`, `/health/ready`             |
 | Keycloak (realm `verbis-dev`) | http://localhost:8080               | admin console `/admin`                      |
 | MinIO console                 | http://localhost:9001               | S3 API on `:9000`                           |
 | Mailpit                       | http://localhost:8025               | SMTP on `:1025`                             |
@@ -58,11 +53,11 @@ The web apps proxy `/api/*` to the core API (dev and preview only). All ports bi
 
 ### Dev users (Keycloak realm `verbis-dev`)
 
-| User       | Group → role                     |
-| ---------- | -------------------------------- |
-| `admin`    | `verbis-admins` → `tenant_admin` |
-| `designer` | `verbis-designers` → `designer`  |
-| `agent`    | `verbis-agents` → `agent`        |
+| User       | Group → role                           |
+| ---------- | -------------------------------------- |
+| `admin`    | `verbis-admins` → `tenant_admin`       |
+| `designer` | `verbis-designers` → `script_designer` |
+| `agent`    | `verbis-agents` → `agent`              |
 
 Passwords come from `DEV_USER_*_PASSWORD` in your `.env` and are injected at realm import.
 To change them after the first start, run `docker compose down -v` and start again. That command
@@ -77,7 +72,7 @@ only ever holds the httpOnly `__Host-verbis_session` cookie; tokens stay in Redi
 
 - Realm changes (redirect URIs, back-channel logout URL) apply only to a fresh import: delete the
   `verbis-dev` realm in the Keycloak console (or `docker compose down -v`) and restart Keycloak.
-- Keycloak SSO e2e: `E2E_KEYCLOAK=1 pnpm --filter @verbis/admin-web e2e --project keycloak` (API on
+- Keycloak SSO e2e: `E2E_KEYCLOAK=1 pnpm --filter @verbis/admin-web exec playwright test --project keycloak` (API on
   `:4000` and admin-web running, `DEV_USER_ADMIN_PASSWORD` in the environment).
 - SCIM base URL: `http://localhost:4000/scim/v2/<tenant-slug>` with a token from
   `POST /v1/identity-providers/{id}/scim-tokens`. OAuth token endpoint for service clients:
@@ -87,7 +82,9 @@ only ever holds the httpOnly `__Host-verbis_session` cookie; tokens stay in Redi
 
 | Command                                      | What it does                                                                                                                    |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`                                   | Run all apps (watch mode)                                                                                                       |
+| `pnpm dev:bootstrap`                         | Provision local mTLS, keys, infrastructure and idempotent simulator/service-client seed                                         |
+| `pnpm test:bootstrap`                        | Verify the README setup in an isolated clean source copy                                                                        |
+| `pnpm dev`                                   | Run all apps and audit worker (watch mode)                                                                                      |
 | `pnpm build`                                 | Build everything (Turborepo, cached)                                                                                            |
 | `pnpm lint` / `pnpm typecheck` / `pnpm test` | Quality gates (same as CI)                                                                                                      |
 | `pnpm e2e`                                   | Playwright + axe accessibility tests for the web apps (`pnpm --filter @verbis/agent-web exec playwright install chromium` once) |

@@ -1,0 +1,77 @@
+
+> verbis@ test:policy /Users/ardamoustafa/agent scripting
+> node --test scripts/coverage-gate.spec.mjs scripts/flaky-policy.spec.mjs infra/k6/profile.spec.mjs scripts/k6-preflight.spec.mjs scripts/quality-gates.spec.mjs scripts/secret-scan.spec.mjs scripts/dev-bootstrap.spec.mjs scripts/dev-mtls-proxy.spec.mjs
+
+✔ rejects duplicated userId before creating load (0.895833ms)
+✔ rejects duplicated sessionId before creating load (0.1415ms)
+✔ rejects duplicated cookie before creating load (0.062333ms)
+✔ rejects identical BFF session hidden by different extra cookies (0.068667ms)
+✔ rejects invalid agent count "0" (0.059041ms)
+✔ rejects invalid agent count "-1" (0.037625ms)
+✔ rejects invalid agent count "1.5" (0.036625ms)
+✔ rejects invalid agent count "NaN" (0.039792ms)
+✔ rejects invalid agent count "Infinity" (0.046958ms)
+✔ rejects invalid agent count "" (0.073125ms)
+✔ rejects unsafe origin without echoing credentials (0.136291ms)
+✔ rejects unsafe origin without echoing credentials (0.035958ms)
+✔ rejects unsafe origin without echoing credentials (0.028541ms)
+✔ rejects unsafe origin without echoing credentials (0.434416ms)
+✔ rejects unsafe origin without echoing credentials (0.044583ms)
+✔ rejects missing socket session before any network call (0.175916ms)
+✔ rejects reused interactions across users and rounds (0.152ms)
+✔ rejects example placeholder credentials (0.052667ms)
+✔ long soak gets a sufficient executor deadline (0.055166ms)
+✔ valid profiles contain only configuration, never fixture secrets (0.064416ms)
+✔ partial run reports measured completed interactions separately from requested (0.929292ms)
+✔ missing measurement cannot pass acceptance (0.100042ms)
+✔ all required thresholds and counts must pass, and a failing threshold revokes acceptance (0.114125ms)
+✔ validates K6_ROUNDS before network operations (0.07825ms)
+✔ validates K6_SOAK_SECONDS before network operations (0.050666ms)
+✔ rejects reused interactions within the same agent (0.077209ms)
+✔ rejects incomplete or duplicated page/REST definitions (0.060666ms)
+✔ supports explicit secure custom cookie names (0.039125ms)
+✔ HTTP workload uses the production edge API prefix and keeps websocket origin separate (0.055458ms)
+✔ core default accepts 2000 independent fixture identities and rejects a duplicate at the end (9.051333ms)
+✔ accepts the boundary and rejects each deficient dimension (0.628541ms)
+✔ missing, empty, nonnumeric and malformed reports cannot pass (0.153209ms)
+✔ security scopes require weighted 95 percent line coverage and cannot disappear (0.935ms)
+[verbis] Generated a local Ed25519 key pair for internal JWTs (dev only).
+[verbis] Generated a local identity sealing key (dev only).
+[verbis] Generated a local Ed25519 audit checkpoint key (dev only).
+[verbis] Generated a local Ed25519 key pair for internal JWTs (dev only).
+[verbis] Generated a local identity sealing key (dev only).
+[verbis] Generated a local Ed25519 audit checkpoint key (dev only).
+[verbis] Generated a local Ed25519 key pair for internal JWTs (dev only).
+[verbis] Generated a local identity sealing key (dev only).
+[verbis] Generated a local Ed25519 audit checkpoint key (dev only).
+✔ fresh bootstrap provisions independently keyed features and trusted mTLS (233.559542ms)
+✔ repeat bootstrap preserves secrets and certificates and refreshes managed port URLs (186.962875ms)
+✔ custom endpoints and keys survive bootstrap (130.704333ms)
+✔ production mode is rejected before files or credentials are changed (0.9925ms)
+✔ unsafe network bind and remote databases are rejected without mutation (1.597541ms)
+[verbis] Generated a local Ed25519 key pair for internal JWTs (dev only).
+[verbis] Generated a local identity sealing key (dev only).
+[verbis] Generated a local Ed25519 audit checkpoint key (dev only).
+[verbis] Created .env from .env.example (development defaults).
+✔ dev mTLS rejects absent certs and replaces forged cert headers before forwarding (334.469417ms)
+✔ quarantine is explicit, bounded, reviewed and unique (1.669ms)
+✔ empty quarantine is valid and malformed manifests fail (0.239334ms)
+✔ private preflight exits successfully without exposing credentials or sending traffic (42.441334ms)
+✔ preflight rejects malformed JSON without leaking embedded secrets (48.629792ms)
+✔ preflight rejects publicly readable credential files (43.177542ms)
+✔ preflight rejects duplicate authenticated agents (25.276541ms)
+✔ real k6 init validates both complete load scripts without executing requests (113.063417ms)
+✔ real k6 offline metric harness passes complete counts (279.180708ms)
+✔ real k6 offline metric harness fails incomplete counts (343.623708ms)
+✔ PR acceptance runs isolated infrastructure and mandatory live projects (4.534208ms)
+✔ missing live configuration fails before browser execution (30.938583ms)
+✔ mandatory report gate rejects zero tests, skips, failures and malformed reports (1.124709ms)
+✔ commit scanner permits reviewed PEM serialization and rejects real keys and env files (328.521375ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 52
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1038.38625

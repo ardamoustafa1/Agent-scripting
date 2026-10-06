@@ -16,6 +16,11 @@ export class HealthController {
     @Inject(EventPipeline) private readonly pipeline: EventPipeline,
   ) {}
 
+  @Get()
+  health(): HealthStatus {
+    return this.live();
+  }
+
   @Get('live')
   live(): HealthStatus {
     return aggregateHealth(SERVICE, this.env.APP_VERSION, {});

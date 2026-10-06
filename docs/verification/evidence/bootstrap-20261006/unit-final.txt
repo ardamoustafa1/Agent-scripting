@@ -1,0 +1,27 @@
+[verbis] Generated a local Ed25519 key pair for internal JWTs (dev only).
+[verbis] Generated a local identity sealing key (dev only).
+[verbis] Generated a local Ed25519 audit checkpoint key (dev only).
+[verbis] Generated a local Ed25519 key pair for internal JWTs (dev only).
+[verbis] Generated a local identity sealing key (dev only).
+[verbis] Generated a local Ed25519 audit checkpoint key (dev only).
+[verbis] Generated a local Ed25519 key pair for internal JWTs (dev only).
+[verbis] Generated a local identity sealing key (dev only).
+[verbis] Generated a local Ed25519 audit checkpoint key (dev only).
+✔ fresh bootstrap provisions independently keyed features and trusted mTLS (255.96225ms)
+✔ repeat bootstrap preserves secrets and certificates and refreshes managed port URLs (188.750875ms)
+✔ custom endpoints and keys survive bootstrap (163.26225ms)
+✔ production mode is rejected before files or credentials are changed (0.95ms)
+✔ unsafe network bind and remote databases are rejected without mutation (1.618ms)
+[verbis] Generated a local Ed25519 key pair for internal JWTs (dev only).
+[verbis] Generated a local identity sealing key (dev only).
+[verbis] Generated a local Ed25519 audit checkpoint key (dev only).
+[verbis] Created .env from .env.example (development defaults).
+✔ dev mTLS rejects absent certs and replaces forged cert headers before forwarding (272.784084ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 646.699459
