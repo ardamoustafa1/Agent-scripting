@@ -1,0 +1,925 @@
+{
+  "config": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/node_modules/@playwright/test/cli.js",
+      "test",
+      "--workers=2"
+    ],
+    "configFile": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/playwright.config.ts",
+    "rootDir": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "live",
+        "name": "live",
+        "testDir": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/.*-live\\.spec\\.ts/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e",
+        "testIgnore": [
+          "/(?:keycloak-.*|.*-live)\\.spec\\.ts/"
+        ],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "keycloak",
+        "name": "keycloak",
+        "testDir": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/keycloak-.*\\.spec\\.ts/"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "github",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "/private/tmp/verbis-v1-quality-20261004/tests/playwright/flaky-reporter.ts",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 2,
+    "webServer": {
+      "command": "pnpm exec vite preview",
+      "url": "http://127.0.0.1:25175/health",
+      "reuseExistingServer": false,
+      "timeout": 60000
+    }
+  },
+  "suites": [
+    {
+      "title": "audit-live.spec.ts",
+      "file": "audit-live.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "audit view filters real events and verifies a specified chain range",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Disposable synthetic tenant and an audited event range required",
+                  "location": {
+                    "file": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e/audit-live.spec.ts",
+                    "line": 19,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "live",
+              "projectName": "live",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 95,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:26.922Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Disposable synthetic tenant and an audited event range required",
+                      "location": {
+                        "file": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e/audit-live.spec.ts",
+                        "line": 19,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "f89554a095e0cf2f8efb-b9039b082c3f83ac8a19",
+          "file": "audit-live.spec.ts",
+          "line": 18,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "saml-live.spec.ts",
+      "file": "saml-live.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "SAML SP initiated sign in creates a protected BFF session and signs out",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Live SAML IdP and synthetic tenant required",
+                  "location": {
+                    "file": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e/saml-live.spec.ts",
+                    "line": 19,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "live",
+              "projectName": "live",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "skipped",
+                  "duration": 94,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:26.920Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Live SAML IdP and synthetic tenant required",
+                      "location": {
+                        "file": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e/saml-live.spec.ts",
+                        "line": 19,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "5e86680e56d17775a5fb-ed4440131746794e28f8",
+          "file": "saml-live.spec.ts",
+          "line": 15,
+          "column": 1
+        },
+        {
+          "title": "SAML ACS rejects an unsigned assertion without creating a session",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Live SAML tenant required",
+                  "location": {
+                    "file": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e/saml-live.spec.ts",
+                    "line": 53,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "live",
+              "projectName": "live",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 45,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:27.172Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Live SAML tenant required",
+                      "location": {
+                        "file": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e/saml-live.spec.ts",
+                        "line": 53,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "5e86680e56d17775a5fb-28d1eb74124ca9ef5cf1",
+          "file": "saml-live.spec.ts",
+          "line": 49,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "analytics.spec.ts",
+      "file": "analytics.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "read-only analytics uses BFF, exposes empty state, hides export/scheduling and has no axe violations",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 694,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:27.584Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "634c82c6846b68aa8d60-b2b9ab30816e8f07c053",
+          "file": "analytics.spec.ts",
+          "line": 30,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "hello.spec.ts",
+      "file": "hello.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "workspace keyboard and axe (light)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 903,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:27.633Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-3d2cf4616cbe6cba4475",
+          "file": "hello.spec.ts",
+          "line": 42,
+          "column": 3
+        },
+        {
+          "title": "workspace keyboard and axe (dark)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 758,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:28.404Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-784aeb9c5d79805d9124",
+          "file": "hello.spec.ts",
+          "line": 42,
+          "column": 3
+        },
+        {
+          "title": "workspace keyboard and axe (high-contrast)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 784,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:28.697Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-357b88ad78c04611dc93",
+          "file": "hello.spec.ts",
+          "line": 42,
+          "column": 3
+        },
+        {
+          "title": "version conflict does not overwrite policy or claim success",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 287,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:29.177Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-55c6f64831de03e3edee",
+          "file": "hello.spec.ts",
+          "line": 56,
+          "column": 1
+        },
+        {
+          "title": "secret values are cleared after rotation and never rendered in metadata",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 342,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:29.473Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-d65beb3fe53e4e4bfc4f",
+          "file": "hello.spec.ts",
+          "line": 68,
+          "column": 1
+        },
+        {
+          "title": "@visual admin-web main screen light",
+          "ok": true,
+          "tags": [
+            "visual"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 439,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:29.494Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-33594a33ff4daccaf4e3",
+          "file": "hello.spec.ts",
+          "line": 99,
+          "column": 3
+        },
+        {
+          "title": "@visual admin-web main screen dark",
+          "ok": true,
+          "tags": [
+            "visual"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 478,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:29.823Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-00d93c8e4a1e78e3de31",
+          "file": "hello.spec.ts",
+          "line": 99,
+          "column": 3
+        },
+        {
+          "title": "audit verification distinguishes valid=true, truncated=false",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 341,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:29.952Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-87b18dd5ace79afabee8",
+          "file": "hello.spec.ts",
+          "line": 117,
+          "column": 3
+        },
+        {
+          "title": "audit verification distinguishes valid=false, truncated=false",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 354,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:30.306Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-da4fbc25cc0d6b8b0cd1",
+          "file": "hello.spec.ts",
+          "line": 117,
+          "column": 3
+        },
+        {
+          "title": "audit verification distinguishes valid=true, truncated=true",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 358,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:30.310Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-239e99603727612508f2",
+          "file": "hello.spec.ts",
+          "line": 117,
+          "column": 3
+        },
+        {
+          "title": "audit explorer displays event sequence, action and correlation without raw customer data",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 246,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:30.671Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-f368fdb4e664c57103fa",
+          "file": "hello.spec.ts",
+          "line": 139,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "simulator.spec.ts",
+      "file": "simulator.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "creates a simulated chat and drives it through its lifecycle",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 498,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:30.683Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "620c61f0a0b21e7686ea-33dabdbe4b127102a9bb",
+          "file": "simulator.spec.ts",
+          "line": 124,
+          "column": 1
+        },
+        {
+          "title": "simulator is keyboard operable and has no WCAG 2.2 AA violations",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 581,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:30.930Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "620c61f0a0b21e7686ea-7ad4134a1d491fe535ba",
+          "file": "simulator.spec.ts",
+          "line": 153,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "keycloak-login.spec.ts",
+      "file": "keycloak-login.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "signs in with Keycloak, keeps tokens out of the browser, and signs out",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Keycloak e2e disabled",
+                  "location": {
+                    "file": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e/keycloak-login.spec.ts",
+                    "line": 15,
+                    "column": 6
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "keycloak",
+              "projectName": "keycloak",
+              "results": [
+                {
+                  "workerIndex": -1,
+                  "parallelIndex": -1,
+                  "status": "skipped",
+                  "duration": 0,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:31.186Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Keycloak e2e disabled",
+                      "location": {
+                        "file": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e/keycloak-login.spec.ts",
+                        "line": 15,
+                        "column": 6
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "72871ffe9a11499140bd-9d05cbc3e24a4f3f181a",
+          "file": "keycloak-login.spec.ts",
+          "line": 17,
+          "column": 1
+        },
+        {
+          "title": "a failed sign-in comes back with a readable error and no session",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Keycloak e2e disabled",
+                  "location": {
+                    "file": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e/keycloak-login.spec.ts",
+                    "line": 15,
+                    "column": 6
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "keycloak",
+              "projectName": "keycloak",
+              "results": [
+                {
+                  "workerIndex": -1,
+                  "parallelIndex": -1,
+                  "status": "skipped",
+                  "duration": 0,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T08:10:31.186Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Keycloak e2e disabled",
+                      "location": {
+                        "file": "/private/tmp/verbis-v1-quality-20261004/apps/admin-web/e2e/keycloak-login.spec.ts",
+                        "line": 15,
+                        "column": 6
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "72871ffe9a11499140bd-219c071117539f82598c",
+          "file": "keycloak-login.spec.ts",
+          "line": 58,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-04T08:10:25.410Z",
+    "duration": 6146.089,
+    "expected": 14,
+    "skipped": 5,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

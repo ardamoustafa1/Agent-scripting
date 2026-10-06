@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-05",
+  "decision": "general production acceptance not granted",
+  "excluded": [
+    "external integrations",
+    "live AI"
+  ],
+  "freshResults": {
+    "securityUnit": 44,
+    "realInternalIntegration": 57,
+    "deploymentPolicy": 11,
+    "auditThroughputTests": 2,
+    "auditEvents": 100000,
+    "auditEventsPerSecond": 51235
+  },
+  "sourceSha256": {
+    "apps/api/src/modules/scripts/collaboration.service.ts": "a119b163aab9141a807be01b89ff2d0df22141654979d571758927c01cdc294e",
+    "apps/api/test/perf/audit-throughput.perf.spec.ts": "dc641c4b1693a7fb505a2ad640df3c3f5bfd3e2625a29f320325d56aa2b2d8f3",
+    "apps/api/test/integration/runtime.int.spec.ts": "942c24194f84b1a5aa9f9453f5059f716ecd08f75b06932a3d497c3745a9d7ce",
+    "apps/api/test/integration/authoring-routing.int.spec.ts": "627d9b4c172a156f6f60af7b53152fd06507004cad6e7a22e93fa473050e8f2c",
+    "apps/api/test/integration/audit.int.spec.ts": "b047c39a2004af82991f569a3dadc1ba5c6222be1fea955d146996f096290ab9",
+    "apps/api/test/integration/admin-privacy.int.spec.ts": "ad96694f0f6e723575474cabced4bb6e21b4c408c8491e3eda7cba3bdad77941",
+    "deploy/helm/verbis/values.yaml": "df341db406d8c0e0487823de4b3b1485f0f2a3d508855fb89c9685ea8d9957e9",
+    "docs/ops/DR.md": "44fa0eddb8fa04f5e5e9a5cf16552eb09849b08348ae65642cb7bb95a0ef7804",
+    "docs/ops/SLO.md": "b76280ba0d8548777d451c4868f6c333edc336177f46ba7c9ff271630bdf3d00",
+    "docs/ops/ROLLOUT.md": "297e752609d5707cb6dfc365afb0976d22fad76bd98725ed22f314c3ea211e26"
+  },
+  "logSha256": {
+    "audit-throughput.log": "8c40085ea83b80aa6209082d3b5763805c190c7cdc871b64d859f191f4b76749",
+    "security-unit.log": "3d3c21951a06f6a7d721cad4d6279d6c11ec8f5c18e28a6903f81fdb159f077c",
+    "deployment-policy.log": "868f0e3956fcf76a1fc5158c5c52871a1385acd2dc9c78913d23e744773da160",
+    "internal-integration.log": "ccf1f013c5a25f3efb8f693b3425c21d8748a0f83e7a612bae63a21755a2b5a2",
+    "dependency-security.log": "1c0ecd77f7292538505bd296aa8191bbaa3c38a2a8f7c7c731a76225cc3a97c6"
+  }
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "engine": "chromium",
+    "launchMs": 687,
+    "writebackMs": 310
+  },
+  {
+    "engine": "firefox",
+    "launchMs": 591,
+    "writebackMs": 355
+  },
+  {
+    "engine": "webkit",
+    "launchMs": 528,
+    "writebackMs": 198
+  }
+]

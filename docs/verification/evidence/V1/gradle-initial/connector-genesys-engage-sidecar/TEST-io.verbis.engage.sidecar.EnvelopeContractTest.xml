@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.verbis.engage.sidecar.EnvelopeContractTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-04T08:09:52.495Z" hostname="b120e2075f86" time="0.303">
+  <properties/>
+  <testcase name="readsHubCommandsIncludingTheFinalFlag()" classname="io.verbis.engage.sidecar.EnvelopeContractTest" time="0.233"/>
+  <testcase name="rejectsPathLikeInteractionIds()" classname="io.verbis.engage.sidecar.EnvelopeContractTest" time="0.01"/>
+  <testcase name="registryTracksOwnershipAcrossTransferAndDone()" classname="io.verbis.engage.sidecar.EnvelopeContractTest" time="0.002"/>
+  <testcase name="flattensAttachedDataWithAllowListAndBounds()" classname="io.verbis.engage.sidecar.EnvelopeContractTest" time="0.004"/>
+  <testcase name="serializesOnlyContractFields()" classname="io.verbis.engage.sidecar.EnvelopeContractTest" time="0.052"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

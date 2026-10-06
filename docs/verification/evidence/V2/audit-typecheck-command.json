@@ -1,0 +1,13 @@
+{
+  "command": [
+    "pnpm",
+    "--dir",
+    "apps/api",
+    "exec",
+    "tsc",
+    "-p",
+    "../../tests/verification/tsconfig.json"
+  ],
+  "durationSeconds": 4.049,
+  "exitCode": 0
+}

@@ -1,0 +1,9 @@
+{
+  "image": "nginxinc/nginx-unprivileged:1.31-alpine",
+  "headersSource": "infra/docker/security-headers.conf:2",
+  "htmlStatus": 200,
+  "csp": "default-src 'self'; script-src 'nonce-269760d9073673ff0c1efa6b71402f06' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' 'nonce-269760d9073673ff0c1efa6b71402f06'; style-src-attr 'none'; require-trusted-types-for 'script'; trusted-types dompurify verbis-plugin; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'self'; frame-ancestors 'self'; report-uri /api/v1/security/csp-reports",
+  "foreignIframeBlocked": true,
+  "auditDelta": 1,
+  "scope": "Existing built agent bundle, repository nginx and security snippets, only upstream addresses changed for disposable API; no production image build claim."
+}

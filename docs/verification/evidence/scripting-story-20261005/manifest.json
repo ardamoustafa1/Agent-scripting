@@ -1,0 +1,99 @@
+{
+  "date": "2026-10-05",
+  "result": {
+    "designerUnit": {
+      "passed": 334,
+      "failed": 0
+    },
+    "designerChromiumBuilt": {
+      "passed": 198,
+      "failed": 0
+    },
+    "realProductMatrix": {
+      "passed": 45,
+      "failed": 0
+    },
+    "i18n": {
+      "passed": 6,
+      "failed": 0
+    },
+    "rootAudit": {
+      "passed": 2,
+      "failed": 0
+    },
+    "manualSavedScenarios": {
+      "passed": 2,
+      "failed": 0
+    }
+  },
+  "manualScriptId": "01a10c66-a79a-774e-b8a2-875bb22c5088",
+  "scopeLimit": "Previous intermittent collaboration root cause unresolved; vendor/IdP/live AI not accepted; no Awaken superiority claim",
+  "sourceSha256": {
+    "apps/designer-web/src/editor/inspector.tsx": "29d5c5f81b2fb5329ef2cc10595e008d8ba3f5b4e9dc048691af5f093e971818",
+    "apps/designer-web/src/editor/store.ts": "cc0cce2cc80a831fea1b4234c00c470c04ed81844511d24a576826d04617621c",
+    "apps/designer-web/src/editor/editor.tsx": "e680fb81581fdf0f49448b06bdea69aa217aea7378104e41c802831448f1a5a9",
+    "apps/designer-web/src/editor/layers.tsx": "3bab096d61621505d1f6c6b1e2e605178926f24ae75532a12a91d4bef79f07d1",
+    "apps/designer-web/src/editor/editor.css": "e03e7eca9f21a0ad51f3f57dc761a9cd2d7b635e11cb8ce79f2dd5fbda348eae",
+    "apps/designer-web/e2e/editor.spec.ts": "2e0d5061c1ba99b3597c7f1dca4c85a71ce4fab141484417d491b584eefecf36",
+    "tests/verification/product-browser.audit.spec.ts": "bb1c199075a7e470b16f4bbc7b40e7dc7b9afaabf48a8dbd16fb52f467838a22",
+    "packages/i18n/src/locales/en.ts": "2a74c1fa1987bc1a3828ef28d0586339e35797451dd31c761063c24766489176",
+    "packages/i18n/src/locales/tr.ts": "209c7c5972062634d38986e201ac84a203a52621d645873e6117ae74eea944bb"
+  },
+  "evidenceSha256": {
+    "designer-unit.log": "af13d65a15689f5c21c3dfcdff3a1d88cb33566085539400a7fb8e2da82fa6c0",
+    "unit-final.log": "37b7e0b4a4c090bcf9ef06f90ece51d1b24d9ede28c398773fc2b3a292e7a56a",
+    "i18n-acceptance.log": "91748f6c1776be5c42d18f4ad707ba8b3e73cb11f48dc88cb1635cd9923b4225",
+    "kargo-regression-passed.png": "675dfacb25119176bf7b82367fa82d2f245c559cec3400f435342e65fd88f552",
+    "build-preview.log": "50e3f9c5c624bde7247e6e18c7097ccf814d13dfaa58208004e06cd7481fd627",
+    "page-name-before.log": "daa6383f10df35279d034db7e689720fa9e30e7f5c48e5803bcf5e22f442a3b8",
+    "translations-after.log": "ebe0fe76ced050d8bfbe36ef0dc6a9b5d56cb26ed01c329bc0df2e5cbfce39e4",
+    "toolbar-before.log": "cbafd1c5c8a0b3a845e598b09bc664e727142cbba37467be23c8ad263668ead4",
+    "palette-check.log": "3ac51d4004ee15735f522d2fb93cfd458f698ae88207511d922c04bf96f4e3e8",
+    "palette-before.log": "36fe7fcb80ffb87f027210fa2300e6fc08c77ad811949dba16802dbac361fce8",
+    "story.log": "b8cb276650cbee55d1f5ca866a5a8b1939b1742ea55dffc7e74b43b7a1da4a94",
+    "real-named-story.log": "716a5548c41e48962f4d6ee772a38794b8898328f779a9649ba8c7768f089029",
+    "typecheck-final.log": "d3acf5bf7fe3b407a4b9bd1d680578be8db2dc251a9af6dc2d977e50908b336b",
+    "lint-confirmed.log": "7fc03be79de0359092dfbf640409c859d934e831201107fe4d69130169ece248",
+    "format.log": "0bb96135de936f0d168a68e0d1b98a214355102dbb6a82aea8a253dbf17cebe2",
+    "lint.log": "028104cb793ddfba217cdb4c79b05bea730142bfade67b801c8d06cfec60b85b",
+    "lint-acceptance.log": "7fc03be79de0359092dfbf640409c859d934e831201107fe4d69130169ece248",
+    "policy-confirmed.log": "6e125bbe3e13682b6fb4eed5fe3e5650599a7a985244be94a6e44196dcda3186",
+    "browser-built-confirmed.log": "61c642c740512585d9b62383fd7f83c56ce70fd368d2b58a7bc3eeb1ca3402df",
+    "translations-before.log": "91d3b6d787a2f787e26dc41de3b1f8e3e430b316dc7135111930b3991e85fe4f",
+    "inspector-layout-before.log": "e8addb094756a8d4647cf4c0b8380b05239a596a100822222c44dd3bbd6b37be",
+    "policy-final.log": "ec913d1c28c1673f07f8a1aa45d5570d22acce26d516f26ae5491b385bc455f8",
+    "inspector-layout-after.log": "4e0941239ba51265447e3a281cf1f79cdc01146acf4118b9efbb2c29d31b558a",
+    "typecheck.log": "d3acf5bf7fe3b407a4b9bd1d680578be8db2dc251a9af6dc2d977e50908b336b",
+    "lint-repaired.log": "2cc9bb6cc5f813213a12739270f6dad49e67a67ffbf7224aa6677cf08dd3e658",
+    "toolbar-after.log": "80e11c9638e6f6ddad2b4922041cb522f5b22c53bf0d96ccb865380d658e7c36",
+    "real-before.log": "063806c79617a257c7538b119ebf75b69a420a6031b4a0a3dd23a895e2f5f014",
+    "real-acceptance.log": "10d37eb8d0b9572ea4265056aa535ac46e10edb3967487afe9edceea6c55e94e",
+    "build-final.log": "70a29d50aac663a6b42459062fc2f7c04c8fc54aa9514b168adbfe4d1f64311d",
+    "typecheck-acceptance.log": "d3acf5bf7fe3b407a4b9bd1d680578be8db2dc251a9af6dc2d977e50908b336b",
+    "build-confirmed.log": "18990cf7d4cf91e3d5d9266bca356063f75aaa53ffeaad51bb49b3d521ebaf1d",
+    "browser-final.log": "1f9cf6a26064a636893fbe25693a3a9d03b4a9fb2c8caf76fd35ba58ee88016d",
+    "browser-acceptance.log": "37212cbbf7325066152d0db62db01a309c7ca6569f849c9693e4b2308117ab65",
+    "visual-update.log": "424b1ebff596cb5232a29082a9395d7fa55b3279b244ef73ec8762a0825272ad",
+    "unit-confirmed.log": "9a8b234c4c54e318e5d34b9037968398f1cb0b7ff4b82aca90dad3aba91f55b4",
+    "audit-typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "page-name-after.log": "88f91c36683a78a4ac889b90c796cabdbc56db9213c342528875302b9511e4ba",
+    "kargo-editor-final.png": "2e18c41958baf4c045f00513cc11720e92ac1e85afd75104049d7d3151c5d843",
+    "lint-final.log": "3ea5259ea082a004c5947c26c268b29bac5fed819035f212eff7a0e6564f8345",
+    "unit-acceptance.log": "5e97836ac1bef05d969d8a072e85a5a06b0764838e971e202d6ba3d282739fe1",
+    "test-style-repaired.log": "7a0b3ad6ce4b5ab1bed526deaf79394da1ec6988abb247baceb316a61e9566f4",
+    "verification-typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "palette-all.log": "8fef642bc6d77881f0e1d1142bf5f12bec3b50ed340043da4464858b45ac5c1b",
+    "i18n-final.log": "187d5654e429315151f9dd8aa49e77cf22098792bf16e268ea67a6db47d569c3",
+    "real-final.log": "103b95d8ce57d59581ee7645b563fc19e25cab3967b55440baa81aa036371946",
+    "story-final.log": "88942acb2e1fbc6e916e74cb659bc56272d42559501041080a19ed98874d81b4"
+  },
+  "validationLogs": {
+    "lint": "lint-repaired.log",
+    "unit": "unit-confirmed.log",
+    "testTypingRepair": "test-style-repaired.log",
+    "chromium": "browser-built-confirmed.log",
+    "realProduct": "real-named-story.log",
+    "typecheck": "typecheck-acceptance.log",
+    "build": "build-confirmed.log"
+  }
+}

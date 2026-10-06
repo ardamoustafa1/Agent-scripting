@@ -1,0 +1,371 @@
+{
+  "date": "2026-10-05",
+  "quality": {
+    "passed": 77,
+    "cache": 73,
+    "executed": 4,
+    "coverageWorkspaces": 18
+  },
+  "browser": {
+    "chromiumScenariosPassed": 12,
+    "visualReferences": 36,
+    "normalComparisonPassed": 12,
+    "locales": [
+      "tr",
+      "en"
+    ],
+    "themes": [
+      "light",
+      "dark",
+      "high-contrast"
+    ],
+    "widths": [
+      320,
+      1440
+    ]
+  },
+  "sources": [
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts",
+      "sha256": "cf6b34793a7a017d9744d6c53300ba73f610fdfe24916b946e8a16f9560535d8",
+      "bytes": 3393
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-dark-1440-step-1-chromium-darwin.png",
+      "sha256": "a8a91ccbdc257c9e1e6d4ea9a6a6e3a60756d6c16a98dd6a46a5dff73ca51123",
+      "bytes": 35758
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-dark-1440-step-2-chromium-darwin.png",
+      "sha256": "b7a94473feac2e1e4ca9fb349fc9674e21154987eb156df1a66548b697336e09",
+      "bytes": 35429
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-dark-1440-step-3-chromium-darwin.png",
+      "sha256": "47d009bf6cb0d64f8b34898fb49725148ed5ceacfdef593bd10258d0a3ff8b47",
+      "bytes": 40924
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-dark-320-step-1-chromium-darwin.png",
+      "sha256": "377b5e2f8d2a5adb594cdf385cdfc622a03bcf9cc743969c8dc8649ed337237e",
+      "bytes": 36468
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-dark-320-step-2-chromium-darwin.png",
+      "sha256": "bef68c44f05de469bd5b06c2a54101fca4094911f617ff22bb440f8bf7ea753b",
+      "bytes": 31194
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-dark-320-step-3-chromium-darwin.png",
+      "sha256": "d89941b4bcfafc1db1631923e185d560218d37ba7a825ac833725f74465f5a38",
+      "bytes": 38884
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-high-contrast-1440-step-1-chromium-darwin.png",
+      "sha256": "ef0ecc75a009f76055e39b69bfda622f0355e86faab53392b03be40c0b30391d",
+      "bytes": 30920
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-high-contrast-1440-step-2-chromium-darwin.png",
+      "sha256": "cd0b5a305b02080a80c677a6cc1b017583fb3cd1dc87011f3bab8ea146d3b737",
+      "bytes": 30764
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-high-contrast-1440-step-3-chromium-darwin.png",
+      "sha256": "a9094b65d177410eb42ecce1df6093d9d8e2f29ef2663344913f314407b44138",
+      "bytes": 35130
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-high-contrast-320-step-1-chromium-darwin.png",
+      "sha256": "c05114d47e284dbf558779c4b3b29cf3e41e9d538f0ec0d4434f486d33a10c7c",
+      "bytes": 31706
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-high-contrast-320-step-2-chromium-darwin.png",
+      "sha256": "e5fb79098886c17cb31cae269f6e8665e041e55fe9cd99b5625169ffd165311f",
+      "bytes": 26763
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-high-contrast-320-step-3-chromium-darwin.png",
+      "sha256": "a8f69eb9a26855678df45e3df903c62ca54ea7fc7562df0778ac052ad361bea2",
+      "bytes": 33246
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-light-1440-step-1-chromium-darwin.png",
+      "sha256": "9af62f669dd18efd633b432e2a07f0f7ff4edba70310cff743ed6ca21f82b197",
+      "bytes": 35558
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-light-1440-step-2-chromium-darwin.png",
+      "sha256": "5b8d6ebc9e80119307e46b9a77a70b40a46a49fecfc33c672b650a3e9180502a",
+      "bytes": 35275
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-light-1440-step-3-chromium-darwin.png",
+      "sha256": "457800ce051947ad2904f66121008e33eb581221ccc1d1e301d8e08fc0ee00fd",
+      "bytes": 40633
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-light-320-step-1-chromium-darwin.png",
+      "sha256": "c4805655668f9b033b52a1b4e14e270becf53a3fe5e7485a9f129c0b9deaed2c",
+      "bytes": 36146
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-light-320-step-2-chromium-darwin.png",
+      "sha256": "4bf09f915c415bf5a90098eeb24b6a66862da241b71886f98563539ed3d901f7",
+      "bytes": 30745
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-en-light-320-step-3-chromium-darwin.png",
+      "sha256": "c1400fcebf8dcf430543b78eeb70da6d8544a0c9f5ed3e7e8efc240ceea3f919",
+      "bytes": 38302
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-dark-1440-step-1-chromium-darwin.png",
+      "sha256": "ed759052f9f1d736065774a7e350e10ca568fc24716db75b130c35ad8ef52da7",
+      "bytes": 34120
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-dark-1440-step-2-chromium-darwin.png",
+      "sha256": "a72bf14fb8aa054b31d5563809c9ec61c5d17ccfb68dad3dc3bdb4e21bf7f8a6",
+      "bytes": 34137
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-dark-1440-step-3-chromium-darwin.png",
+      "sha256": "cb1b1081dd376608a78c3c36b2f6deef37333748c8d9097f691ce70b24332240",
+      "bytes": 36769
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-dark-320-step-1-chromium-darwin.png",
+      "sha256": "16b7235d7bb96efe11391631d85fdf9c895ead5f512720dfec03b93629cfda5e",
+      "bytes": 32266
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-dark-320-step-2-chromium-darwin.png",
+      "sha256": "58ea732269aad77675d6a73fbc1070cc84205bb6d931566c329612089de2e253",
+      "bytes": 30952
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-dark-320-step-3-chromium-darwin.png",
+      "sha256": "2d7a5c53b172d7b9c2ec281a7cc92613e0fa0f8316da0923c209e3311d791867",
+      "bytes": 35702
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-high-contrast-1440-step-1-chromium-darwin.png",
+      "sha256": "48c3e8f7e658f082b1e3bbe054ac17cc2c401eba817c4020a095c16e3660fa32",
+      "bytes": 29873
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-high-contrast-1440-step-2-chromium-darwin.png",
+      "sha256": "794b051bc27a262039e7a9ce9133b4b8408709723695696e64ccef273d79e057",
+      "bytes": 29841
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-high-contrast-1440-step-3-chromium-darwin.png",
+      "sha256": "685019233ee9a2b16dd9b85336dbe9eacecd74f90a83a28f7622999d31a4d7f6",
+      "bytes": 32083
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-high-contrast-320-step-1-chromium-darwin.png",
+      "sha256": "8d349ff59b1866cbbdaab6d9c7d59c1a3a429aa49ca22d6eb108c7417e6e498c",
+      "bytes": 28473
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-high-contrast-320-step-2-chromium-darwin.png",
+      "sha256": "f397c825ae2afe0fb9abdd2be4927f99545390c6d0bff319d26545621915c871",
+      "bytes": 26798
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-high-contrast-320-step-3-chromium-darwin.png",
+      "sha256": "88aabbf620d4f83103fc03ad4895234bc24d9cb9d1311cd13e1ce663dcc74448",
+      "bytes": 30884
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-light-1440-step-1-chromium-darwin.png",
+      "sha256": "a111bd9e4c897de55988175edb161ceed68d7249fa6bdff3cca7138c87a1eeb8",
+      "bytes": 33971
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-light-1440-step-2-chromium-darwin.png",
+      "sha256": "fb7f868daf58c1f7dfda2fed4dab49d12a00c501bab26986707c6b9876dd8752",
+      "bytes": 34101
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-light-1440-step-3-chromium-darwin.png",
+      "sha256": "2f8c3b8dd655376f80f274ab62c2eb876264cda3ad8bc48b185696a4223c81ec",
+      "bytes": 36633
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-light-320-step-1-chromium-darwin.png",
+      "sha256": "45ccb147949729ae3c7ddbeb70a8bcaeb8fba578b882e413deba7d2cb26c47f2",
+      "bytes": 31951
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-light-320-step-2-chromium-darwin.png",
+      "sha256": "62eea8755ca3cbcb61debb2688848d58af21a4f96a627a568c5d508293920787",
+      "bytes": 30840
+    },
+    {
+      "path": "apps/designer-web/e2e/welcome-tour.spec.ts-snapshots/welcome-tr-light-320-step-3-chromium-darwin.png",
+      "sha256": "075db0dde0c02a9affa22a1799a61ae395370e59516d8275e9e2c1db2100922d",
+      "bytes": 35522
+    },
+    {
+      "path": "apps/designer-web/src/workspace/shell-behavior.spec.tsx",
+      "sha256": "1307bd633ba4d3cd34acc25fc5631a3d571b1a56be581ade38d1404e7d1979f4",
+      "bytes": 8859
+    },
+    {
+      "path": "apps/designer-web/src/workspace/shell.tsx",
+      "sha256": "b8c575c90d2d0d3a77ac612ed3238da71e5c2becbe1be33dc0f6f277559d907d",
+      "bytes": 17718
+    },
+    {
+      "path": "apps/designer-web/src/workspace/styles.css",
+      "sha256": "ce96ae85059252befca6ac04100ea72a075528d19f180f911a278a2aa2d81c9a",
+      "bytes": 16086
+    },
+    {
+      "path": "apps/designer-web/src/workspace/welcome-tour.tsx",
+      "sha256": "259ac26f75cbc1032d55c32280ac0cddc540a1ea58372ff0fe9f2f076d869f2d",
+      "bytes": 4214
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "sha256": "23c71042a184cc0407ad0fd7627a1ca0c1e4e626eb127950666823ce61637449",
+      "bytes": 150250
+    },
+    {
+      "path": "docs/verification/WELCOME_TOUR_2026-10-05.md",
+      "sha256": "05c74a39593e834c8692abfdcaefb302b93ebdbb3a1862263bc8557a2397cfbf",
+      "bytes": 2287
+    },
+    {
+      "path": "packages/i18n/src/locales/en.ts",
+      "sha256": "55008547ce9456085333b96b73094f7189fd8f3f5546f8a6e3cf7e82c1499fed",
+      "bytes": 69469
+    },
+    {
+      "path": "packages/i18n/src/locales/tr.ts",
+      "sha256": "03e181986222d1a217118505c3e36ee44c565616f882c8e8b674ac23c1d286f5",
+      "bytes": 74581
+    },
+    {
+      "path": "packages/ui/src/components/overlays.tsx",
+      "sha256": "7bf26fc098247bdee439fdf244726f947311c4e7c94f6af8eeac46c74996dbbc",
+      "bytes": 6189
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/browser-final-update.log",
+      "sha256": "a1a43a22ed5dc7fc9a32fe20866db58759f241c49281117a177c27cde4673083",
+      "bytes": 3697
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/browser-update-accepted.log",
+      "sha256": "55abce6bb5e9fb7605626e9935cacf344a8683bbe84b6ea39aeef2c2ec997b64",
+      "bytes": 9517
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/browser-update-corrected.log",
+      "sha256": "3acedf05330b134733e454acf66b13749b14db3e3c1803408b8c50658b275d33",
+      "bytes": 16773
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/browser-update.log",
+      "sha256": "d4a91eaad79031a0c4c12b8d725abe7263319c2f823a4e5e5a34f2a9019be4c9",
+      "bytes": 27336
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/browser-verified.log",
+      "sha256": "776430b89e21b94eee1857cb715aaf611f78f002ccb324f2d020438b21c65da1",
+      "bytes": 2038
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/coverage-final.log",
+      "sha256": "1eca6828279baf57566c443779b23198fdc292985c0f41a14a71085c05f42e93",
+      "bytes": 1552
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/designer-web-unit-full.log",
+      "sha256": "36975d9fca24bdd4f3f51fc50117828d21c2bb3393471d04e9b8467808929610",
+      "bytes": 12384
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/format.log",
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "bytes": 66
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/i18n-inventory.log",
+      "sha256": "5a73c902b1903bfe05d5bb7e30229bc087c8da34af7274ae7271bd9b39e5f59e",
+      "bytes": 56
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/i18n-unit-full.log",
+      "sha256": "94b545b810ea23ff319770f4af920bd7da05f2fb7dab9868bf23a5fdc7adb32d",
+      "bytes": 1156
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/lint-repaired.log",
+      "sha256": "2cc9bb6cc5f813213a12739270f6dad49e67a67ffbf7224aa6677cf08dd3e658",
+      "bytes": 118
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/quality-final.log",
+      "sha256": "41985bd440097ea803ed1b832760eb5f1443d4547a87d6b63adf81a93fedf3b8",
+      "bytes": 638
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/quality.log",
+      "sha256": "64c284ec03d8787e1fc6ca3ab5e2577d02b7356e0362bf9fe772a5e65da03a02",
+      "bytes": 2630
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/regression-before.log",
+      "sha256": "64e979bb149254d2183c01978f04937baeb6d730bc18a84f3e3ce8ea4194b1d2",
+      "bytes": 7143
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/ui-unit-full.log",
+      "sha256": "009ad1fd930d2f18299ea75eb2d11fad65f496e7ea3740204c43b899c74da9b4",
+      "bytes": 4202
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/unit-focused.log",
+      "sha256": "7ddf1b1d1edf161ad316719fa16e9c5c971426f2fa0a0387f43cf2d045ea808b",
+      "bytes": 232
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/welcome-en-dark-320-step-3.png",
+      "sha256": "d89941b4bcfafc1db1631923e185d560218d37ba7a825ac833725f74465f5a38",
+      "bytes": 38884
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/welcome-tr-dark-1440-step-1.png",
+      "sha256": "ed759052f9f1d736065774a7e350e10ca568fc24716db75b130c35ad8ef52da7",
+      "bytes": 34120
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/welcome-tr-dark-1440-step-2.png",
+      "sha256": "a72bf14fb8aa054b31d5563809c9ec61c5d17ccfb68dad3dc3bdb4e21bf7f8a6",
+      "bytes": 34137
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/welcome-tr-dark-1440-step-3.png",
+      "sha256": "cb1b1081dd376608a78c3c36b2f6deef37333748c8d9097f691ce70b24332240",
+      "bytes": 36769
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/welcome-tr-dark-320-step-1.png",
+      "sha256": "16b7235d7bb96efe11391631d85fdf9c895ead5f512720dfec03b93629cfda5e",
+      "bytes": 32266
+    },
+    {
+      "path": "docs/verification/evidence/welcome-tour-20261005/welcome-tr-light-1440-step-1.png",
+      "sha256": "a111bd9e4c897de55988175edb161ceed68d7249fa6bdff3cca7138c87a1eeb8",
+      "bytes": 33971
+    }
+  ]
+}

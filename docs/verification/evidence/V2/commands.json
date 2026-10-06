@@ -1,0 +1,51 @@
+[
+  {
+    "name": "api",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "--project",
+      "unit",
+      "--project",
+      "integration",
+      "--reporter=json",
+      "--reporter=default",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/api-tests.json"
+    ],
+    "cwd": "/Users/ardamoustafa/agent scripting/apps/api",
+    "durationSeconds": 62.401,
+    "exitCode": 0
+  },
+  {
+    "name": "schema",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "--reporter=json",
+      "--reporter=default",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/schema-tests.json"
+    ],
+    "cwd": "/Users/ardamoustafa/agent scripting/packages/script-schema",
+    "durationSeconds": 0.879,
+    "exitCode": 0
+  },
+  {
+    "name": "expr",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "--reporter=json",
+      "--reporter=default",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/expr-tests.json"
+    ],
+    "cwd": "/Users/ardamoustafa/agent scripting/packages/expr",
+    "durationSeconds": 0.655,
+    "exitCode": 0
+  }
+]

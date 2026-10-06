@@ -1,0 +1,2612 @@
+[
+  {
+    "file": "apps/admin-web/src/auth/auth-section.tsx",
+    "line": 50,
+    "tag": "button",
+    "attrs": [
+      "className",
+      "data-variant",
+      "type",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/auth/auth-section.tsx",
+    "line": 87,
+    "tag": "input",
+    "attrs": [
+      "id",
+      "className",
+      "type",
+      "required",
+      "autoComplete",
+      "spread",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/auth/auth-section.tsx",
+    "line": 114,
+    "tag": "button",
+    "attrs": [
+      "className",
+      "type",
+      "disabled"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/auth/auth-section.tsx",
+    "line": 147,
+    "tag": "input",
+    "attrs": [
+      "id",
+      "className",
+      "type",
+      "required",
+      "autoComplete",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/auth/auth-section.tsx",
+    "line": 160,
+    "tag": "button",
+    "attrs": [
+      "className",
+      "type",
+      "disabled"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/auth/auth-section.tsx",
+    "line": 174,
+    "tag": "a",
+    "attrs": [
+      "className",
+      "href"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/auth/auth-section.tsx",
+    "line": 202,
+    "tag": "button",
+    "attrs": [
+      "className",
+      "type",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/avaya/avaya-routing-section.tsx",
+    "line": 73,
+    "tag": "select",
+    "attrs": [
+      "id",
+      "className",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/avaya/avaya-routing-section.tsx",
+    "line": 90,
+    "tag": "select",
+    "attrs": [
+      "id",
+      "className",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/avaya/avaya-routing-section.tsx",
+    "line": 109,
+    "tag": "select",
+    "attrs": [
+      "id",
+      "className",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/avaya/avaya-routing-section.tsx",
+    "line": 126,
+    "tag": "input",
+    "attrs": [
+      "id",
+      "className",
+      "required",
+      "maxLength",
+      "autoComplete",
+      "spellCheck",
+      "aria-invalid",
+      "aria-describedby",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/avaya/avaya-routing-section.tsx",
+    "line": 146,
+    "tag": "button",
+    "attrs": [
+      "className",
+      "type",
+      "disabled"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/avaya/avaya-routing-section.tsx",
+    "line": 168,
+    "tag": "button",
+    "attrs": [
+      "type",
+      "className",
+      "disabled",
+      "aria-label",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/engage/attached-data-section.tsx",
+    "line": 81,
+    "tag": "input",
+    "attrs": [
+      "className",
+      "aria-label",
+      "maxLength",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/engage/attached-data-section.tsx",
+    "line": 92,
+    "tag": "input",
+    "attrs": [
+      "className",
+      "aria-label",
+      "maxLength",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/engage/attached-data-section.tsx",
+    "line": 103,
+    "tag": "select",
+    "attrs": [
+      "className",
+      "aria-label",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/engage/attached-data-section.tsx",
+    "line": 119,
+    "tag": "input",
+    "attrs": [
+      "type",
+      "aria-label",
+      "checked",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/engage/attached-data-section.tsx",
+    "line": 129,
+    "tag": "input",
+    "attrs": [
+      "type",
+      "aria-label",
+      "checked",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/engage/attached-data-section.tsx",
+    "line": 139,
+    "tag": "button",
+    "attrs": [
+      "type",
+      "className",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/engage/attached-data-section.tsx",
+    "line": 154,
+    "tag": "button",
+    "attrs": [
+      "type",
+      "className",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/engage/attached-data-section.tsx",
+    "line": 163,
+    "tag": "button",
+    "attrs": [
+      "type",
+      "className",
+      "disabled"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/genesys/genesys-mapping-section.tsx",
+    "line": 75,
+    "tag": "select",
+    "attrs": [
+      "id",
+      "className",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/genesys/genesys-mapping-section.tsx",
+    "line": 92,
+    "tag": "select",
+    "attrs": [
+      "id",
+      "className",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/genesys/genesys-mapping-section.tsx",
+    "line": 113,
+    "tag": "input",
+    "attrs": [
+      "id",
+      "className",
+      "required",
+      "maxLength",
+      "spellCheck",
+      "autoComplete",
+      "aria-invalid",
+      "aria-describedby",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/genesys/genesys-mapping-section.tsx",
+    "line": 133,
+    "tag": "button",
+    "attrs": [
+      "className",
+      "type",
+      "disabled"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/genesys/genesys-mapping-section.tsx",
+    "line": 161,
+    "tag": "button",
+    "attrs": [
+      "type",
+      "className",
+      "disabled",
+      "aria-label",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+    "line": 97,
+    "tag": "textarea",
+    "attrs": [
+      "id",
+      "className",
+      "rows",
+      "maxLength",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+    "line": 108,
+    "tag": "input",
+    "attrs": [
+      "id",
+      "className",
+      "type",
+      "required",
+      "maxLength",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+    "line": 136,
+    "tag": "select",
+    "attrs": [
+      "id",
+      "className",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+    "line": 157,
+    "tag": "input",
+    "attrs": [
+      "id",
+      "type",
+      "checked",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+    "line": 167,
+    "tag": "button",
+    "attrs": [
+      "className",
+      "type",
+      "disabled"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+    "line": 181,
+    "tag": "input",
+    "attrs": [
+      "id",
+      "className",
+      "maxLength",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+    "line": 193,
+    "tag": "input",
+    "attrs": [
+      "id",
+      "className",
+      "maxLength",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+    "line": 224,
+    "tag": "button",
+    "attrs": [
+      "key",
+      "className",
+      "data-variant",
+      "type",
+      "disabled",
+      "aria-label",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/ai-page.tsx",
+    "line": 127,
+    "tag": "Button",
+    "attrs": [
+      "type",
+      "loading",
+      "disabled"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/ai-page.tsx",
+    "line": 138,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 56,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 88,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 141,
+    "tag": "Action",
+    "attrs": [
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 156,
+    "tag": "input",
+    "attrs": [
+      "type",
+      "accept",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 218,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 284,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 294,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 304,
+    "tag": "Action",
+    "attrs": [
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 314,
+    "tag": "Action",
+    "attrs": [
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 334,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 358,
+    "tag": "Action",
+    "attrs": [
+      "key",
+      "label",
+      "danger",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 400,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 412,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 439,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 448,
+    "tag": "Action",
+    "attrs": [
+      "disabled",
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 458,
+    "tag": "Action",
+    "attrs": [
+      "key",
+      "danger",
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 519,
+    "tag": "SaveForm",
+    "attrs": [
+      "disabled",
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 540,
+    "tag": "SaveForm",
+    "attrs": [
+      "disabled",
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 578,
+    "tag": "Action",
+    "attrs": [
+      "label",
+      "danger",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 584,
+    "tag": "Action",
+    "attrs": [
+      "key",
+      "label",
+      "danger",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 608,
+    "tag": "SaveForm",
+    "attrs": [
+      "disabled",
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+    "line": 639,
+    "tag": "input",
+    "attrs": [
+      "type",
+      "disabled",
+      "checked",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 55,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 69,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 110,
+    "tag": "SaveForm",
+    "attrs": [
+      "disabled",
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 151,
+    "tag": "Action",
+    "attrs": [
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 160,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 191,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 225,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 247,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 346,
+    "tag": "Button",
+    "attrs": [
+      "type"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 358,
+    "tag": "Action",
+    "attrs": [
+      "key",
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 376,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 394,
+    "tag": "Action",
+    "attrs": [
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 442,
+    "tag": "Action",
+    "attrs": [
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 455,
+    "tag": "Action",
+    "attrs": [
+      "key",
+      "danger",
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 472,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 580,
+    "tag": "Action",
+    "attrs": [
+      "label",
+      "danger",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 644,
+    "tag": "SaveForm",
+    "attrs": [
+      "disabled",
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+    "line": 697,
+    "tag": "Action",
+    "attrs": [
+      "label",
+      "danger",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 77,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 87,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 169,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 232,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 243,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 285,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 314,
+    "tag": "Button",
+    "attrs": []
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 356,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 393,
+    "tag": "SaveForm",
+    "attrs": [
+      "disabled",
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 426,
+    "tag": "Action",
+    "attrs": [
+      "key",
+      "label",
+      "danger",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 443,
+    "tag": "Action",
+    "attrs": [
+      "label",
+      "run"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 465,
+    "tag": "SaveForm",
+    "attrs": [
+      "onSave"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 512,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+    "line": 522,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 41,
+    "tag": "select",
+    "attrs": [
+      "disabled",
+      "required",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 56,
+    "tag": "textarea",
+    "attrs": [
+      "disabled",
+      "required",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 65,
+    "tag": "input",
+    "attrs": [
+      "type",
+      "disabled",
+      "required",
+      "autoComplete",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 90,
+    "tag": "input",
+    "attrs": [
+      "type",
+      "checked",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 104,
+    "tag": "textarea",
+    "attrs": [
+      "className",
+      "aria-label",
+      "readOnly",
+      "rows",
+      "value"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 156,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "variant",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 170,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "disabled",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 173,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 222,
+    "tag": "Button",
+    "attrs": [
+      "type",
+      "loading",
+      "disabled"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 261,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 283,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "size",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 300,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 309,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/widgets.tsx",
+    "line": 338,
+    "tag": "select",
+    "attrs": [
+      "required",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/workspace.tsx",
+    "line": 108,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/workspace.tsx",
+    "line": 181,
+    "tag": "a",
+    "attrs": [
+      "className",
+      "href",
+      "tabIndex"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/workspace.tsx",
+    "line": 186,
+    "tag": "a",
+    "attrs": [
+      "className",
+      "href"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/workspace.tsx",
+    "line": 201,
+    "tag": "a",
+    "attrs": [
+      "key",
+      "href",
+      "aria-label",
+      "aria-current"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/workspace.tsx",
+    "line": 221,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "aria-label",
+      "aria-expanded",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/workspace.tsx",
+    "line": 234,
+    "tag": "input",
+    "attrs": [
+      "type",
+      "placeholder",
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/workspace.tsx",
+    "line": 245,
+    "tag": "select",
+    "attrs": [
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/workspace.tsx",
+    "line": 260,
+    "tag": "select",
+    "attrs": [
+      "value",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/admin-web/src/workspace/workspace.tsx",
+    "line": 268,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "aria-label",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/actions.tsx",
+    "line": 96,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/actions.tsx",
+    "line": 130,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/canvas.tsx",
+    "line": 227,
+    "tag": "button",
+    "attrs": [
+      "ref",
+      "spread",
+      "spread",
+      "className"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/canvas.tsx",
+    "line": 235,
+    "tag": "button",
+    "attrs": [
+      "className",
+      "aria-label",
+      "onKeyDown",
+      "onPointerDown"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/canvas.tsx",
+    "line": 291,
+    "tag": "Button",
+    "attrs": [
+      "key",
+      "size",
+      "variant",
+      "onPointerDown",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/editor.tsx",
+    "line": 346,
+    "tag": "Button",
+    "attrs": [
+      "key",
+      "size",
+      "variant",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/editor.tsx",
+    "line": 414,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/editor.tsx",
+    "line": 442,
+    "tag": "Button",
+    "attrs": [
+      "key",
+      "variant",
+      "size",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/editor.tsx",
+    "line": 512,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/editor.tsx",
+    "line": 571,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/editor.tsx",
+    "line": 578,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/heatmap.tsx",
+    "line": 52,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "variant",
+      "aria-pressed",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/inspector.tsx",
+    "line": 51,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/inspector.tsx",
+    "line": 114,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "spread",
+      "spread",
+      "aria-label"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/inspector.tsx",
+    "line": 123,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "aria-label",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/inspector.tsx",
+    "line": 132,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "aria-label",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/inspector.tsx",
+    "line": 141,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/inspector.tsx",
+    "line": 305,
+    "tag": "input",
+    "attrs": [
+      "type",
+      "checked",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/inspector.tsx",
+    "line": 455,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/inspector.tsx",
+    "line": 463,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/layers.tsx",
+    "line": 15,
+    "tag": "button",
+    "attrs": [
+      "spread",
+      "spread",
+      "aria-label",
+      "className"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/layers.tsx",
+    "line": 18,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/layers.tsx",
+    "line": 54,
+    "tag": "button",
+    "attrs": [
+      "ref",
+      "spread",
+      "spread",
+      "className",
+      "aria-label"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/layers.tsx",
+    "line": 64,
+    "tag": "button",
+    "attrs": [
+      "className",
+      "aria-label",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/layers.tsx",
+    "line": 68,
+    "tag": "button",
+    "attrs": [
+      "onClick",
+      "onKeyDown"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/layers.tsx",
+    "line": 237,
+    "tag": "Button",
+    "attrs": [
+      "key",
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/layers.tsx",
+    "line": 249,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/reuse-screen.tsx",
+    "line": 45,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/editor/reuse-screen.tsx",
+    "line": 73,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/designer.tsx",
+    "line": 310,
+    "tag": "Button",
+    "attrs": [
+      "key",
+      "size",
+      "variant",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/designer.tsx",
+    "line": 330,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/designer.tsx",
+    "line": 374,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/designer.tsx",
+    "line": 391,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/designer.tsx",
+    "line": 410,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/designer.tsx",
+    "line": 599,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/designer.tsx",
+    "line": 632,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/designer.tsx",
+    "line": 839,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/import-dialog.tsx",
+    "line": 32,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/import-dialog.tsx",
+    "line": 70,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/import-dialog.tsx",
+    "line": 86,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/variable-manager.tsx",
+    "line": 80,
+    "tag": "input",
+    "attrs": [
+      "type",
+      "checked",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/variable-manager.tsx",
+    "line": 124,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/variable-manager.tsx",
+    "line": 176,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/flow/variable-manager.tsx",
+    "line": 204,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/auth.tsx",
+    "line": 143,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/auth.tsx",
+    "line": 153,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/auth.tsx",
+    "line": 197,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 177,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 497,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 504,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 553,
+    "tag": "input",
+    "attrs": [
+      "type",
+      "accept",
+      "onChange"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 579,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 685,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 750,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 817,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 926,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 935,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 1060,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 1072,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/editor.tsx",
+    "line": 1096,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/list.tsx",
+    "line": 161,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/mapping.tsx",
+    "line": 20,
+    "tag": "Button",
+    "attrs": [
+      "ref",
+      "spread",
+      "spread",
+      "variant"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/integrations/mapping.tsx",
+    "line": 96,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/assignments.tsx",
+    "line": 81,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "disabled",
+      "aria-label",
+      "spread",
+      "spread"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/assignments.tsx",
+    "line": 94,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/assignments.tsx",
+    "line": 284,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/assignments.tsx",
+    "line": 391,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/assignments.tsx",
+    "line": 418,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/assignments.tsx",
+    "line": 453,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
+    "line": 292,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "size",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
+    "line": 322,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
+    "line": 333,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/comments.tsx",
+    "line": 109,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/comments.tsx",
+    "line": 118,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "variant",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/comments.tsx",
+    "line": 137,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "size",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/comments.tsx",
+    "line": 162,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/packages.tsx",
+    "line": 158,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/packages.tsx",
+    "line": 195,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/packages.tsx",
+    "line": 266,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/packages.tsx",
+    "line": 269,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/release.tsx",
+    "line": 189,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/release.tsx",
+    "line": 209,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/release.tsx",
+    "line": 224,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/release.tsx",
+    "line": 233,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/release.tsx",
+    "line": 249,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/release.tsx",
+    "line": 261,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/templates.tsx",
+    "line": 121,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/templates.tsx",
+    "line": 181,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/lifecycle/templates.tsx",
+    "line": 253,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/library.tsx",
+    "line": 93,
+    "tag": "Button",
+    "attrs": [
+      "startIcon",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/library.tsx",
+    "line": 109,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "endIcon",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/library.tsx",
+    "line": 172,
+    "tag": "IconButton",
+    "attrs": [
+      "label",
+      "aria-pressed",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/library.tsx",
+    "line": 181,
+    "tag": "IconButton",
+    "attrs": [
+      "label",
+      "aria-pressed",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/library.tsx",
+    "line": 211,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/library.tsx",
+    "line": 239,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/library.tsx",
+    "line": 287,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "className",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/library.tsx",
+    "line": 344,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/login.tsx",
+    "line": 56,
+    "tag": "Button",
+    "attrs": [
+      "type",
+      "loading",
+      "endIcon"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/login.tsx",
+    "line": 66,
+    "tag": "a",
+    "attrs": [
+      "className",
+      "key",
+      "href"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/script.tsx",
+    "line": 127,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/pages/script.tsx",
+    "line": 141,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/preview/regression-panel.tsx",
+    "line": 61,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/preview/regression-panel.tsx",
+    "line": 110,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/preview/regression-panel.tsx",
+    "line": 122,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/preview/studio.tsx",
+    "line": 184,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/preview/studio.tsx",
+    "line": 191,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/preview/studio.tsx",
+    "line": 203,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick",
+      "disabled"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/preview/studio.tsx",
+    "line": 264,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/preview/studio.tsx",
+    "line": 532,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/preview/studio.tsx",
+    "line": 631,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "size",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/preview/studio.tsx",
+    "line": 665,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/rules/assignment-rule.tsx",
+    "line": 48,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/rules/assignment-rule.tsx",
+    "line": 101,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "size",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/rules/builder.tsx",
+    "line": 29,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/rules/builder.tsx",
+    "line": 91,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/rules/builder.tsx",
+    "line": 103,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/rules/builder.tsx",
+    "line": 114,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/rules/builder.tsx",
+    "line": 289,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/rules/builder.tsx",
+    "line": 300,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/rules/manager.tsx",
+    "line": 31,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/create-dialog.tsx",
+    "line": 95,
+    "tag": "Button",
+    "attrs": [
+      "type",
+      "loading",
+      "disabled"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 196,
+    "tag": "a",
+    "attrs": [
+      "className",
+      "href",
+      "tabIndex"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 224,
+    "tag": "IconButton",
+    "attrs": [
+      "label",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 239,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick",
+      "endIcon"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 268,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "className",
+      "startIcon",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 294,
+    "tag": "IconButton",
+    "attrs": [
+      "label"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 309,
+    "tag": "IconButton",
+    "attrs": [
+      "label"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 316,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 329,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "aria-label"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 484,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 499,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 502,
+    "tag": "Button",
+    "attrs": [
+      "startIcon",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/shell.tsx",
+    "line": 522,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/designer-web/src/workspace/states.tsx",
+    "line": 30,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/session-view.tsx",
+    "line": 95,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/session-view.tsx",
+    "line": 273,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "aria-label",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/session-view.tsx",
+    "line": 311,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/session-view.tsx",
+    "line": 314,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/session-view.tsx",
+    "line": 379,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/session-view.tsx",
+    "line": 484,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/session-view.tsx",
+    "line": 510,
+    "tag": "Button",
+    "attrs": [
+      "variant",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/session-view.tsx",
+    "line": 517,
+    "tag": "Button",
+    "attrs": [
+      "disabled",
+      "data-agent-next",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/session-view.tsx",
+    "line": 538,
+    "tag": "Button",
+    "attrs": [
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/workspace.tsx",
+    "line": 203,
+    "tag": "a",
+    "attrs": [
+      "className",
+      "tabIndex",
+      "href"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/workspace.tsx",
+    "line": 228,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "variant",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/workspace.tsx",
+    "line": 238,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "variant",
+      "aria-label",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/workspace.tsx",
+    "line": 248,
+    "tag": "Button",
+    "attrs": [
+      "size",
+      "variant",
+      "aria-label",
+      "loading",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/workspace.tsx",
+    "line": 284,
+    "tag": "button",
+    "attrs": [
+      "type",
+      "key",
+      "role",
+      "aria-selected",
+      "aria-controls",
+      "id",
+      "tabIndex",
+      "onClick",
+      "onKeyDown"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/workspace.tsx",
+    "line": 447,
+    "tag": "Button",
+    "attrs": [
+      "loading",
+      "disabled",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/desktop/workspace.tsx",
+    "line": 478,
+    "tag": "a",
+    "attrs": [
+      "className",
+      "key",
+      "href"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/launch/engage-links-card.tsx",
+    "line": 42,
+    "tag": "button",
+    "attrs": [
+      "type",
+      "className",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/launch/launch-page.tsx",
+    "line": 47,
+    "tag": "button",
+    "attrs": [
+      "type",
+      "className",
+      "onClick"
+    ]
+  },
+  {
+    "file": "apps/agent-web/src/launch/launch-page.tsx",
+    "line": 51,
+    "tag": "button",
+    "attrs": [
+      "type",
+      "className",
+      "onClick"
+    ]
+  }
+]

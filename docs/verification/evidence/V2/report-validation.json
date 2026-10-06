@@ -1,0 +1,17 @@
+{
+  "requirementRows": 3300,
+  "auditedRows": 579,
+  "remainingBlank": 2721,
+  "statuses": {
+    "✅ TAM": 341,
+    "⚠️ KISMİ": 224,
+    "🔒 DOĞRULANAMADI": 13,
+    "❌ YOK": 1
+  },
+  "uniqueExecutedAssertions": {
+    "passed": 3596,
+    "failed": 2
+  },
+  "explicitRoutes": 231,
+  "allTamHaveExecutedPass": true
+}

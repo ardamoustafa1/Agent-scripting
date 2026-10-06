@@ -1,0 +1,3747 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.74.0"
+  },
+  "ReportID": "01a10600-1ef6-75ad-ac74-1cdc18829b49",
+  "CreatedAt": "2026-10-04T11:20:33.654374+03:00",
+  "ArtifactName": "/Users/ardamoustafa/agent scripting/docs/verification/evidence/V1/helm-rendered.yaml",
+  "ArtifactType": "filesystem",
+  "Results": [
+    {
+      "Target": "helm-rendered.yaml",
+      "Class": "config",
+      "Type": "kubernetes",
+      "MisconfSummary": {
+        "Successes": 101,
+        "Failures": 32
+      },
+      "Misconfigurations": [
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0020",
+          "Title": "Runs with UID \u003c= 10000",
+          "Description": "Force the container to run with user ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'admin-web' of Deployment 'verbis-admin-web' should set 'securityContext.runAsUser' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV020",
+          "Query": "data.builtin.kubernetes.KSV020.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsUser' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0020",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0020"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 309,
+            "EndLine": 344,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 309,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 310,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 311,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 312,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 313,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 314,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 315,
+                  "Content": "          labelSelector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mlabelSelector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 316,
+                  "Content": "            matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: admin-web }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: admin-web }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 317,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 318,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0020",
+          "Title": "Runs with UID \u003c= 10000",
+          "Description": "Force the container to run with user ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'agent-web' of Deployment 'verbis-agent-web' should set 'securityContext.runAsUser' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV020",
+          "Query": "data.builtin.kubernetes.KSV020.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsUser' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0020",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0020"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 394,
+            "EndLine": 429,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 394,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 395,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 396,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 397,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 398,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 399,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 400,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 401,
+                  "Content": "          labelSelector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mlabelSelector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 402,
+                  "Content": "            matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: agent-web }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: agent-web }",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 403,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0020",
+          "Title": "Runs with UID \u003c= 10000",
+          "Description": "Force the container to run with user ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'api' of Deployment 'verbis-api' should set 'securityContext.runAsUser' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV020",
+          "Query": "data.builtin.kubernetes.KSV020.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsUser' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0020",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0020"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 479,
+            "EndLine": 530,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 479,
+                  "Content": "    spec:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mspec\u001b[0m:",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 480,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 481,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 482,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 483,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 484,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 485,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 486,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 487,
+                  "Content": "          labelSelector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mlabelSelector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 488,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0020",
+          "Title": "Runs with UID \u003c= 10000",
+          "Description": "Force the container to run with user ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'audit-worker' of Deployment 'verbis-audit-worker' should set 'securityContext.runAsUser' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV020",
+          "Query": "data.builtin.kubernetes.KSV020.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsUser' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0020",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0020"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 576,
+            "EndLine": 615,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 576,
+                  "Content": "        checksum/web-config: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mchecksum/web-config\u001b[0m: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 577,
+                  "Content": "    spec:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mspec\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 578,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 579,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 580,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 581,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 582,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 583,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 584,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 585,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0020",
+          "Title": "Runs with UID \u003c= 10000",
+          "Description": "Force the container to run with user ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'collaboration' of Deployment 'verbis-collaboration' should set 'securityContext.runAsUser' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV020",
+          "Query": "data.builtin.kubernetes.KSV020.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsUser' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0020",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0020"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 650,
+            "EndLine": 704,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 650,
+                  "Content": "    type: Recreate",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mtype\u001b[0m: Recreate",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 651,
+                  "Content": "  selector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mselector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 652,
+                  "Content": "    matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: collaboration }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: collaboration }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 653,
+                  "Content": "  template:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mtemplate\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 654,
+                  "Content": "    metadata:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmetadata\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 655,
+                  "Content": "      labels:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mlabels\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 656,
+                  "Content": "        app.kubernetes.io/part-of: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/part-of\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 657,
+                  "Content": "        app.kubernetes.io/instance: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/instance\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 658,
+                  "Content": "        app.kubernetes.io/name: collaboration",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/name\u001b[0m: collaboration",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 659,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0020",
+          "Title": "Runs with UID \u003c= 10000",
+          "Description": "Force the container to run with user ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'connector-hub' of Deployment 'verbis-connector-hub' should set 'securityContext.runAsUser' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV020",
+          "Query": "data.builtin.kubernetes.KSV020.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsUser' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0020",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0020"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 739,
+            "EndLine": 788,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 739,
+                  "Content": "  strategy:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mstrategy\u001b[0m:",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 740,
+                  "Content": "    type: Recreate",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mtype\u001b[0m: Recreate",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 741,
+                  "Content": "  selector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mselector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 742,
+                  "Content": "    matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: connector-hub }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: connector-hub }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 743,
+                  "Content": "  template:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mtemplate\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 744,
+                  "Content": "    metadata:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmetadata\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 745,
+                  "Content": "      labels:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mlabels\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 746,
+                  "Content": "        app.kubernetes.io/part-of: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/part-of\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 747,
+                  "Content": "        app.kubernetes.io/instance: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/instance\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 748,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0020",
+          "Title": "Runs with UID \u003c= 10000",
+          "Description": "Force the container to run with user ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'designer-web' of Deployment 'verbis-designer-web' should set 'securityContext.runAsUser' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV020",
+          "Query": "data.builtin.kubernetes.KSV020.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsUser' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0020",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0020"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 836,
+            "EndLine": 871,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 836,
+                  "Content": "        verbis.io/region: \"local\"",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mverbis.io/region\u001b[0m: \u001b[38;5;37m\"local\"",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 837,
+                  "Content": "        verbis.io/cell: \"default\"",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m        \u001b[38;5;33mverbis.io/cell\u001b[0m: \u001b[38;5;37m\"default\"",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 838,
+                  "Content": "      annotations:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mannotations\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 839,
+                  "Content": "        checksum/web-config: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mchecksum/web-config\u001b[0m: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 840,
+                  "Content": "    spec:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mspec\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 841,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 842,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 843,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 844,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 845,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0020",
+          "Title": "Runs with UID \u003c= 10000",
+          "Description": "Force the container to run with user ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'migration' of Job 'verbis-migration-1' should set 'securityContext.runAsUser' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV020",
+          "Query": "data.builtin.kubernetes.KSV020.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsUser' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0020",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0020"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 983,
+            "EndLine": 998,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 983,
+                  "Content": "",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 984,
+                  "Content": "---",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "---",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 985,
+                  "Content": "# Source: verbis/templates/migration.yaml",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;239m# Source: verbis/templates/migration.yaml",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 986,
+                  "Content": "apiVersion: batch/v1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m\u001b[38;5;33mapiVersion\u001b[0m: batch/v1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 987,
+                  "Content": "kind: Job",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;33mkind\u001b[0m: Job",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 988,
+                  "Content": "metadata:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;33mmetadata\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 989,
+                  "Content": "  name: verbis-migration-1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mname\u001b[0m: verbis-migration-1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 990,
+                  "Content": "  labels:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mlabels\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 991,
+                  "Content": "    app.kubernetes.io/part-of: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mapp.kubernetes.io/part-of\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 992,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0021",
+          "Title": "Runs with GID \u003c= 10000",
+          "Description": "Force the container to run with group ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'admin-web' of Deployment 'verbis-admin-web' should set 'securityContext.runAsGroup' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV021",
+          "Query": "data.builtin.kubernetes.KSV021.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsGroup' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0021",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0021"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 309,
+            "EndLine": 344,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 309,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 310,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 311,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 312,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 313,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 314,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 315,
+                  "Content": "          labelSelector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mlabelSelector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 316,
+                  "Content": "            matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: admin-web }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: admin-web }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 317,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 318,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0021",
+          "Title": "Runs with GID \u003c= 10000",
+          "Description": "Force the container to run with group ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'agent-web' of Deployment 'verbis-agent-web' should set 'securityContext.runAsGroup' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV021",
+          "Query": "data.builtin.kubernetes.KSV021.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsGroup' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0021",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0021"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 394,
+            "EndLine": 429,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 394,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 395,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 396,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 397,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 398,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 399,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 400,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 401,
+                  "Content": "          labelSelector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mlabelSelector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 402,
+                  "Content": "            matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: agent-web }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: agent-web }",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 403,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0021",
+          "Title": "Runs with GID \u003c= 10000",
+          "Description": "Force the container to run with group ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'api' of Deployment 'verbis-api' should set 'securityContext.runAsGroup' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV021",
+          "Query": "data.builtin.kubernetes.KSV021.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsGroup' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0021",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0021"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 479,
+            "EndLine": 530,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 479,
+                  "Content": "    spec:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mspec\u001b[0m:",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 480,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 481,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 482,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 483,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 484,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 485,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 486,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 487,
+                  "Content": "          labelSelector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mlabelSelector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 488,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0021",
+          "Title": "Runs with GID \u003c= 10000",
+          "Description": "Force the container to run with group ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'audit-worker' of Deployment 'verbis-audit-worker' should set 'securityContext.runAsGroup' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV021",
+          "Query": "data.builtin.kubernetes.KSV021.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsGroup' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0021",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0021"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 576,
+            "EndLine": 615,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 576,
+                  "Content": "        checksum/web-config: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mchecksum/web-config\u001b[0m: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 577,
+                  "Content": "    spec:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mspec\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 578,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 579,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 580,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 581,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 582,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 583,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 584,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 585,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0021",
+          "Title": "Runs with GID \u003c= 10000",
+          "Description": "Force the container to run with group ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'collaboration' of Deployment 'verbis-collaboration' should set 'securityContext.runAsGroup' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV021",
+          "Query": "data.builtin.kubernetes.KSV021.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsGroup' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0021",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0021"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 650,
+            "EndLine": 704,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 650,
+                  "Content": "    type: Recreate",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mtype\u001b[0m: Recreate",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 651,
+                  "Content": "  selector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mselector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 652,
+                  "Content": "    matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: collaboration }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: collaboration }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 653,
+                  "Content": "  template:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mtemplate\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 654,
+                  "Content": "    metadata:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmetadata\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 655,
+                  "Content": "      labels:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mlabels\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 656,
+                  "Content": "        app.kubernetes.io/part-of: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/part-of\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 657,
+                  "Content": "        app.kubernetes.io/instance: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/instance\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 658,
+                  "Content": "        app.kubernetes.io/name: collaboration",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/name\u001b[0m: collaboration",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 659,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0021",
+          "Title": "Runs with GID \u003c= 10000",
+          "Description": "Force the container to run with group ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'connector-hub' of Deployment 'verbis-connector-hub' should set 'securityContext.runAsGroup' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV021",
+          "Query": "data.builtin.kubernetes.KSV021.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsGroup' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0021",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0021"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 739,
+            "EndLine": 788,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 739,
+                  "Content": "  strategy:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mstrategy\u001b[0m:",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 740,
+                  "Content": "    type: Recreate",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mtype\u001b[0m: Recreate",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 741,
+                  "Content": "  selector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mselector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 742,
+                  "Content": "    matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: connector-hub }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: connector-hub }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 743,
+                  "Content": "  template:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mtemplate\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 744,
+                  "Content": "    metadata:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmetadata\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 745,
+                  "Content": "      labels:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mlabels\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 746,
+                  "Content": "        app.kubernetes.io/part-of: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/part-of\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 747,
+                  "Content": "        app.kubernetes.io/instance: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/instance\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 748,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0021",
+          "Title": "Runs with GID \u003c= 10000",
+          "Description": "Force the container to run with group ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'designer-web' of Deployment 'verbis-designer-web' should set 'securityContext.runAsGroup' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV021",
+          "Query": "data.builtin.kubernetes.KSV021.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsGroup' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0021",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0021"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 836,
+            "EndLine": 871,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 836,
+                  "Content": "        verbis.io/region: \"local\"",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mverbis.io/region\u001b[0m: \u001b[38;5;37m\"local\"",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 837,
+                  "Content": "        verbis.io/cell: \"default\"",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m        \u001b[38;5;33mverbis.io/cell\u001b[0m: \u001b[38;5;37m\"default\"",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 838,
+                  "Content": "      annotations:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mannotations\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 839,
+                  "Content": "        checksum/web-config: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mchecksum/web-config\u001b[0m: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 840,
+                  "Content": "    spec:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mspec\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 841,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 842,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 843,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 844,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 845,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0021",
+          "Title": "Runs with GID \u003c= 10000",
+          "Description": "Force the container to run with group ID \u003e 10000 to avoid conflicts with the host’s user table.",
+          "Message": "Container 'migration' of Job 'verbis-migration-1' should set 'securityContext.runAsGroup' \u003e 10000",
+          "Namespace": "builtin.kubernetes.KSV021",
+          "Query": "data.builtin.kubernetes.KSV021.deny",
+          "Resolution": "Set 'containers[].securityContext.runAsGroup' to an integer \u003e 10000.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0021",
+          "References": [
+            "https://kubesec.io/basics/containers-securitycontext-runasuser/",
+            "https://avd.aquasec.com/misconfig/ksv-0021"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 983,
+            "EndLine": 998,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 983,
+                  "Content": "",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 984,
+                  "Content": "---",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "---",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 985,
+                  "Content": "# Source: verbis/templates/migration.yaml",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;239m# Source: verbis/templates/migration.yaml",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 986,
+                  "Content": "apiVersion: batch/v1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m\u001b[38;5;33mapiVersion\u001b[0m: batch/v1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 987,
+                  "Content": "kind: Job",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;33mkind\u001b[0m: Job",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 988,
+                  "Content": "metadata:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;33mmetadata\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 989,
+                  "Content": "  name: verbis-migration-1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mname\u001b[0m: verbis-migration-1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 990,
+                  "Content": "  labels:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mlabels\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 991,
+                  "Content": "    app.kubernetes.io/part-of: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mapp.kubernetes.io/part-of\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 992,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0110",
+          "Title": "Workloads in the default namespace",
+          "Description": "Checks whether a workload is running in the default namespace.",
+          "Message": "deployment verbis-admin-web in default namespace should set metadata.namespace to a non-default namespace",
+          "Namespace": "builtin.kubernetes.KSV110",
+          "Query": "data.builtin.kubernetes.KSV110.deny",
+          "Resolution": "Set 'metadata.namespace' to a non-default namespace.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0110",
+          "References": [
+            "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+            "https://avd.aquasec.com/misconfig/ksv-0110"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 270,
+            "EndLine": 275,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 270,
+                  "Content": "  labels:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mlabels\u001b[0m:",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 271,
+                  "Content": "    app.kubernetes.io/part-of: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mapp.kubernetes.io/part-of\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 272,
+                  "Content": "    app.kubernetes.io/instance: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mapp.kubernetes.io/instance\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 273,
+                  "Content": "spec:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;33mspec\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 274,
+                  "Content": "  type: ClusterIP",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mtype\u001b[0m: ClusterIP",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 275,
+                  "Content": "  sessionAffinity: None",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33msessionAffinity\u001b[0m: None",
+                  "FirstCause": false,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0110",
+          "Title": "Workloads in the default namespace",
+          "Description": "Checks whether a workload is running in the default namespace.",
+          "Message": "deployment verbis-agent-web in default namespace should set metadata.namespace to a non-default namespace",
+          "Namespace": "builtin.kubernetes.KSV110",
+          "Query": "data.builtin.kubernetes.KSV110.deny",
+          "Resolution": "Set 'metadata.namespace' to a non-default namespace.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0110",
+          "References": [
+            "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+            "https://avd.aquasec.com/misconfig/ksv-0110"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 355,
+            "EndLine": 360,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 355,
+                  "Content": "            - { name: tmp, mountPath: /tmp }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            - { \u001b[38;5;33mname: tmp, mountPath\u001b[0m: /tmp }",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 356,
+                  "Content": "            - { name: nginx-cache, mountPath: /var/cache/nginx }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            - { \u001b[38;5;33mname: nginx-cache, mountPath\u001b[0m: /var/cache/nginx }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 357,
+                  "Content": "            - { name: nginx-run, mountPath: /var/run }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            - { \u001b[38;5;33mname: nginx-run, mountPath\u001b[0m: /var/run }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 358,
+                  "Content": "            - { name: web-config, mountPath: /etc/nginx/conf.d/default.conf, subPath: default.conf, readOnly: true }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            - { \u001b[38;5;33mname: web-config, mountPath: /etc/nginx/conf.d/default.conf, subPath: default.conf, readOnly\u001b[0m: \u001b[38;5;166mtrue\u001b[0m }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 359,
+                  "Content": "      volumes:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mvolumes\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 360,
+                  "Content": "        - { name: tmp, emptyDir: { sizeLimit: 256Mi } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - { \u001b[38;5;33mname: tmp, emptyDir\u001b[0m: { \u001b[38;5;33msizeLimit\u001b[0m: 256Mi } }",
+                  "FirstCause": false,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0110",
+          "Title": "Workloads in the default namespace",
+          "Description": "Checks whether a workload is running in the default namespace.",
+          "Message": "deployment verbis-api in default namespace should set metadata.namespace to a non-default namespace",
+          "Namespace": "builtin.kubernetes.KSV110",
+          "Query": "data.builtin.kubernetes.KSV110.deny",
+          "Resolution": "Set 'metadata.namespace' to a non-default namespace.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0110",
+          "References": [
+            "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+            "https://avd.aquasec.com/misconfig/ksv-0110"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 440,
+            "EndLine": 445,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 440,
+                  "Content": "          volumeMounts:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mvolumeMounts\u001b[0m:",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 441,
+                  "Content": "            - { name: tmp, mountPath: /tmp }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            - { \u001b[38;5;33mname: tmp, mountPath\u001b[0m: /tmp }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 442,
+                  "Content": "            - { name: nginx-cache, mountPath: /var/cache/nginx }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            - { \u001b[38;5;33mname: nginx-cache, mountPath\u001b[0m: /var/cache/nginx }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 443,
+                  "Content": "            - { name: nginx-run, mountPath: /var/run }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            - { \u001b[38;5;33mname: nginx-run, mountPath\u001b[0m: /var/run }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 444,
+                  "Content": "            - { name: web-config, mountPath: /etc/nginx/conf.d/default.conf, subPath: default.conf, readOnly: true }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            - { \u001b[38;5;33mname: web-config, mountPath: /etc/nginx/conf.d/default.conf, subPath: default.conf, readOnly\u001b[0m: \u001b[38;5;166mtrue\u001b[0m }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 445,
+                  "Content": "      volumes:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      volumes:",
+                  "FirstCause": false,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0110",
+          "Title": "Workloads in the default namespace",
+          "Description": "Checks whether a workload is running in the default namespace.",
+          "Message": "deployment verbis-audit-worker in default namespace should set metadata.namespace to a non-default namespace",
+          "Namespace": "builtin.kubernetes.KSV110",
+          "Query": "data.builtin.kubernetes.KSV110.deny",
+          "Resolution": "Set 'metadata.namespace' to a non-default namespace.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0110",
+          "References": [
+            "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+            "https://avd.aquasec.com/misconfig/ksv-0110"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 537,
+            "EndLine": 542,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 537,
+                  "Content": "            httpGet: { path: /health/ready, port: http }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mhttpGet\u001b[0m: { \u001b[38;5;33mpath: /health/ready, port\u001b[0m: http }",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 538,
+                  "Content": "            timeoutSeconds: 5",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mtimeoutSeconds\u001b[0m: \u001b[38;5;37m5",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 539,
+                  "Content": "            periodSeconds: 5",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m            \u001b[38;5;33mperiodSeconds\u001b[0m: \u001b[38;5;37m5",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 540,
+                  "Content": "            failureThreshold: 2",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m            \u001b[38;5;33mfailureThreshold\u001b[0m: \u001b[38;5;37m2",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 541,
+                  "Content": "          livenessProbe:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mlivenessProbe\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 542,
+                  "Content": "            httpGet: { path: /health/live, port: http }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mhttpGet\u001b[0m: { \u001b[38;5;33mpath: /health/live, port\u001b[0m: http }",
+                  "FirstCause": false,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0110",
+          "Title": "Workloads in the default namespace",
+          "Description": "Checks whether a workload is running in the default namespace.",
+          "Message": "deployment verbis-collaboration in default namespace should set metadata.namespace to a non-default namespace",
+          "Namespace": "builtin.kubernetes.KSV110",
+          "Query": "data.builtin.kubernetes.KSV110.deny",
+          "Resolution": "Set 'metadata.namespace' to a non-default namespace.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0110",
+          "References": [
+            "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+            "https://avd.aquasec.com/misconfig/ksv-0110"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 622,
+            "EndLine": 627,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 622,
+                  "Content": "          readinessProbe:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mreadinessProbe\u001b[0m:",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 623,
+                  "Content": "            httpGet: { path: /health/ready, port: http }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mhttpGet\u001b[0m: { \u001b[38;5;33mpath: /health/ready, port\u001b[0m: http }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 624,
+                  "Content": "            timeoutSeconds: 5",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mtimeoutSeconds\u001b[0m: \u001b[38;5;37m5",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 625,
+                  "Content": "            periodSeconds: 5",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m            \u001b[38;5;33mperiodSeconds\u001b[0m: \u001b[38;5;37m5",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 626,
+                  "Content": "            failureThreshold: 2",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m            \u001b[38;5;33mfailureThreshold\u001b[0m: \u001b[38;5;37m2",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 627,
+                  "Content": "          livenessProbe:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          livenessProbe:",
+                  "FirstCause": false,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0110",
+          "Title": "Workloads in the default namespace",
+          "Description": "Checks whether a workload is running in the default namespace.",
+          "Message": "deployment verbis-connector-hub in default namespace should set metadata.namespace to a non-default namespace",
+          "Namespace": "builtin.kubernetes.KSV110",
+          "Query": "data.builtin.kubernetes.KSV110.deny",
+          "Resolution": "Set 'metadata.namespace' to a non-default namespace.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0110",
+          "References": [
+            "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+            "https://avd.aquasec.com/misconfig/ksv-0110"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 711,
+            "EndLine": 716,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 711,
+                  "Content": "            periodSeconds: 5",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mperiodSeconds\u001b[0m: \u001b[38;5;37m5",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 712,
+                  "Content": "          readinessProbe:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mreadinessProbe\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 713,
+                  "Content": "            httpGet: { path: /health/ready, port: http }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mhttpGet\u001b[0m: { \u001b[38;5;33mpath: /health/ready, port\u001b[0m: http }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 714,
+                  "Content": "            timeoutSeconds: 5",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mtimeoutSeconds\u001b[0m: \u001b[38;5;37m5",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 715,
+                  "Content": "            periodSeconds: 5",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m            \u001b[38;5;33mperiodSeconds\u001b[0m: \u001b[38;5;37m5",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 716,
+                  "Content": "            failureThreshold: 2",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m            \u001b[38;5;33mfailureThreshold\u001b[0m: \u001b[38;5;37m2\u001b[0m",
+                  "FirstCause": false,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0110",
+          "Title": "Workloads in the default namespace",
+          "Description": "Checks whether a workload is running in the default namespace.",
+          "Message": "deployment verbis-designer-web in default namespace should set metadata.namespace to a non-default namespace",
+          "Namespace": "builtin.kubernetes.KSV110",
+          "Query": "data.builtin.kubernetes.KSV110.deny",
+          "Resolution": "Set 'metadata.namespace' to a non-default namespace.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0110",
+          "References": [
+            "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+            "https://avd.aquasec.com/misconfig/ksv-0110"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 797,
+            "EndLine": 802,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 797,
+                  "Content": "            httpGet: { path: /health/ready, port: http }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mhttpGet\u001b[0m: { \u001b[38;5;33mpath: /health/ready, port\u001b[0m: http }",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 798,
+                  "Content": "            timeoutSeconds: 5",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mtimeoutSeconds\u001b[0m: \u001b[38;5;37m5",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 799,
+                  "Content": "            periodSeconds: 5",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m            \u001b[38;5;33mperiodSeconds\u001b[0m: \u001b[38;5;37m5",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 800,
+                  "Content": "            failureThreshold: 2",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m            \u001b[38;5;33mfailureThreshold\u001b[0m: \u001b[38;5;37m2",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 801,
+                  "Content": "          livenessProbe:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mlivenessProbe\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 802,
+                  "Content": "            httpGet: { path: /health/live, port: http }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mhttpGet\u001b[0m: { \u001b[38;5;33mpath: /health/live, port\u001b[0m: http }",
+                  "FirstCause": false,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0110",
+          "Title": "Workloads in the default namespace",
+          "Description": "Checks whether a workload is running in the default namespace.",
+          "Message": "job verbis-migration-1 in default namespace should set metadata.namespace to a non-default namespace",
+          "Namespace": "builtin.kubernetes.KSV110",
+          "Query": "data.builtin.kubernetes.KSV110.deny",
+          "Resolution": "Set 'metadata.namespace' to a non-default namespace.",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0110",
+          "References": [
+            "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+            "https://avd.aquasec.com/misconfig/ksv-0110"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 962,
+            "EndLine": 967,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 962,
+                  "Content": "    - type: Resource",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    - \u001b[38;5;33mtype\u001b[0m: Resource",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 963,
+                  "Content": "      resource:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mresource\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 964,
+                  "Content": "        name: cpu",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mname\u001b[0m: cpu",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 965,
+                  "Content": "        target: { type: Utilization, averageUtilization: 70 }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mtarget\u001b[0m: { \u001b[38;5;33mtype: Utilization, averageUtilization\u001b[0m: \u001b[38;5;37m70\u001b[0m }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 966,
+                  "Content": "",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 967,
+                  "Content": "---",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "---",
+                  "FirstCause": false,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0125",
+          "Title": "Restrict container images to trusted registries",
+          "Description": "Ensure that all containers use images only from trusted registry domains.",
+          "Message": "Container admin-web in deployment verbis-admin-web (namespace: default) uses an image from an untrusted registry.",
+          "Namespace": "builtin.kubernetes.KSV0125",
+          "Query": "data.builtin.kubernetes.KSV0125.deny",
+          "Resolution": "Use images from trusted registries.",
+          "Severity": "MEDIUM",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0125",
+          "References": [
+            "https://cloud.google.com/container-registry/docs/overview#registries",
+            "https://docs.aws.amazon.com/general/latest/gr/ecr.html",
+            "https://avd.aquasec.com/misconfig/ksv-0125"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 309,
+            "EndLine": 344,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 309,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 310,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 311,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 312,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 313,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 314,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 315,
+                  "Content": "          labelSelector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mlabelSelector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 316,
+                  "Content": "            matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: admin-web }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: admin-web }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 317,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 318,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0125",
+          "Title": "Restrict container images to trusted registries",
+          "Description": "Ensure that all containers use images only from trusted registry domains.",
+          "Message": "Container agent-web in deployment verbis-agent-web (namespace: default) uses an image from an untrusted registry.",
+          "Namespace": "builtin.kubernetes.KSV0125",
+          "Query": "data.builtin.kubernetes.KSV0125.deny",
+          "Resolution": "Use images from trusted registries.",
+          "Severity": "MEDIUM",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0125",
+          "References": [
+            "https://cloud.google.com/container-registry/docs/overview#registries",
+            "https://docs.aws.amazon.com/general/latest/gr/ecr.html",
+            "https://avd.aquasec.com/misconfig/ksv-0125"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 394,
+            "EndLine": 429,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 394,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 395,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 396,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 397,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 398,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 399,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 400,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 401,
+                  "Content": "          labelSelector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mlabelSelector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 402,
+                  "Content": "            matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: agent-web }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "            \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: agent-web }",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 403,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0125",
+          "Title": "Restrict container images to trusted registries",
+          "Description": "Ensure that all containers use images only from trusted registry domains.",
+          "Message": "Container api in deployment verbis-api (namespace: default) uses an image from an untrusted registry.",
+          "Namespace": "builtin.kubernetes.KSV0125",
+          "Query": "data.builtin.kubernetes.KSV0125.deny",
+          "Resolution": "Use images from trusted registries.",
+          "Severity": "MEDIUM",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0125",
+          "References": [
+            "https://cloud.google.com/container-registry/docs/overview#registries",
+            "https://docs.aws.amazon.com/general/latest/gr/ecr.html",
+            "https://avd.aquasec.com/misconfig/ksv-0125"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 479,
+            "EndLine": 530,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 479,
+                  "Content": "    spec:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mspec\u001b[0m:",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 480,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 481,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 482,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 483,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 484,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 485,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 486,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 487,
+                  "Content": "          labelSelector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mlabelSelector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 488,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0125",
+          "Title": "Restrict container images to trusted registries",
+          "Description": "Ensure that all containers use images only from trusted registry domains.",
+          "Message": "Container audit-worker in deployment verbis-audit-worker (namespace: default) uses an image from an untrusted registry.",
+          "Namespace": "builtin.kubernetes.KSV0125",
+          "Query": "data.builtin.kubernetes.KSV0125.deny",
+          "Resolution": "Use images from trusted registries.",
+          "Severity": "MEDIUM",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0125",
+          "References": [
+            "https://cloud.google.com/container-registry/docs/overview#registries",
+            "https://docs.aws.amazon.com/general/latest/gr/ecr.html",
+            "https://avd.aquasec.com/misconfig/ksv-0125"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 576,
+            "EndLine": 615,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 576,
+                  "Content": "        checksum/web-config: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mchecksum/web-config\u001b[0m: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 577,
+                  "Content": "    spec:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mspec\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 578,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 579,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 580,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 581,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 582,
+                  "Content": "        - maxSkew: 1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        - \u001b[38;5;33mmaxSkew\u001b[0m: \u001b[38;5;37m1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 583,
+                  "Content": "          topologyKey: topology.kubernetes.io/zone",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m          \u001b[38;5;33mtopologyKey\u001b[0m: topology.kubernetes.io/zone",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 584,
+                  "Content": "          whenUnsatisfiable: ScheduleAnyway",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "          \u001b[38;5;33mwhenUnsatisfiable\u001b[0m: ScheduleAnyway",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 585,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0125",
+          "Title": "Restrict container images to trusted registries",
+          "Description": "Ensure that all containers use images only from trusted registry domains.",
+          "Message": "Container collaboration in deployment verbis-collaboration (namespace: default) uses an image from an untrusted registry.",
+          "Namespace": "builtin.kubernetes.KSV0125",
+          "Query": "data.builtin.kubernetes.KSV0125.deny",
+          "Resolution": "Use images from trusted registries.",
+          "Severity": "MEDIUM",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0125",
+          "References": [
+            "https://cloud.google.com/container-registry/docs/overview#registries",
+            "https://docs.aws.amazon.com/general/latest/gr/ecr.html",
+            "https://avd.aquasec.com/misconfig/ksv-0125"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 650,
+            "EndLine": 704,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 650,
+                  "Content": "    type: Recreate",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mtype\u001b[0m: Recreate",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 651,
+                  "Content": "  selector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mselector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 652,
+                  "Content": "    matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: collaboration }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: collaboration }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 653,
+                  "Content": "  template:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mtemplate\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 654,
+                  "Content": "    metadata:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmetadata\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 655,
+                  "Content": "      labels:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mlabels\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 656,
+                  "Content": "        app.kubernetes.io/part-of: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/part-of\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 657,
+                  "Content": "        app.kubernetes.io/instance: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/instance\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 658,
+                  "Content": "        app.kubernetes.io/name: collaboration",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/name\u001b[0m: collaboration",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 659,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0125",
+          "Title": "Restrict container images to trusted registries",
+          "Description": "Ensure that all containers use images only from trusted registry domains.",
+          "Message": "Container connector-hub in deployment verbis-connector-hub (namespace: default) uses an image from an untrusted registry.",
+          "Namespace": "builtin.kubernetes.KSV0125",
+          "Query": "data.builtin.kubernetes.KSV0125.deny",
+          "Resolution": "Use images from trusted registries.",
+          "Severity": "MEDIUM",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0125",
+          "References": [
+            "https://cloud.google.com/container-registry/docs/overview#registries",
+            "https://docs.aws.amazon.com/general/latest/gr/ecr.html",
+            "https://avd.aquasec.com/misconfig/ksv-0125"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 739,
+            "EndLine": 788,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 739,
+                  "Content": "  strategy:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mstrategy\u001b[0m:",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 740,
+                  "Content": "    type: Recreate",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mtype\u001b[0m: Recreate",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 741,
+                  "Content": "  selector:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mselector\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 742,
+                  "Content": "    matchLabels: { app.kubernetes.io/instance: verbis, app.kubernetes.io/name: connector-hub }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmatchLabels\u001b[0m: { \u001b[38;5;33mapp.kubernetes.io/instance: verbis, app.kubernetes.io/name\u001b[0m: connector-hub }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 743,
+                  "Content": "  template:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mtemplate\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 744,
+                  "Content": "    metadata:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mmetadata\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 745,
+                  "Content": "      labels:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mlabels\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 746,
+                  "Content": "        app.kubernetes.io/part-of: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/part-of\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 747,
+                  "Content": "        app.kubernetes.io/instance: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mapp.kubernetes.io/instance\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 748,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0125",
+          "Title": "Restrict container images to trusted registries",
+          "Description": "Ensure that all containers use images only from trusted registry domains.",
+          "Message": "Container designer-web in deployment verbis-designer-web (namespace: default) uses an image from an untrusted registry.",
+          "Namespace": "builtin.kubernetes.KSV0125",
+          "Query": "data.builtin.kubernetes.KSV0125.deny",
+          "Resolution": "Use images from trusted registries.",
+          "Severity": "MEDIUM",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0125",
+          "References": [
+            "https://cloud.google.com/container-registry/docs/overview#registries",
+            "https://docs.aws.amazon.com/general/latest/gr/ecr.html",
+            "https://avd.aquasec.com/misconfig/ksv-0125"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 836,
+            "EndLine": 871,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 836,
+                  "Content": "        verbis.io/region: \"local\"",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mverbis.io/region\u001b[0m: \u001b[38;5;37m\"local\"",
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 837,
+                  "Content": "        verbis.io/cell: \"default\"",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m        \u001b[38;5;33mverbis.io/cell\u001b[0m: \u001b[38;5;37m\"default\"",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 838,
+                  "Content": "      annotations:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mannotations\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 839,
+                  "Content": "        checksum/web-config: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "        \u001b[38;5;33mchecksum/web-config\u001b[0m: 5d9c5fc63b989f062f8584afb5ba1b6e8244c21b07d69e5918b8f77cd78a2a36",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 840,
+                  "Content": "    spec:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mspec\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 841,
+                  "Content": "      automountServiceAccountToken: false",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mautomountServiceAccountToken\u001b[0m: \u001b[38;5;166mfalse",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 842,
+                  "Content": "      terminationGracePeriodSeconds: 90",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33mterminationGracePeriodSeconds\u001b[0m: \u001b[38;5;37m90",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 843,
+                  "Content": "      securityContext: { runAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile: { type: RuntimeDefault } }",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m      \u001b[38;5;33msecurityContext\u001b[0m: { \u001b[38;5;33mrunAsNonRoot: true, fsGroup: 65532, fsGroupChangePolicy: OnRootMismatch, seccompProfile\u001b[0m: { \u001b[38;5;33mtype\u001b[0m: RuntimeDefault } }",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 844,
+                  "Content": "      topologySpreadConstraints:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "      \u001b[38;5;33mtopologySpreadConstraints\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 845,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV-0125",
+          "Title": "Restrict container images to trusted registries",
+          "Description": "Ensure that all containers use images only from trusted registry domains.",
+          "Message": "Container migration in job verbis-migration-1 (namespace: default) uses an image from an untrusted registry.",
+          "Namespace": "builtin.kubernetes.KSV0125",
+          "Query": "data.builtin.kubernetes.KSV0125.deny",
+          "Resolution": "Use images from trusted registries.",
+          "Severity": "MEDIUM",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ksv-0125",
+          "References": [
+            "https://cloud.google.com/container-registry/docs/overview#registries",
+            "https://docs.aws.amazon.com/general/latest/gr/ecr.html",
+            "https://avd.aquasec.com/misconfig/ksv-0125"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Kubernetes",
+            "Service": "general",
+            "StartLine": 983,
+            "EndLine": 998,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 983,
+                  "Content": "",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "FirstCause": true,
+                  "LastCause": false
+                },
+                {
+                  "Number": 984,
+                  "Content": "---",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "---",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 985,
+                  "Content": "# Source: verbis/templates/migration.yaml",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;239m# Source: verbis/templates/migration.yaml",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 986,
+                  "Content": "apiVersion: batch/v1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[0m\u001b[38;5;33mapiVersion\u001b[0m: batch/v1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 987,
+                  "Content": "kind: Job",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;33mkind\u001b[0m: Job",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 988,
+                  "Content": "metadata:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;33mmetadata\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 989,
+                  "Content": "  name: verbis-migration-1",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mname\u001b[0m: verbis-migration-1",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 990,
+                  "Content": "  labels:",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "  \u001b[38;5;33mlabels\u001b[0m:",
+                  "FirstCause": false,
+                  "LastCause": false
+                },
+                {
+                  "Number": 991,
+                  "Content": "    app.kubernetes.io/part-of: verbis",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "    \u001b[38;5;33mapp.kubernetes.io/part-of\u001b[0m: verbis",
+                  "FirstCause": false,
+                  "LastCause": true
+                },
+                {
+                  "Number": 992,
+                  "Content": "",
+                  "IsCause": false,
+                  "Annotation": "",
+                  "Truncated": true,
+                  "FirstCause": false,
+                  "LastCause": false
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

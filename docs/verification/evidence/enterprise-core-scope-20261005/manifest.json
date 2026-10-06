@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-05",
+  "scope": "first enterprise core release; no live AI/vendor connectors/realtime collaboration",
+  "targets": {
+    "registeredUsersMinimum": 10000,
+    "concurrentAgentsMinimum": 2000,
+    "availabilityPercentMinimum": 99.9,
+    "durableDataLossAccepted": false
+  },
+  "freshChecks": {
+    "deploymentPolicies": 12,
+    "apiCapabilityTests": 61
+  },
+  "productionAcceptance": false,
+  "sourceSha256": {
+    "deploy/examples/values-enterprise-core.yaml": "16af72e3aa7ea1419c8ef4b19b6b671c269390bed43cef9b193d6b5cf8ae6f3c",
+    "deploy/helm/verbis/files/nginx.conf": "16ebf500cb0e3f4c59b8b540c0d1eca1679ee0b3558421367de9e649976ccc3d",
+    "deploy/helm/verbis/templates/workloads.yaml": "7b48aac82ac6fadb9f7a66da47f171254e93e12acbe50b393a2272e8a85ca2fc",
+    "deploy/tests/test_chart.py": "aee4959328d4a2ce645906a44c9b06395c7d5b223221d6c26cf83d5d9616c3b0",
+    "docs/verification/ENTERPRISE_CORE_REQUIREMENTS_2026-10-05.md": "627f3b49cb9026176b89e4f310d71b3648974d8010a549a43f4158dfec5841c2"
+  },
+  "logs": {
+    "profile-before.log": "207d1b2e2ee4610e933a13b8dbeed6b979510bc612a394ea77cb2f9fcc85207a",
+    "profile-after.log": "9b12272ef4d277dbef6303896edf0cf87690af308129d023d62f3680fbcbf054",
+    "profile-final.log": "e3303f433a1a0fb5b65cb1a39e482cee8c473eda6c4be87cfbd4800a24ef7c75",
+    "disabled-capabilities.log": "5e3db4f415c0f50ca3329498a02d9bd0cc7d3ce8be3f1f4b71b2bbc8055500fd"
+  }
+}

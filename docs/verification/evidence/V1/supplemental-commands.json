@@ -1,0 +1,242 @@
+[
+  {
+    "name": "20-format-check",
+    "argv": [
+      "pnpm",
+      "format:check"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:08:28.195240+00:00",
+    "timeoutSeconds": 300,
+    "log": "20-format-check.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 8.417,
+    "endUTC": "2026-10-04T08:08:36.612753+00:00",
+    "logSHA256": "1ee9c8c7b09a766c159eb79a4f41c7e67e359c618c3bd23459975ea96ead29a1"
+  },
+  {
+    "name": "21-test-lint",
+    "argv": [
+      "pnpm",
+      "test:lint"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:08:36.613241+00:00",
+    "timeoutSeconds": 120,
+    "log": "21-test-lint.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 2.393,
+    "endUTC": "2026-10-04T08:08:39.006382+00:00",
+    "logSHA256": "07517bb7f89ea99cb21067a447abebf2608526d17f5c2a3ac79ea3f9f7cf7f64"
+  },
+  {
+    "name": "22-test-typecheck",
+    "argv": [
+      "pnpm",
+      "test:typecheck"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:08:39.006777+00:00",
+    "timeoutSeconds": 120,
+    "log": "22-test-typecheck.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 0.817,
+    "endUTC": "2026-10-04T08:08:39.824014+00:00",
+    "logSHA256": "4886c392355efb30f2ba9528c7ffb0e097393ae99192c90ad09d27db17dfb8d5"
+  },
+  {
+    "name": "23-quarantine-check",
+    "argv": [
+      "pnpm",
+      "quarantine:check"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:08:39.824357+00:00",
+    "timeoutSeconds": 120,
+    "log": "23-quarantine-check.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 0.189,
+    "endUTC": "2026-10-04T08:08:40.012887+00:00",
+    "logSHA256": "ca70bb207dc260d23f60fd25ce945f7401a295b9c6c842bdd900bc9d3335d4cd"
+  },
+  {
+    "name": "24-live-acceptance",
+    "argv": [
+      "pnpm",
+      "test:live"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:08:40.013227+00:00",
+    "timeoutSeconds": 120,
+    "log": "24-live-acceptance.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 0.256,
+    "endUTC": "2026-10-04T08:08:40.268755+00:00",
+    "logSHA256": "a8ca0398485cf952ea2ccfa06dab7f53bb4ade664ec9c702ca9135860ea868f4"
+  },
+  {
+    "name": "25-asvs-inventory-tests",
+    "argv": [
+      "node",
+      "--test",
+      "scripts/asvs-inventory.spec.mjs"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:08:40.269138+00:00",
+    "timeoutSeconds": 120,
+    "log": "25-asvs-inventory-tests.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 0.079,
+    "endUTC": "2026-10-04T08:08:40.347681+00:00",
+    "logSHA256": "31903ec6a33741c4a4be77deb7efdf0b95458de0613875310fbee719ba24d822"
+  },
+  {
+    "name": "26-deployment-tests",
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "deploy/tests",
+      "-p",
+      "test_*.py"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:08:40.348107+00:00",
+    "timeoutSeconds": 120,
+    "log": "26-deployment-tests.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 1.397,
+    "endUTC": "2026-10-04T08:08:41.744970+00:00",
+    "logSHA256": "019fd98a035d730ae3091790587bd09b01a8e447578c786091f141902122c528"
+  },
+  {
+    "name": "27-gradle-connector-genesys-engage-sidecar",
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-e",
+      "TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal",
+      "-v",
+      "/var/run/docker.sock:/var/run/docker.sock",
+      "-v",
+      "/tmp/verbis-v1-quality-20261004/apps/connector-genesys-engage-sidecar:/project",
+      "-w",
+      "/project",
+      "gradle:8.14-jdk21",
+      "gradle",
+      "--no-daemon",
+      "test"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:08:41.745621+00:00",
+    "timeoutSeconds": 1500,
+    "log": "27-gradle-connector-genesys-engage-sidecar.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 89.951,
+    "endUTC": "2026-10-04T08:10:11.696684+00:00",
+    "logSHA256": "0ff04a67d6a7ccf163784d566700321e6cef8a0fd6dfc3d13b47b5a1dd048be9"
+  },
+  {
+    "name": "28-docker-connector-genesys-engage-sidecar",
+    "argv": [
+      "docker",
+      "build",
+      "--progress=plain",
+      "-t",
+      "verbis-v1-audit/connector-genesys-engage-sidecar:20261004",
+      "/tmp/verbis-v1-quality-20261004/apps/connector-genesys-engage-sidecar"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:10:11.710186+00:00",
+    "timeoutSeconds": 1500,
+    "log": "28-docker-connector-genesys-engage-sidecar.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 72.013,
+    "endUTC": "2026-10-04T08:11:23.722996+00:00",
+    "logSHA256": "244cda8ccc31807e4a70549ab80bcb0498110f3706d71fd69a00543a4167a532"
+  },
+  {
+    "name": "27-gradle-connector-avaya-aes-sidecar",
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-e",
+      "TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal",
+      "-v",
+      "/var/run/docker.sock:/var/run/docker.sock",
+      "-v",
+      "/tmp/verbis-v1-quality-20261004/apps/connector-avaya-aes-sidecar:/project",
+      "-w",
+      "/project",
+      "gradle:8.14-jdk21",
+      "gradle",
+      "--no-daemon",
+      "test"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:11:23.724814+00:00",
+    "timeoutSeconds": 1500,
+    "log": "27-gradle-connector-avaya-aes-sidecar.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 102.027,
+    "endUTC": "2026-10-04T08:13:05.752137+00:00",
+    "logSHA256": "8130010b6c2246e42f70d933c4876827d1e6396278e0b9e1532a815a8bc69109"
+  },
+  {
+    "name": "28-docker-connector-avaya-aes-sidecar",
+    "argv": [
+      "docker",
+      "build",
+      "--progress=plain",
+      "-t",
+      "verbis-v1-audit/connector-avaya-aes-sidecar:20261004",
+      "/tmp/verbis-v1-quality-20261004/apps/connector-avaya-aes-sidecar"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:13:05.753382+00:00",
+    "timeoutSeconds": 1500,
+    "log": "28-docker-connector-avaya-aes-sidecar.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 59.322,
+    "endUTC": "2026-10-04T08:14:05.075463+00:00",
+    "logSHA256": "46cd10b8ee6ad337bb6122bf71d71deb03a125600e82d02228713d291e8f03fe"
+  },
+  {
+    "name": "29-gitleaks-history",
+    "argv": [
+      "gitleaks",
+      "git",
+      "--redact",
+      "--report-format",
+      "json",
+      "--report-path",
+      "/Users/ardamoustafa/agent scripting/docs/verification/evidence/V1/gitleaks-history.json",
+      "--no-banner",
+      "/Users/ardamoustafa/agent scripting"
+    ],
+    "cwd": "/Users/ardamoustafa/agent scripting",
+    "startUTC": "2026-10-04T08:14:05.077020+00:00",
+    "timeoutSeconds": 600,
+    "log": "29-gitleaks-history.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 0.189,
+    "endUTC": "2026-10-04T08:14:05.265634+00:00",
+    "logSHA256": "48bc3daf77cbf67dd308265cf70dda7a0b2db73f528a7d1b92c5153cad32e3cd"
+  }
+]

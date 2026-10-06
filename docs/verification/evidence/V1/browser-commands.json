@@ -1,0 +1,103 @@
+[
+  {
+    "name": "30-isolated-e2e-designer-web",
+    "argv": [
+      "pnpm",
+      "--filter",
+      "@verbis/designer-web",
+      "e2e",
+      "--workers=2"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:09:37.784462+00:00",
+    "timeoutSeconds": 600,
+    "log": "30-isolated-e2e-designer-web.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 40.034,
+    "endUTC": "2026-10-04T08:10:17.818144+00:00",
+    "logSHA256": "796b3f336e985c658724d0e0ad7ecfacea29f2dd7f089b0e2c83b3e68b729f3c"
+  },
+  {
+    "name": "30-isolated-e2e-agent-web",
+    "argv": [
+      "pnpm",
+      "--filter",
+      "@verbis/agent-web",
+      "e2e",
+      "--workers=2"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:10:17.823446+00:00",
+    "timeoutSeconds": 600,
+    "log": "30-isolated-e2e-agent-web.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 7.041,
+    "endUTC": "2026-10-04T08:10:24.864457+00:00",
+    "logSHA256": "d229e980874fc7ccebc61d0d33afc58b11fa04ece351367a513eb9d1e993ad03"
+  },
+  {
+    "name": "30-isolated-e2e-admin-web",
+    "argv": [
+      "pnpm",
+      "--filter",
+      "@verbis/admin-web",
+      "e2e",
+      "--workers=2"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:10:24.865970+00:00",
+    "timeoutSeconds": 600,
+    "log": "30-isolated-e2e-admin-web.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 6.77,
+    "endUTC": "2026-10-04T08:10:31.635802+00:00",
+    "logSHA256": "82a17511265c7ca461c444a9432e8f0b6cd71f92cb073fb3854bf40ddfa09905"
+  },
+  {
+    "name": "31-browser-ui",
+    "argv": [
+      "pnpm",
+      "--filter",
+      "@verbis/ui",
+      "exec",
+      "playwright",
+      "test",
+      "--workers=2",
+      "--reporter=line,json"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:10:31.637566+00:00",
+    "timeoutSeconds": 600,
+    "log": "31-browser-ui.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 146.878,
+    "endUTC": "2026-10-04T08:12:58.515747+00:00",
+    "logSHA256": "bafd72be6cc783041c15a4d2fa205bafbfce8d6136ac7d4f9dc4c9f3dcc80f7c"
+  },
+  {
+    "name": "31-browser-components",
+    "argv": [
+      "pnpm",
+      "--filter",
+      "@verbis/components",
+      "exec",
+      "playwright",
+      "test",
+      "--workers=2",
+      "--reporter=line,json"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:12:58.517517+00:00",
+    "timeoutSeconds": 600,
+    "log": "31-browser-components.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 183.913,
+    "endUTC": "2026-10-04T08:16:02.430952+00:00",
+    "logSHA256": "e3df8cb26ca93d143fef4dd6c278426cc83d5802d25d82deea3d561468469978"
+  }
+]

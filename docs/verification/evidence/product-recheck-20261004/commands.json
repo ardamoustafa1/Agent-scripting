@@ -1,0 +1,171 @@
+{
+  "createdAtUtc": "2026-10-04T19:50:52.032426+00:00",
+  "timezone": "Europe/Istanbul",
+  "workspace": "/Users/ardamoustafa/agent scripting",
+  "node": "24.11.1",
+  "pnpm": "9.15.4",
+  "turbo": "2.11.6",
+  "accepted": [
+    {
+      "command": "pnpm exec turbo run test --force --concurrency=1 --continue=dependencies-successful",
+      "exitCode": 0,
+      "log": "tests-final.log",
+      "sha256": "92f47c371f62ff2d5c18b2ef8419a95f07a5ae2e0ecb733e41100a34d476d161"
+    },
+    {
+      "command": "pnpm exec turbo run test --concurrency=1 --continue=dependencies-successful",
+      "exitCode": 0,
+      "log": "tests-complete.log",
+      "sha256": "5b77bdd0ad42ed85d1b1b7b0be8327d951ffb05615d50c7bd5ef8e46383d49ae"
+    },
+    {
+      "command": "pnpm --filter @verbis/designer-web test",
+      "exitCode": 0,
+      "log": "designer-unit-final.log",
+      "sha256": "290950af16c50019713a6abc42908a6731b019cd75f7820fec4329dabe75daeb"
+    },
+    {
+      "command": "pnpm exec turbo run lint typecheck build --concurrency=2",
+      "exitCode": 0,
+      "log": "quality-complete.log",
+      "sha256": "3e240f60ca61aec506e6195d566064278405eb15e917635d2e90c4aec22dc3d7"
+    },
+    {
+      "command": "pnpm exec turbo run lint typecheck --concurrency=2",
+      "exitCode": 0,
+      "log": "static-final.log",
+      "sha256": "78608bcc888190fe34c0fee406bf8990a1ac5bf2bf5c1576dede236a8fb4c0e5"
+    },
+    {
+      "command": "pnpm coverage:check",
+      "exitCode": 0,
+      "log": "coverage-accepted.log",
+      "sha256": "743a2c911dacb0cc633e8bfc000a6fe4237a3623b1f38388d32002d4f294f2a2"
+    },
+    {
+      "command": "pnpm --filter @verbis/api exec vitest run --config ../../tests/verification/v2.config.mjs",
+      "exitCode": 0,
+      "log": "backend-verification.log",
+      "sha256": "c14ac3eaf14e7e7a05af6d140181d76751b76234099fe31c8f111a25c2c6ef14"
+    },
+    {
+      "command": "pnpm --filter @verbis/admin-web exec playwright test --project chromium --workers=1",
+      "exitCode": 0,
+      "log": "admin-browser-complete.log",
+      "sha256": "1420d6971ae171a646413d07873d3c7cc8d285aa37a5fd484a3347e49afdb265"
+    },
+    {
+      "command": "pnpm --filter @verbis/agent-web exec playwright test --project chromium --workers=1",
+      "exitCode": 0,
+      "log": "agent-browser.log",
+      "sha256": "2a4eab31377d313ca9d2354ad316e29e1db5bc225ef3f0866e864149c92c317a"
+    },
+    {
+      "command": "pnpm --filter @verbis/designer-web exec playwright test --project chromium --workers=1",
+      "exitCode": 0,
+      "log": "designer-browser-final.log",
+      "sha256": "f5ef1d66808bd0a3d183acaa50167da807552c1a31212d298e03bbab47cd245d"
+    },
+    {
+      "command": "pnpm --filter @verbis/ui exec playwright test --workers=1",
+      "exitCode": 0,
+      "log": "ui-browser.log",
+      "sha256": "37c640c31ab2295becc47dcd15a49afe69c3a42a620dfc7d11fe0bfc0310f0c8"
+    },
+    {
+      "command": "pnpm --filter @verbis/components exec playwright test --workers=1",
+      "exitCode": 0,
+      "log": "components-browser.log",
+      "sha256": "c3c32ffb47aae9bb45ce679fc94087550a2cbe19c6047a6deaa69a3e0cac071a"
+    },
+    {
+      "command": "pnpm --filter @verbis/core-runtime exec playwright test --workers=1",
+      "exitCode": 0,
+      "log": "runtime-browser.log",
+      "sha256": "cdae3ce5091e820e33a251853612ccc2b9e48112bf29d3a5fdeccd48c88ca494"
+    },
+    {
+      "command": "DOCS_CROSS_BROWSER=1 pnpm --filter @verbis/docs-site e2e",
+      "exitCode": 0,
+      "log": "docs-browser.log",
+      "sha256": "d0c7b1bd7a87ca01ad17d917f6b4f255f71c2e6f97a6c92960fd7038b8645550"
+    },
+    {
+      "command": "node --test scripts/*.spec.mjs",
+      "exitCode": 0,
+      "log": "tooling.log",
+      "sha256": "c9dfc5018d80c7d61e8ad1ff6374127a42d2ed31c6f5c971087c65bb98b87a1a"
+    },
+    {
+      "command": "node scripts/dependency-security.mjs --output /tmp/verbis-product-recheck-20261004/dependency-audit.json",
+      "exitCode": 0,
+      "log": "dependency-policy.log",
+      "sha256": "bd8e82d1b76713ed66e24368434a7a7ff9553244952b5e14f670d0269d74438a"
+    },
+    {
+      "command": "node scripts/secret-scanner-policy.mjs",
+      "exitCode": 0,
+      "log": "secret-policy.log",
+      "sha256": "c19db1ac0a70128188bd0a735a5db0539f212eed572b16a7283f1c782430e198"
+    },
+    {
+      "command": "pnpm --filter @verbis/admin-web exec playwright test --config /tmp/verbis-product-recheck-20261004/admin-web-cross.config.ts --workers=1",
+      "exitCode": 0,
+      "log": "admin-cross-final.log",
+      "sha256": "293ccc936395adc6581e7d7aeadad5b2fef30880e7c70d8a6fb94d8d6cb207c9"
+    },
+    {
+      "command": "pnpm --filter @verbis/agent-web exec playwright test --config /tmp/verbis-product-recheck-20261004/agent-web-cross.config.ts --workers=1",
+      "exitCode": 0,
+      "log": "agent-cross.log",
+      "sha256": "1b37e7c759e257c08793422998f040114043aa5a7341c818a0bd3176e941744e"
+    },
+    {
+      "command": "pnpm --filter @verbis/designer-web exec playwright test --config /tmp/verbis-product-recheck-20261004/designer-web-cross.config.ts --workers=1",
+      "exitCode": 0,
+      "log": "designer-cross.log",
+      "sha256": "963addf7352540b754eb80e0970f8940a97abc9e4ffb6839b2fb0fa4668f91b4"
+    },
+    {
+      "command": "pnpm --filter @verbis/designer-web exec playwright test --config /tmp/verbis-product-recheck-20261004/designer-web-cross.config.ts --grep 'SSO sign-out|changing sign-in|release accessibility' --workers=1",
+      "exitCode": 0,
+      "log": "designer-auth-cross-verified.log",
+      "sha256": "d299d29ad4ec676687644ed5042e86b81f45dad9dfef4449d6bd7ab2ca8d5e54"
+    },
+    {
+      "command": "docker run --rm -v '/Users/ardamoustafa/agent scripting/apps/connector-avaya-aes-sidecar:/workspace' -v /Users/ardamoustafa/.docker/run/docker.sock:/var/run/docker.sock -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal -e JAVA_TOOL_OPTIONS=-Dapi.version=1.44 -w /workspace gradle:8.14-jdk21 gradle test --no-daemon --rerun-tasks",
+      "exitCode": 0,
+      "log": "avaya-java.log",
+      "sha256": "1f8e5ae1d8c7669101dd8092e8992feea1e2dae7a0e25d98d58545b3140fd1f4"
+    },
+    {
+      "command": "docker run --rm -v '/Users/ardamoustafa/agent scripting/apps/connector-genesys-engage-sidecar:/workspace' -v /Users/ardamoustafa/.docker/run/docker.sock:/var/run/docker.sock -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal -e JAVA_TOOL_OPTIONS=-Dapi.version=1.44 -w /workspace gradle:8.14-jdk21 gradle test --no-daemon --rerun-tasks",
+      "exitCode": 0,
+      "log": "engage-java.log",
+      "sha256": "dad720bbeedfad2d91ea389527cc58971971df253c2a9d617f19df99d8b1e924"
+    },
+    {
+      "command": "pnpm format:check",
+      "exitCode": 0,
+      "log": "format-accepted.log",
+      "sha256": "bff4d47a317303ffb26fce499b79f07acb73b936c6ebb37e9df6339a369063a0"
+    },
+    {
+      "command": "pnpm exec eslint --max-warnings=0 scripts *.js",
+      "exitCode": 0,
+      "log": "root-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "log": "diff-check-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "sourceFiles": 1407,
+  "notes": [
+    "Initial failures remain in separate logs. Command duration is retained only where the runner printed it.",
+    "Designer final 305 replaces the 302 result in the last monorepo run; current suite inventory is 4954 Vitest plus 4 docs Node tests."
+  ]
+}

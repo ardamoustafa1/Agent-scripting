@@ -1,0 +1,108 @@
+{
+  "config": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/node_modules/@playwright/test/cli.js",
+      "test"
+    ],
+    "configFile": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/playwright.config.ts",
+    "rootDir": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e",
+        "testIgnore": [
+          "/.*-live\\.spec\\.ts/"
+        ],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "live",
+        "name": "live",
+        "testDir": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/.*-live\\.spec\\.ts/"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "github",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "/private/tmp/verbis-v1-quality-20261004/tests/playwright/flaky-reporter.ts",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 5,
+    "webServer": {
+      "command": "pnpm exec vite preview",
+      "url": "http://127.0.0.1:5173/health",
+      "reuseExistingServer": false,
+      "timeout": 60000
+    }
+  },
+  "suites": [],
+  "errors": [
+    {
+      "message": "Error: http://127.0.0.1:5173/health is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.",
+      "stack": "Error: http://127.0.0.1:5173/health is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer."
+    }
+  ],
+  "stats": {
+    "startTime": "2026-10-04T08:07:48.098Z",
+    "duration": 45.73399999999998,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

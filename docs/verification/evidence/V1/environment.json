@@ -1,0 +1,16 @@
+{
+  "source": "/Users/ardamoustafa/agent scripting",
+  "workspace": "/tmp/verbis-v1-quality-20261004",
+  "cleanNodeModulesBeforeInstall": true,
+  "cacheMode": "TURBO_FORCE=true; no copied local Turbo cache",
+  "node": "v24.11.1",
+  "pnpm": "9.15.4",
+  "platform": "Darwin arm64",
+  "envKeysSet": [
+    "CI",
+    "TURBO_FORCE",
+    "NO_COLOR",
+    "DO_NOT_TRACK"
+  ],
+  "secretFilesCopied": false
+}

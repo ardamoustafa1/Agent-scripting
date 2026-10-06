@@ -1,0 +1,59 @@
+[
+  {
+    "name": "routes",
+    "command": [
+      "pnpm",
+      "--filter",
+      "@verbis/api",
+      "exec",
+      "vitest",
+      "run",
+      "--config",
+      "../../tests/verification/v2.config.mjs",
+      "tests/verification/routes.audit.spec.ts",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/routes-tests.json"
+    ],
+    "durationSeconds": 10.663188934326172,
+    "exitCode": 0
+  },
+  {
+    "name": "keycloak",
+    "command": [
+      "pnpm",
+      "--filter",
+      "@verbis/api",
+      "exec",
+      "vitest",
+      "run",
+      "--config",
+      "../../tests/verification/v2.config.mjs",
+      "tests/verification/keycloak.audit.spec.ts",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/keycloak-tests.json"
+    ],
+    "durationSeconds": 44.30773210525513,
+    "exitCode": 1
+  },
+  {
+    "name": "expr-browser",
+    "command": [
+      "pnpm",
+      "--filter",
+      "@verbis/api",
+      "exec",
+      "vitest",
+      "run",
+      "--config",
+      "../../tests/verification/v2.config.mjs",
+      "tests/verification/expr-browser.audit.spec.ts",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/expr-browser-tests.json"
+    ],
+    "durationSeconds": 11.316725969314575,
+    "exitCode": 1
+  }
+]

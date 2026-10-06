@@ -1,0 +1,104 @@
+{
+  "rawFindings": 14,
+  "reviewedRealCredentials": 0,
+  "review": [
+    {
+      "rule": "generic-api-key",
+      "file": "apps/api/coverage/lcov-report/src/modules/admin/workspace.service.ts.html",
+      "line": 989,
+      "classification": "reviewed false positive",
+      "reason": "Generated copy of the reviewed SAML XML parser vocabulary; no literal credential."
+    },
+    {
+      "rule": "private-key",
+      "file": "apps/api/coverage/lcov-report/src/modules/identity/saml/sp-credentials.ts.html",
+      "line": 245,
+      "classification": "reviewed false positive",
+      "reason": "Generated copy of the reviewed PKCS8 serializer template; key bytes are runtime generated."
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "apps/api/coverage/src/modules/admin/workspace.service.ts.html",
+      "line": 989,
+      "classification": "reviewed false positive",
+      "reason": "Generated copy of the reviewed SAML XML parser vocabulary; no literal credential."
+    },
+    {
+      "rule": "private-key",
+      "file": "apps/api/coverage/src/modules/identity/saml/sp-credentials.ts.html",
+      "line": 245,
+      "classification": "reviewed false positive",
+      "reason": "Generated copy of the reviewed PKCS8 serializer template; key bytes are runtime generated."
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "apps/api/dist/modules/admin/workspace.service.js",
+      "line": 51,
+      "classification": "reviewed false positive",
+      "reason": "Generated copy of the reviewed SAML XML parser vocabulary; no literal credential."
+    },
+    {
+      "rule": "private-key",
+      "file": "apps/api/dist/modules/identity/saml/sp-credentials.js",
+      "line": 34,
+      "classification": "reviewed false positive",
+      "reason": "Generated copy of the reviewed PKCS8 serializer template; key bytes are runtime generated."
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "docs/verification/evidence/V1/coverage/apps/api/html/lcov-report/src/modules/admin/workspace.service.ts.html",
+      "line": 989,
+      "classification": "reviewed false positive",
+      "reason": "Generated copy of the reviewed SAML XML parser vocabulary; no literal credential."
+    },
+    {
+      "rule": "private-key",
+      "file": "docs/verification/evidence/V1/coverage/apps/api/html/lcov-report/src/modules/identity/saml/sp-credentials.ts.html",
+      "line": 245,
+      "classification": "reviewed false positive",
+      "reason": "Generated copy of the reviewed PKCS8 serializer template; key bytes are runtime generated."
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "docs/verification/evidence/V1/coverage/apps/api/html/src/modules/admin/workspace.service.ts.html",
+      "line": 989,
+      "classification": "reviewed false positive",
+      "reason": "Generated copy of the reviewed SAML XML parser vocabulary; no literal credential."
+    },
+    {
+      "rule": "private-key",
+      "file": "docs/verification/evidence/V1/coverage/apps/api/html/src/modules/identity/saml/sp-credentials.ts.html",
+      "line": 245,
+      "classification": "reviewed false positive",
+      "reason": "Generated copy of the reviewed PKCS8 serializer template; key bytes are runtime generated."
+    },
+    {
+      "rule": "curl-auth-header",
+      "file": "docs/verification/V1_QUALITY_REPORT.md",
+      "line": 3300,
+      "classification": "reviewed false positive",
+      "reason": "Historical report quotes the exact negative cURL fixture with Bearer synthetic."
+    },
+    {
+      "rule": "curl-auth-header",
+      "file": "docs/verification/V1_QUALITY_REPORT.md",
+      "line": 3538,
+      "classification": "reviewed false positive",
+      "reason": "Historical report quotes the exact negative cURL fixture with Bearer synthetic."
+    },
+    {
+      "rule": "curl-auth-header",
+      "file": "docs/verification/evidence/V1/static-findings.json",
+      "line": 18918,
+      "classification": "reviewed false positive",
+      "reason": "Historical report quotes the exact negative cURL fixture with Bearer synthetic."
+    },
+    {
+      "rule": "curl-auth-header",
+      "file": "docs/verification/evidence/V1/static-findings.json",
+      "line": 20854,
+      "classification": "reviewed false positive",
+      "reason": "Historical report quotes the exact negative cURL fixture with Bearer synthetic."
+    }
+  ]
+}

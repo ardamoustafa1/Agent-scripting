@@ -1,0 +1,21 @@
+{
+  "gitHEAD": "unborn; no commits",
+  "trackedDiffSHA256": {
+    "git diff --binary": {
+      "sha256": "0ad8170491efba84d6c6e218d62b7db7ff9c408d9a608a93a0a0644d8edc8594",
+      "bytes": 1561651
+    },
+    "git diff --cached --binary": {
+      "sha256": "c55b012d662133f1e0d1cb0ca2a88bc8b11c247b240a34da2b2a346320f5d2d5",
+      "bytes": 617462
+    }
+  },
+  "sourceFiles": 2148,
+  "tools": {
+    "docker": "29.7.2",
+    "gitleaks": "8.30.1",
+    "trivy": "Version: 0.74.0\nVulnerability DB:\n  Version: 2\n  UpdatedAt: 2026-10-04 01:47:20.093525258 +0000 UTC\n  NextUpdate: 2026-10-05 01:47:20.093524687 +0000 UTC\n  DownloadedAt: 2026-10-04 08:14:44.63763 +0000 UTC\nCheck Bundle:\n  Digest: sha256:1583562f8b90ed2a071b99f0e5ffff6b57e4ceb6ca3e4796577b4e6a339eb74c\n  DownloadedAt: 2026-10-04 08:14:45.144639 +0000 UTC",
+    "npm": "11.6.2",
+    "helm": "v4.2.4+g3900f43"
+  }
+}

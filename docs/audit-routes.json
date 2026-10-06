@@ -1,0 +1,1845 @@
+{
+  "testsExecuted": false,
+  "interpretation": "Static call reachability only; branch, transaction and live endpoint acceptance pending.",
+  "routes": [
+    {
+      "method": "DELETE",
+      "path": "/scim/v2/:tenant/Groups/:id",
+      "controller": "ScimController",
+      "handler": "deleteGroup",
+      "file": "apps/api/src/modules/identity/scim/scim.controller.ts",
+      "line": 323,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/scim/v2/:tenant/Users/:id",
+      "controller": "ScimController",
+      "handler": "deleteUser",
+      "file": "apps/api/src/modules/identity/scim/scim.controller.ts",
+      "line": 237,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/analytics/schedules/:id",
+      "controller": "AnalyticsController",
+      "handler": "deleteSchedule",
+      "file": "apps/api/src/modules/analytics/analytics.controller.ts",
+      "line": 63,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/assignments/:id",
+      "controller": "AssignmentsController",
+      "handler": "remove",
+      "file": "apps/api/src/modules/assignments/assignments.controller.ts",
+      "line": 104,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/break-glass-accounts/:userId",
+      "controller": "BreakGlassController",
+      "handler": "disable",
+      "file": "apps/api/src/modules/identity/break-glass/break-glass.controller.ts",
+      "line": 121,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/campaigns/:id",
+      "controller": "CampaignsController",
+      "handler": "remove",
+      "file": "apps/api/src/modules/campaigns/campaigns.controller.ts",
+      "line": 91,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/identity-providers/:id",
+      "controller": "IdentityAdminController",
+      "handler": "deleteIdp",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 151,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/identity-providers/:id/scim-tokens/:tokenId",
+      "controller": "IdentityAdminController",
+      "handler": "revokeScimToken",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 224,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/identity-providers/:id/sp-credentials/:credentialId",
+      "controller": "IdentityAdminController",
+      "handler": "removeCredential",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 190,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/me/sessions",
+      "controller": "IdentityAdminController",
+      "handler": "endMyOtherSessions",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 344,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/me/sessions/:sessionId",
+      "controller": "IdentityAdminController",
+      "handler": "endMySession",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 331,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/service-clients/:id",
+      "controller": "IdentityAdminController",
+      "handler": "deleteClient",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 306,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/siem-destinations/:id",
+      "controller": "SiemDestinationsController",
+      "handler": "remove",
+      "file": "apps/api/src/modules/audit/siem/siem-destinations.controller.ts",
+      "line": 62,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/users/:id/sessions",
+      "controller": "IdentityAdminController",
+      "handler": "endUserSessions",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 386,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/users/:id/sessions/:sessionId",
+      "controller": "IdentityAdminController",
+      "handler": "endUserSession",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 373,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/scim/v2/:tenant/Groups/:id",
+      "controller": "ScimController",
+      "handler": "patchGroup",
+      "file": "apps/api/src/modules/identity/scim/scim.controller.ts",
+      "line": 308,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/scim/v2/:tenant/Users/:id",
+      "controller": "ScimController",
+      "handler": "patchUser",
+      "file": "apps/api/src/modules/identity/scim/scim.controller.ts",
+      "line": 222,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/v1/assignments/:id",
+      "controller": "AssignmentsController",
+      "handler": "update",
+      "file": "apps/api/src/modules/assignments/assignments.controller.ts",
+      "line": 88,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/v1/campaigns/:id",
+      "controller": "CampaignsController",
+      "handler": "update",
+      "file": "apps/api/src/modules/campaigns/campaigns.controller.ts",
+      "line": 75,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/v1/identity-providers/:id",
+      "controller": "IdentityAdminController",
+      "handler": "updateIdp",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 135,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/v1/scripts/:id",
+      "controller": "ScriptsController",
+      "handler": "update",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 137,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/v1/service-clients/:id",
+      "controller": "IdentityAdminController",
+      "handler": "updateClient",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 277,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/v1/siem-destinations/:id",
+      "controller": "SiemDestinationsController",
+      "handler": "update",
+      "file": "apps/api/src/modules/audit/siem/siem-destinations.controller.ts",
+      "line": 46,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/v1/tenant/settings",
+      "controller": "TenancyController",
+      "handler": "updateSettings",
+      "file": "apps/api/src/modules/tenancy/tenancy.controller.ts",
+      "line": 33,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/break-glass/login",
+      "controller": "BreakGlassController",
+      "handler": "login",
+      "file": "apps/api/src/modules/identity/break-glass/break-glass.controller.ts",
+      "line": 55,
+      "decorators": [
+        "Public"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/discover",
+      "controller": "AuthController",
+      "handler": "discover",
+      "file": "apps/api/src/modules/identity/login/auth.controller.ts",
+      "line": 98,
+      "decorators": [
+        "Public"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "controller": "AuthController",
+      "handler": "logout",
+      "file": "apps/api/src/modules/identity/login/auth.controller.ts",
+      "line": 249,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/oidc/:tenant/:idp/backchannel-logout",
+      "controller": "AuthController",
+      "handler": "backchannelLogout",
+      "file": "apps/api/src/modules/identity/login/auth.controller.ts",
+      "line": 161,
+      "decorators": [
+        "Public"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/saml/:tenant/:idp/acs",
+      "controller": "SamlController",
+      "handler": "acs",
+      "file": "apps/api/src/modules/identity/saml/saml.controller.ts",
+      "line": 50,
+      "decorators": [
+        "Public"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/saml/:tenant/:idp/slo",
+      "controller": "SamlController",
+      "handler": "sloPost",
+      "file": "apps/api/src/modules/identity/saml/saml.controller.ts",
+      "line": 92,
+      "decorators": [
+        "Public"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/oauth2/:tenant/token",
+      "controller": "OAuth2Controller",
+      "handler": "token",
+      "file": "apps/api/src/modules/identity/service-auth/oauth2.controller.ts",
+      "line": 47,
+      "decorators": [
+        "Public"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/scim/v2/:tenant/Bulk",
+      "controller": "ScimController",
+      "handler": "bulk",
+      "file": "apps/api/src/modules/identity/scim/scim.controller.ts",
+      "line": 89,
+      "decorators": [
+        "OwnTenantTransactions",
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/scim/v2/:tenant/Groups",
+      "controller": "ScimController",
+      "handler": "createGroup",
+      "file": "apps/api/src/modules/identity/scim/scim.controller.ts",
+      "line": 275,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/scim/v2/:tenant/Users",
+      "controller": "ScimController",
+      "handler": "createUser",
+      "file": "apps/api/src/modules/identity/scim/scim.controller.ts",
+      "line": 189,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/admin/connectors",
+      "controller": "AdminWorkspaceController",
+      "handler": "createConnector",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 101,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/admin/connectors/:id/test",
+      "controller": "AdminWorkspaceController",
+      "handler": "test",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 122,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/admin/identity-providers/:id/test",
+      "controller": "AdminWorkspaceController",
+      "handler": "testIdentity",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 129,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/admin/identity/discovery",
+      "controller": "AdminWorkspaceController",
+      "handler": "discovery",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 139,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/admin/identity/saml-import",
+      "controller": "AdminWorkspaceController",
+      "handler": "saml",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 146,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/admin/launch-issuers",
+      "controller": "AdminWorkspaceController",
+      "handler": "createIssuer",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 160,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/admin/outbox/:id/requeue",
+      "controller": "AdminController",
+      "handler": "requeue",
+      "file": "apps/api/src/modules/admin/admin.controller.ts",
+      "line": 24,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/admin/privacy-requests",
+      "controller": "AdminWorkspaceController",
+      "handler": "privacyCreate",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 197,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/admin/privacy-requests/:id/process",
+      "controller": "AdminWorkspaceController",
+      "handler": "process",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 204,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/admin/tenants",
+      "controller": "AdminWorkspaceController",
+      "handler": "createTenant",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 61,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/ai/reconcile",
+      "controller": "AiController",
+      "handler": "reconcile",
+      "file": "apps/api/src/modules/ai/ai.controller.ts",
+      "line": 46,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/ai/suggestions",
+      "controller": "AiController",
+      "handler": "generate",
+      "file": "apps/api/src/modules/ai/ai.controller.ts",
+      "line": 61,
+      "decorators": [
+        "OwnTenantTransactions"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/analytics/schedules",
+      "controller": "AnalyticsController",
+      "handler": "schedule",
+      "file": "apps/api/src/modules/analytics/analytics.controller.ts",
+      "line": 57,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/assignments",
+      "controller": "AssignmentsController",
+      "handler": "create",
+      "file": "apps/api/src/modules/assignments/assignments.controller.ts",
+      "line": 69,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/assignments/batch",
+      "controller": "AssignmentsController",
+      "handler": "batch",
+      "file": "apps/api/src/modules/assignments/assignments.controller.ts",
+      "line": 36,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/audit-events/verify",
+      "controller": "AuditController",
+      "handler": "verify",
+      "file": "apps/api/src/modules/audit/audit.controller.ts",
+      "line": 100,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/authz/roles",
+      "controller": "AuthzController",
+      "handler": "create",
+      "file": "apps/api/src/modules/authz/authz.controller.ts",
+      "line": 61,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/break-glass-accounts",
+      "controller": "BreakGlassController",
+      "handler": "enroll",
+      "file": "apps/api/src/modules/identity/break-glass/break-glass.controller.ts",
+      "line": 94,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/break-glass-accounts/:userId/activate",
+      "controller": "BreakGlassController",
+      "handler": "activate",
+      "file": "apps/api/src/modules/identity/break-glass/break-glass.controller.ts",
+      "line": 109,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/campaigns",
+      "controller": "CampaignsController",
+      "handler": "create",
+      "file": "apps/api/src/modules/campaigns/campaigns.controller.ts",
+      "line": 56,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/connector-hub/connectors/:id/engage/agent-token",
+      "controller": "GenesysEngageHubController",
+      "handler": "token",
+      "file": "apps/api/src/modules/connectors/genesys-engage/genesys-engage.controller.ts",
+      "line": 134,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/connector-hub/connectors/:id/events",
+      "controller": "ConnectorHubController",
+      "handler": "ingest",
+      "file": "apps/api/src/modules/connectors/connector-hub.controller.ts",
+      "line": 78,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/connector-hub/connectors/:id/health",
+      "controller": "ConnectorHubController",
+      "handler": "health",
+      "file": "apps/api/src/modules/connectors/connector-hub.controller.ts",
+      "line": 65,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/connector-hub/connectors/:id/secrets",
+      "controller": "ConnectorHubController",
+      "handler": "secrets",
+      "file": "apps/api/src/modules/connectors/connector-hub.controller.ts",
+      "line": 50,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/data-sources",
+      "controller": "IntegrationsController",
+      "handler": "create",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 76,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/data-sources/:id/introspection",
+      "controller": "IntegrationsController",
+      "handler": "introspection",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 220,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/data-sources/:id/preview",
+      "controller": "IntegrationsController",
+      "handler": "preview",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 161,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/data-sources/:id/promotion",
+      "controller": "IntegrationsController",
+      "handler": "promote",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 120,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/data-sources/:id/promotion/approve",
+      "controller": "IntegrationsController",
+      "handler": "approve",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 133,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/data-sources/:id/test",
+      "controller": "IntegrationsController",
+      "handler": "test",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 173,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/data-sources/:id/wsdl",
+      "controller": "IntegrationsController",
+      "handler": "wsdl",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 200,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/data-sources/preview",
+      "controller": "IntegrationsController",
+      "handler": "draftPreview",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 61,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/genesys-engage/connectors/:id/unlink",
+      "controller": "GenesysEngageAgentController",
+      "handler": "unlink",
+      "file": "apps/api/src/modules/connectors/genesys-engage/genesys-engage.controller.ts",
+      "line": 109,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/identity-providers",
+      "controller": "IdentityAdminController",
+      "handler": "createIdp",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 116,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/identity-providers/:id/scim-tokens",
+      "controller": "IdentityAdminController",
+      "handler": "issueScimToken",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 209,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/identity-providers/:id/sp-credentials",
+      "controller": "IdentityAdminController",
+      "handler": "rotate",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 164,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/identity-providers/:id/sp-credentials/:credentialId/promote",
+      "controller": "IdentityAdminController",
+      "handler": "promote",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 178,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/launch-intents",
+      "controller": "LaunchController",
+      "handler": "create",
+      "file": "apps/api/src/modules/launch/launch.controller.ts",
+      "line": 47,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/launch/embedded",
+      "controller": "LaunchController",
+      "handler": "embedded",
+      "file": "apps/api/src/modules/launch/launch.controller.ts",
+      "line": 75,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/launch/jws",
+      "controller": "LaunchController",
+      "handler": "jws",
+      "file": "apps/api/src/modules/launch/launch.controller.ts",
+      "line": 88,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/launch/param-signals",
+      "controller": "LaunchController",
+      "handler": "signal",
+      "file": "apps/api/src/modules/launch/launch.controller.ts",
+      "line": 125,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/launch/preview",
+      "controller": "LaunchController",
+      "handler": "preview",
+      "file": "apps/api/src/modules/launch/launch.controller.ts",
+      "line": 101,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/launch/redeem",
+      "controller": "LaunchController",
+      "handler": "redeem",
+      "file": "apps/api/src/modules/launch/launch.controller.ts",
+      "line": 64,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/launch/socket-ticket",
+      "controller": "LaunchController",
+      "handler": "ticket",
+      "file": "apps/api/src/modules/launch/launch.controller.ts",
+      "line": 112,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/script-packages/export",
+      "controller": "PackagesController",
+      "handler": "export",
+      "file": "apps/api/src/modules/scripts/authoring.controller.ts",
+      "line": 128,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/script-packages/import",
+      "controller": "PackagesController",
+      "handler": "import",
+      "file": "apps/api/src/modules/scripts/authoring.controller.ts",
+      "line": 147,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/script-resolutions",
+      "controller": "RoutingController",
+      "handler": "resolve",
+      "file": "apps/api/src/modules/routing/routing.controller.ts",
+      "line": 28,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts",
+      "controller": "ScriptsController",
+      "handler": "create",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 121,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/rollback",
+      "controller": "TeamController",
+      "handler": "rollback",
+      "file": "apps/api/src/modules/scripts/team.controller.ts",
+      "line": 130,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions",
+      "controller": "ScriptsController",
+      "handler": "createVersion",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 153,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/collaboration/flush",
+      "controller": "CollaborationController",
+      "handler": "flush",
+      "file": "apps/api/src/modules/scripts/collaboration.controller.ts",
+      "line": 36,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/collaboration/ticket",
+      "controller": "CollaborationController",
+      "handler": "ticket",
+      "file": "apps/api/src/modules/scripts/collaboration.controller.ts",
+      "line": 21,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/comments",
+      "controller": "TeamController",
+      "handler": "comment",
+      "file": "apps/api/src/modules/scripts/team.controller.ts",
+      "line": 93,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/comments/:thread/replies",
+      "controller": "TeamController",
+      "handler": "reply",
+      "file": "apps/api/src/modules/scripts/team.controller.ts",
+      "line": 104,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/comments/:thread/resolve",
+      "controller": "TeamController",
+      "handler": "resolve",
+      "file": "apps/api/src/modules/scripts/team.controller.ts",
+      "line": 117,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/preview/data-sources/:source",
+      "controller": "ScriptsController",
+      "handler": "livePreview",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 79,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/publish",
+      "controller": "ScriptsController",
+      "handler": "publish",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 268,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/regression",
+      "controller": "ScriptsController",
+      "handler": "regression",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 67,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/reopen",
+      "controller": "ScriptsController",
+      "handler": "reopen",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 259,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/retire",
+      "controller": "ScriptsController",
+      "handler": "retire",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 277,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/reviews",
+      "controller": "ScriptsController",
+      "handler": "review",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 236,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/schedule",
+      "controller": "TeamController",
+      "handler": "schedule",
+      "file": "apps/api/src/modules/scripts/team.controller.ts",
+      "line": 32,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/submit",
+      "controller": "ScriptsController",
+      "handler": "submit",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 214,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/withdraw",
+      "controller": "ScriptsController",
+      "handler": "withdraw",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 227,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/secrets",
+      "controller": "IntegrationsController",
+      "handler": "setSecret",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 142,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/security/csp-reports",
+      "controller": "SecurityReportsController",
+      "handler": "report",
+      "file": "apps/api/src/modules/audit/security-reports.controller.ts",
+      "line": 29,
+      "decorators": [
+        "Public"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/service-clients",
+      "controller": "IdentityAdminController",
+      "handler": "createClient",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 259,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/service-clients/:id/secret",
+      "controller": "IdentityAdminController",
+      "handler": "rotateSecret",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 293,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/attach",
+      "controller": "RuntimeCommandsController",
+      "handler": "attach",
+      "file": "apps/api/src/modules/runtime/runtime-commands.controller.ts",
+      "line": 43,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/commands",
+      "controller": "RuntimeCommandsController",
+      "handler": "command",
+      "file": "apps/api/src/modules/runtime/runtime-commands.controller.ts",
+      "line": 80,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/desktop/data-source",
+      "controller": "AgentDesktopController",
+      "handler": "call",
+      "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
+      "line": 243,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/desktop/data-source-recovery",
+      "controller": "AgentDesktopController",
+      "handler": "recovery",
+      "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
+      "line": 195,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/desktop/failure",
+      "controller": "AgentDesktopController",
+      "handler": "failure",
+      "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
+      "line": 169,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/desktop/telemetry",
+      "controller": "AgentDesktopController",
+      "handler": "telemetry",
+      "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
+      "line": 132,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/outcome",
+      "controller": "RuntimeCommandsController",
+      "handler": "outcome",
+      "file": "apps/api/src/modules/runtime/runtime-commands.controller.ts",
+      "line": 91,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/recording",
+      "controller": "RuntimeCommandsController",
+      "handler": "recording",
+      "file": "apps/api/src/modules/runtime/runtime-commands.controller.ts",
+      "line": 113,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/release",
+      "controller": "RuntimeCommandsController",
+      "handler": "release",
+      "file": "apps/api/src/modules/runtime/runtime-commands.controller.ts",
+      "line": 69,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/secure-field",
+      "controller": "RuntimeCommandsController",
+      "handler": "secure",
+      "file": "apps/api/src/modules/runtime/runtime-commands.controller.ts",
+      "line": 102,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/socket-ticket",
+      "controller": "RuntimeCommandsController",
+      "handler": "ticket",
+      "file": "apps/api/src/modules/runtime/runtime-commands.controller.ts",
+      "line": 137,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/takeover",
+      "controller": "RuntimeCommandsController",
+      "handler": "takeover",
+      "file": "apps/api/src/modules/runtime/runtime-commands.controller.ts",
+      "line": 56,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/transfer",
+      "controller": "RuntimeCommandsController",
+      "handler": "transfer",
+      "file": "apps/api/src/modules/runtime/runtime-commands.controller.ts",
+      "line": 124,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:sessionId/data-sources/:id/execute",
+      "controller": "IntegrationsController",
+      "handler": "execute",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 183,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/shared-screens",
+      "controller": "SharedScreensController",
+      "handler": "create",
+      "file": "apps/api/src/modules/scripts/authoring.controller.ts",
+      "line": 47,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/shared-screens/:id/versions",
+      "controller": "SharedScreensController",
+      "handler": "publish",
+      "file": "apps/api/src/modules/scripts/authoring.controller.ts",
+      "line": 56,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/siem-destinations",
+      "controller": "SiemDestinationsController",
+      "handler": "create",
+      "file": "apps/api/src/modules/audit/siem/siem-destinations.controller.ts",
+      "line": 32,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/simulator/connectors/:id/interactions",
+      "controller": "SimulatorController",
+      "handler": "create",
+      "file": "apps/api/src/modules/connectors/simulator.controller.ts",
+      "line": 86,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/simulator/connectors/:id/interactions/:platformInteractionId/actions",
+      "controller": "SimulatorController",
+      "handler": "act",
+      "file": "apps/api/src/modules/connectors/simulator.controller.ts",
+      "line": 100,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/supervisor/sessions/:id/socket-ticket",
+      "controller": "RuntimeSupervisorController",
+      "handler": "ticket",
+      "file": "apps/api/src/modules/runtime/runtime-commands.controller.ts",
+      "line": 172,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/templates",
+      "controller": "TemplatesController",
+      "handler": "create",
+      "file": "apps/api/src/modules/scripts/authoring.controller.ts",
+      "line": 101,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/templates/:id/instantiate",
+      "controller": "TemplatesController",
+      "handler": "instantiate",
+      "file": "apps/api/src/modules/scripts/authoring.controller.ts",
+      "line": 110,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/scim/v2/:tenant/Groups/:id",
+      "controller": "ScimController",
+      "handler": "replaceGroup",
+      "file": "apps/api/src/modules/identity/scim/scim.controller.ts",
+      "line": 293,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/scim/v2/:tenant/Users/:id",
+      "controller": "ScimController",
+      "handler": "replaceUser",
+      "file": "apps/api/src/modules/identity/scim/scim.controller.ts",
+      "line": 207,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/admin/connectors/:id",
+      "controller": "AdminWorkspaceController",
+      "handler": "updateConnector",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 110,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/admin/launch-issuers/:id",
+      "controller": "AdminWorkspaceController",
+      "handler": "issuer",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 167,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/admin/tenants/:id",
+      "controller": "AdminWorkspaceController",
+      "handler": "updateTenant",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 68,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/admin/users/:id/connector-mapping",
+      "controller": "AdminWorkspaceController",
+      "handler": "mapping",
+      "file": "apps/api/src/modules/admin/workspace.controller.ts",
+      "line": 179,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/ai/settings",
+      "controller": "AiController",
+      "handler": "save",
+      "file": "apps/api/src/modules/ai/ai.controller.ts",
+      "line": 39,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/authz/roles/:id",
+      "controller": "AuthzController",
+      "handler": "update",
+      "file": "apps/api/src/modules/authz/authz.controller.ts",
+      "line": 77,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/authz/users/:userId/role-scope",
+      "controller": "AuthzController",
+      "handler": "setScope",
+      "file": "apps/api/src/modules/authz/authz.controller.ts",
+      "line": 93,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/connectors/:id/attached-data-map",
+      "controller": "AttachedDataMapController",
+      "handler": "put",
+      "file": "apps/api/src/modules/connectors/genesys-engage/genesys-engage.controller.ts",
+      "line": 165,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/data-sources/:id",
+      "controller": "IntegrationsController",
+      "handler": "update",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 84,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/scripts/:id/versions/:number/document",
+      "controller": "ScriptsController",
+      "handler": "updateDraft",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 195,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/secrets/:id",
+      "controller": "IntegrationsController",
+      "handler": "rotate",
+      "file": "apps/api/src/modules/integrations/integrations.controller.ts",
+      "line": 150,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/users/:id/roles",
+      "controller": "IdentityAdminController",
+      "handler": "setUserRoles",
+      "file": "apps/api/src/modules/identity/admin/identity-admin.controller.ts",
+      "line": 407,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    }
+  ]
+}

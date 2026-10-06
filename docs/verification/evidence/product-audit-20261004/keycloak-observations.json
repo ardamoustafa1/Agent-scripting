@@ -1,0 +1,202 @@
+{
+  "image": "quay.io/keycloak/keycloak:26.8.0",
+  "results": [
+    {
+      "protocol": "oidc",
+      "networkPath": "/realms/v2/protocol/openid-connect/auth",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/patternfly.min.css",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/patternfly-addons.css",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/css/styles.css",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/js/passwordVisibility.js",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/js/authChecker.js",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/img/keycloak-bg-darken.svg",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/assets/fonts/RedHatText/RedHatText-Regular.woff2",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/assets/fonts/RedHatDisplay/RedHatDisplay-Medium.woff2",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/assets/fonts/RedHatText/RedHatText-Medium.woff2",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/assets/fonts/webfonts/fa-solid-900.woff2",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/realms/v2/login-actions/authenticate",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/api/auth/oidc/callback",
+      "networkOrigin": "http://localhost:60344"
+    },
+    {
+      "protocol": "oidc",
+      "networkPath": "/",
+      "networkOrigin": "http://localhost:60344"
+    },
+    {
+      "protocol": "oidc",
+      "callbackStatus": 302,
+      "callbackLocation": "http://localhost:60344/",
+      "sessionIssued": true
+    },
+    {
+      "protocol": "oidc",
+      "logoutBrowserPath": "/",
+      "logoutBrowserOrigin": "http://localhost:60344"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/realms/v2/protocol/saml",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/patternfly.min.css",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/patternfly-addons.css",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/css/styles.css",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/js/passwordVisibility.js",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/js/authChecker.js",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/img/keycloak-bg-darken.svg",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/assets/fonts/RedHatText/RedHatText-Regular.woff2",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/assets/fonts/RedHatDisplay/RedHatDisplay-Medium.woff2",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/assets/fonts/RedHatText/RedHatText-Medium.woff2",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/assets/fonts/webfonts/fa-solid-900.woff2",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/realms/v2/login-actions/authenticate",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/patternfly.min.css",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/patternfly-addons.css",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/css/styles.css",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/js/passwordVisibility.js",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/js/authChecker.js",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/login/keycloak.v2/img/keycloak-bg-darken.svg",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/assets/fonts/RedHatText/RedHatText-Regular.woff2",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/resources/dgh4k/common/keycloak/vendor/patternfly-v5/assets/fonts/RedHatDisplay/RedHatDisplay-Medium.woff2",
+      "networkOrigin": "http://localhost:55041"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/api/auth/saml/v2-keycloak-395951-1/01a10858-be84-79fe-9d71-2b6de9c78c47/acs",
+      "networkOrigin": "http://localhost:60344"
+    },
+    {
+      "protocol": "saml",
+      "networkPath": "/",
+      "networkOrigin": "http://localhost:60344"
+    },
+    {
+      "protocol": "saml",
+      "callbackStatus": 302,
+      "callbackLocation": "http://localhost:60344/",
+      "sessionIssued": true
+    }
+  ]
+}

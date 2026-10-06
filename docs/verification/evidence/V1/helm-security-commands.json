@@ -1,0 +1,25 @@
+[
+  {
+    "name": "38-trivy-rendered-helm",
+    "argv": [
+      "trivy",
+      "config",
+      "--format",
+      "json",
+      "--output",
+      "/Users/ardamoustafa/agent scripting/docs/verification/evidence/V1/trivy-helm-rendered.json",
+      "--exit-code",
+      "1",
+      "/Users/ardamoustafa/agent scripting/docs/verification/evidence/V1/helm-rendered.yaml"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:20:32.680191+00:00",
+    "timeoutSeconds": 180,
+    "log": "38-trivy-rendered-helm.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 0.989,
+    "endUTC": "2026-10-04T08:20:33.669370+00:00",
+    "logSHA256": "04ba813f31341835a47c66460324b3a129d9c062150b0fb3c2e4b5acd399a32c"
+  }
+]

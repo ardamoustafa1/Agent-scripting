@@ -1,0 +1,61 @@
+{
+  "environment": {
+    "workspace": "/Users/ardamoustafa/agent scripting",
+    "node": "24.11.1",
+    "pnpm": "9.15.4",
+    "turbo": "2.11.6",
+    "date": "2026-10-04",
+    "timezone": "Europe/Istanbul"
+  },
+  "accepted": [
+    {
+      "command": "pnpm exec turbo run test --force --concurrency=1 --continue=dependencies-successful",
+      "exitCode": 0,
+      "log": "tests-verified.log",
+      "vitestPassed": 4940,
+      "docsNodePassed": 4,
+      "tasksPassed": 32
+    },
+    {
+      "command": "pnpm exec turbo run lint typecheck build --concurrency=2",
+      "exitCode": 0,
+      "log": "quality-accepted.log",
+      "tasksPassed": 58,
+      "cached": 54
+    },
+    {
+      "command": "pnpm coverage:check",
+      "exitCode": 0,
+      "log": "coverage-verified.log",
+      "runtimeWorkspaces": 18
+    },
+    {
+      "command": "pnpm --filter @verbis/api exec vitest run --config ../../tests/verification/v2.config.mjs",
+      "exitCode": 0,
+      "log": "verification-verified.log",
+      "passed": 275
+    },
+    {
+      "command": "pnpm --filter @verbis/api test:perf",
+      "exitCode": 0,
+      "log": "api-performance-final.log",
+      "passed": 2
+    },
+    {
+      "command": "DOCS_CROSS_BROWSER=1 pnpm --filter @verbis/docs-site e2e",
+      "exitCode": 0,
+      "log": "docs-browser-verified.log",
+      "passed": 12
+    }
+  ],
+  "crossBrowserCommands": [
+    "pnpm exec playwright test --config /tmp/verbis-product-audit-20261004/admin-web-cross.config.ts --workers=1",
+    "pnpm exec playwright test --config /tmp/verbis-product-audit-20261004/agent-web-cross.config.ts --workers=1",
+    "pnpm exec playwright test --config /tmp/verbis-product-audit-20261004/designer-web-cross.config.ts --workers=1"
+  ],
+  "javaCommands": [
+    "docker run --rm -v '/Users/ardamoustafa/agent scripting/apps/connector-avaya-aes-sidecar:/workspace' -v /Users/ardamoustafa/.docker/run/docker.sock:/var/run/docker.sock -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal -e JAVA_TOOL_OPTIONS=-Dapi.version=1.44 -w /workspace gradle:8.14-jdk21 gradle test --no-daemon --rerun-tasks",
+    "docker run --rm -v '/Users/ardamoustafa/agent scripting/apps/connector-genesys-engage-sidecar:/workspace' -v /Users/ardamoustafa/.docker/run/docker.sock:/var/run/docker.sock -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal -e JAVA_TOOL_OPTIONS=-Dapi.version=1.44 -w /workspace gradle:8.14-jdk21 gradle test --no-daemon --rerun-tasks"
+  ],
+  "interpretation": "Accepted final repetitions do not erase initial failed runs. Browser main app APIs use synthetic fixture responses. External live acceptance remains unverified. No deployment or commit."
+}

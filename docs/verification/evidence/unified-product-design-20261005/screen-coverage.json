@@ -1,0 +1,54 @@
+{
+  "designerRoutes": [
+    "analytics",
+    "campaigns",
+    "scripts",
+    "screens",
+    "integrations",
+    "variables",
+    "ai",
+    "templates",
+    "releases",
+    "settings"
+  ],
+  "adminRoutes": [
+    "analytics",
+    "tenants",
+    "identity",
+    "users",
+    "connectors",
+    "secrets",
+    "ai",
+    "audit",
+    "security",
+    "data",
+    "branding",
+    "simulator",
+    "systemHealth"
+  ],
+  "agentSurfaces": [
+    "sign-in",
+    "waiting",
+    "launch",
+    "genesys-linked",
+    "interaction tabs",
+    "active script",
+    "context sidebar",
+    "wrap-up",
+    "completed",
+    "supervisor",
+    "preferences",
+    "embedded"
+  ],
+  "shared": [
+    "AccessLayout",
+    "ScriptAtlas",
+    "brand tokens",
+    "inputs/actions",
+    "cards/tables",
+    "portals/overlays",
+    "analytics/AI",
+    "runtime components"
+  ],
+  "documentationHtmlPages": 71
+}

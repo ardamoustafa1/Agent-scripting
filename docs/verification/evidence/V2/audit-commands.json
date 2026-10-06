@@ -1,0 +1,40 @@
+[
+  {
+    "name": "routes",
+    "command": [
+      "pnpm",
+      "--filter",
+      "@verbis/api",
+      "exec",
+      "vitest",
+      "run",
+      "--config",
+      "../../tests/verification/v2.config.mjs",
+      "tests/verification/routes.audit.spec.ts",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/routes-tests.json"
+    ],
+    "durationSeconds": 10.842569351196289,
+    "exitCode": 1
+  },
+  {
+    "name": "keycloak",
+    "command": [
+      "pnpm",
+      "--filter",
+      "@verbis/api",
+      "exec",
+      "vitest",
+      "run",
+      "--config",
+      "../../tests/verification/v2.config.mjs",
+      "tests/verification/keycloak.audit.spec.ts",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/keycloak-tests.json"
+    ],
+    "durationSeconds": 43.35696792602539,
+    "exitCode": 1
+  }
+]

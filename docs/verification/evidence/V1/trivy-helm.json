@@ -1,0 +1,10 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.74.0"
+  },
+  "ReportID": "01a105fe-5b46-775e-8d27-3b383d5da391",
+  "CreatedAt": "2026-10-04T11:18:38.022485+03:00",
+  "ArtifactName": "/Users/ardamoustafa/agent scripting/docs/verification/evidence/V1/36-helm-render.log",
+  "ArtifactType": "filesystem"
+}

@@ -1,0 +1,461 @@
+[
+  {
+    "name": "00-source-copy",
+    "argv": [
+      "rsync",
+      "-a",
+      "--exclude=node_modules",
+      "--exclude=.git",
+      "--exclude=dist",
+      "--exclude=.turbo",
+      "--exclude=coverage",
+      "--exclude=playwright-report",
+      "--exclude=test-results",
+      "--exclude=.astro",
+      "--exclude=*.tsbuildinfo",
+      "--exclude=src/generated",
+      "--exclude=reports",
+      "--exclude=docs/verification/evidence",
+      "--exclude=.env",
+      "--exclude=.env.*",
+      "--exclude=secrets",
+      "/Users/ardamoustafa/agent scripting/",
+      "/tmp/verbis-v1-quality-20261004/"
+    ],
+    "cwd": "/Users/ardamoustafa/agent scripting",
+    "startUTC": "2026-10-04T08:02:10.792441+00:00",
+    "timeoutSeconds": 300,
+    "log": "00-source-copy.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 0.612,
+    "endUTC": "2026-10-04T08:02:11.404016+00:00",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "01-clean-install",
+    "argv": [
+      "pnpm",
+      "install",
+      "--frozen-lockfile"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:02:11.553141+00:00",
+    "timeoutSeconds": 1200,
+    "log": "01-clean-install.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 8.759,
+    "endUTC": "2026-10-04T08:02:20.312664+00:00",
+    "logSHA256": "ef56053a2099a79a21458f32cc5dd07e70796c73a945556a55f955575726dbf0"
+  },
+  {
+    "name": "02-build",
+    "argv": [
+      "pnpm",
+      "build",
+      "--concurrency=2",
+      "--continue=always"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:02:20.313154+00:00",
+    "timeoutSeconds": 1800,
+    "log": "02-build.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 23.044,
+    "endUTC": "2026-10-04T08:02:43.357653+00:00",
+    "logSHA256": "2eab495a1dabd14b924be2a19fdd38be06b77c74bc31990fc132864126468947"
+  },
+  {
+    "name": "03-lint",
+    "argv": [
+      "pnpm",
+      "lint"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:02:43.358261+00:00",
+    "timeoutSeconds": 900,
+    "log": "03-lint.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 57.295,
+    "endUTC": "2026-10-04T08:03:40.653051+00:00",
+    "logSHA256": "1a2515b56f8fb411c570bdeedcf4d5411f7c0752c7c25239cdef53a72fe2eebb"
+  },
+  {
+    "name": "04-typecheck",
+    "argv": [
+      "pnpm",
+      "typecheck",
+      "--concurrency=2",
+      "--continue=always"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:03:40.654007+00:00",
+    "timeoutSeconds": 900,
+    "log": "04-typecheck.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 18.882,
+    "endUTC": "2026-10-04T08:03:59.536410+00:00",
+    "logSHA256": "52e36df0d711044dde8b23159e8f029289e3196c9a422532ee7e3677daf6aab3"
+  },
+  {
+    "name": "05-tests-coverage",
+    "argv": [
+      "pnpm",
+      "test"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:03:59.536725+00:00",
+    "timeoutSeconds": 2400,
+    "log": "05-tests-coverage.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 135.282,
+    "endUTC": "2026-10-04T08:06:14.819287+00:00",
+    "logSHA256": "94f0a13125c34f9b2029100a880b55b1b9ccce09eb386fe1a2776b4c3ffab538"
+  },
+  {
+    "name": "06-coverage-gate",
+    "argv": [
+      "pnpm",
+      "coverage:check"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:06:14.819993+00:00",
+    "timeoutSeconds": 120,
+    "log": "06-coverage-gate.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 0.201,
+    "endUTC": "2026-10-04T08:06:15.021258+00:00",
+    "logSHA256": "895659cf93b00e7534eb394a73cbc409c5647753003b737a305873c4daae1679"
+  },
+  {
+    "name": "07-api-unit",
+    "argv": [
+      "pnpm",
+      "--filter",
+      "@verbis/api",
+      "test:unit"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:06:15.021647+00:00",
+    "timeoutSeconds": 900,
+    "log": "07-api-unit.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 10.482,
+    "endUTC": "2026-10-04T08:06:25.503701+00:00",
+    "logSHA256": "720f7c5ae32127d175be3bffa36a3366c890d95dba54c7c396c5f541ced1fe2b"
+  },
+  {
+    "name": "08-api-integration",
+    "argv": [
+      "pnpm",
+      "--filter",
+      "@verbis/api",
+      "test:integration"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:06:25.504159+00:00",
+    "timeoutSeconds": 1800,
+    "log": "08-api-integration.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 50.984,
+    "endUTC": "2026-10-04T08:07:16.488729+00:00",
+    "logSHA256": "9f05905c221401178d87fc232215c020ddde3a93157158bf388e5ab899cef8a8"
+  },
+  {
+    "name": "09-test-policy",
+    "argv": [
+      "pnpm",
+      "test:policy"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:07:16.489406+00:00",
+    "timeoutSeconds": 120,
+    "log": "09-test-policy.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 0.241,
+    "endUTC": "2026-10-04T08:07:16.730850+00:00",
+    "logSHA256": "e13859a4653505f218475653f44dff8ab4858aac7a6f6f75d37166f72f8f8ec5"
+  },
+  {
+    "name": "10-test-audit",
+    "argv": [
+      "pnpm",
+      "test:audit"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:07:16.731209+00:00",
+    "timeoutSeconds": 180,
+    "log": "10-test-audit.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 2.737,
+    "endUTC": "2026-10-04T08:07:19.468027+00:00",
+    "logSHA256": "086fa2d3f1c8520ec3243e65a1a0aa01cbca27235b811a6024092ecd6a6cb0d5"
+  },
+  {
+    "name": "11-test-contracts",
+    "argv": [
+      "pnpm",
+      "test:contracts"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:07:19.468453+00:00",
+    "timeoutSeconds": 600,
+    "log": "11-test-contracts.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 2.784,
+    "endUTC": "2026-10-04T08:07:22.252899+00:00",
+    "logSHA256": "f1700811a15cb915481b3c897e9df9afd726a49092331b235fe506321b82fbe8"
+  },
+  {
+    "name": "12-playwright-install",
+    "argv": [
+      "pnpm",
+      "exec",
+      "playwright",
+      "install",
+      "chromium"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:07:22.253589+00:00",
+    "timeoutSeconds": 600,
+    "log": "12-playwright-install.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 0.701,
+    "endUTC": "2026-10-04T08:07:22.954481+00:00",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "13-e2e",
+    "argv": [
+      "pnpm",
+      "e2e",
+      "--concurrency=1",
+      "--continue=always"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:07:22.954953+00:00",
+    "timeoutSeconds": 1800,
+    "log": "13-e2e.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 29.12,
+    "endUTC": "2026-10-04T08:07:52.074780+00:00",
+    "logSHA256": "d064002e7083025b5e5fad50caa1793ef863e7c30b59d4fb263b86c9ae2024a1"
+  },
+  {
+    "name": "14-docker-api",
+    "argv": [
+      "docker",
+      "build",
+      "--progress=plain",
+      "-f",
+      "infra/docker/node-app.Dockerfile",
+      "--build-arg",
+      "APP=api",
+      "-t",
+      "verbis-v1-audit/api:20261004",
+      "."
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:07:52.075407+00:00",
+    "timeoutSeconds": 1800,
+    "log": "14-docker-api.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 115.146,
+    "endUTC": "2026-10-04T08:09:47.221520+00:00",
+    "logSHA256": "aa78dfb1882d84278be2d146a38454f48742bc94a66c77f82253644ba238bd7d"
+  },
+  {
+    "name": "14-docker-connector-hub",
+    "argv": [
+      "docker",
+      "build",
+      "--progress=plain",
+      "-f",
+      "infra/docker/node-app.Dockerfile",
+      "--build-arg",
+      "APP=connector-hub",
+      "-t",
+      "verbis-v1-audit/connector-hub:20261004",
+      "."
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:09:47.223061+00:00",
+    "timeoutSeconds": 1800,
+    "log": "14-docker-connector-hub.log",
+    "status": "completed",
+    "exitCode": 0,
+    "durationSeconds": 76.199,
+    "endUTC": "2026-10-04T08:11:03.422716+00:00",
+    "logSHA256": "878a53cd22048beca0547464e8b89397f8888083bb19a158f2f17ad278454544"
+  },
+  {
+    "name": "15-docker-agent-web",
+    "argv": [
+      "docker",
+      "build",
+      "--progress=plain",
+      "-f",
+      "infra/docker/web-app.Dockerfile",
+      "--build-arg",
+      "APP=agent-web",
+      "-t",
+      "verbis-v1-audit/agent-web:20261004",
+      "."
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:11:03.428480+00:00",
+    "timeoutSeconds": 1800,
+    "log": "15-docker-agent-web.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 81.159,
+    "endUTC": "2026-10-04T08:12:24.587632+00:00",
+    "logSHA256": "b82f4e07ddb74e749c89f4a7c02417480f2f5d7ded4d24c3d54d4fb3e7dcb11f"
+  },
+  {
+    "name": "15-docker-designer-web",
+    "argv": [
+      "docker",
+      "build",
+      "--progress=plain",
+      "-f",
+      "infra/docker/web-app.Dockerfile",
+      "--build-arg",
+      "APP=designer-web",
+      "-t",
+      "verbis-v1-audit/designer-web:20261004",
+      "."
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:12:24.597000+00:00",
+    "timeoutSeconds": 1800,
+    "log": "15-docker-designer-web.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 64.395,
+    "endUTC": "2026-10-04T08:13:28.992177+00:00",
+    "logSHA256": "b34c6e94ac4906cd79c601da251d02cc2b438a98cf696dec4ccecbdb64c492a0"
+  },
+  {
+    "name": "15-docker-admin-web",
+    "argv": [
+      "docker",
+      "build",
+      "--progress=plain",
+      "-f",
+      "infra/docker/web-app.Dockerfile",
+      "--build-arg",
+      "APP=admin-web",
+      "-t",
+      "verbis-v1-audit/admin-web:20261004",
+      "."
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:13:28.993680+00:00",
+    "timeoutSeconds": 1800,
+    "log": "15-docker-admin-web.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 44.326,
+    "endUTC": "2026-10-04T08:14:13.319327+00:00",
+    "logSHA256": "c93725dd4bf4b0fe6e898f3cc262cbc63c8046b9966089712be677fc44ebb57a"
+  },
+  {
+    "name": "16-npm-audit",
+    "argv": [
+      "npm",
+      "audit",
+      "--json"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:14:13.320520+00:00",
+    "timeoutSeconds": 300,
+    "log": "16-npm-audit.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 0.635,
+    "endUTC": "2026-10-04T08:14:13.955636+00:00",
+    "logSHA256": "369be4cef317cefa757e8129be9fc15f77776449e8b991563806e275771dc514"
+  },
+  {
+    "name": "17-pnpm-audit",
+    "argv": [
+      "pnpm",
+      "audit",
+      "--json"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:14:13.956292+00:00",
+    "timeoutSeconds": 300,
+    "log": "17-pnpm-audit.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 20.29,
+    "endUTC": "2026-10-04T08:14:34.246160+00:00",
+    "logSHA256": "c94c7c3fdfb12bea00991fe58c6a25017e7871961072dd8942756ad7875582c1"
+  },
+  {
+    "name": "18-trivy",
+    "argv": [
+      "trivy",
+      "fs",
+      "--scanners",
+      "vuln,misconfig,secret",
+      "--skip-dirs",
+      "node_modules,docs/verification",
+      "--format",
+      "json",
+      "--output",
+      "/Users/ardamoustafa/agent scripting/docs/verification/evidence/V1/trivy.json",
+      "--exit-code",
+      "1",
+      "."
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:14:34.247362+00:00",
+    "timeoutSeconds": 900,
+    "log": "18-trivy.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 19.634,
+    "endUTC": "2026-10-04T08:14:53.881572+00:00",
+    "logSHA256": "83a4ce1fdf142d1d7400478c259054ddc3bd92e3df81ec04a289291299b1b651"
+  },
+  {
+    "name": "19-gitleaks",
+    "argv": [
+      "gitleaks",
+      "dir",
+      "--redact",
+      "--report-format",
+      "json",
+      "--report-path",
+      "/Users/ardamoustafa/agent scripting/docs/verification/evidence/V1/gitleaks.json",
+      "--no-banner",
+      "/tmp/verbis-v1-quality-20261004"
+    ],
+    "cwd": "/tmp/verbis-v1-quality-20261004",
+    "startUTC": "2026-10-04T08:14:53.888319+00:00",
+    "timeoutSeconds": 600,
+    "log": "19-gitleaks.log",
+    "status": "completed",
+    "exitCode": 1,
+    "durationSeconds": 22.6,
+    "endUTC": "2026-10-04T08:15:16.488860+00:00",
+    "logSHA256": "e60e386a5250d6a77f0d109dfc7aca041635d9fa0a3f402afeb773e4c58472a8"
+  }
+]

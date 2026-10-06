@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.verbis.avaya.sidecar.NatsBridgeIT" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-04T08:15:42.483Z" hostname="952f13cd2dae" time="3.282">
+  <properties/>
+  <testcase name="publishesDedupedEnvelopesAndAnswersCommandsAndVerify()" classname="io.verbis.avaya.sidecar.NatsBridgeIT" time="3.282"/>
+  <system-out><![CDATA[08:15:40.417 [Test worker] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
+08:15:40.425 [Test worker] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+08:15:40.434 [Test worker] INFO org.testcontainers.DockerClientFactory -- Testcontainers version: 1.21.3
+08:15:40.938 [Test worker] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with local Unix socket (unix:///var/run/docker.sock)
+08:15:40.943 [Test worker] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is host.docker.internal
+08:15:40.962 [Test worker] INFO org.testcontainers.DockerClientFactory -- Connected to docker: 
+  Server Version: 29.7.2
+  API Version: 1.55
+  Operating System: Docker Desktop
+  Total Memory: 7936 MB
+  Labels: 
+    com.docker.desktop.address=unix:///Users/ardamoustafa/Library/Containers/com.docker.docker/Data/docker-cli.sock
+08:15:41.512 [Test worker] INFO tc.testcontainers/ryuk:0.12.0 -- Creating container for image: testcontainers/ryuk:0.12.0
+08:15:41.516 [Test worker] INFO org.testcontainers.utility.RegistryAuthLocator -- Failure when attempting to lookup auth config. Please ignore if you don't have images in an authenticated registry. Details: (dockerImageName: testcontainers/ryuk:0.12.0, configFile: /root/.docker/config.json, configEnv: DOCKER_AUTH_CONFIG). Falling back to docker-java default behaviour. Exception message: Status 404: No config supplied. Checked in order: /root/.docker/config.json (file not found), DOCKER_AUTH_CONFIG (not set)
+08:15:41.677 [Test worker] INFO tc.testcontainers/ryuk:0.12.0 -- Container testcontainers/ryuk:0.12.0 is starting: 8e6e659af75c15ce485871f41418a4e396216993f21f0cd4c19a1528a4ac6172
+08:15:41.910 [Test worker] INFO tc.testcontainers/ryuk:0.12.0 -- Container testcontainers/ryuk:0.12.0 started in PT0.397813667S
+08:15:41.915 [Test worker] INFO org.testcontainers.utility.RyukResourceReaper -- Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+08:15:41.915 [Test worker] INFO org.testcontainers.DockerClientFactory -- Checking the system...
+08:15:41.916 [Test worker] INFO org.testcontainers.DockerClientFactory -- ✔︎ Docker server version should be at least 1.6.0
+08:15:41.916 [Test worker] INFO tc.nats:2.11-alpine -- Creating container for image: nats:2.11-alpine
+08:15:41.946 [Test worker] INFO tc.nats:2.11-alpine -- Container nats:2.11-alpine is starting: 067089b6b3f604b55b35204343149421665a4478d4e9de54962cea4352654fe8
+08:15:42.164 [Test worker] INFO tc.nats:2.11-alpine -- Container nats:2.11-alpine started in PT0.247602792S
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

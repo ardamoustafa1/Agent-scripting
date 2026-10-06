@@ -1,0 +1,18 @@
+{
+  "command": [
+    "pnpm",
+    "--filter",
+    "@verbis/api",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "../../tests/verification/v2.config.mjs",
+    "tests/verification/routes.audit.spec.ts",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/route-tests.json"
+  ],
+  "durationSeconds": 14.689820051193237,
+  "exitCode": 1
+}

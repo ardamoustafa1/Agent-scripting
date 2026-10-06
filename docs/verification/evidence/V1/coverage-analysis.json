@@ -1,0 +1,1178 @@
+{
+  "workspaces": [
+    {
+      "workspace": "apps/admin-web",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 975,
+          "covered": 924,
+          "skipped": 0,
+          "pct": 94.76
+        },
+        "statements": {
+          "total": 1060,
+          "covered": 979,
+          "skipped": 0,
+          "pct": 92.35
+        },
+        "functions": {
+          "total": 430,
+          "covered": 375,
+          "skipped": 0,
+          "pct": 87.2
+        },
+        "branches": {
+          "total": 703,
+          "covered": 620,
+          "skipped": 0,
+          "pct": 88.19
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "apps/agent-web",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 920,
+          "covered": 859,
+          "skipped": 0,
+          "pct": 93.36
+        },
+        "statements": {
+          "total": 1061,
+          "covered": 967,
+          "skipped": 0,
+          "pct": 91.14
+        },
+        "functions": {
+          "total": 328,
+          "covered": 282,
+          "skipped": 0,
+          "pct": 85.97
+        },
+        "branches": {
+          "total": 728,
+          "covered": 618,
+          "skipped": 0,
+          "pct": 84.89
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "apps/api",
+      "floor": 85,
+      "total": {
+        "lines": {
+          "total": 9800,
+          "covered": 9058,
+          "skipped": 0,
+          "pct": 92.42
+        },
+        "statements": {
+          "total": 11045,
+          "covered": 9961,
+          "skipped": 0,
+          "pct": 90.18
+        },
+        "functions": {
+          "total": 2496,
+          "covered": 2191,
+          "skipped": 0,
+          "pct": 87.78
+        },
+        "branches": {
+          "total": 7276,
+          "covered": 6188,
+          "skipped": 0,
+          "pct": 85.04
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "apps/connector-hub",
+      "floor": 75,
+      "total": {
+        "lines": {
+          "total": 2494,
+          "covered": 2155,
+          "skipped": 0,
+          "pct": 86.4
+        },
+        "statements": {
+          "total": 2801,
+          "covered": 2338,
+          "skipped": 0,
+          "pct": 83.47
+        },
+        "functions": {
+          "total": 596,
+          "covered": 487,
+          "skipped": 0,
+          "pct": 81.71
+        },
+        "branches": {
+          "total": 2173,
+          "covered": 1633,
+          "skipped": 0,
+          "pct": 75.14
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "apps/designer-web",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 3499,
+          "covered": 3190,
+          "skipped": 0,
+          "pct": 91.16
+        },
+        "statements": {
+          "total": 3923,
+          "covered": 3497,
+          "skipped": 0,
+          "pct": 89.14
+        },
+        "functions": {
+          "total": 1417,
+          "covered": 1229,
+          "skipped": 0,
+          "pct": 86.73
+        },
+        "branches": {
+          "total": 2980,
+          "covered": 2386,
+          "skipped": 0,
+          "pct": 80.06
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/authz",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 180,
+          "covered": 178,
+          "skipped": 0,
+          "pct": 98.88
+        },
+        "statements": {
+          "total": 208,
+          "covered": 206,
+          "skipped": 0,
+          "pct": 99.03
+        },
+        "functions": {
+          "total": 39,
+          "covered": 39,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 142,
+          "covered": 134,
+          "skipped": 0,
+          "pct": 94.36
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/collaboration",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 102,
+          "covered": 102,
+          "skipped": 0,
+          "pct": 100
+        },
+        "statements": {
+          "total": 127,
+          "covered": 124,
+          "skipped": 0,
+          "pct": 97.63
+        },
+        "functions": {
+          "total": 20,
+          "covered": 20,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 119,
+          "covered": 109,
+          "skipped": 0,
+          "pct": 91.59
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/components",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 604,
+          "covered": 591,
+          "skipped": 0,
+          "pct": 97.84
+        },
+        "statements": {
+          "total": 647,
+          "covered": 622,
+          "skipped": 0,
+          "pct": 96.13
+        },
+        "functions": {
+          "total": 230,
+          "covered": 220,
+          "skipped": 0,
+          "pct": 95.65
+        },
+        "branches": {
+          "total": 705,
+          "covered": 639,
+          "skipped": 0,
+          "pct": 90.63
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/core-runtime",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 1074,
+          "covered": 1035,
+          "skipped": 0,
+          "pct": 96.36
+        },
+        "statements": {
+          "total": 1248,
+          "covered": 1177,
+          "skipped": 0,
+          "pct": 94.31
+        },
+        "functions": {
+          "total": 250,
+          "covered": 237,
+          "skipped": 0,
+          "pct": 94.8
+        },
+        "branches": {
+          "total": 978,
+          "covered": 883,
+          "skipped": 0,
+          "pct": 90.28
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/expr",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 817,
+          "covered": 813,
+          "skipped": 0,
+          "pct": 99.51
+        },
+        "statements": {
+          "total": 956,
+          "covered": 946,
+          "skipped": 0,
+          "pct": 98.95
+        },
+        "functions": {
+          "total": 137,
+          "covered": 137,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 943,
+          "covered": 903,
+          "skipped": 0,
+          "pct": 95.75
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/i18n",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 16,
+          "covered": 16,
+          "skipped": 0,
+          "pct": 100
+        },
+        "statements": {
+          "total": 17,
+          "covered": 17,
+          "skipped": 0,
+          "pct": 100
+        },
+        "functions": {
+          "total": 5,
+          "covered": 5,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 12,
+          "covered": 11,
+          "skipped": 0,
+          "pct": 91.66
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/observability",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 90,
+          "covered": 90,
+          "skipped": 0,
+          "pct": 100
+        },
+        "statements": {
+          "total": 94,
+          "covered": 93,
+          "skipped": 0,
+          "pct": 98.93
+        },
+        "functions": {
+          "total": 45,
+          "covered": 44,
+          "skipped": 0,
+          "pct": 97.77
+        },
+        "branches": {
+          "total": 29,
+          "covered": 29,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/script-schema",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 903,
+          "covered": 893,
+          "skipped": 0,
+          "pct": 98.89
+        },
+        "statements": {
+          "total": 1011,
+          "covered": 991,
+          "skipped": 0,
+          "pct": 98.02
+        },
+        "functions": {
+          "total": 181,
+          "covered": 175,
+          "skipped": 0,
+          "pct": 96.68
+        },
+        "branches": {
+          "total": 638,
+          "covered": 596,
+          "skipped": 0,
+          "pct": 93.41
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/sdk-component",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 262,
+          "covered": 261,
+          "skipped": 0,
+          "pct": 99.61
+        },
+        "statements": {
+          "total": 287,
+          "covered": 285,
+          "skipped": 0,
+          "pct": 99.3
+        },
+        "functions": {
+          "total": 51,
+          "covered": 50,
+          "skipped": 0,
+          "pct": 98.03
+        },
+        "branches": {
+          "total": 135,
+          "covered": 131,
+          "skipped": 0,
+          "pct": 97.03
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/sdk-connector",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 336,
+          "covered": 330,
+          "skipped": 0,
+          "pct": 98.21
+        },
+        "statements": {
+          "total": 371,
+          "covered": 365,
+          "skipped": 0,
+          "pct": 98.38
+        },
+        "functions": {
+          "total": 96,
+          "covered": 91,
+          "skipped": 0,
+          "pct": 94.79
+        },
+        "branches": {
+          "total": 207,
+          "covered": 192,
+          "skipped": 0,
+          "pct": 92.75
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/shared-types",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 102,
+          "covered": 102,
+          "skipped": 0,
+          "pct": 100
+        },
+        "statements": {
+          "total": 113,
+          "covered": 113,
+          "skipped": 0,
+          "pct": 100
+        },
+        "functions": {
+          "total": 21,
+          "covered": 21,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 63,
+          "covered": 60,
+          "skipped": 0,
+          "pct": 95.23
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/test-utils",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 9,
+          "covered": 9,
+          "skipped": 0,
+          "pct": 100
+        },
+        "statements": {
+          "total": 9,
+          "covered": 9,
+          "skipped": 0,
+          "pct": 100
+        },
+        "functions": {
+          "total": 6,
+          "covered": 6,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 2,
+          "covered": 2,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      },
+      "below": []
+    },
+    {
+      "workspace": "packages/ui",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 482,
+          "covered": 469,
+          "skipped": 0,
+          "pct": 97.3
+        },
+        "statements": {
+          "total": 525,
+          "covered": 509,
+          "skipped": 0,
+          "pct": 96.95
+        },
+        "functions": {
+          "total": 210,
+          "covered": 204,
+          "skipped": 0,
+          "pct": 97.14
+        },
+        "branches": {
+          "total": 526,
+          "covered": 479,
+          "skipped": 0,
+          "pct": 91.06
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      },
+      "below": []
+    }
+  ],
+  "criticalDirectories": [
+    {
+      "directory": "apps/admin-web/src/workspace",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 660,
+          "covered": 624,
+          "pct": 94.55
+        },
+        "statements": {
+          "total": 707,
+          "covered": 653,
+          "pct": 92.36
+        },
+        "functions": {
+          "total": 286,
+          "covered": 244,
+          "pct": 85.31
+        },
+        "branches": {
+          "total": 454,
+          "covered": 413,
+          "pct": 90.97
+        }
+      },
+      "kind": "frontend-critical",
+      "files": 9
+    },
+    {
+      "directory": "apps/agent-web/src/launch",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 191,
+          "covered": 191,
+          "pct": 100.0
+        },
+        "statements": {
+          "total": 225,
+          "covered": 219,
+          "pct": 97.33
+        },
+        "functions": {
+          "total": 63,
+          "covered": 61,
+          "pct": 96.83
+        },
+        "branches": {
+          "total": 139,
+          "covered": 133,
+          "pct": 95.68
+        }
+      },
+      "kind": "frontend-critical",
+      "files": 10
+    },
+    {
+      "directory": "apps/agent-web/src/desktop",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 639,
+          "covered": 581,
+          "pct": 90.92
+        },
+        "statements": {
+          "total": 726,
+          "covered": 642,
+          "pct": 88.43
+        },
+        "functions": {
+          "total": 243,
+          "covered": 200,
+          "pct": 82.3
+        },
+        "branches": {
+          "total": 537,
+          "covered": 435,
+          "pct": 81.01
+        }
+      },
+      "kind": "frontend-critical",
+      "files": 6
+    },
+    {
+      "directory": "apps/api/src/modules/launch",
+      "floor": 95,
+      "total": {
+        "lines": {
+          "total": 362,
+          "covered": 329,
+          "pct": 90.88
+        },
+        "statements": {
+          "total": 416,
+          "covered": 362,
+          "pct": 87.02
+        },
+        "functions": {
+          "total": 79,
+          "covered": 69,
+          "pct": 87.34
+        },
+        "branches": {
+          "total": 231,
+          "covered": 185,
+          "pct": 80.09
+        }
+      },
+      "kind": "constitution-security",
+      "files": 15
+    },
+    {
+      "directory": "apps/api/src/modules/authz",
+      "floor": 95,
+      "total": {
+        "lines": {
+          "total": 195,
+          "covered": 180,
+          "pct": 92.31
+        },
+        "statements": {
+          "total": 212,
+          "covered": 193,
+          "pct": 91.04
+        },
+        "functions": {
+          "total": 54,
+          "covered": 46,
+          "pct": 85.19
+        },
+        "branches": {
+          "total": 122,
+          "covered": 106,
+          "pct": 86.89
+        }
+      },
+      "kind": "constitution-security",
+      "files": 9
+    },
+    {
+      "directory": "apps/api/src/modules/audit",
+      "floor": 95,
+      "total": {
+        "lines": {
+          "total": 748,
+          "covered": 711,
+          "pct": 95.05
+        },
+        "statements": {
+          "total": 885,
+          "covered": 813,
+          "pct": 91.86
+        },
+        "functions": {
+          "total": 241,
+          "covered": 227,
+          "pct": 94.19
+        },
+        "branches": {
+          "total": 657,
+          "covered": 560,
+          "pct": 85.24
+        }
+      },
+      "kind": "constitution-security",
+      "files": 26
+    },
+    {
+      "directory": "apps/api/src/modules/integrations/engine/transport.ts",
+      "floor": 95,
+      "total": {
+        "lines": {
+          "total": 48,
+          "covered": 41,
+          "pct": 85.42
+        },
+        "statements": {
+          "total": 50,
+          "covered": 41,
+          "pct": 82.0
+        },
+        "functions": {
+          "total": 15,
+          "covered": 10,
+          "pct": 66.67
+        },
+        "branches": {
+          "total": 49,
+          "covered": 39,
+          "pct": 79.59
+        }
+      },
+      "kind": "constitution-security",
+      "files": 1
+    },
+    {
+      "directory": "apps/api/src/modules/identity/egress/idp-fetch.ts",
+      "floor": 95,
+      "total": {
+        "lines": {
+          "total": 48,
+          "covered": 45,
+          "pct": 93.75
+        },
+        "statements": {
+          "total": 59,
+          "covered": 54,
+          "pct": 91.53
+        },
+        "functions": {
+          "total": 10,
+          "covered": 10,
+          "pct": 100.0
+        },
+        "branches": {
+          "total": 60,
+          "covered": 51,
+          "pct": 85.0
+        }
+      },
+      "kind": "constitution-security",
+      "files": 1
+    },
+    {
+      "directory": "apps/designer-web/src/editor",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 969,
+          "covered": 897,
+          "pct": 92.57
+        },
+        "statements": {
+          "total": 1092,
+          "covered": 991,
+          "pct": 90.75
+        },
+        "functions": {
+          "total": 351,
+          "covered": 319,
+          "pct": 90.88
+        },
+        "branches": {
+          "total": 801,
+          "covered": 645,
+          "pct": 80.52
+        }
+      },
+      "kind": "frontend-critical",
+      "files": 14
+    },
+    {
+      "directory": "apps/designer-web/src/flow",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 601,
+          "covered": 563,
+          "pct": 93.68
+        },
+        "statements": {
+          "total": 713,
+          "covered": 653,
+          "pct": 91.58
+        },
+        "functions": {
+          "total": 265,
+          "covered": 241,
+          "pct": 90.94
+        },
+        "branches": {
+          "total": 560,
+          "covered": 454,
+          "pct": 81.07
+        }
+      },
+      "kind": "frontend-critical",
+      "files": 6
+    },
+    {
+      "directory": "apps/designer-web/src/rules",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 136,
+          "covered": 121,
+          "pct": 88.97
+        },
+        "statements": {
+          "total": 153,
+          "covered": 134,
+          "pct": 87.58
+        },
+        "functions": {
+          "total": 68,
+          "covered": 63,
+          "pct": 92.65
+        },
+        "branches": {
+          "total": 125,
+          "covered": 100,
+          "pct": 80.0
+        }
+      },
+      "kind": "frontend-critical",
+      "files": 4
+    },
+    {
+      "directory": "apps/designer-web/src/lifecycle",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 596,
+          "covered": 563,
+          "pct": 94.46
+        },
+        "statements": {
+          "total": 637,
+          "covered": 595,
+          "pct": 93.41
+        },
+        "functions": {
+          "total": 222,
+          "covered": 201,
+          "pct": 90.54
+        },
+        "branches": {
+          "total": 401,
+          "covered": 343,
+          "pct": 85.54
+        }
+      },
+      "kind": "frontend-critical",
+      "files": 9
+    },
+    {
+      "directory": "apps/designer-web/src/preview",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 325,
+          "covered": 299,
+          "pct": 92.0
+        },
+        "statements": {
+          "total": 365,
+          "covered": 326,
+          "pct": 89.32
+        },
+        "functions": {
+          "total": 122,
+          "covered": 112,
+          "pct": 91.8
+        },
+        "branches": {
+          "total": 246,
+          "covered": 198,
+          "pct": 80.49
+        }
+      },
+      "kind": "frontend-critical",
+      "files": 5
+    },
+    {
+      "directory": "apps/designer-web/src/integrations",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 467,
+          "covered": 421,
+          "pct": 90.15
+        },
+        "statements": {
+          "total": 516,
+          "covered": 449,
+          "pct": 87.02
+        },
+        "functions": {
+          "total": 182,
+          "covered": 148,
+          "pct": 81.32
+        },
+        "branches": {
+          "total": 477,
+          "covered": 383,
+          "pct": 80.29
+        }
+      },
+      "kind": "frontend-critical",
+      "files": 6
+    }
+  ],
+  "zeroExecutedLineFiles": [
+    {
+      "file": "apps/admin-web/src/use-api-health.ts",
+      "lines": 7,
+      "functions": {
+        "total": 3,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 0
+      }
+    },
+    {
+      "file": "apps/agent-web/src/observability-sdk.ts",
+      "lines": 3,
+      "functions": {
+        "total": 1,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 0
+      }
+    },
+    {
+      "file": "apps/api/src/audit-worker.ts",
+      "lines": 17,
+      "functions": {
+        "total": 2,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 0
+      }
+    },
+    {
+      "file": "apps/api/src/audit-worker/bootstrap.ts",
+      "lines": 5,
+      "functions": {
+        "total": 1,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 0
+      }
+    },
+    {
+      "file": "apps/api/src/modules/ai/import-worker.ts",
+      "lines": 24,
+      "functions": {
+        "total": 4,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 0
+      }
+    },
+    {
+      "file": "apps/api/src/modules/ai/import.ts",
+      "lines": 17,
+      "functions": {
+        "total": 6,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 0
+      }
+    },
+    {
+      "file": "apps/connector-hub/src/telemetry.ts",
+      "lines": 1,
+      "functions": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 100
+      }
+    },
+    {
+      "file": "apps/connector-hub/src/connectors/marketplace/sdk-bridge.ts",
+      "lines": 52,
+      "functions": {
+        "total": 7,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 0
+      }
+    },
+    {
+      "file": "packages/authz/src/permissions-dto.ts",
+      "lines": 1,
+      "functions": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 100
+      }
+    }
+  ],
+  "noStandardSuite": [
+    {
+      "workspace": "apps/connector-avaya-aes-sidecar",
+      "kind": "Java/Gradle; ayr\u0131 test komutu \u00e7al\u0131\u015ft\u0131r\u0131ld\u0131, V8 coverage kapsam\u0131nda de\u011fil"
+    },
+    {
+      "workspace": "apps/connector-genesys-engage-sidecar",
+      "kind": "Java/Gradle; ayr\u0131 test komutu \u00e7al\u0131\u015ft\u0131r\u0131ld\u0131, V8 coverage kapsam\u0131nda de\u011fil"
+    },
+    {
+      "workspace": "packages/config-eslint",
+      "kind": "config-only",
+      "scripts": [
+        "lint"
+      ]
+    },
+    {
+      "workspace": "packages/config-ts",
+      "kind": "config-only",
+      "scripts": []
+    }
+  ]
+}

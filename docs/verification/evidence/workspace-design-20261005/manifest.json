@@ -1,0 +1,242 @@
+[
+  {
+    "path": "apps/designer-web/src/pages/campaign-settings.tsx",
+    "sha256": "1a62bcbfed7ff00fb3a1a2a3bbc8a1ab4b4599c0898df0e18cb17857234b2bba"
+  },
+  {
+    "path": "apps/designer-web/src/pages/campaign-settings.css",
+    "sha256": "36144b6e6c86970061de3bd060fe84788907a4344d595da14f6a479312e9e329"
+  },
+  {
+    "path": "apps/designer-web/src/integrations/styles.css",
+    "sha256": "c6890ceafdade9cdf5535cda3468a5e78f106f7197e68907d2385530ca9df349"
+  },
+  {
+    "path": "apps/designer-web/src/integrations/editor.tsx",
+    "sha256": "469f689869855c82a05ba34410c87b0a48e380907c2d5e8a8ba7b0c9435ac116"
+  },
+  {
+    "path": "apps/designer-web/src/integrations/list.tsx",
+    "sha256": "132e2205fd04b922971dae1a467175f18edfc2631085983c716080f38c985d39"
+  },
+  {
+    "path": "apps/designer-web/src/integrations/mapping.tsx",
+    "sha256": "1c5838a523563b3e883351c9bb472f2fd637c5bf7b93ead5d8022ff0962cae2f"
+  },
+  {
+    "path": "apps/designer-web/src/integrations/list-mapping-behavior.spec.tsx",
+    "sha256": "af595784a0a962c1266dcf59bbc1970787b4ee9d91281c029e7950a6519d2a58"
+  },
+  {
+    "path": "apps/designer-web/src/lifecycle/assignments.tsx",
+    "sha256": "7be2b413ae861b73cb97ab0212f67bd2cad6a1551539fea60f149eedb9e64c62"
+  },
+  {
+    "path": "apps/designer-web/src/lifecycle/packages.tsx",
+    "sha256": "2c9a8aa84b1b52ce91c2fec3ee8e5d77a273b06009a1f0684707290624275fe4"
+  },
+  {
+    "path": "apps/designer-web/src/workspace/styles.css",
+    "sha256": "0b0313fab93a5666c6599f2a3f648ac14e43fb9361f65fe6053d39926184bad2"
+  },
+  {
+    "path": "apps/designer-web/src/preview/styles.css",
+    "sha256": "44f14e333091fa22dba508cc148f7db4a7ad3385828f3e72bf1df0b90cdc9231"
+  },
+  {
+    "path": "apps/designer-web/e2e/workspace-forms-layout.spec.ts",
+    "sha256": "b84cdd30e071f90dd2d4015b47db9fe6cc4f95c034a44ac9af36881c257528bb"
+  },
+  {
+    "path": "packages/i18n/src/locales/tr.ts",
+    "sha256": "2ff7f8df4ffd6e19f8062d15626bc4d227e4897afbb5393809ae5034b2d2370c"
+  },
+  {
+    "path": "packages/i18n/src/locales/en.ts",
+    "sha256": "3570b29b981ecb9eb0ff98d3af1311bb786a0ceb092a7ce62538b657b34ee87f"
+  },
+  {
+    "path": "docs/verification/WORKSPACE_DESIGN_AUDIT_2026-10-05.md",
+    "sha256": "5407bc0a454731ce2cf05ee7371c36c833728a249bacc0c7bd56e8b7803562fd"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-forms-after.log",
+    "sha256": "e7b9a3326027996a9d3a90fb3520ca611da7b51aafbcbf2e73863542cec1f357"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-lint-final2.log",
+    "sha256": "2cc9bb6cc5f813213a12739270f6dad49e67a67ffbf7224aa6677cf08dd3e658"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-browser-final.log",
+    "sha256": "a39a882c33de7b8a1ecf7445ffcb840f2be4fd84a242628f5a910c338396a21f"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-forms-final.log",
+    "sha256": "90e0eded34c5e2c0c217b84828f7df71557d02d52929e463e42eb3e585941076"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-mobile-references.log",
+    "sha256": "49bd97e982e12366a5f77f169b950f0b7784b31eafee91ff902c4ce331a08b08"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-mapping-before.log",
+    "sha256": "ca20922949b9ec124c8f79963d92d95ee3941dd5e11176493a33f7578a3ee4fe"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-forms-alltabs-final2.log",
+    "sha256": "1c0c81563cf8447e4efff1059fa10283ec50267eefc3a8452a071dc79249cd96"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-i18n-build.log",
+    "sha256": "da55938efc72be8cd2696f7e666f27f590fdb1e028df0bfce7036403efea3a3f"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-forms-before.log",
+    "sha256": "c3648175b87791b69ce5d7c17260f6db700f29e21e9948c8d2d78b99faed9159"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-mobile-before.log",
+    "sha256": "7df26b8509a179ba3b7630e61ddc91edb9fb0342ffe9675c6190be308bb2c756"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-forms-alltabs-final.log",
+    "sha256": "294783705d141d5f52f04f1ebfc32b6e978b9dafca114f4578ea77483307fe14"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-i18n-test.log",
+    "sha256": "187c8a74903fef931428352f83c3b3952221a6ec447eef32cfe3bdcbd37e853c"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-format-check.log",
+    "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-typecheck-final2.log",
+    "sha256": "d3acf5bf7fe3b407a4b9bd1d680578be8db2dc251a9af6dc2d977e50908b336b"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-unit-complete.log",
+    "sha256": "977cd7ffd3266ed515f9cf65432d1394ad662f36bd14e3e6c91b118497d0d7f3"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-production-build.log",
+    "sha256": "43bafd6695687a71d98052fd4a99bb40cf34c793a2d89e356aed5b83f768d1ff"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-forms-alltabs.log",
+    "sha256": "f9b7179da8718e40045c61967742b4114fe7a91c5821a0db891eadca34622e39"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-full-browser.log",
+    "sha256": "257277d8cb32adbc671e4d57a2fc59df614809157f209d7c8a1155034aef5a8d"
+  },
+  {
+    "path": "docs/verification/evidence/workspace-design-20261005/verbis-design-tablet-references.log",
+    "sha256": "4d43eb39a61a99b9b68afcb2d06cf659b81faab027fc8e4410d18942d25ad317"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/nav-3.jpg",
+    "sha256": "28238769fdcc6d77f97ec513142b800a73cc2620a7ca26ca4aadd1d139a0a5d6"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/navigation.json",
+    "sha256": "af0b3b89046564435dd997301448fcdd6a8873e41df524a850f60a5cb10ac6b8"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/template-dialog.jpg",
+    "sha256": "abfc70c426a7519b7b16c4000860aff0d3715ca0b4a19fd6edca7b0471ddad2e"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/release-Ak\u0131\u015f.jpg",
+    "sha256": "9151289b7a52e6e338c9dcc17a843e5b8ab90da40cafa4fc1b92d17cc935f460"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/nav-2.jpg",
+    "sha256": "fbe49e935b0f1db67a54e0b7ccee56dbee84c5ea665ba6d6b342875afe929c25"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/nav-0.jpg",
+    "sha256": "9bea5b247011ccdfdc02aaf6c1a797dca29fa4cf4650f99d3db1d797f8ce9f31"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/nav-1.jpg",
+    "sha256": "9c117262df35f301f5ddb8868356d1fe8d789bfbf7e691696500fc7b14daaf46"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/nav-5.jpg",
+    "sha256": "2b88c86ee902ff6605dd271942bf8fb4639e1c9da0acea421474fec81c5dbb78"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/mobile-settings-page.jpg",
+    "sha256": "b8fa5cbba40cd1fcb330108edd1c9f1c188987ce1407189e7a9123fc015048d4"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/mapping-final.jpg",
+    "sha256": "3ce256896e67e3d183aaaa94e81090f1f402e85b7fef602cb5926499de7ce066"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/nav-4.jpg",
+    "sha256": "8fc973cb8a18e1c706bd6d873e47095b2cc53c1fc66f36da9a321570d5058ad8"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/release-Ham-JSON.jpg",
+    "sha256": "3ca6a2b5289b1a2af881c19b0a26a5fd56b0dbf8833f7756e5a2248ca22f6453"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/nav-6.jpg",
+    "sha256": "57a515105ad3f9f99017ca1ae9133ad99121dce8a1d500dec2e81a813f72b3cf"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/nav-7.jpg",
+    "sha256": "cdf06e07a917aa4ef937c88b7a9c8ee914da326b16f4050b322c610df801c475"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/campaign-settings.jpg",
+    "sha256": "a9fb33ec86559802c9eab5434e64dbc99f458cf7e2a2eb6e4d0969aafea5b3b1"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/editor-final.jpg",
+    "sha256": "884f4667534a13f7ee6301df31f18c8e2188f97a1910c3541640577a46d66b30"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/integration-resilience-final.jpg",
+    "sha256": "ee414952d1a9e9f3453d9c881e1569e181d43a3cd089e6b03d3f1890dfd48953"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/new-script-dialog.jpg",
+    "sha256": "34ac3af2f98542a517b097e598e1b44c9e9f1ac074040b4d856bfb01ddd4f044"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/nav-9.jpg",
+    "sha256": "d374ca2a1abc844628db8d15af4e96e7c64096683b02ce05e797908e839f9ca9"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/integration-mock-final.jpg",
+    "sha256": "136edb2708f21f234fb415958a1063e82bde6256f00761c822ca47ba0ff7b798"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/campaign-fields-final.jpg",
+    "sha256": "3fb7dd6b4ba4bdac09e48c85634ef71b03a52d1a704e74025920c487d05d7085"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/nav-8.jpg",
+    "sha256": "8ecc14239fd7f6827e6b9d3deb45ade05294a4d72860cdf986a148e9019ddb6c"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/scripts-grid.jpg",
+    "sha256": "8f494afcd2cbbb339f0663c3d7fa1c19b453df02c2e0f24d1c9f89502f5cff3b"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/new-campaign-dialog.jpg",
+    "sha256": "c29b90c8e4496ddc4d0bf41e3860f86fc4428fa83d542ca6aca3ae43963c6f68"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/release-De\u011fi\u015fkenler.jpg",
+    "sha256": "cb3e6d69ca17d3b108ad02ca89d981e597f454652d09a6c8bb073d9477d84421"
+  },
+  {
+    "path": "artifacts/workspace-design-audit/release-Veri-kaynaklar\u0131.jpg",
+    "sha256": "04ac7ed2ce2cae85b7212003960d32558e231ec8802027da0d502b1709aa8128"
+  }
+]

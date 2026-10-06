@@ -1,0 +1,18 @@
+{
+  "command": [
+    "pnpm",
+    "--filter",
+    "@verbis/api",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "../../tests/verification/v2.config.mjs",
+    "/Users/ardamoustafa/agent scripting/tests/verification/keycloak.audit.spec.ts",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/keycloak-tests.json"
+  ],
+  "durationSeconds": 22.538291215896606,
+  "exitCode": 1
+}

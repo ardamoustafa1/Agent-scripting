@@ -1,0 +1,110 @@
+[
+  {
+    "workspace": "i18n",
+    "exitCode": 0,
+    "seconds": 0.61,
+    "log": "i18n.log"
+  },
+  {
+    "workspace": "authz",
+    "exitCode": 0,
+    "seconds": 1.27,
+    "log": "authz.log"
+  },
+  {
+    "workspace": "expr",
+    "exitCode": 0,
+    "seconds": 1.23,
+    "log": "expr.log"
+  },
+  {
+    "workspace": "script-schema",
+    "exitCode": 0,
+    "seconds": 1.16,
+    "log": "script-schema.log"
+  },
+  {
+    "workspace": "core-runtime",
+    "exitCode": 0,
+    "seconds": 4.71,
+    "log": "core-runtime.log"
+  },
+  {
+    "workspace": "components",
+    "exitCode": 0,
+    "seconds": 6.52,
+    "log": "components.log"
+  },
+  {
+    "workspace": "sdk-component",
+    "exitCode": 0,
+    "seconds": 3.39,
+    "log": "sdk-component.log"
+  },
+  {
+    "workspace": "sdk-connector",
+    "exitCode": 0,
+    "seconds": 0.88,
+    "log": "sdk-connector.log"
+  },
+  {
+    "workspace": "collaboration",
+    "exitCode": 0,
+    "seconds": 0.6,
+    "log": "collaboration.log"
+  },
+  {
+    "workspace": "shared-types",
+    "exitCode": 0,
+    "seconds": 0.84,
+    "log": "shared-types.log"
+  },
+  {
+    "workspace": "observability",
+    "exitCode": 0,
+    "seconds": 0.8,
+    "log": "observability.log"
+  },
+  {
+    "workspace": "ui",
+    "exitCode": 0,
+    "seconds": 3.56,
+    "log": "ui.log"
+  },
+  {
+    "workspace": "test-utils",
+    "exitCode": 0,
+    "seconds": 0.66,
+    "log": "test-utils.log"
+  },
+  {
+    "workspace": "connector-hub",
+    "exitCode": 0,
+    "seconds": 4.32,
+    "log": "connector-hub.log"
+  },
+  {
+    "workspace": "designer-web",
+    "exitCode": 0,
+    "seconds": 101.49,
+    "log": "designer-web.log"
+  },
+  {
+    "workspace": "agent-web",
+    "exitCode": 0,
+    "seconds": 6.89,
+    "log": "agent-web.log"
+  },
+  {
+    "workspace": "admin-web",
+    "exitCode": 0,
+    "seconds": 12.35,
+    "log": "admin-web.log"
+  },
+  {
+    "workspace": "api",
+    "exitCode": 0,
+    "seconds": 72.5,
+    "log": "api.log"
+  }
+]

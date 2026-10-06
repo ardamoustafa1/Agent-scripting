@@ -1,0 +1,86 @@
+[
+  {
+    "name": "core-runtime",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "--reporter=json",
+      "--reporter=default",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/core-runtime-tests.json"
+    ],
+    "durationSeconds": 7.106173038482666,
+    "exitCode": 0
+  },
+  {
+    "name": "shared-types",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "--reporter=json",
+      "--reporter=default",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/shared-types-tests.json"
+    ],
+    "durationSeconds": 1.0331521034240723,
+    "exitCode": 0
+  },
+  {
+    "name": "authz",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "--reporter=json",
+      "--reporter=default",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/authz-tests.json"
+    ],
+    "durationSeconds": 0.8748910427093506,
+    "exitCode": 0
+  },
+  {
+    "name": "test-utils",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "--reporter=json",
+      "--reporter=default",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/test-utils-tests.json"
+    ],
+    "durationSeconds": 0.4578061103820801,
+    "exitCode": 0
+  },
+  {
+    "name": "i18n",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "--reporter=json",
+      "--reporter=default",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/i18n-tests.json"
+    ],
+    "durationSeconds": 0.45178914070129395,
+    "exitCode": 0
+  },
+  {
+    "name": "ui",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "--reporter=json",
+      "--reporter=default",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/ui-tests.json"
+    ],
+    "durationSeconds": 2.9405319690704346,
+    "exitCode": 0
+  }
+]

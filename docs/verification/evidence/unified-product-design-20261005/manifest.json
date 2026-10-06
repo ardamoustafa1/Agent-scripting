@@ -1,0 +1,2682 @@
+{
+  "date": "2026-10-05",
+  "scope": "Unified product design, no production deployment",
+  "quality": {
+    "tasksPassed": 77,
+    "cached": 70,
+    "executed": 7,
+    "vitestTests": 4991,
+    "docsNodeTests": 4,
+    "coverageWorkspaces": 18
+  },
+  "browserVerification": {
+    "realBackend": {
+      "chromium": 44,
+      "firefox": 44,
+      "webkit": 44,
+      "skipped": 0
+    },
+    "designer": 65,
+    "adminUnique": 22,
+    "agentPassed": 27,
+    "agentConditionalSkipped": 2,
+    "docs": 36,
+    "runtimeCatalog": 208,
+    "uiUniqueNormalComparison": 167,
+    "uiNote": "166/167 normal run passed; cold-load timeout verified by targeted analytics 6/6, preserving failure log"
+  },
+  "sources": [
+    {
+      "path": "apps/admin-web/e2e/access-design.spec.ts",
+      "bytes": 1892,
+      "sha256": "76bb51bc3e2f0586edd9c6be5020df1aafd53b126e5ac39fd8a9660c1662ac14"
+    },
+    {
+      "path": "apps/admin-web/e2e/hello.spec.ts",
+      "bytes": 12374,
+      "sha256": "2b3b580a644d9dd92ab73b6aa9686779d7a1a4190d3c7ee26a71807d5061322b"
+    },
+    {
+      "path": "apps/admin-web/e2e/hello.spec.ts-snapshots/admin-web-dark-chromium-darwin.png",
+      "bytes": 115414,
+      "sha256": "efca440c2a15023f4308c3e427cbc575b4f917639e31a0675a053dd5dd70380b"
+    },
+    {
+      "path": "apps/admin-web/e2e/hello.spec.ts-snapshots/admin-web-light-chromium-darwin.png",
+      "bytes": 115257,
+      "sha256": "791c414b78bb6e522128df692af2ce1906c21b1604f492e2c2e43f442ca7df40"
+    },
+    {
+      "path": "apps/admin-web/src/auth/auth-section.tsx",
+      "bytes": 6960,
+      "sha256": "ea1e6ac8b553c1be1295643c0bfb175314b7d96ea87f2f8536c53e6beb4537d1"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/access.tsx",
+      "bytes": 746,
+      "sha256": "49bd14c1abc72ad3f72a953136ec7d885c3d1013e71286544d46b160a2e71c6a"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/ai-analytics-behavior.spec.tsx",
+      "bytes": 8924,
+      "sha256": "2b571646f2527881ffb1d375378d0beb9f055872638514d3685bd308894265ca"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/ai-page.tsx",
+      "bytes": 5663,
+      "sha256": "0bd8e27129a66d7a5415a6bbf0e257e7afe9cc9f44599b3932e99405fde98d0a"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/analytics-page.tsx",
+      "bytes": 3539,
+      "sha256": "671c8b29425ca9b221d99bb292567e68045c0473bf17d6799b9dafd0c36762da"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/api.spec.ts",
+      "bytes": 2666,
+      "sha256": "f92e39b6720d0c3fd0854e8edb51431b2787ed3e16396c8ae1a696eaabefdd3e"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/api.ts",
+      "bytes": 4418,
+      "sha256": "87048cb85506f64a6234847bb3f107d1b288c467459cac0290a9c0aa3c6e9b83"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/fixtures.spec.helpers.tsx",
+      "bytes": 3086,
+      "sha256": "0f4baba0c67c2975d396640765c893cd46c68af606eec8d0c49862969e73eccf"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/identity-behavior.spec.tsx",
+      "bytes": 16642,
+      "sha256": "2e2a2e160b4e4de6968268df00677689e5ea3ce24ea9a92f267e91fd080f33a3"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/identity-pages.tsx",
+      "bytes": 21876,
+      "sha256": "002f0142e12e164129bed23648d1abcd0d8fb48416399a16d84c8abd677c3d69"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/mappings-behavior.spec.tsx",
+      "bytes": 9923,
+      "sha256": "e1b3c07a19da3d26a3fad9cc4b327a9cfb9c7db057e6502a0b0a1cad3cb59a72"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/operations-behavior.spec.tsx",
+      "bytes": 16316,
+      "sha256": "79499b35a8e69f4bdc88f57375d55a3d3fb8cb006b37fb1886c692428a39a63b"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/operations-pages.tsx",
+      "bytes": 21371,
+      "sha256": "f3f06051ce2a1124b81319b3b2032d6e980c31f310ea922efddcdd3e47f872e4"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/simulator-behavior.spec.tsx",
+      "bytes": 7447,
+      "sha256": "23620611d519d6bbba8bfea441f8f276a39934dbaa55715ecdc68e282e59e48f"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/tenant-behavior.spec.tsx",
+      "bytes": 12800,
+      "sha256": "c8b6d9830895485a3b54849733e6f6387aaf663086b2f23b3375e963313cf33c"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/tenant-pages.tsx",
+      "bytes": 16984,
+      "sha256": "203c81f1cff998a4978294a45d6460e6c1dfc40f63f94c8f6a24488ebe569e36"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/widgets-behavior.spec.tsx",
+      "bytes": 10555,
+      "sha256": "b815d4a84ad8bead3bbbfeca09761cfbfc15550c562086c4ce1d7bdbb636875f"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/widgets.tsx",
+      "bytes": 9700,
+      "sha256": "05eaaa8d9d6e5be7feb852fc87856e7c8963fd94d3e562aa04cd5d8f73275cb9"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/workspace.css",
+      "bytes": 9572,
+      "sha256": "3ba44b7c92dbd102d8f22a0c3b542929bb7151ee8707e4c5ca068f65953d9eba"
+    },
+    {
+      "path": "apps/admin-web/src/workspace/workspace.tsx",
+      "bytes": 11535,
+      "sha256": "e6bd5500950d3350af20086bff9b117898f138ebc25fabef2d7947b3f1eaa71a"
+    },
+    {
+      "path": "apps/agent-web/e2e/access-design.spec.ts",
+      "bytes": 1877,
+      "sha256": "a7081dfbde0f22512451d5a373d8351f87aa39c2d9d9cf8711e680007194ea8c"
+    },
+    {
+      "path": "apps/agent-web/e2e/hello.spec.ts",
+      "bytes": 1266,
+      "sha256": "72db99e38869e518fd559365500aca186f47112e5ee988e160a6ccbf0eb36622"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/ai-panel-behavior.spec.tsx",
+      "bytes": 8734,
+      "sha256": "1dc9294a4cc79c934b651fcefd543f74ab2c94cf66f8995f78b58e345535e3dd"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/ai-panel.tsx",
+      "bytes": 2724,
+      "sha256": "ada773b16c8d363a70f40b9cc305dc18c083b245bf9a2c1aa3e1eb9e493a9e5c"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/api.ts",
+      "bytes": 2624,
+      "sha256": "c92785256c7ce167a89a1a538ba796fa3d1b5277745ac170877a13de6a34b784"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/controller-lifecycle.spec.ts",
+      "bytes": 21131,
+      "sha256": "33afd5bbab874578003849050dbee44019f6d36ae1931cd6a251c79f44fd17c2"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/controller.spec.ts",
+      "bytes": 4295,
+      "sha256": "a634a9a6eff17ca7bd8f0a8f3e1176696fa654c457e18662b531cdd77783147e"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/controller.ts",
+      "bytes": 19047,
+      "sha256": "df11347ab0df0078f1f343fff4063e0a48edb8e142e06b6eac72543b230e0e0e"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/session-view.spec.tsx",
+      "bytes": 18011,
+      "sha256": "9c29cbc31fba3bd7207e0b7830842c839b3c20750a655b2a6a233f022a9ff9e7"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/session-view.tsx",
+      "bytes": 21262,
+      "sha256": "8453810f2f853062d5cedf8c54197ff0031792e355cd81f70714bdeb6255aade"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/styles.css",
+      "bytes": 8870,
+      "sha256": "bfaef19a3f8dd55f6777ea0251b44f3f0b8966562a8c7d152d52dda879a3ce05"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/vault-persistence.spec.ts",
+      "bytes": 8281,
+      "sha256": "8e13ce993b639da88920d5a27c25b7b29958305122dd5e9e1f6ee37b31b3bbc7"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/vault.spec.ts",
+      "bytes": 1115,
+      "sha256": "0412eb0a493a6fec9405970dd879fd15b3646a9e92e3a45bd0bd9cb51b85f427"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/vault.ts",
+      "bytes": 4391,
+      "sha256": "0d3e9ba46059e881dc3750ab07afefff5ca4df49af46f6326c3d69c814c633a3"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/workspace-behavior.spec.tsx",
+      "bytes": 10109,
+      "sha256": "9696bf5305d67217ef99f3c02c14f528463e9c190cc78a5f1e5c0592974a8372"
+    },
+    {
+      "path": "apps/agent-web/src/desktop/workspace.tsx",
+      "bytes": 19148,
+      "sha256": "4698fc3b5ab0d222db0c71ec3b5742c8694746d26e0fb0f5764bcc95e04f3bf7"
+    },
+    {
+      "path": "apps/agent-web/src/launch/genesys-linked-page.tsx",
+      "bytes": 1222,
+      "sha256": "c2b211a6b5180b6d8dc3c42cd220629866ec09cffb1c099b781d1124adbe9a36"
+    },
+    {
+      "path": "apps/agent-web/src/launch/launch-page.tsx",
+      "bytes": 2573,
+      "sha256": "bcbd489902c6f5a4a50ebb966a635637d833968e64afbe32be031eabd388f993"
+    },
+    {
+      "path": "apps/agent-web/src/launch/session-page.tsx",
+      "bytes": 561,
+      "sha256": "2d292fab7775d5e303315a04ceabfedd4df09be6c926a7d14e6748aef52a0748"
+    },
+    {
+      "path": "apps/api/src/common/logging/logger.spec.ts",
+      "bytes": 2534,
+      "sha256": "316df63d82c74a47cd0293f6a80e5eb777c19d4063f0ef5545055dfa7b3d5f6d"
+    },
+    {
+      "path": "apps/designer-web/e2e/login-design.spec.ts",
+      "bytes": 6540,
+      "sha256": "6e064be87f93b0ce62e9632ed695ecac4325c59f5a48c1773beed0932d5f3316"
+    },
+    {
+      "path": "apps/designer-web/src/pages/login-behavior.spec.tsx",
+      "bytes": 2763,
+      "sha256": "3a834aeab981062e6b585409376e4a43e93b5073b56087048776bc2809382ee9"
+    },
+    {
+      "path": "apps/designer-web/src/pages/login-sculpture.tsx",
+      "bytes": 53,
+      "sha256": "f6dc90bb816cc9c812775856032a1385f169eca94200b089a0b6d5cb9b221a3b"
+    },
+    {
+      "path": "apps/designer-web/src/pages/login.tsx",
+      "bytes": 2631,
+      "sha256": "47e7c7692bcb11e066b8bb3336ef679d3ad4d49129ce26ed9265f023f758e1cb"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/context.tsx",
+      "bytes": 383,
+      "sha256": "33a8d66dbf8ed4caaf52d5ee0c08afc9f3b14d84cc1ef4458c3056fe61ed1541"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/create-dialog-behavior.spec.tsx",
+      "bytes": 3708,
+      "sha256": "e9563ffc1693709e284ccfff668dff4d536f5c3bcfd93329097719015e2efa48"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/create-dialog.tsx",
+      "bytes": 3195,
+      "sha256": "2335cd24613cbc35797bdbd9f8a23b4941967d361bcd8ef186fb8b1bb5634d67"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/deployment.ts",
+      "bytes": 524,
+      "sha256": "551d928b6a1ce0da4308a68609f8cfeaa5059381df824e249756e7c002a7b754"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/navigation.ts",
+      "bytes": 824,
+      "sha256": "0bff4c4f5303cd6e61b59127d876814cd17e2bf98c02de9dff1ca59de76dd856"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/shell-behavior.spec.tsx",
+      "bytes": 8439,
+      "sha256": "ecca0eb20c685df5410dd76d313cee6f1580eb1668673bc377de98d51460a42a"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/shell.tsx",
+      "bytes": 18591,
+      "sha256": "64b8b2c278c7a52f48a35ceaf0965479b6ebddfa941cd406c0427989f59a1f47"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/states.tsx",
+      "bytes": 1467,
+      "sha256": "a0a64cdb0d6c0bfa1c67037968344007c053de693c7b9fc6e8a2297371355e7a"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/styles.css",
+      "bytes": 11557,
+      "sha256": "e49dc13c4d5d54ec37615a28ba2c208ff5f6b1968142bf1f54ae4bf7f356ab25"
+    },
+    {
+      "path": "apps/docs-site/astro.config.mjs",
+      "bytes": 1388,
+      "sha256": "0b2014d940b0b808c939a14cf2fa8339cf7438f1ee78285466c9efaea692181a"
+    },
+    {
+      "path": "apps/docs-site/e2e/design.spec.ts",
+      "bytes": 1101,
+      "sha256": "4f0a27c844095079e5d5876ed6e0e4539e6093e7430244ee502fee65ad9d48ec"
+    },
+    {
+      "path": "apps/docs-site/package.json",
+      "bytes": 1102,
+      "sha256": "6f60cab2be1f5dfc181c415ad06c8bcb6c78228da252c502ed6d11f9aa5e7f48"
+    },
+    {
+      "path": "apps/docs-site/public/guides/agent-en.svg",
+      "bytes": 911,
+      "sha256": "190e3a3f9f6cae16f698470e762957353e227744eea40097bbe2705058b00644"
+    },
+    {
+      "path": "apps/docs-site/public/guides/agent-tr.svg",
+      "bytes": 950,
+      "sha256": "a9e34f93b697d6e0e571047ac8ded8ca1baa0536f1ffd72b7555d23542f88da3"
+    },
+    {
+      "path": "apps/docs-site/public/guides/designer-layout-en.svg",
+      "bytes": 912,
+      "sha256": "04fa1bcde103a41cedbf4ace1e0f12293dca80a0133ba9771349d2768f0935b1"
+    },
+    {
+      "path": "apps/docs-site/public/guides/designer-layout-tr.svg",
+      "bytes": 947,
+      "sha256": "0aea7613697837c339c8035f544f15b13a62720d5aed1aae0da11d50c07d7450"
+    },
+    {
+      "path": "apps/docs-site/public/guides/flow-en.svg",
+      "bytes": 913,
+      "sha256": "5967c1bd08c620db7753dd73a67b47db6b393c490ee25d5cca4a8d9d4a89a9ba"
+    },
+    {
+      "path": "apps/docs-site/public/guides/flow-tr.svg",
+      "bytes": 950,
+      "sha256": "55829d58b5976ef9e872468ffceaa821018b5664bef9e6db9b5d83fdb35a26d0"
+    },
+    {
+      "path": "apps/docs-site/src/assets/verbis-mark.svg",
+      "bytes": 259,
+      "sha256": "c7f440b7c4b933e6d1a918f10bd653470d822cf4ebed059464cc139c2be2868e"
+    },
+    {
+      "path": "apps/docs-site/src/styles/docs.css",
+      "bytes": 2989,
+      "sha256": "3a772d9e58a2b26debc55a19bfe27a6d14d427d2a61cdec6bce5ffdad7776031"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "bytes": 148258,
+      "sha256": "b50544b274ee5b5b33cdd4eff8464088eaef61ce4799ff88d2314973a529bed0"
+    },
+    {
+      "path": "docs/verification/UNIFIED_PRODUCT_DESIGN_2026-10-05.md",
+      "bytes": 6369,
+      "sha256": "cd286714b7901f9151c73e9df70fb574be9561ed12d0b5db26a726ddb041e7ab"
+    },
+    {
+      "path": "packages/i18n/src/locales/en.ts",
+      "bytes": 68828,
+      "sha256": "025dda93e07a9e8bf06e4095b2aa5e91d67756d73b961e9eb5b5286056e2fdf3"
+    },
+    {
+      "path": "packages/i18n/src/locales/tr.ts",
+      "bytes": 73935,
+      "sha256": "dcc307577b592bf4aca38f50c3f0a6198e57120dcf54c0736185c94688ce49ef"
+    },
+    {
+      "path": "packages/ui/package.json",
+      "bytes": 2472,
+      "sha256": "934942a90b1a9caf09cabe06f9d51a4141c6c7f1925c642ed2565cf37fb3aca4"
+    },
+    {
+      "path": "packages/ui/src/access.css",
+      "bytes": 12257,
+      "sha256": "6499036f311984d6b376ecc6b2edb9e07225964a3f16edc9b0ee99e6df36662f"
+    },
+    {
+      "path": "packages/ui/src/app-shell.tsx",
+      "bytes": 958,
+      "sha256": "f94de67a1e7f48eb8a1a311a133c3d2ae4523c28bc1a092f305d4df6b5e17d8d"
+    },
+    {
+      "path": "packages/ui/src/components/access-layout.spec.tsx",
+      "bytes": 2623,
+      "sha256": "2502a1ac3ff2e11b7950a40b400cdbaf2526d7f27f5e5d17f85cb558a8a85e6b"
+    },
+    {
+      "path": "packages/ui/src/components/access-layout.tsx",
+      "bytes": 3591,
+      "sha256": "e2e1dd476bc2274683c6aa658901f11d2c0d395a7b109b79a7d4744beff26d74"
+    },
+    {
+      "path": "packages/ui/src/components/script-atlas.tsx",
+      "bytes": 5292,
+      "sha256": "4a78009111ef35728ffd4865b9d229001f89de5609e4bd098abce55241527b5d"
+    },
+    {
+      "path": "packages/ui/src/index.ts",
+      "bytes": 1042,
+      "sha256": "255f428f1cb04f50be47fb9646190f9d2cf80f7c0346da07b9d1f46b02f404b0"
+    },
+    {
+      "path": "packages/ui/src/tokens.css",
+      "bytes": 39832,
+      "sha256": "d98d5d5bfa217a4d6c9850d204383d9b08446301a7eedb0566fb3621df8b53b7"
+    },
+    {
+      "path": "packages/ui/src/tokens.spec.ts",
+      "bytes": 1837,
+      "sha256": "ff9c4e1c3cb4be0fcaf7514d37459d100c287fb05d690fd9cd4888a484ca25ad"
+    },
+    {
+      "path": "packages/ui/src/tokens.ts",
+      "bytes": 4326,
+      "sha256": "345a3aa53d443e68bffa5e65a6e6f112fff8fdee90a52f1971e92ccdaa039e2d"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "bytes": 758151,
+      "sha256": "321be6fce4f5919c9aab58d7a8189685607c164fbbfdd0418783d1897406b6e8"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/access-test-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-access-final.log",
+      "bytes": 12133,
+      "sha256": "5702e0c6c5cd15695fafc191d05c137126a637d8a24457cc807079f2af4bcc24"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-access.log",
+      "bytes": 749,
+      "sha256": "945e1b15381eb7de63cc71fcf8f3233841bcb4cc652cc1d51dde96e756535cf9"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-build-final.log",
+      "bytes": 1553,
+      "sha256": "33f125708079b12ecdaf5e7862d592bdf667c2dcc8236ff07b45a9a28a7f4098"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-build.log",
+      "bytes": 1553,
+      "sha256": "ac679fed79ba7265410e4ab94fe0855a88f268913b6f346bae8b155d31b4c197"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-dark-reviewed.png",
+      "bytes": 115414,
+      "sha256": "efca440c2a15023f4308c3e427cbc575b4f917639e31a0675a053dd5dd70380b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-e2e-initial.log",
+      "bytes": 3240,
+      "sha256": "668c2f9bb4bfffc7f75daee5568b4f039d797bc61791b86a83b84760ec6862b1"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-final.log",
+      "bytes": 3191,
+      "sha256": "5dd1c61c633d255a1c5f7e549e8af7c5815f90c122ed5536d88fe54bc2c31f2d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-light-reviewed.png",
+      "bytes": 115257,
+      "sha256": "791c414b78bb6e522128df692af2ce1906c21b1604f492e2c2e43f442ca7df40"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-placeholder-build.log",
+      "bytes": 1553,
+      "sha256": "d849140ebdecc381241492f58f48a9e461caa35592ddbab86b8306099751d6fe"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-placeholder-updated.log",
+      "bytes": 1067,
+      "sha256": "73f4dc323623f12cd44cc42553b84d34b4b7b6a2d80e4c169afa8e25817e1e99"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-placeholder-verified.log",
+      "bytes": 1067,
+      "sha256": "52e8a6856103e25222be17bfb8cce899f392298a00702b4f044124eb5ac8d510"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-tenants.log",
+      "bytes": 726,
+      "sha256": "39b09cedc906a02d5d69b671dea8a0881173072ec83581229a9fe477d946b235"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/admin-tenants.png",
+      "bytes": 102758,
+      "sha256": "fc3a4834eaf40e3523864c8a17932a964a09534c4a733df1674424e66eadfc5b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-access-final.log",
+      "bytes": 989,
+      "sha256": "813a8cbe7cf294854e5b0988dfc08765279b2612341582d8969b007d2704543d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-access-tr-1440.png",
+      "bytes": 415074,
+      "sha256": "4491a05812a7bfbd4b027581b8578c85c11aecfa9c5c4969848e3524d265613e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-access-tr-320.png",
+      "bytes": 118666,
+      "sha256": "b4cf1ac9b48e3a0a085c0ca8aa1dd950a7dff0749e054ba929547157f362bad2"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-access-tr-768.png",
+      "bytes": 232273,
+      "sha256": "df54cc28db2f0e329ad7a64a02320761278977b2932995f50654441a2d31d576"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-access.log",
+      "bytes": 749,
+      "sha256": "f2174756b6dca0405292ade0e69b8f0d9fcacbd05e3a24ac76ec6a88814e0a6b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-build-final.log",
+      "bytes": 1292,
+      "sha256": "f2534422ed22d7d3f57a6fda24cc59b61603e3784ddc189bd98fda4e163c7213"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-build.log",
+      "bytes": 1292,
+      "sha256": "85b7d17dfb44d80996d3fdcdb609bac99960812b818840a632481d2f674849de"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-dark-reviewed.png",
+      "bytes": 33890,
+      "sha256": "1ae20b7ad0fbfcb747e6664b81a0d66a9d6b7fada740504a9a24d4a3bd619405"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-e2e-updated.log",
+      "bytes": 3939,
+      "sha256": "d2c24ba5100d7c8543a842ca0049de64e863323053f074b284e69e08991fb533"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-e2e.log",
+      "bytes": 13270,
+      "sha256": "37dd8c20474f6c66211f5cd0de3bcffdd52b408a7049a78a20f52708e05e9398"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-final.log",
+      "bytes": 5376,
+      "sha256": "5887ee25ee3398ed89891ffdda21d62e25b84d367b302d455d7d01f7642a8fb9"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/agent-light-reviewed.png",
+      "bytes": 33606,
+      "sha256": "ee28e44ff4ff713753f693ec7eb92c63f7dad74cae1b9110afafe195ac83aac7"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/components-a11y.log",
+      "bytes": 18941,
+      "sha256": "06b3d3c0a45180dfdccb2aa7c47891974902ceeb8c7e0243e225150e53c8ae14"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/coverage-accepted.log",
+      "bytes": 1556,
+      "sha256": "083f71b3607e63f9d389eb0e89b1ff1d2c612bd453ef8124695bf133f9058aae"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/coverage-final-accepted.log",
+      "bytes": 1560,
+      "sha256": "66ba26c660600f425a51c5f529f3f9f259847d22cf148bdc9e77d57b3d6c318e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/designer-build-final.log",
+      "bytes": 11703,
+      "sha256": "545b03fedd0f55abe6d4d5305d9f8267f3e52bdc838ad2814d8bb9ea1ec52410"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/designer-build.log",
+      "bytes": 11703,
+      "sha256": "75666a5d0685892f3bf9d6a28070a6722a8d63b1c97fd68fec4f4fb66d88f573"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/designer-dark-reviewed.png",
+      "bytes": 116288,
+      "sha256": "743f849e2e9c8817d3b9a9a02eb565a989aa4bf6f117ae48d318de8315c9ec1c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/designer-e2e-initial.log",
+      "bytes": 8802,
+      "sha256": "0e8bc98c078821b3d007f7f14edc17b10c5273b5fb9ccefa8bbabab3d60549fe"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/designer-final.log",
+      "bytes": 8335,
+      "sha256": "3baf6872046da6adae2409ac90ef84f601fec7da053b0752620270b96fe338a6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/designer-light-reviewed.png",
+      "bytes": 117074,
+      "sha256": "f0b555a8c99e1c57616808ed12b17dc9cd653a735f56b6ba199c45bb698074cc"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/designer-lint-after-format.log",
+      "bytes": 118,
+      "sha256": "2cc9bb6cc5f813213a12739270f6dad49e67a67ffbf7224aa6677cf08dd3e658"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-404-diagnostic.log",
+      "bytes": 5000,
+      "sha256": "b62c6f6b6dabe81388a5c9e1e1e962ae3104d1e441690632974cf63a3c9e6eed"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-accepted.log",
+      "bytes": 4981,
+      "sha256": "7e26ea3d9cef331b936646a30a636436f9874b148609d96f86ed0e1142e9e7f2"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-axe-install.log",
+      "bytes": 1569,
+      "sha256": "ca7604fdddcb7b8d9f3fa6346f045af2a5ffc302011d62fcd23204676cdfe945"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-build-accepted.log",
+      "bytes": 5459,
+      "sha256": "ecc4a5ff6b3d231e90704f8f27fb7b5701a6cec18b5d930c9a0808d3a6b004ee"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-build-final.log",
+      "bytes": 5458,
+      "sha256": "8a151cfcf337074346da983ba29adbf8d065de9e1796886c0ff3d0e5b69315e4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-build.log",
+      "bytes": 5458,
+      "sha256": "ebc5d989667e7121837561013a4997459ff876d90d09f1b23c9806097266ac11"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-e2e.log",
+      "bytes": 2361,
+      "sha256": "76c5cec94812b2fbbf6505eedba5eb214cc59790611ee2c9fc7fd7795c538052"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-en-1440-dark.png",
+      "bytes": 269195,
+      "sha256": "a78714b4d98ed0d847c5672688230deee5a7e4538634b5d61f9319a199a462a2"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-en-1440-light.png",
+      "bytes": 269365,
+      "sha256": "7fe4e2f99451fc87f1d951004339efbe7292430616da5974dc38dc5254672b11"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-en-320-dark.png",
+      "bytes": 177078,
+      "sha256": "98d8c0fa74644d3a7949a4d4a854b4dfa4a2ea3d13db7f19467a4a0dc7033f13"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-en-320-light.png",
+      "bytes": 176684,
+      "sha256": "9984fd1d32df4ff569ff7a586f69270f73b51185d1fef9b768cccba34f37ca2c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-final.log",
+      "bytes": 30536,
+      "sha256": "78c103008b74464d5f6e0be263e4b4fd8009eda0e82fec44652e2195ffb14f2a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-mobile-contrast-diagnostic.log",
+      "bytes": 30536,
+      "sha256": "78c103008b74464d5f6e0be263e4b4fd8009eda0e82fec44652e2195ffb14f2a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-tr-1440-dark.png",
+      "bytes": 284417,
+      "sha256": "e5916560cc7c81961610ceeaafc7652f3a9d1694e3fd9cb696cdd5aa9abece82"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-tr-1440-light.png",
+      "bytes": 285106,
+      "sha256": "eb470e9f026052c6e05d9120f046de7d882e3116a8ec3601a3dd7029a1d4340c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-tr-320-dark.png",
+      "bytes": 194482,
+      "sha256": "e8918d44f62dbfaf25393495ca2b76f9718ee7e6ede01c4a52c865c2f21bc0db"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/docs-tr-320-light.png",
+      "bytes": 194665,
+      "sha256": "9d1bbd12bcf5695f7a94ad199a1f7323f81fb3f981092484db537b3c2e0ff31d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/extra-gates.log",
+      "bytes": 1326,
+      "sha256": "b67d9a97488d42834f51ed25187caf3c947bce16f8bef628ddf0e8be07411fff"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/format-final.log",
+      "bytes": 157,
+      "sha256": "130a1d22d47102ab641692a7922fa30b05ec67b89a6f2f7b91301c296194175e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/format-repaired.log",
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/inventory.log",
+      "bytes": 309,
+      "sha256": "82ccc744f4fac843233ea0dcbd678c2d2e83998aee04470a1c17d8fde7962cb6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/quality-accepted.log",
+      "bytes": 749,
+      "sha256": "9e4b93a96c7b32202ef528b1c18b945f129b9b152b97b8f7f5166375648c91c6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/quality-final-accepted.log",
+      "bytes": 638,
+      "sha256": "ca1819785a759ba2661b4cae95a2782b24b439302843fde24e4db49edcc79890"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/quality-final.log",
+      "bytes": 19022,
+      "sha256": "bdcd798588a3a82986acdca39ded953a37d5d1084d7852a7d578e420ade907d4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/quality-initial.log",
+      "bytes": 91462,
+      "sha256": "84b55030c0f080b1e7ba275a1c2697f759e4ae33cc30a904394a265e334981e4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-1440.png",
+      "bytes": 95412,
+      "sha256": "6c7e4050aad02bd7e7ae39f0c3b5e4ed7bbebf304878376fdf5eeb5e14f1df62"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-320.png",
+      "bytes": 24336,
+      "sha256": "6525dcc64a61d6bd0d6afcba0c7d128422d1b69caeeefe44915a4059016c6777"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-390.png",
+      "bytes": 70904,
+      "sha256": "08f7eed3a6edb04e6bf12a4314036561ef9076e2acac93fa0325af5e2dacebfd"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-768.png",
+      "bytes": 68669,
+      "sha256": "312c5e8ed5237259011795f32dca36ac960c1be019805c702dcf4e56d6c4a533"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-ai-1440.png",
+      "bytes": 137216,
+      "sha256": "d34b0530fa48026b416bc259b6e44a0f1b306b5af125b6769822c6746febf486"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-ai-320.png",
+      "bytes": 106082,
+      "sha256": "c639917290eaee6b5991b3988d3810ed7c202094135f39ee064132ca8a13ac56"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-ai-768.png",
+      "bytes": 108256,
+      "sha256": "7c3df893f6e8a1333fabc46291c7a8f781f85311907d2b7920c461bf6c26ddb0"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-analytics-1440.png",
+      "bytes": 95412,
+      "sha256": "6c7e4050aad02bd7e7ae39f0c3b5e4ed7bbebf304878376fdf5eeb5e14f1df62"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-analytics-320.png",
+      "bytes": 71537,
+      "sha256": "2419752a167cd73b7613df547f761f04a84b8ea229201cb8efbf43785f65eec5"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-analytics-768.png",
+      "bytes": 68669,
+      "sha256": "312c5e8ed5237259011795f32dca36ac960c1be019805c702dcf4e56d6c4a533"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-audit-1440.png",
+      "bytes": 188671,
+      "sha256": "f1dacaf77efa6e208a121092a2878d4b9b3710c82cca048aec2f4fdf8b027865"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-audit-320.png",
+      "bytes": 115761,
+      "sha256": "4a65f0d863fe5ee45d723c14b4ddab6fac2ff1a3a012a85f66ce72c557a9be7b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-audit-768.png",
+      "bytes": 144701,
+      "sha256": "e355d96dd735de8ee46257e1af990fe63f84f51885e8af8ddf9072cba3e95c92"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-branding-1440.png",
+      "bytes": 85268,
+      "sha256": "241b3eaae90cd411ddce3e3e3e2e7959962827c73527c84b4f0cc8de624859a6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-branding-320.png",
+      "bytes": 57927,
+      "sha256": "9a038a6cedca3254f054dfec3c315cd61180e9991400c2f699ff25dbc4cea030"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-branding-768.png",
+      "bytes": 60107,
+      "sha256": "390c88f8716a893bb8c675946d426140979fd89c2cd26d14593c9a0be36d939d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-connectors-1440.png",
+      "bytes": 135527,
+      "sha256": "a781cb0c8ea4dc1e4a73c0323e4fac23868cc744ffca8fdb5211a4e156f3bfa9"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-connectors-320.png",
+      "bytes": 97828,
+      "sha256": "6a40e710320a30acd5e3593a6b4acc8c632010d3c073642f8fa9d2b7d32347d0"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-connectors-768.png",
+      "bytes": 106803,
+      "sha256": "91a5636794e29cd9e5e5adbaacfabe963ac822e182db7cdb0a3cdd0f2e82dd91"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-data-1440.png",
+      "bytes": 148974,
+      "sha256": "ec23a10fa09acec1e26812ab6a2f09981ee1cea2fd1b9ef0bac69713404fa896"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-data-320.png",
+      "bytes": 121862,
+      "sha256": "e7d516f4bded6ce9c02cc4de65123bb4b2bf9c55a9d36f6a13252e801a379263"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-data-768.png",
+      "bytes": 125337,
+      "sha256": "2f4dc31d9e667cf9bd535e3ac08fd53e0d99a17a8e8e3f5f2a8df7177fd1dc59"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-identity-1440.png",
+      "bytes": 130518,
+      "sha256": "06645c7b61167977293b06330ac6e813427e5b7c4377d18a1aaef27f122d0215"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-identity-320.png",
+      "bytes": 97312,
+      "sha256": "cc488c93b7e5f3bb02e6a772378e9fdc073d7e38466516719a74144c7919b442"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-identity-768.png",
+      "bytes": 104929,
+      "sha256": "74dca1f2f7c06a652f718e15c9f7706affd5a9bc34cc6667c2c61bff2615e657"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-secrets-1440.png",
+      "bytes": 96972,
+      "sha256": "db277bdb8bfb45d70e32c437fa921afa243f6c12f00bdec5713ee7fca2bd55eb"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-secrets-320.png",
+      "bytes": 61889,
+      "sha256": "aab8de9c23d8d4a756f4fb53890e0f16f3f765e33f391375403d975626ff531c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-secrets-768.png",
+      "bytes": 67570,
+      "sha256": "ca336e9e384560012a097335d5c8d577622dcbc27a83126a4d58e20cbe2640e0"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-security-1440.png",
+      "bytes": 130301,
+      "sha256": "54a50e1b5c19f3cb52f968b83aebe38f2b1e7f0421803a8f1bc5fd62c6da41c4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-security-320.png",
+      "bytes": 99101,
+      "sha256": "b5e356331396195d51990f653fd71452a2d22c6dc45f6bcc30a75a7387a45d82"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-security-768.png",
+      "bytes": 106786,
+      "sha256": "c3192362904b96772420d180a9c0b4defffd0ba8281fb9052f6e55b97ecf8820"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-simulator-1440.png",
+      "bytes": 79199,
+      "sha256": "b2d3f708962b6c21e4ca67f1f3e6aa8d59fa13cde77882b58143ef3ab4a5f0fd"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-simulator-320.png",
+      "bytes": 52632,
+      "sha256": "54962a470e5f1a4ca003aae77874e0b0c8cebcbe8bbb588fc7fb55f7110eadda"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-simulator-768.png",
+      "bytes": 51948,
+      "sha256": "2d6667d899f3c671f339cf2a9c117b53d76bfba72acf666b20c354c32f2f267e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-systemHealth-1440.png",
+      "bytes": 120851,
+      "sha256": "ba6f94abf39ac3750315495f27338068a1864d1a3e5b547055b961ca12cb1cec"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-systemHealth-320.png",
+      "bytes": 85837,
+      "sha256": "13f19ae57db627e80a2b9b37e0498c057372744a7b0fc52e7010f80ba3f44b2d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-systemHealth-768.png",
+      "bytes": 95887,
+      "sha256": "f6ca37d5e0be337f23f6e501c3ef258f76860d51f8816fda29a556eba35e25ad"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-users-1440.png",
+      "bytes": 190234,
+      "sha256": "004308b6bd2fac26bfe3afaf26c80b8c1d3c144e6da7ae3aa6edae30fbc42ebe"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-users-320.png",
+      "bytes": 168949,
+      "sha256": "eefc37fd1dd4601138bb1b31f4c5b13f323606e2b0c1b9675272ca4c015cae67"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/admin-users-768.png",
+      "bytes": 203047,
+      "sha256": "5d136b275eee8e123fe4b9a2f6c1cab793ed548d33afcde303ba9a3eb9ca38ec"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/agent-1440.png",
+      "bytes": 36215,
+      "sha256": "10aeacf5452253dc29a321e0a62d238094cdff7b7066533e13ea0531588391c6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/agent-320.png",
+      "bytes": 30554,
+      "sha256": "99f22e71f1c4e5eefe7177bd71f6c4e7e6084a231a9714bc1d294e9533c42ba2"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/agent-390.png",
+      "bytes": 29937,
+      "sha256": "72ad6d1f311eb6d8220f005e58269212792f4243258f72c8932945053fbed847"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/agent-768.png",
+      "bytes": 33790,
+      "sha256": "4efedc9ab29da358045448d1516440d7362bb1a604cf23b1702ba760ea906da5"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/campaign-settings-1440.png",
+      "bytes": 138516,
+      "sha256": "1f8e99ad0bb94d01216c5f56296f41ef58c74cc882ffcb379bd7c55b9e205359"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/campaign-settings-320.png",
+      "bytes": 116930,
+      "sha256": "a9b6699ab677b95a97ebe06ae8b5b5ff5eb9f1f11b7eaafe861268cad533e2c8"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/campaign-settings-768.png",
+      "bytes": 125282,
+      "sha256": "5f795e7e0c04df2b9da2d585132b9bbaf19dab2f196b0afa038d34579799f9b8"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-1440.png",
+      "bytes": 92194,
+      "sha256": "9c3e384d82d891f690c5247ebc39e56f270b142aa26695be67cb9234ca1e05e4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-320.png",
+      "bytes": 70113,
+      "sha256": "e75b1482aa0c14c19f293fecf403a41f01ac707b0de4a097391f71df0295939c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-390.png",
+      "bytes": 69711,
+      "sha256": "c2557960414731aec4b755fd9ad2d5de70cf7a8f94acb6308d96cd7a0330cdd2"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-768.png",
+      "bytes": 75508,
+      "sha256": "8fab95d092938fad8d60419f8b8d0298caf3e3d46c2e50555bdc41540e9bc0ec"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-ai-1440.png",
+      "bytes": 58239,
+      "sha256": "22ef799c61edbf0c7ccba2032e1be1b8b69d7d9e62b24e327e5303d3d166914c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-ai-320.png",
+      "bytes": 43287,
+      "sha256": "61133741ff6cbc64b2919e99360068c133c9399f9a2bb0e835e3dc8a59c74b2b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-ai-768.png",
+      "bytes": 48001,
+      "sha256": "043a48e89f5cfbb4d2a30dd1c5ad9c745110f7cc9e7ddf3195ff6e31caf84f7e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-analytics-1440.png",
+      "bytes": 89406,
+      "sha256": "54254f83b9581bf6455d1ed2665fa93ba97cf71f19ee54cc42c3647e89bace2f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-analytics-320.png",
+      "bytes": 79064,
+      "sha256": "b4e778698c3667c4e4556dce850b004655a724c0b8dd77377a14ee09f49ad0b4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-analytics-768.png",
+      "bytes": 78536,
+      "sha256": "086148b5865d818321b952cc9ee1c95e7b45f0d4230ae8b7f93638ec8be75c92"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-campaigns-1440.png",
+      "bytes": 112081,
+      "sha256": "2b1a4c7ebbeb8befb7c2b430d70df3394b196a19f9fab2462f8932ad19c2dbbb"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-campaigns-320.png",
+      "bytes": 94039,
+      "sha256": "c42616954a0ecb9001a6c01faad59554ed19480d840e1c785d7e503cf2d33d54"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-campaigns-768.png",
+      "bytes": 100721,
+      "sha256": "65907aa785a5976bb5a868423f0fbd1f83f0dba55ee1f952e956ffd74cc9fe59"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-assignments-1440.png",
+      "bytes": 129865,
+      "sha256": "c80b18d69f096e0c086715ab8036f83d611a2bd362f5ecc70ee9e264a321ff2b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-assignments-320.png",
+      "bytes": 112977,
+      "sha256": "3793e7de4873519212025508e7f76872096db00e23ce495ac06f78079bb3ecac"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-assignments-768.png",
+      "bytes": 119265,
+      "sha256": "674329560e92f9b83ec823b3175be1009a9d66b6dd7fb1556669310f2977381b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-edit-1440.png",
+      "bytes": 126839,
+      "sha256": "eacf69040ff8ba2027a36e5d4ae30345899231df9b5f3a6767ab7e4a33336ac4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-edit-320.png",
+      "bytes": 132005,
+      "sha256": "61a84c6d4891f48c9e61caec770d31b526aaea7547b70db87f6d1600a6858e81"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-edit-768.png",
+      "bytes": 148557,
+      "sha256": "28fd56a2a715c440a83d72c11104748df9758d352186bffe176c56aa52e5784c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-new-integration-1440.png",
+      "bytes": 102175,
+      "sha256": "486d143e952617beb698fd3f2049c4505eac71368608bc4e4175466e3e8e9a9f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-new-integration-320.png",
+      "bytes": 85049,
+      "sha256": "c84361708d85f310a1b8fce98e1e68cf45cf73ab58a63ca682c99deffe0229d2"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-new-integration-768.png",
+      "bytes": 90642,
+      "sha256": "68b643b7b241b4b00fc9f18d0774c8fdc008933f891e5314806b19c281b7d880"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-packages-1440.png",
+      "bytes": 91456,
+      "sha256": "98700f1fb2a0feee2b788ac358b7d48fab9f6d3284dc4c942eb3b1d43367b4b7"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-packages-320.png",
+      "bytes": 78350,
+      "sha256": "d77a29efe9c7d26b49f0c9112e06a768de8c0d322af9198b460a007406bf0875"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-packages-768.png",
+      "bytes": 82425,
+      "sha256": "001c6ca0523d2060293e383a958aff82f54d930f57a32b74196e242b95f440cc"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-release-1440.png",
+      "bytes": 150880,
+      "sha256": "f387be30b7f8bbde57e6c56650ccfa30fe99b3bcfeb968ba3c452d5244263438"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-release-320.png",
+      "bytes": 132821,
+      "sha256": "8a184007cdf206f0508eb3eae114c1dc7f084a76c68b912bee27f7a073e0e616"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-release-768.png",
+      "bytes": 142831,
+      "sha256": "56cf40bdfa3f7116ab054928bdca13ebb13c018c131885ef31d5b5621bc00e8c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-script-1440.png",
+      "bytes": 90201,
+      "sha256": "0c24f0e8701397a5e27dd632318828f35c7b565de5ee0c9a9c2475ce37e1da2d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-script-320.png",
+      "bytes": 59944,
+      "sha256": "44232b4f875b25c76c9af26dc803b0535108b91469dc11074d04ceec7c0dbb34"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-detail-script-768.png",
+      "bytes": 72820,
+      "sha256": "4bf983e3d6d42e5d13e9727670e336d6075e5a811b8ed8d69547216029d02d11"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-integrations-1440.png",
+      "bytes": 75994,
+      "sha256": "a02bdf09e1988bf7ec1466e8d1bebe5af6c5e25872edad612823521b08b58043"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-integrations-320.png",
+      "bytes": 60223,
+      "sha256": "114905c741d583332d9c74bdb313e8c45c2e006b4b4a5dfbc8bc451cfa3c536e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-integrations-768.png",
+      "bytes": 64695,
+      "sha256": "cb8363ed8a82451707fb488bf08b0409bbf677c778a120ca6fbbe2b01d7f83b3"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-releases-1440.png",
+      "bytes": 92076,
+      "sha256": "9c184b1f078ac06f09e2f97a1ecf45626c1d102e0a995c50db421c6d014a6f00"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-releases-320.png",
+      "bytes": 70611,
+      "sha256": "450783ed353c0edd8afacd7c58b6922c5d7ea4e4a35a186231a0135a09c18ad9"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-releases-768.png",
+      "bytes": 75335,
+      "sha256": "7429bde7f01beb5b6486bdfbe11cf829913c61f263dfc5baa58693de26c7c728"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-screens-1440.png",
+      "bytes": 81962,
+      "sha256": "5b5ede9fb9734fee46ddbc3059a34b1a7afd146b82d5fdedcea1c44fe1b8162f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-screens-320.png",
+      "bytes": 67099,
+      "sha256": "aa3b4c5458095281772d4385d74b0d0c0a7eed285ed1a0641368284e38b250e9"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-screens-768.png",
+      "bytes": 70611,
+      "sha256": "b7d4ccc5aeb92fa7eb43af009386c622dc8341a02eed056e7f58af60c6fd61df"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-scripts-1440.png",
+      "bytes": 92194,
+      "sha256": "9c3e384d82d891f690c5247ebc39e56f270b142aa26695be67cb9234ca1e05e4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-scripts-320.png",
+      "bytes": 70113,
+      "sha256": "e75b1482aa0c14c19f293fecf403a41f01ac707b0de4a097391f71df0295939c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-scripts-768.png",
+      "bytes": 75508,
+      "sha256": "8fab95d092938fad8d60419f8b8d0298caf3e3d46c2e50555bdc41540e9bc0ec"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-settings-1440.png",
+      "bytes": 80276,
+      "sha256": "446df399db712497682ce2a3539955f08ae4076e7fef41bb8be2efae8b2fcd36"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-settings-320.png",
+      "bytes": 67617,
+      "sha256": "d82951f3a39334183330938a836cd5946c78a9bbd965e0ff5e9a2eefbe18ee46"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-settings-768.png",
+      "bytes": 71001,
+      "sha256": "41b26523741a4ae536959593741d68848f13cb9a10f1d71254df8e3d2aa4909f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-templates-1440.png",
+      "bytes": 146514,
+      "sha256": "20eebe44c34cd3a2664494d5f0a6b8feaa8d66107925dad6df5b1a0c0a115515"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-templates-320.png",
+      "bytes": 165216,
+      "sha256": "419979a78778a576f1e348977be6e855367e348e4498ba0cd2df6573a1231ee6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-templates-768.png",
+      "bytes": 148570,
+      "sha256": "f0a8b95e0bbd4769a1ee4271e951fd07757c94701e75737def178c9114e90ebd"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-variables-1440.png",
+      "bytes": 92377,
+      "sha256": "cda83d038bb794e8fde34c312c6fad667cd2471e8253db1e4060bc393ec3299e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-variables-320.png",
+      "bytes": 70476,
+      "sha256": "3a04626618e0b87c2094f56aeefbe253fb3134e043fa02bc6741932af6766707"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/designer-variables-768.png",
+      "bytes": 75652,
+      "sha256": "3e651f9212fed33536575b60629a54956cc3cc606b38149d06ecd2ca03a4f601"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-agent-admin.png",
+      "bytes": 82330,
+      "sha256": "82e674c97ad7b3f627d7225ca8bf74b8605e440715a1fb49d7810187710cda4d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-agent-designer.png",
+      "bytes": 51714,
+      "sha256": "34636910f1e90f27dab51e65eb3b1a81b48e26b8ef9127d3b4051d7b8873165d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-api_client-admin.png",
+      "bytes": 57969,
+      "sha256": "8b1c39895a26a18b83eba0f41e7294fc88a6a1c6e45cb122874173c28f9f3c78"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-api_client-designer.png",
+      "bytes": 106741,
+      "sha256": "89ed46b5418544ad9bdfa4a432ea512bd6658f8f5900d27bbd681c1efb083162"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-campaign_manager-admin.png",
+      "bytes": 60092,
+      "sha256": "2bfc415c54eb9dee476bb611e3f2b5baf047fe79003de3259c3461427e2b04fc"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-campaign_manager-designer.png",
+      "bytes": 107845,
+      "sha256": "0607053f0b171a6945dddeb301eaa12b0ffac73a712a97ee26430b71fd511edc"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-integration_engineer-admin.png",
+      "bytes": 85514,
+      "sha256": "1809f3bdc4b60d41accbdbfe65fc9e266b7fd166afca54e67ff261784cdc8203"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-integration_engineer-designer.png",
+      "bytes": 75227,
+      "sha256": "fa279febba694af366aeada469a4d61045c29d2857b01efa39942fc732cc276d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-report_viewer-admin.png",
+      "bytes": 60270,
+      "sha256": "2780f703faa0d096ff9c4dcfbcd7ba6d8ae93d41d0cd6cf06beb3492a175e7cb"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-report_viewer-designer.png",
+      "bytes": 45419,
+      "sha256": "bdcd92becc80b7c113a2dbe3e35a21eaeeebb3c4a9517e0d266563d08fb838ec"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-script_approver-admin.png",
+      "bytes": 36477,
+      "sha256": "f9aab9656ff3afbf6293bbef5bdd058a50ff6177742fa67e855074623f6e6551"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-script_approver-designer.png",
+      "bytes": 105261,
+      "sha256": "b48c200baf0fa0368319d3cb9b1cd64d2b88e8c8208f53136c94fcc0a05e4067"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-script_designer-admin.png",
+      "bytes": 36467,
+      "sha256": "eefd96b70c4190e4a47317d683ab90ffe75059a8aeafb978a4d9249b39bf5420"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-script_designer-designer.png",
+      "bytes": 108720,
+      "sha256": "a49cd6f1bb1c7b551869d95735478ba2444fdf4a40fe1feae71b8adff09dab10"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-security_auditor-admin.png",
+      "bytes": 124702,
+      "sha256": "0165a0d2edee1a7fa878cbeab4824fbb261bc9dff02a0a6346c621f6938b0244"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-security_auditor-designer.png",
+      "bytes": 43754,
+      "sha256": "4c05a8bb91dae066ffadcc1db1a04147e0678db1ff764c29cf1420e8f17feb27"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-supervisor-admin.png",
+      "bytes": 60092,
+      "sha256": "2bfc415c54eb9dee476bb611e3f2b5baf047fe79003de3259c3461427e2b04fc"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-supervisor-designer.png",
+      "bytes": 105350,
+      "sha256": "abf4568664dcb026954356fe4a804393492bce47f3da8410ec5587f58f82f852"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-tenant_admin-admin.png",
+      "bytes": 91759,
+      "sha256": "eca6d9153063fd23dc2d0ca8733dcf15f2b8a26ce4742c028d791d9a1d4793b5"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium/role-tenant_admin-designer.png",
+      "bytes": 114611,
+      "sha256": "b190d8af283d0d384cc6cb78bc2b97b8e02ab5ff9dbad1c6f1eda25756f2b34e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-chromium.log",
+      "bytes": 573,
+      "sha256": "11acafd882697e8a86c6e95461d037770dc548a6ca32fb00659dff01ab69b7eb"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-1440.png",
+      "bytes": 111536,
+      "sha256": "74c62d1084bfc3ad23bb7234d20fb4eb199dc161f5a35c33f84d7d2af2afcc3c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-320.png",
+      "bytes": 29440,
+      "sha256": "9768e65ab12770f9682662fa465f7bc2693aac8a5aea0bf8c5162e788a2b068d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-390.png",
+      "bytes": 83926,
+      "sha256": "f3fd448b51b069100d27c33e6cbb7984ac4004524b14a5f0d34dd0721333449e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-768.png",
+      "bytes": 80979,
+      "sha256": "9e1250c7362635fc01a93ac585a8dd7310f2aa2c750337c1be8be6db3ccb651e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-ai-1440.png",
+      "bytes": 163052,
+      "sha256": "e98e87847940c240891abcc61b6e5ec1ed64a8614f226c89e4eaafc33cd8183b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-ai-320.png",
+      "bytes": 126378,
+      "sha256": "2c0893f43b8551f2a6c1ae6c3875856ab806800c8907006493b2aea35d44c2b4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-ai-768.png",
+      "bytes": 130087,
+      "sha256": "ad187d955adeef662760a2129f0ca9abee5662eca8d7639e6d4833a1cf0cf3ab"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-analytics-1440.png",
+      "bytes": 111536,
+      "sha256": "74c62d1084bfc3ad23bb7234d20fb4eb199dc161f5a35c33f84d7d2af2afcc3c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-analytics-320.png",
+      "bytes": 85942,
+      "sha256": "717bb104b5ae1b341742260e1f6e33ecfa921d3f0a66858690c809cc912e27d5"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-analytics-768.png",
+      "bytes": 80979,
+      "sha256": "9e1250c7362635fc01a93ac585a8dd7310f2aa2c750337c1be8be6db3ccb651e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-audit-1440.png",
+      "bytes": 221449,
+      "sha256": "4ebc50ac3b8999ef0db8f3c74ea2744364d8889b58827327cdef8896b7d8dad8"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-audit-320.png",
+      "bytes": 141637,
+      "sha256": "68824464fbb2f280334cf150ab59d9ca441098d61e5aafb0056fa78817ad1781"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-audit-768.png",
+      "bytes": 175570,
+      "sha256": "02f80c0947505f3b6ef14f562b0a6d8725fe73e14cbea10b5a52b82098e2c585"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-branding-1440.png",
+      "bytes": 100514,
+      "sha256": "afc713d217053b9908ea0a720908a06b0b0b93660f58080bad0adfd531f5053a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-branding-320.png",
+      "bytes": 69739,
+      "sha256": "f9725dd829c60c51e27543da8017ee552933553f7b6f839b684842155dd45b43"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-branding-768.png",
+      "bytes": 72540,
+      "sha256": "23cfb91cbd5252a55210ae5003ecad1ba49e845ba046ae0a9fee3c77d4cd64cc"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-connectors-1440.png",
+      "bytes": 161852,
+      "sha256": "e72954c7ccd99b734fba89d4c9906989db91e7f294d28f19cd06daa319222d84"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-connectors-320.png",
+      "bytes": 104838,
+      "sha256": "85148fb58397c819de0d43cedaf3db3b3874c4786bfee050eb73437b561c291b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-connectors-768.png",
+      "bytes": 129018,
+      "sha256": "766f522040fc6a7c53e588e9e69a08387c64579dbbbce767c6b74407bc04c799"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-data-1440.png",
+      "bytes": 177061,
+      "sha256": "42fe2a34f6c9c790f337f5625b705049292841ac76022a27dba4e9476c1a2fef"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-data-320.png",
+      "bytes": 144210,
+      "sha256": "494ef238f97f6694546417d5052e5e0df4826688add8c5d555a54cc2ef87bbf2"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-data-768.png",
+      "bytes": 149885,
+      "sha256": "7e7614c2c42931b63008003c08454377519876d14928b78a3e246b22a537001a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-identity-1440.png",
+      "bytes": 156001,
+      "sha256": "4e5ce4fd58d847365744f4c915025c178d438f5db1439dfb27c377f9a278684f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-identity-320.png",
+      "bytes": 115788,
+      "sha256": "54d2ac82ddd8ce6bde05908827674d31404493e7d098b5eebd30d7fb169c4f60"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-identity-768.png",
+      "bytes": 126277,
+      "sha256": "9a85900fa78ea5a0864d86970066abf67d8b0be8e6d03f990024a34ecaf0f1bf"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-secrets-1440.png",
+      "bytes": 114033,
+      "sha256": "250aa8d2aa27e0a6dcbb15df774366f249cc5d8a7f39f880e92bd7a345eaf092"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-secrets-320.png",
+      "bytes": 73635,
+      "sha256": "94d622c42e1c90675852e78578f74f9a6532345663f3507fa01a2cef5289ed0f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-secrets-768.png",
+      "bytes": 80686,
+      "sha256": "f4da6e53f65d272ebba57bce5b38eb418aede6d742cd34aeab60af398be2944b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-security-1440.png",
+      "bytes": 155552,
+      "sha256": "891a81246455d16311906ca2278647f63f79bc26c75816af6f1b6dd5932eef96"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-security-320.png",
+      "bytes": 122836,
+      "sha256": "566beaf5dd4d208b1a964962d97d6d0ea250daaa99cbd022778ed145497712f1"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-security-768.png",
+      "bytes": 130010,
+      "sha256": "35b0b06c51f512a35de1059fce4644bdc775749ca461a7c960b45a202a1304f3"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-simulator-1440.png",
+      "bytes": 90187,
+      "sha256": "b1468315f1d256908e386fbd10fed1558779f0d279dbadae92417a95f1b05213"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-simulator-320.png",
+      "bytes": 60903,
+      "sha256": "f39bb1a85c08913b33b71e8f5fa080227b1360065502d823419d5ee8e9f47e0c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-simulator-768.png",
+      "bytes": 60132,
+      "sha256": "3e5e8b08ad1726968a705bf7066fc391ec5c407864a08e451f560dae80ca2698"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-systemHealth-1440.png",
+      "bytes": 143882,
+      "sha256": "a021fa0b954c87684b56ddd82ff381a70b4446ed69a8e3447c651775316bd701"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-systemHealth-320.png",
+      "bytes": 102664,
+      "sha256": "ebe133e9c994e95f790bccf29fadd50434def851f1feafd1d73d83439a0c7412"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-systemHealth-768.png",
+      "bytes": 114517,
+      "sha256": "051ba42c1dc0d1277f984485cdeb24015ee08cfdc6ae4e7ee0dbfcbe4901e419"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-users-1440.png",
+      "bytes": 242711,
+      "sha256": "1017be6dc214cd90f167611878c78ea5abc2924a0b26d430c9d3c392ff7bcf6f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-users-320.png",
+      "bytes": 207074,
+      "sha256": "c5bd9b4672dab420364745c8575a442328e6fcf0a18d9304720cf0725f892c6c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/admin-users-768.png",
+      "bytes": 248041,
+      "sha256": "4f657a980147b93b17bbfa07630aa6a3cb94eded4c592cf54ff797ffa6750110"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/agent-1440.png",
+      "bytes": 41979,
+      "sha256": "409f59b257d2739910bc02ed084d9023182fbf0bfb5329aa096d31a429f8c804"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/agent-320.png",
+      "bytes": 34745,
+      "sha256": "92f6b07b268320bb156a058fd37d17011291b2ab72ccb130649e28f3260be6fa"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/agent-390.png",
+      "bytes": 34294,
+      "sha256": "fc64236d719eb688be3387ab8494109f2b623d7a9603e0476f0549cd9d1b8c36"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/agent-768.png",
+      "bytes": 38428,
+      "sha256": "53ac6b3994485db889a9dc2b0e6e931c804da4020781761dfea62ccbc4c13783"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/campaign-settings-1440.png",
+      "bytes": 171710,
+      "sha256": "f522bc42a12090c8af372e500e40410f25007b269a5a5cf54073cb23662ffd7c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/campaign-settings-320.png",
+      "bytes": 147183,
+      "sha256": "939aea0edbb3c49cfecda51baf1f48c8a61c76f46a0b3672c659a918ae78b95b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/campaign-settings-768.png",
+      "bytes": 156065,
+      "sha256": "e6cd48b5ffff7c56e3acbb04b15240c14afea8ac28d7760ba56ac5c9935fe375"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-1440.png",
+      "bytes": 106084,
+      "sha256": "048ea7d89fe727eb0a3776e2fa00a36a47b7ed639bf7f57674dd3bbad846a583"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-320.png",
+      "bytes": 83073,
+      "sha256": "c0f8ffa0c0be102f65af01db592dad207c024e944ae79f0b03edb87d363c886d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-390.png",
+      "bytes": 81740,
+      "sha256": "fa683cc64c4e1361197ef85e010deee9ab06ade5cba960ec84eeb4d137f47548"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-768.png",
+      "bytes": 88241,
+      "sha256": "0c572bf64019012f751007765a6c82c036c19f1bb08e8fd3f3fc90d07938b4e6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-ai-1440.png",
+      "bytes": 69034,
+      "sha256": "1ae546f749934e69112e768db9db42db19e4daa843328477c8d998292af89083"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-ai-320.png",
+      "bytes": 51011,
+      "sha256": "1dc134fc886e8e6c05981df488e2f220f7c98f33fcde90c8f6b02027fafb1d0b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-ai-768.png",
+      "bytes": 56895,
+      "sha256": "41b64da18f56cba94135294cb8019dfe708912f498b9941fa2e0b0384737be20"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-analytics-1440.png",
+      "bytes": 106002,
+      "sha256": "eb562ee7f71b1ef11957612a32a3f894d998849421bc86584f03b784aca9aca3"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-analytics-320.png",
+      "bytes": 94753,
+      "sha256": "558471c4e3c2654e2ab6d5aae4a3b056b79960f22cd2e35bce0830f17053d2ff"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-analytics-768.png",
+      "bytes": 92241,
+      "sha256": "194ad0218c57632710522db59366113f24e02d0dd04c2fd6fc6e7f674e4b3f62"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-campaigns-1440.png",
+      "bytes": 128488,
+      "sha256": "986cae7b649264fd8006477be91d75d1362f8f25e96200dd556e00528df5dcde"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-campaigns-320.png",
+      "bytes": 110143,
+      "sha256": "1793689da3b95256e9c39ce98dd5f055779f687dabf1d7be30f57cc8ee2c51c3"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-campaigns-768.png",
+      "bytes": 116173,
+      "sha256": "1ddc4ee6259571a0999518affc3d974ae773884d48ffb4343cd6df542c2113f3"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-assignments-1440.png",
+      "bytes": 156091,
+      "sha256": "9bb275a6952bfc3549ce48926a10c8931c22fcea8cfd0097127e45cce459eef6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-assignments-320.png",
+      "bytes": 135196,
+      "sha256": "7087915f94aa90fcdad987a0966305f0d5a7f9dbe3aeab325f34b01ce6781131"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-assignments-768.png",
+      "bytes": 142124,
+      "sha256": "6d728fd1169ca5958099f07976cb2c8681afaf246aa6bbfc7b33882c3c2c66e3"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-edit-1440.png",
+      "bytes": 153213,
+      "sha256": "3531d2fbc119d4fac9ffc863ec2fc319403495f15559bfbf63df7d262dd0f817"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-edit-320.png",
+      "bytes": 161475,
+      "sha256": "9bad92101412a7a3192077b137fac99adf0223c140bcbd0715cf215c4e8c5aff"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-edit-768.png",
+      "bytes": 182255,
+      "sha256": "332558fe476cdbc94e12642430a397649618933e37703c22797a11bbd435d558"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-new-integration-1440.png",
+      "bytes": 119753,
+      "sha256": "cd918704da9d9cf157b583f53bf475dddd551a9df1e67017abbccbdfdd147b95"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-new-integration-320.png",
+      "bytes": 98971,
+      "sha256": "ffa165f549c955fd899419016963184c2553f7e80a3bf953efe2d09119222ef1"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-new-integration-768.png",
+      "bytes": 106519,
+      "sha256": "35bccf16dbad6c124bec3c20c61c81d64375496e0544ab0df538a14f57f616a9"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-packages-1440.png",
+      "bytes": 108252,
+      "sha256": "174a84e98661bd4ef664e928f1af6163357625a8161cfebe5956313090fbcee5"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-packages-320.png",
+      "bytes": 91709,
+      "sha256": "7c2449dd1833836f0dd5696dd4f33d9e5984668e9f6053a7187e7ad3d46a88d5"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-packages-768.png",
+      "bytes": 96289,
+      "sha256": "d554bca2a93767b0cb47d56b53af718053bae565ab05decd64673c810f9bf837"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-release-1440.png",
+      "bytes": 183838,
+      "sha256": "195de53a43e6e2fd24f58ba41440d680538f85d2b0e08e971230b1c4c15d1ba0"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-release-320.png",
+      "bytes": 158190,
+      "sha256": "82928d8f904e48bfb7d26f04ea6491352d778fad8222d61c8a472c1b13465d4e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-release-768.png",
+      "bytes": 170903,
+      "sha256": "5665e697bab4148668684866fdb2990acf307db47fe6d9d05bfb7226ed62c8ac"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-script-1440.png",
+      "bytes": 105320,
+      "sha256": "00baee7e1d3d6f1060f16e8f146ca0eec3cb77ad4486f99157180213c4b0df3b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-script-320.png",
+      "bytes": 70957,
+      "sha256": "12ce6844fb0b3bf07651d0df16d050adb2b5d160f90ce36d684d329d986f3c39"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-detail-script-768.png",
+      "bytes": 85099,
+      "sha256": "ddf88f69b38780c520e150ce837bd5a49c47b8f549b6510af533cb6ea75dc6ad"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-integrations-1440.png",
+      "bytes": 88937,
+      "sha256": "b16e66b1360c385cafe7a574a14cd958f64c9d74bb90d9191ea2f96b1ab759d1"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-integrations-320.png",
+      "bytes": 70461,
+      "sha256": "9508db4c50ea20f7084e8c80a62b5c8bef7145918f64a21850df83939c6acb50"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-integrations-768.png",
+      "bytes": 76389,
+      "sha256": "352a2a34c5ae449f484f767748d99af9f3fe3794676dd44cae47019afeda699f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-releases-1440.png",
+      "bytes": 106028,
+      "sha256": "4d653f35fffd9dc514a9619bfbdcdcd49a3d11d64b464e1064c6cba2550f4051"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-releases-320.png",
+      "bytes": 84030,
+      "sha256": "e1ed5a53da0810a0155cd2795b44c8bf4d01a6945cde5a66ec40a636ad82fe5e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-releases-768.png",
+      "bytes": 88128,
+      "sha256": "1a595767596c16bfec894fe7113ace291d51bacc402f2663dd781627cfdfc284"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-screens-1440.png",
+      "bytes": 94446,
+      "sha256": "919aeab7395a3f2efe373dc70af726fbb4262f9d9d0344b7883e4e5020bc8d90"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-screens-320.png",
+      "bytes": 79047,
+      "sha256": "7d6b9c6f493bc7585912bfe31e71dc25b326bedfb89f6eec1937cfa41b8131b6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-screens-768.png",
+      "bytes": 81771,
+      "sha256": "b32997596a0a80ae95b289f0b91aade6e88e3e3c2a50e3a06f6b48779a1ccc76"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-scripts-1440.png",
+      "bytes": 106084,
+      "sha256": "048ea7d89fe727eb0a3776e2fa00a36a47b7ed639bf7f57674dd3bbad846a583"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-scripts-320.png",
+      "bytes": 83073,
+      "sha256": "c0f8ffa0c0be102f65af01db592dad207c024e944ae79f0b03edb87d363c886d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-scripts-768.png",
+      "bytes": 88241,
+      "sha256": "0c572bf64019012f751007765a6c82c036c19f1bb08e8fd3f3fc90d07938b4e6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-settings-1440.png",
+      "bytes": 93459,
+      "sha256": "d688fd8f0a247d5e731c6155acfbfca1f2291bc2dd96bfe59a696b846a646a36"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-settings-320.png",
+      "bytes": 78075,
+      "sha256": "54983bae8da0f35cf3b410194d64f74344ea38ccca02fffff2f86c4683384acb"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-settings-768.png",
+      "bytes": 82238,
+      "sha256": "44ef128da6212eeafa562249caf6a5ac394a9e0e31041dffa2a9bf74b23c8a79"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-templates-1440.png",
+      "bytes": 175098,
+      "sha256": "56866c9a6312407d8062a652e02705cb48ed57a7b3993624326a53aea266580d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-templates-320.png",
+      "bytes": 194681,
+      "sha256": "71a8717baad9f5f91159b038d1778ba841797e300061f943382f61d2e6692cb7"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-templates-768.png",
+      "bytes": 179438,
+      "sha256": "a36df9601150f5950865b6f8825cc612329e401b82ac4cc3ece8df58454781ea"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-variables-1440.png",
+      "bytes": 106433,
+      "sha256": "c3c6f7220f81332bafb041c2b14c5401ff54588a54acba8b59d132a49fb5bc48"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-variables-320.png",
+      "bytes": 84086,
+      "sha256": "2dbe0665c20bb577ea2db353830a68682cc1d96ddec2ab5a749d9a8a002848be"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/designer-variables-768.png",
+      "bytes": 88597,
+      "sha256": "06e37c4dd562a758fe3929c58d0f1b1e3b607691e05ed5f7be292b163be56af7"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-agent-admin.png",
+      "bytes": 97254,
+      "sha256": "d788c3947eb78aca143334abe9825d3d0f61835b98993df1bb80b8b48032afcd"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-agent-designer.png",
+      "bytes": 61191,
+      "sha256": "eed826d617b39188757ef7199749f465e9427d5df39378e46fbb8749f9580a67"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-api_client-admin.png",
+      "bytes": 68538,
+      "sha256": "b43447a7627fd892b3dc866f8f7bf00e37ca5ed865c2ce419901c50c713a0f8c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-api_client-designer.png",
+      "bytes": 123103,
+      "sha256": "79a3c2d00f738ca169fb31cbfea57f048565b559c9dc0e4692af25d4aca0ac34"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-campaign_manager-admin.png",
+      "bytes": 70615,
+      "sha256": "3d4303574d52243141aeb99726ff4742275076e2fd1c0ae9355400c5a6b0cade"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-campaign_manager-designer.png",
+      "bytes": 124332,
+      "sha256": "607bd3eddbe29c05421d50d6834c0e4763ca0c41c52c8f82748531f8055f831f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-integration_engineer-admin.png",
+      "bytes": 104051,
+      "sha256": "8c2271c0273f0b9d6d48b41c275739a48075da22341b61e4e3df00f4cffc66a6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-integration_engineer-designer.png",
+      "bytes": 87404,
+      "sha256": "93b09a2e64ef2e45bd8b2cd3fa186928736785948d3d38b07792703b6cf97834"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-report_viewer-admin.png",
+      "bytes": 70986,
+      "sha256": "b8daa3dffd59d459dc36ea989ec837f077627c2cbd07b31d991d0556db9a044b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-report_viewer-designer.png",
+      "bytes": 53774,
+      "sha256": "2b22fb333727dc17466d19170da3634fd1c62af65c85b3ab449e120cc63451b8"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-script_approver-admin.png",
+      "bytes": 43500,
+      "sha256": "775d98904b1a481a25cb1b11fbbd2f568e924fcb2455d5760d8544bc7e8a6bf8"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-script_approver-designer.png",
+      "bytes": 121265,
+      "sha256": "f3926ad1883dbc091dbb25cac94bfa6389d52a0740a5f3cae277507aec739136"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-script_designer-admin.png",
+      "bytes": 43500,
+      "sha256": "775d98904b1a481a25cb1b11fbbd2f568e924fcb2455d5760d8544bc7e8a6bf8"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-script_designer-designer.png",
+      "bytes": 125225,
+      "sha256": "c3876b01ae364d7fd477332ceea7af8526bb1ad65d6d258b0dcde85be726b728"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-security_auditor-admin.png",
+      "bytes": 148655,
+      "sha256": "6e5230f99dc854966a9e34e60805e3ffd8b911e831ae14191e81189793b72591"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-security_auditor-designer.png",
+      "bytes": 51686,
+      "sha256": "94ee0b6b49fd0b3a61c767bfde576fee95a7a24e26a16f6e3839f19b357af3fb"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-supervisor-admin.png",
+      "bytes": 70615,
+      "sha256": "3d4303574d52243141aeb99726ff4742275076e2fd1c0ae9355400c5a6b0cade"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-supervisor-designer.png",
+      "bytes": 121515,
+      "sha256": "060b9699fa9d2d3aa9274ef9f6f8505d4c8f0db0a27759e21cfc4bf3d19c080a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-tenant_admin-admin.png",
+      "bytes": 106693,
+      "sha256": "1eb9036863a180c15e2528027d7f4b3e0436d994ccb95e9508b1e1a784548b52"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox/role-tenant_admin-designer.png",
+      "bytes": 131665,
+      "sha256": "f1e72f194da7a05054eae9e7ea9b7dce67537ccea63be42f881e2adb71d5c0b9"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-firefox.log",
+      "bytes": 574,
+      "sha256": "fa18e27fb767dc53ee8365854f8b362a6c6f8a7443e8720cd8860f2cb170e402"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-1440.png",
+      "bytes": 125297,
+      "sha256": "667d02e3359b121e11fa395f805ffefe3709833f20c71bf8ec9ddb941053e67d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-320.png",
+      "bytes": 30934,
+      "sha256": "97df9897fc41ae93f0bd89b2584a577a75e2900af904d7061086fc802c447a88"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-390.png",
+      "bytes": 39712,
+      "sha256": "685ca14802b715e200f3106096d3943ce9153166b99c5dc974fdb48edd1fa1e5"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-768.png",
+      "bytes": 84049,
+      "sha256": "60a7b86ff4d6f597444b9cfa20b8f0c06af2225a367121eb8dc449eeb1623489"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-ai-1440.png",
+      "bytes": 184745,
+      "sha256": "33f20b74cd71b8f4aa79a22b093ff3096b28821368958babb7c157f27a775584"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-ai-320.png",
+      "bytes": 126883,
+      "sha256": "610648cd1ef67d6a5c5943cda259df41a3548307d335e40f1d80e68aaa4d3c16"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-ai-768.png",
+      "bytes": 138536,
+      "sha256": "cc3a9de1bd5b991019fb2a654cb7d986ed59e09f5286f6912163e0bfe1caa0a3"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-analytics-1440.png",
+      "bytes": 125297,
+      "sha256": "667d02e3359b121e11fa395f805ffefe3709833f20c71bf8ec9ddb941053e67d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-analytics-320.png",
+      "bytes": 87633,
+      "sha256": "0d538889b23f409d1a69798665809255b74148c8504e656be1c1ebe2b87fa18e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-analytics-768.png",
+      "bytes": 86529,
+      "sha256": "4f19939ad4a96ecab2649b4a17b00a34e4b9cd236df499d8790d6bce8c074c80"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-audit-1440.png",
+      "bytes": 257212,
+      "sha256": "f6bc92791734a7fd2b704956fd3f58cbf2560eaf10017126fc111d423bf11aad"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-audit-320.png",
+      "bytes": 152034,
+      "sha256": "59d9cc9bb3b205f2597995ae4f0a41a1ce3e3e7c9e96ef34155c7a454c3e55eb"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-audit-768.png",
+      "bytes": 199485,
+      "sha256": "088fd19a71912b5debcefec8781a25fb527dce79d0348bdf14737b12124d81ae"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-branding-1440.png",
+      "bytes": 114863,
+      "sha256": "ef60df95e247229c5ab26755a2250697724f7bc0401fcbc9a4497c0f87b9015e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-branding-320.png",
+      "bytes": 71324,
+      "sha256": "aeb9e79da8c545821a778159702ca3a81808298ee28f9d21331941604511c672"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-branding-768.png",
+      "bytes": 80244,
+      "sha256": "31e7f8600c4b74b5cfa49d5301e2cd68820af53f74e8e2477118173ce929bb8e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-connectors-1440.png",
+      "bytes": 191534,
+      "sha256": "730b969c462998fb0e6a8cbd3268244b5cd88693531acb44a85fee525ef906a9"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-connectors-320.png",
+      "bytes": 121398,
+      "sha256": "46433985c4a5f6cad7e970d0a792d9a627302eabfd4a2a0e43c98871c6124d79"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-connectors-768.png",
+      "bytes": 143916,
+      "sha256": "f2f1ec7c1d850b06ae121bfd309f1866d1b49a291f74ce974ca31cccfbb55a84"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-data-1440.png",
+      "bytes": 201297,
+      "sha256": "f46e549653baf2e1019ec8d688e54714629b4d2fb1b84a51f20f8cc2ce35b06a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-data-320.png",
+      "bytes": 149624,
+      "sha256": "db0726abaa66dbcdba8f219f6dff0b8221cea1207627348d47dd7f5a615de17c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-data-768.png",
+      "bytes": 163523,
+      "sha256": "053373b74362382701f7b20ce6f86a0d5d7e3467441e60bbebc4c88801ed253e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-identity-1440.png",
+      "bytes": 182912,
+      "sha256": "8d6b6d8b8c11a0f3da8522098f3567f4b55d32bb98968d934f0761f3dbc20431"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-identity-320.png",
+      "bytes": 121692,
+      "sha256": "d25389251862b984d6227c31333d509cdba67871a8832c7352832492d9a132ea"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-identity-768.png",
+      "bytes": 141325,
+      "sha256": "cc2eda70d6ba6e9a0ce32402af11e03b9d0b66101cff136f58fcd1f0427c0ee5"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-secrets-1440.png",
+      "bytes": 131865,
+      "sha256": "198a65f372486fdb253f6e7c4ac0518c328f15cc04ff7e56bac3a7304be0ece6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-secrets-320.png",
+      "bytes": 76960,
+      "sha256": "a58d90bf30030b5cbaf9d2cd6673823ba3041058c7c5d9b2bb12369e97acdd42"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-secrets-768.png",
+      "bytes": 89725,
+      "sha256": "808de2f03e8147a91ea7f54377f9d108d193fd8b94e672c4804f9eb8a1155671"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-security-1440.png",
+      "bytes": 181059,
+      "sha256": "3714d7af59e6ed9c471e1fe375cd6dee415d0e2226a8de7ade9671525a0d1cf5"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-security-320.png",
+      "bytes": 125574,
+      "sha256": "c4d98d66a5cdaa17b509b3bbfe0ab31426209ff4d629c92a010fcbd9b618587e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-security-768.png",
+      "bytes": 145211,
+      "sha256": "bdb6349b0529f4799d81428ce9cba7b69bc73c737b3e7ff948223fbbbb556d52"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-simulator-1440.png",
+      "bytes": 106322,
+      "sha256": "9b4d84deb220be51da6741b6d9a29e0e9a4269309b04b3ff324cd03142d9fe2c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-simulator-320.png",
+      "bytes": 62244,
+      "sha256": "aa1be803612d4c3427caa7c8ef7c802387153a2aca8694f79d28ce1ab376857a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-simulator-768.png",
+      "bytes": 68357,
+      "sha256": "8d0f80d3875cd25c1ba9aedd2e3034ab9b4db0093c1b78565c9104cb7dee1cde"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-systemHealth-1440.png",
+      "bytes": 163329,
+      "sha256": "865133987c881d3d654e96150c0a3e913180da415bd6be68626ed8ca0ae8a48b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-systemHealth-320.png",
+      "bytes": 104043,
+      "sha256": "124839effbc94d374c0ab1038034c12854ea44f3b669bebdebf0df7a23086219"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-systemHealth-768.png",
+      "bytes": 125228,
+      "sha256": "fbf97448ca3dc27c28425254bebb572ba5eb116191deb5001a34558e49c2ffc8"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-users-1440.png",
+      "bytes": 268806,
+      "sha256": "72cfd5c062f40597d61befba6fbd7f169d25398a8f32a2ff831ad80bf3c096d2"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-users-320.png",
+      "bytes": 216650,
+      "sha256": "6d009f0c1d9f383f4793ec8b5e74097d226391159d4aa6b334c607c11c9cd050"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/admin-users-768.png",
+      "bytes": 287089,
+      "sha256": "c97f4bff914d9d374999e7aa1a04c198e713a59e4c6b3a447bfa61933b46ebc0"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/agent-1440.png",
+      "bytes": 58029,
+      "sha256": "6296e7091fe6ca8fe06e037c2663fc8cf3020a8e25052996a441c145fe8a1b6b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/agent-320.png",
+      "bytes": 37677,
+      "sha256": "77e4f11c2efe1424c3b9f12a41c9ad2e584140d13f20240c8c173ae2523e8213"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/agent-390.png",
+      "bytes": 37941,
+      "sha256": "ac25fa8da5a10fdda76431782f6550ec175ee12f591d970edd47ee73891ca33d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/agent-768.png",
+      "bytes": 46476,
+      "sha256": "96233337b82ee6145a1eda5a14229606e800c29fbf32cf9850930bfc609c60d3"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/campaign-settings-1440.png",
+      "bytes": 197106,
+      "sha256": "b09872bfed25f446046a7e35baf8ef9f19f7d3be3359f5d9be47d89575655d95"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/campaign-settings-320.png",
+      "bytes": 144307,
+      "sha256": "a61f1957d255f04703276fb3083bc6b2cd910b73330605926f01d59b54d8a88c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/campaign-settings-768.png",
+      "bytes": 164579,
+      "sha256": "8ac626dcf1d3ffdf0e9fae97b5992a9251ce77f38d27e2ec679627b446a5133f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-1440.png",
+      "bytes": 120798,
+      "sha256": "ed6961e0c9fdfab15e927ff805afbdd08fdd89dc62fec61eb806ae77bbbd6680"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-320.png",
+      "bytes": 85253,
+      "sha256": "573cbe15263d8fc0d8134e27605f145a655b2c732402d6fc3f89fe46154a32ee"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-390.png",
+      "bytes": 84816,
+      "sha256": "e76400f97e1e4690f8c40ee557a31ae5bad24d5c3bb3f06f671da7c0888112ec"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-768.png",
+      "bytes": 94369,
+      "sha256": "f0ab384709cad7b4bd9162f4f4cf6e1e8085f25b79eab2a35041be71e39dc382"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-ai-1440.png",
+      "bytes": 84036,
+      "sha256": "ba9d155ea7973d94ed573a091082147a42f764bf3baf1548031ce78286db8e5d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-ai-320.png",
+      "bytes": 53091,
+      "sha256": "9fa028b09b98898baa9682fe04361468e07fc51ac73607d2f4830074d6a512de"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-ai-768.png",
+      "bytes": 64270,
+      "sha256": "d88f98af95f19d169e09b2d374ec238634a22c338729aaa37af360146264b473"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-analytics-1440.png",
+      "bytes": 118641,
+      "sha256": "045315977f4ec38c2279b7c8eca9d3cef0b1001c37bf84171c1c64c53e8ab403"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-analytics-320.png",
+      "bytes": 96359,
+      "sha256": "848f9cba31e9efbb69ac0843f77dd92e43c98017f5baa0bdb142ed7baf73bc8e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-analytics-768.png",
+      "bytes": 98367,
+      "sha256": "d181e9c2b41db0c29a94f26f93b4136d3df5c98fb43a694d5bcff515e92e41a2"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-campaigns-1440.png",
+      "bytes": 142971,
+      "sha256": "eb05b1f9c6fa015ae524078b0fff2b4eb046325f906068f6fdefa7fb41dbf99d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-campaigns-320.png",
+      "bytes": 113745,
+      "sha256": "acb2369e1769da259dcae39f6a257a6b778745d7eb55d470ed7bea517d529b7f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-campaigns-768.png",
+      "bytes": 123195,
+      "sha256": "2dd9afdaf443b848cf82833f2d7c8ec379f099d989f1ef766d33aa4d8a6ca755"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-assignments-1440.png",
+      "bytes": 174219,
+      "sha256": "14ea53fff2d4e0cfaa2b5e93c8aae3aad1b7266c550ff4bb7237c917300cbc36"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-assignments-320.png",
+      "bytes": 139121,
+      "sha256": "f28b27b27ebec73de879b9cae94810dc6838170810b5265a392c6fb7813b3536"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-assignments-768.png",
+      "bytes": 153142,
+      "sha256": "e02cfed51f123fd6502ef7c20ae7b26bbda30be8eeacd6cb9cedfab0284d2823"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-edit-1440.png",
+      "bytes": 162561,
+      "sha256": "f74e14a586f6a78500d6a216dea2f0eaf7425ffb62eab14838963e6fc478eaca"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-edit-320.png",
+      "bytes": 166919,
+      "sha256": "7c766e94b53eaed8d46e05469bf57e46e9e5e0b346c7a9ba9747936faebf6f1a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-edit-768.png",
+      "bytes": 200788,
+      "sha256": "0aacdff832522f64705e3904b851d671b38cc330a39414b5eb4631a780367f9b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-new-integration-1440.png",
+      "bytes": 133093,
+      "sha256": "b8f48eeb769093cd19e532222690a59518941140b45a1bf117371289722667ed"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-new-integration-320.png",
+      "bytes": 100900,
+      "sha256": "b7c5f61519d95827cd89493cf9ceb6a7a17fc5f20c04768f0ac91f19f94ec36f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-new-integration-768.png",
+      "bytes": 111287,
+      "sha256": "a1d859fe7c2069ad117e8f3c8109250e529d91a3b215bee0e769c8c8b1c8be73"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-packages-1440.png",
+      "bytes": 120091,
+      "sha256": "20e0304b1db997ae04e5c0c1d46c91f68fc1c9c3896967a43bfe3fba8c2e0b41"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-packages-320.png",
+      "bytes": 92509,
+      "sha256": "3ab2d70bc749ecc1afa5143bcd212f310033b845240c7041654e164f97f5a116"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-packages-768.png",
+      "bytes": 101576,
+      "sha256": "cbcecfa5b68b46fc47d1f3699cd7c8e3417b05abafdc74d391df3c8e14c828b6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-release-1440.png",
+      "bytes": 206630,
+      "sha256": "13e6e97d08654683c18b13a7dff5386ec55ae97b81a02c5e9ca717235497950c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-release-320.png",
+      "bytes": 163600,
+      "sha256": "d4a9b8cd1df50b39174ec11c93777d9ff653911733ad0eeed008c9c6d146b1ae"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-release-768.png",
+      "bytes": 187564,
+      "sha256": "d58243152a6797d05d0a88db5539ff0982b3f9dc7045d94d5f1ebb36efc27efc"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-script-1440.png",
+      "bytes": 117848,
+      "sha256": "314579b14ff75b364890edac6830fc5a64edd892ff073625d50fc5062356df4f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-script-320.png",
+      "bytes": 72455,
+      "sha256": "bf82cc7553a26f7240ca7612aebfce6d2dc0e25d4689f2bf824b544f6d698ec6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-detail-script-768.png",
+      "bytes": 91516,
+      "sha256": "2a701b3edde9fa8169b853b40f19a1084cb44373c3779275bbfc86ec0b8ee592"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-integrations-1440.png",
+      "bytes": 102784,
+      "sha256": "d42eb5df47dc2471ff53411ef6d6e3f7399c9ead230adfde4375bbbc159c6108"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-integrations-320.png",
+      "bytes": 71074,
+      "sha256": "83f3a1608c05c907ca4a10e8216e14f16801c08b6693ce94779d387c240e2d5b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-integrations-768.png",
+      "bytes": 81945,
+      "sha256": "b2e68fd3d54ce4cbd22f9ad5ce1667f786e87f1c276a92875b65141825d298a8"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-releases-1440.png",
+      "bytes": 121028,
+      "sha256": "7cf6406cb286bb09ec19d14eac1dbf184fc43f83289ff37d6edfa4e0078bae96"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-releases-320.png",
+      "bytes": 85682,
+      "sha256": "886b346d29aa20eb705220564eeaed1ba134439c476d683677d1c2bee92f4d1a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-releases-768.png",
+      "bytes": 94441,
+      "sha256": "52c10b133398808c94718e405a1bde19c7d77ab3025ee5b4dedf236d62e25e4b"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-screens-1440.png",
+      "bytes": 109157,
+      "sha256": "0e97505db14b8cffdd131c67974abdfd1187454324f9a957d3de52c6565e2335"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-screens-320.png",
+      "bytes": 81187,
+      "sha256": "6b8cec15f184a4227ed369ace0b3a5d05e0be103a78025357dec9e4a6a1c9e3a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-screens-768.png",
+      "bytes": 87610,
+      "sha256": "7d3d46bbc512ee3200c120c8c617c1d61ea38803d1420a7f6b64ad5d0e227313"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-scripts-1440.png",
+      "bytes": 120798,
+      "sha256": "ed6961e0c9fdfab15e927ff805afbdd08fdd89dc62fec61eb806ae77bbbd6680"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-scripts-320.png",
+      "bytes": 85253,
+      "sha256": "573cbe15263d8fc0d8134e27605f145a655b2c732402d6fc3f89fe46154a32ee"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-scripts-768.png",
+      "bytes": 94369,
+      "sha256": "f0ab384709cad7b4bd9162f4f4cf6e1e8085f25b79eab2a35041be71e39dc382"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-settings-1440.png",
+      "bytes": 106666,
+      "sha256": "09775b86dbacda61d48a4cff90d470e684a2c0cc9c2cb557a84333d766c4401f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-settings-320.png",
+      "bytes": 79148,
+      "sha256": "c54969539f9c2853176a71bab12a17fa66c11ff585a191311583cc106ec869c0"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-settings-768.png",
+      "bytes": 88318,
+      "sha256": "d85cfd043051543541f7e7c964963e0c5b84799a8fe0bf9ea87048dec868cb26"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-templates-1440.png",
+      "bytes": 185402,
+      "sha256": "d066f0471bd2d78b4615a55610755670bd2fc29d82ae4ed555cf9fb7e65b1951"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-templates-320.png",
+      "bytes": 197149,
+      "sha256": "9cb0968a3b48b93b69781db23fc429d0a7faa230a35674dd99c3e7b2e3d933f9"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-templates-768.png",
+      "bytes": 181976,
+      "sha256": "0e4d3b04eb34f8c00143c6a1b2e71f610ea7b83dc50e4e4817e86f9cd646bc19"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-variables-1440.png",
+      "bytes": 121597,
+      "sha256": "2d82dd4f13f8feb5d9ce57361e6394197f0983e68cd10542728cd4fce432aca7"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-variables-320.png",
+      "bytes": 85918,
+      "sha256": "5f0f94df0b3d0de714d560705e01c2822c7a95a360a56e48c694aeeca1ed2957"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/designer-variables-768.png",
+      "bytes": 94961,
+      "sha256": "cc593aebd4ba93d65efa5cc8938027282035fd338c421886f35084d6021d79f3"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-agent-admin.png",
+      "bytes": 106811,
+      "sha256": "50fe40cf41873d738956c7c2f746baf3f6a83bdb33beadb2251a35ff898f568d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-agent-designer.png",
+      "bytes": 70430,
+      "sha256": "e24fd0bd8a75ce9d6c3cdb836011df2f9fb37fe24c44bf217384f4994ecfc02c"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-api_client-admin.png",
+      "bytes": 76881,
+      "sha256": "ea9d1236e0bb7fc226d573088d1794142cefcd6b4e9f5eb726686625227cd0cb"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-api_client-designer.png",
+      "bytes": 135595,
+      "sha256": "6239a5e19428ec147b9a9fb2cc3bc95f6bd879a11004216612082583b4070618"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-campaign_manager-admin.png",
+      "bytes": 79264,
+      "sha256": "34b94febe287756509492a2d2431f826de3c36dd4d48afdd73d86ab775b78a6e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-campaign_manager-designer.png",
+      "bytes": 136423,
+      "sha256": "8ef8bc5da66e320830db9d5a6200175801018ffa8d0b15383ceb4782905ff3c8"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-integration_engineer-admin.png",
+      "bytes": 121391,
+      "sha256": "45c881df222efbe4948c2e46cc6004ff0c3fe53f1b77c43537017f4b18e61eaf"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-integration_engineer-designer.png",
+      "bytes": 98163,
+      "sha256": "ad66a2dd9563ce13a9cdb23775e323645c8bed62d6084ddc5687861ae03f3e75"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-report_viewer-admin.png",
+      "bytes": 79748,
+      "sha256": "ddcf94eeaa47b7a64fe394b3fbf583afb04ddce2f0ae9d32457678d828899d2a"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-report_viewer-designer.png",
+      "bytes": 62704,
+      "sha256": "c56f718039a90a53ca5db8e33f1ed3ac8f20fb493ad2e13164f72ab710cf3070"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-script_approver-admin.png",
+      "bytes": 53222,
+      "sha256": "cb871279469348ef0e0cf54941f219b1ca02df4434741cf1eaeb63c27ac16aa1"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-script_approver-designer.png",
+      "bytes": 133854,
+      "sha256": "40334aff2ddc37edb1e39f4ad9f90dbf620c309098f2cc825ac7de8971efd932"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-script_designer-admin.png",
+      "bytes": 53222,
+      "sha256": "cb871279469348ef0e0cf54941f219b1ca02df4434741cf1eaeb63c27ac16aa1"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-script_designer-designer.png",
+      "bytes": 137583,
+      "sha256": "3cfc6c0d7a3b381be7cd649676c4fc6ed81bf20fa7b92fe086fb925736c63769"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-security_auditor-admin.png",
+      "bytes": 172608,
+      "sha256": "765a5b6b21379b122db87feaaa332fff5bab295bfafcc6b44178ad623b520b2d"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-security_auditor-designer.png",
+      "bytes": 60858,
+      "sha256": "17b50e9ac24d2666bff6e6b4401d03613965b7f737b6203429f17ef989dd0c7f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-supervisor-admin.png",
+      "bytes": 79264,
+      "sha256": "34b94febe287756509492a2d2431f826de3c36dd4d48afdd73d86ab775b78a6e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-supervisor-designer.png",
+      "bytes": 133977,
+      "sha256": "d99b79e9a158b60fd0d28968087355863efe34860d6ba8b424fb4085b4f59803"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-tenant_admin-admin.png",
+      "bytes": 117476,
+      "sha256": "577befef8682ba4a0f87592ac9131dfcced59cec4d4278e77fdeb1f2167adfb6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit/role-tenant_admin-designer.png",
+      "bytes": 143925,
+      "sha256": "26db4909a3aa54fd635847e01c3db1c293c8f1b20250f8a2c1d03ba22da5aa72"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/real-webkit.log",
+      "bytes": 574,
+      "sha256": "b0ec4482661a4cf6117da8c74e33fac22117a6e1863cb116c8bd91c7a4379f7e"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/report-format-final.log",
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/screen-coverage.json",
+      "bytes": 875,
+      "sha256": "9036a07cda831572e454502134ce7cc0caaf88b68e46182716b378a56b4bd1a6"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/ui-analytics-verified.log",
+      "bytes": 1506,
+      "sha256": "efa8338816ce2b10f3eab724dacb1e718b73a563c03ea0fcf74e897ddd5f0042"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/ui-build-final.log",
+      "bytes": 104,
+      "sha256": "e4fd470806ca684cadcfa0c6dfff17383f387f0c78d2c6cc9a2ccfe83fdaa7c4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/ui-build.log",
+      "bytes": 104,
+      "sha256": "e4fd470806ca684cadcfa0c6dfff17383f387f0c78d2c6cc9a2ccfe83fdaa7c4"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/ui-visual-updated.log",
+      "bytes": 40385,
+      "sha256": "83481d331703cc2a872bf36cbd4cdd98dd469b3767810ca4383b1252e6673e58"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/ui-visual-verified.log",
+      "bytes": 21150,
+      "sha256": "d34f20e977a83591395d6d95aab9b741cceb77a56dcf19f2fdefcc0584384c8f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/admin-web.log",
+      "bytes": 4793,
+      "sha256": "eb0bf8228a06282d0a7a68f51843f6df00b547a87be2136a06e3af600c10a512"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/agent-web.log",
+      "bytes": 4042,
+      "sha256": "0b34243058cd489abdee3e244d5165d0d9ba0a65a497191bf47f28e6c1624219"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/api.log",
+      "bytes": 44507,
+      "sha256": "ab766cc569a575847450259babcfa6fd10714b00b4814ba84af1437bc00033fd"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/authz.log",
+      "bytes": 1723,
+      "sha256": "624eab897e48c6e092248d91198d9f4618e5ca1b720c74abffc854c8dc747617"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/collaboration.log",
+      "bytes": 925,
+      "sha256": "00a2f47f9273e43b6e256e1c42dac8f7b928f5f0a22892bda41da81c8b7406dc"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/components.log",
+      "bytes": 3684,
+      "sha256": "835a05aec762b380948259bbd26dc6fe17573e54059fa5a02ef1dbc8c4668fab"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/connector-hub.log",
+      "bytes": 10772,
+      "sha256": "bcd577f510f59a891e40d081dc3d31b18db7ee5e1232c912c5c8a9a70722b480"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/core-runtime.log",
+      "bytes": 13127,
+      "sha256": "b9e3682f36ad9612f219bb27dff9bf8115a622d106ae167b2bc66d8762e2bb2f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/designer-web.log",
+      "bytes": 12400,
+      "sha256": "4a2810900519da8def6f3c158f37b17eb1ebb17af0fdce5c7338349264722931"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/docs-site.log",
+      "bytes": 563,
+      "sha256": "fbc3fcdfb91cdee734862c2ec36ee3fea1fd39da84b9807a6c0650ea076de555"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/expr.log",
+      "bytes": 2223,
+      "sha256": "7b70d1f72635797f224c44923c4db7f30bfce233338f75850929844d35385b7f"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/i18n.log",
+      "bytes": 1155,
+      "sha256": "b9a8e1a92548a17df2761102c7cd0564b237357eb2acbc12975ed225580d0cd0"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/observability.log",
+      "bytes": 1241,
+      "sha256": "a7c4d238f9afd36b9b079bf8fa47ecdc4c1a96a5ad0c0c9e6d4687d7ba80a543"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/script-schema.log",
+      "bytes": 5105,
+      "sha256": "a39bacf8977dc88f3c4d05c59f2d55fc902afb7289146d3f0c8521beedc6dadd"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/sdk-component.log",
+      "bytes": 1635,
+      "sha256": "d5699930a349ebac2b2f6176e4b9a01abf39b59b65759d2fd6fd508a5f8069f1"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/sdk-connector.log",
+      "bytes": 3167,
+      "sha256": "6f78026debf715b667547b399ee3c59ea25d426b3324afa81caf8082ba67ca14"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/shared-types.log",
+      "bytes": 1881,
+      "sha256": "aaa9e36c632390e5eee5844af63e0ad5d3b17172bfd5eacd722dcb91dbb87f44"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/test-utils.log",
+      "bytes": 934,
+      "sha256": "853e1861e396773c60308a48cbb01acf870e4c78d5424bf05b53560cf2bebac3"
+    },
+    {
+      "path": "docs/verification/evidence/unified-product-design-20261005/unit-logs/ui.log",
+      "bytes": 5428,
+      "sha256": "2821163d4c92c81819eb8355362e9eca137e0a09c6706f044347481fb6daaed4"
+    }
+  ]
+}

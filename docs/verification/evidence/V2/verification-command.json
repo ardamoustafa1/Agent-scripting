@@ -1,0 +1,17 @@
+{
+  "command": [
+    "pnpm",
+    "--filter",
+    "@verbis/api",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "../../tests/verification/v2.config.mjs",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/verification-tests.json"
+  ],
+  "durationSeconds": 14.603708982467651,
+  "exitCode": 1
+}

@@ -1,0 +1,357 @@
+[
+  {
+    "path": "docs/AGENT_DESKTOP.md",
+    "sha256": "eb16ce9bcaf22c7cad160a16359ee957b7d3983f79b3666173710ce0dff11e77",
+    "bytes": 7142
+  },
+  {
+    "path": "docs/ARCHITECTURE.md",
+    "sha256": "8548f4c536e070b40a37e185f42f8f9c4d4f0f32c7604fd0f2ec7f683deae262",
+    "bytes": 14561
+  },
+  {
+    "path": "docs/COMPETITIVE.md",
+    "sha256": "a7b15c4b2c7bc07783a479984ff50c5d11b8c729e96a035a94a8b1620e24dc32",
+    "bytes": 4923
+  },
+  {
+    "path": "docs/DEMO.md",
+    "sha256": "b153c5d9812962d1ff104e3d9d246cef44a8ce79c4ba8ce5a7654b882489ad9a",
+    "bytes": 7179
+  },
+  {
+    "path": "docs/DESIGNER_LIFECYCLE.md",
+    "sha256": "845804488d5a3a8fac34128abc5cb0d1473b845f4bc0ae1231e6d121826909da",
+    "bytes": 5904
+  },
+  {
+    "path": "docs/DESIGNER_PREVIEW.md",
+    "sha256": "3323009daf1d9edeb175735beb44e6bba5d526fe9c8027352547f5b3fb8f393d",
+    "bytes": 4748
+  },
+  {
+    "path": "docs/DOMAIN.md",
+    "sha256": "9743918680828d6691f90afa3e1dd8fe1037eb5168cfe124a035e111298ee392",
+    "bytes": 14862
+  },
+  {
+    "path": "docs/PROGRESS.md",
+    "sha256": "7e36b730f2648dc965e8d1caee73fc7648ccd07007327fd16a0e22ef9c55c674",
+    "bytes": 110851
+  },
+  {
+    "path": "docs/SCRIPT_MODEL.md",
+    "sha256": "d22acf71b2ef89cc0a0fdcd0f946320ce5c87a554a85099a179ce15ea6a42e12",
+    "bytes": 18209
+  },
+  {
+    "path": "docs/SECURITY.md",
+    "sha256": "a61692a7da19dc2d24aaa7dddf879efc78cdeab7d2706c82377bff1c6c9b058d",
+    "bytes": 21462
+  },
+  {
+    "path": "docs/TESTING.md",
+    "sha256": "9061493685e64086739889426be24537a6a5fd37af012ded290520fed6f8dfa0",
+    "bytes": 12238
+  },
+  {
+    "path": "docs/adr/0001-monorepo.md",
+    "sha256": "a8ad372c978c0d2fd0355406a5275e20b4b77695eb7b191cbb0173dbcc28eb9c",
+    "bytes": 1261
+  },
+  {
+    "path": "docs/adr/0002-nestjs-fastify.md",
+    "sha256": "19755b40e52f606dccd87159e3dfe6d9a0f3196fb334e29424eb12910773f900",
+    "bytes": 1217
+  },
+  {
+    "path": "docs/adr/0003-postgres-prisma.md",
+    "sha256": "e732b9a25bcd177a367977604ea2ff455a747c3360b910e248358f8220929033",
+    "bytes": 1720
+  },
+  {
+    "path": "docs/adr/0004-bff-auth.md",
+    "sha256": "90f8d4dc8c280eaf816f7e6bdc9f1123ac3fa4835e070c6f0759e833cec69d6e",
+    "bytes": 1821
+  },
+  {
+    "path": "docs/adr/0005-nats-event-bus.md",
+    "sha256": "f630f2e2cdffd1b17401284b4b54c8893f8b20989c72837894a33c5e92d0e32a",
+    "bytes": 1625
+  },
+  {
+    "path": "docs/adr/0006-json-script-model.md",
+    "sha256": "46ac2a25edb66c380172bf22eba48922f9123f8814d1f5f5c7de2049475c7320",
+    "bytes": 1721
+  },
+  {
+    "path": "docs/adr/0007-safe-expression-engine.md",
+    "sha256": "e7f00356b18ffc736c806def988e372607ccc25bc8e53cb406a3da296a2e2f24",
+    "bytes": 2436
+  },
+  {
+    "path": "docs/adr/0008-adapter-based-connectors.md",
+    "sha256": "92acfc8c65c97413d3262b10db5e8e09255c7fb2638ff3ccb2bf2452e587ef99",
+    "bytes": 2641
+  },
+  {
+    "path": "docs/adr/0009-workspace-layout.md",
+    "sha256": "b0a202e51887d3dd29bf86362008c8b9b913d9e868c9b6f129618393c710917a",
+    "bytes": 2896
+  },
+  {
+    "path": "docs/adr/0010-script-model-v1.md",
+    "sha256": "40dba29921578f32a35071c3bc98376f8c5cf140a3812d38f699ef0bc48d00f6",
+    "bytes": 6409
+  },
+  {
+    "path": "docs/adr/0011-api-foundation.md",
+    "sha256": "3fc4e6882c4fb78552a06c9bd2db1c0a147338a6a8e8535993168206f1aa1a84",
+    "bytes": 10419
+  },
+  {
+    "path": "docs/adr/0012-identity-module.md",
+    "sha256": "8980367caab71d425f18c6e2942906315f7fd3ae5d6196badef3c197a15effed",
+    "bytes": 9502
+  },
+  {
+    "path": "docs/adr/0013-casl-authorization.md",
+    "sha256": "8d01f59debcb55f6979121909cec7dd14fbe5b529734aadc649d584d39db9cac",
+    "bytes": 4174
+  },
+  {
+    "path": "docs/adr/0014-audit-v2.md",
+    "sha256": "7f3eac0cc1b7c81e93e4705c2350b4d2a41021b8041cb07d12bda2b8550831c1",
+    "bytes": 8307
+  },
+  {
+    "path": "docs/adr/0015-authoring-lifecycle-routing.md",
+    "sha256": "a9116f122849683a003d6dbc26e2c8a2804bae1ac14b6fdd7088251832a6c394",
+    "bytes": 5283
+  },
+  {
+    "path": "docs/adr/0016-runtime-session-engine.md",
+    "sha256": "877e2438c8035b5bbcfb13d23d351e78a208255e21ff6a6a2bc4b34942ef6705",
+    "bytes": 2002
+  },
+  {
+    "path": "docs/adr/0017-secure-launch.md",
+    "sha256": "0aac756f47bf941ea8a11665eeec629775d584cf8aa115e17bc210a28aec9bf3",
+    "bytes": 4782
+  },
+  {
+    "path": "docs/adr/0018-connector-sdk-and-hub.md",
+    "sha256": "2a5660c4eb00c724687a73195b34fb04d4c81cc8140581908728fd49eedd3337",
+    "bytes": 4755
+  },
+  {
+    "path": "docs/adr/0019-genesys-engage-connector.md",
+    "sha256": "5444ecaff7cdb65c7cd7e6f108d6bd1ad23696efea5fcfc5516cc9b6eeac5553",
+    "bytes": 5186
+  },
+  {
+    "path": "docs/adr/0020-avaya-connectors.md",
+    "sha256": "a48ac05b562522ace80353a17df9bf862c1c8ec6d236e498886c3725fe74c7f3",
+    "bytes": 4394
+  },
+  {
+    "path": "docs/adr/0021-marketplace-bridges.md",
+    "sha256": "83666d060a99a0547b43c3a84f2885a5806c6d4f2a71cb45544ad1a86ea5291f",
+    "bytes": 1884
+  },
+  {
+    "path": "docs/adr/0022-component-library-and-sandbox.md",
+    "sha256": "1f5ab12429e48c491de9e7045898a0a059f32e019793d3bd5afa9e0f3629d266",
+    "bytes": 2513
+  },
+  {
+    "path": "docs/adr/0023-designer-workspace-shell.md",
+    "sha256": "7ae9e8372e98d9a74311828cbc6cb2d36a7823e1a49543b8531eb316b67a3dae",
+    "bytes": 1874
+  },
+  {
+    "path": "docs/adr/0024-visual-screen-editor.md",
+    "sha256": "aad0c9d2d9c9e5d6636d82d011ee0e9b2e6da0ad942f61817a867aab784c21ea",
+    "bytes": 2288
+  },
+  {
+    "path": "docs/adr/0025-flow-rule-variable-editors.md",
+    "sha256": "3245cafb2cd59a7828b1efc774eab1c481571be8953062afac83a32ddbf99a33",
+    "bytes": 2883
+  },
+  {
+    "path": "docs/adr/0026-integration-authoring.md",
+    "sha256": "bc4b55ab4b48d068830827adb3d61b88e0f74ea759cfe7a66bb19cc81c8f4142",
+    "bytes": 3650
+  },
+  {
+    "path": "docs/adr/0027-preview-debugger-and-regression.md",
+    "sha256": "f4cd5ebca216ecf141b9cfd4c2a43823ef951bb56a783b8d612c7826aa877977",
+    "bytes": 3219
+  },
+  {
+    "path": "docs/adr/0028-lifecycle-collaboration-and-package-v2.md",
+    "sha256": "5ead3bae8ecd2ab602defdb7315647f090f8d74339e750eae2c9105b264f1b94",
+    "bytes": 4384
+  },
+  {
+    "path": "docs/adr/0029-agent-desktop-bff-and-durable-drafts.md",
+    "sha256": "24487d83780c20781b26329ec323a52a949fbfc7aa535517d32f877c845bd32a",
+    "bytes": 1905
+  },
+  {
+    "path": "docs/adr/0030-admin-control-plane-and-privacy.md",
+    "sha256": "d6dad4ec3231bbf949b869de4883165348db507ad853045d10a6dcf5ee365e0d",
+    "bytes": 4277
+  },
+  {
+    "path": "docs/adr/0031-session-analytics-and-reporting.md",
+    "sha256": "a68946b6da19794ac9344ffffbb5a9e5263ae335aba876efda2bba5868eca458",
+    "bytes": 3588
+  },
+  {
+    "path": "docs/adr/0032-tenant-ai-and-human-review.md",
+    "sha256": "c18a7e9f1d8116831c987f5ec325c906b80f6fe41b127787bcdc4f51b2c5027b",
+    "bytes": 2946
+  },
+  {
+    "path": "docs/adr/0033-asvs-security-boundaries.md",
+    "sha256": "f9d467a6ce4cf5143b6a4e04c63524f805690bfed2eb52c0580ec3dd285ad204",
+    "bytes": 2054
+  },
+  {
+    "path": "docs/ai/README.md",
+    "sha256": "ae7120acaa6da75ff3870993c6958b748452379ac7031d2bcc9a049637660d8f",
+    "bytes": 8396
+  },
+  {
+    "path": "docs/analytics/README.md",
+    "sha256": "96560e988b3bab15db0793544ae3456454ce2a1f72e459bc8b635676dcab0d58",
+    "bytes": 9975
+  },
+  {
+    "path": "docs/analytics/clickhouse.sql",
+    "sha256": "9bea74543dd8e849afa3495ffd719c4ab3a91aee5afd9dfe6f0d3adbba5c3eec",
+    "bytes": 576
+  },
+  {
+    "path": "docs/compliance/KVKK.md",
+    "sha256": "8d4593b5d227d20b9bbd238d6a1b5c66b26899fb5f6ffd2e7861e15bb35da66f",
+    "bytes": 3824
+  },
+  {
+    "path": "docs/connectors/MATRIX.md",
+    "sha256": "deb8668974c2eb566ec5f6daffc2602e5f04a626eae8c050d8bf9d1cd55f913e",
+    "bytes": 2733
+  },
+  {
+    "path": "docs/connectors/SETUP.md",
+    "sha256": "1c2afb40076471f08b3c74eecbea1759530b202d397f2c218b00c8b54119adf0",
+    "bytes": 5726
+  },
+  {
+    "path": "docs/connectors/amazon-connect.md",
+    "sha256": "e253f19220dea2a3d451078cdde851229fde9cb1c19b0f5817cfa23fbdb6d868",
+    "bytes": 3749
+  },
+  {
+    "path": "docs/connectors/avaya.md",
+    "sha256": "3022da4f990baf80e9efc1114538e28b2294b0a3aedd65e918ce57ec0d22e330",
+    "bytes": 14679
+  },
+  {
+    "path": "docs/connectors/cisco-finesse.md",
+    "sha256": "adee34a16c29731ca096c091450ca516f24a06114c8c3b86ebe8388357ac8e96",
+    "bytes": 3324
+  },
+  {
+    "path": "docs/connectors/cisco-webex.md",
+    "sha256": "8b09610b85d9e30e9880557a1b488706b90c0d9c7a1adea05ebb913c4dbc1013",
+    "bytes": 3288
+  },
+  {
+    "path": "docs/connectors/dynamics-365.md",
+    "sha256": "8ca796e80b6e0caf8829c4359fb344d5b715912bbf5617dfa7fc22c2eb6c5fc1",
+    "bytes": 3463
+  },
+  {
+    "path": "docs/connectors/five9.md",
+    "sha256": "6a3f3c3913e900bd2ff486de3207405e321d67b8196750fb488fb548e02d88f8",
+    "bytes": 3091
+  },
+  {
+    "path": "docs/connectors/genesys-cloud.md",
+    "sha256": "93add550833920c2d3668866fbda2d7405806eb8ea3ddf65bf563b6039e36ab8",
+    "bytes": 13815
+  },
+  {
+    "path": "docs/connectors/genesys-engage.md",
+    "sha256": "be6e12d3fb4f0ee38b36621db7421b642c5b7a6f112533c3bef3dbc768879a90",
+    "bytes": 12778
+  },
+  {
+    "path": "docs/connectors/nice-cxone.md",
+    "sha256": "ef45337bdc69eb7d091b69b92b2038f33bbaa6ecaddb6372a419c16b0096c74d",
+    "bytes": 3438
+  },
+  {
+    "path": "docs/connectors/salesforce.md",
+    "sha256": "43af7ef45da6c743de59626cb33fbc36fd512ad205261a7e8927461d4ba52c20",
+    "bytes": 3516
+  },
+  {
+    "path": "docs/connectors/twilio-flex.md",
+    "sha256": "f5cd295c516f8aa4eaeea9c0954dfcccbcb8f8b187ef854fea1d57a34929fd39",
+    "bytes": 3309
+  },
+  {
+    "path": "docs/ops/DR.md",
+    "sha256": "44fa0eddb8fa04f5e5e9a5cf16552eb09849b08348ae65642cb7bb95a0ef7804",
+    "bytes": 5821
+  },
+  {
+    "path": "docs/ops/INSTALL_ONPREM.md",
+    "sha256": "6b97ca1f88f35faecbd5711a0641d0f5e839c8e0c991ffca2cd661a100e0fdd8",
+    "bytes": 11552
+  },
+  {
+    "path": "docs/ops/PERFORMANCE.md",
+    "sha256": "aadbacf805a6b495f8e7bdde48b35bcc404104da603d0d28866caa487e13d42c",
+    "bytes": 6315
+  },
+  {
+    "path": "docs/ops/ROLLOUT.md",
+    "sha256": "297e752609d5707cb6dfc365afb0976d22fad76bd98725ed22f314c3ea211e26",
+    "bytes": 2852
+  },
+  {
+    "path": "docs/ops/RUNBOOKS.md",
+    "sha256": "c4a4db232fe139fbb9f98ea4cf1dfb1e01662a2db2870f409c21a198f4b9e990",
+    "bytes": 3932
+  },
+  {
+    "path": "docs/ops/SLO.md",
+    "sha256": "b76280ba0d8548777d451c4868f6c333edc336177f46ba7c9ff271630bdf3d00",
+    "bytes": 2450
+  },
+  {
+    "path": "docs/security/ASVS_CHECKLIST.md",
+    "sha256": "82432a2ab5f540406919cb18c3dd253469420a413b07a1c0aff75dfc9c85bed0",
+    "bytes": 83466
+  },
+  {
+    "path": "docs/security/OPERATIONS.md",
+    "sha256": "3341b4b768057e11a4d2e909c2da2902e2853b8966a04035a2f79e536e2a7806",
+    "bytes": 6741
+  },
+  {
+    "path": "docs/security/PENTEST_CHECKLIST.md",
+    "sha256": "2d4b00a43c670804ca58908d9dffded9a405d8ba33a1fbc5423a31432d1cceea",
+    "bytes": 2795
+  },
+  {
+    "path": "docs/security/asvs-manifest.json",
+    "sha256": "ec1806f4a9efc54bea16826cb482ecaaa0468798e53ed5b1642966d46f05168c",
+    "bytes": 151580
+  }
+]

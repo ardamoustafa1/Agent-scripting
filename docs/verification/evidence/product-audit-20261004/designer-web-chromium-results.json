@@ -1,0 +1,1981 @@
+{
+  "config": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/Users/ardamoustafa/agent scripting/apps/designer-web/node_modules/@playwright/test/cli.js",
+      "test",
+      "--workers=1"
+    ],
+    "configFile": "/Users/ardamoustafa/agent scripting/apps/designer-web/playwright.config.ts",
+    "rootDir": "/Users/ardamoustafa/agent scripting/apps/designer-web/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/ardamoustafa/agent scripting/apps/designer-web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/ardamoustafa/agent scripting/apps/designer-web/e2e",
+        "testIgnore": [
+          "/.*-live\\.spec\\.ts/"
+        ],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/ardamoustafa/agent scripting/apps/designer-web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "live",
+        "name": "live",
+        "testDir": "/Users/ardamoustafa/agent scripting/apps/designer-web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/.*-live\\.spec\\.ts/"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "/Users/ardamoustafa/agent scripting/tests/playwright/flaky-reporter.ts",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec vite preview",
+      "url": "http://127.0.0.1:5173/health",
+      "reuseExistingServer": true,
+      "timeout": 60000
+    }
+  },
+  "suites": [
+    {
+      "title": "ai.spec.ts",
+      "file": "ai.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "AI suggestions do not save or publish until a human approves",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1132,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:30.186Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f4c16ad2df3b1859900b-98286760b9cf266fdc18",
+          "file": "ai.spec.ts",
+          "line": 13,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "editor.spec.ts",
+      "file": "editor.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "palette drag creates a node; undo and redo restore it",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 740,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:31.538Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2f56d7d370f0ba02e91-369f1333a985176fd026",
+          "file": "editor.spec.ts",
+          "line": 39,
+          "column": 1
+        },
+        {
+          "title": "editor light keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1154,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:32.282Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2f56d7d370f0ba02e91-bfb9da2fbbb21873affc",
+          "file": "editor.spec.ts",
+          "line": 61,
+          "column": 3
+        },
+        {
+          "title": "editor dark keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 823,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:33.468Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2f56d7d370f0ba02e91-cffda1eb5c96fd8d38c5",
+          "file": "editor.spec.ts",
+          "line": 61,
+          "column": 3
+        },
+        {
+          "title": "editor high-contrast keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 872,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:34.301Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2f56d7d370f0ba02e91-a8fa4e3d3cd4cf00c5d9",
+          "file": "editor.spec.ts",
+          "line": 61,
+          "column": 3
+        },
+        {
+          "title": "virtual layer drag reorders siblings in one undo step",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 701,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:35.183Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2f56d7d370f0ba02e91-14aa1b98cec8cf3089e9",
+          "file": "editor.spec.ts",
+          "line": 72,
+          "column": 1
+        },
+        {
+          "title": "draft writes carry CSRF, optimistic version and linked screen pins",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1260,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:35.891Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2f56d7d370f0ba02e91-9712841312292c841561",
+          "file": "editor.spec.ts",
+          "line": 101,
+          "column": 1
+        },
+        {
+          "title": "@visual designer-web main screen light",
+          "ok": true,
+          "tags": [
+            "visual"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 485,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:37.157Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2f56d7d370f0ba02e91-e5d03efc0396550c5248",
+          "file": "editor.spec.ts",
+          "line": 142,
+          "column": 3
+        },
+        {
+          "title": "@visual designer-web main screen dark",
+          "ok": true,
+          "tags": [
+            "visual"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 452,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:37.646Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2f56d7d370f0ba02e91-8fd915f3d4c48019ec1d",
+          "file": "editor.spec.ts",
+          "line": 142,
+          "column": 3
+        },
+        {
+          "title": "creates a script from scratch, drags a component, builds decision/service flow and a rule",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6072,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:38.110Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2f56d7d370f0ba02e91-22386dc32c4a80253c8f",
+          "file": "editor.spec.ts",
+          "line": 155,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "flow.spec.ts",
+      "file": "flow.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "add, arrange, drag and undo a flow node; Page double-click opens its canvas",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1308,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:44.193Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-3dfd81b10982a9ade499",
+          "file": "flow.spec.ts",
+          "line": 49,
+          "column": 1
+        },
+        {
+          "title": "rename commits all references atomically and uses CSRF + optimistic version",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1506,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:45.507Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-0855802705bdde2c00aa",
+          "file": "flow.spec.ts",
+          "line": 79,
+          "column": 1
+        },
+        {
+          "title": "Flow light keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1523,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:47.019Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-0c04a5e9c741eae37cd5",
+          "file": "flow.spec.ts",
+          "line": 97,
+          "column": 5
+        },
+        {
+          "title": "Flow dark keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1389,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:48.554Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-7ec179424b5063980c07",
+          "file": "flow.spec.ts",
+          "line": 97,
+          "column": 5
+        },
+        {
+          "title": "Flow high-contrast keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1279,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:49.950Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-571252480d993dd97d89",
+          "file": "flow.spec.ts",
+          "line": 97,
+          "column": 5
+        },
+        {
+          "title": "Rules light keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1321,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:51.274Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-4e14e8e8b07279196130",
+          "file": "flow.spec.ts",
+          "line": 97,
+          "column": 5
+        },
+        {
+          "title": "Rules dark keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1286,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:52.617Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-046f419aa1ef791db768",
+          "file": "flow.spec.ts",
+          "line": 97,
+          "column": 5
+        },
+        {
+          "title": "Rules high-contrast keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1538,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:53.912Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-dec216eea61760f8151c",
+          "file": "flow.spec.ts",
+          "line": 97,
+          "column": 5
+        },
+        {
+          "title": "Variables light keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1583,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:55.457Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-af0221f3814e6281134c",
+          "file": "flow.spec.ts",
+          "line": 97,
+          "column": 5
+        },
+        {
+          "title": "Variables dark keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1412,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:57.060Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-fe7a348a7955271e25f0",
+          "file": "flow.spec.ts",
+          "line": 97,
+          "column": 5
+        },
+        {
+          "title": "Variables high-contrast keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1252,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:58.483Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f353db48c569834dc22b-83245bb7e17682f7e41c",
+          "file": "flow.spec.ts",
+          "line": 97,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "hello.spec.ts",
+      "file": "hello.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "workspace light: axe, command navigation and cards",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1357,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:10:59.754Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-0ac46b764e3ce5f3eae9",
+          "file": "hello.spec.ts",
+          "line": 30,
+          "column": 3
+        },
+        {
+          "title": "workspace dark: axe, command navigation and cards",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1188,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:01.120Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-edfecdd915240f7b1cf1",
+          "file": "hello.spec.ts",
+          "line": 30,
+          "column": 3
+        },
+        {
+          "title": "workspace high-contrast: axe, command navigation and cards",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1340,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:02.314Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-e53817000cffebdf22b7",
+          "file": "hello.spec.ts",
+          "line": 30,
+          "column": 3
+        },
+        {
+          "title": "campaign assignments and mappings are reachable by keyboard",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 983,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:03.663Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-2ef36367645c27defcb0",
+          "file": "hello.spec.ts",
+          "line": 44,
+          "column": 1
+        },
+        {
+          "title": "direct forbidden routes cannot expose the campaigns list",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 258,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:04.656Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-2e9d6bb82ecd63dea929",
+          "file": "hello.spec.ts",
+          "line": 52,
+          "column": 1
+        },
+        {
+          "title": "health endpoint responds",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 98,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:04.923Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ad9612254cf525ed3707-1b10731e49958042c9b4",
+          "file": "hello.spec.ts",
+          "line": 63,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "integrations.spec.ts",
+      "file": "integrations.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "opens protocol, health and consumer list, then edits a service",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 578,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:05.072Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b1ad4c9b5349975121f2-5e1395e2179a3db20deb",
+          "file": "integrations.spec.ts",
+          "line": 102,
+          "column": 1
+        },
+        {
+          "title": "cURL import is data-only and rejects embedded credentials",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 488,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:05.659Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b1ad4c9b5349975121f2-8eba41f1a9842a2046fd",
+          "file": "integrations.spec.ts",
+          "line": 115,
+          "column": 1
+        },
+        {
+          "title": "production profiles are read-only and promotion requires a saved draft and reason",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 468,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:06.180Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b1ad4c9b5349975121f2-ec1039678a9374d04b9a",
+          "file": "integrations.spec.ts",
+          "line": 123,
+          "column": 1
+        },
+        {
+          "title": "integration editor light keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1003,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:06.663Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b1ad4c9b5349975121f2-825e339bf6de342f384c",
+          "file": "integrations.spec.ts",
+          "line": 136,
+          "column": 3
+        },
+        {
+          "title": "integration editor dark keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 941,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:07.679Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b1ad4c9b5349975121f2-af4c605bf490d20d33a3",
+          "file": "integrations.spec.ts",
+          "line": 136,
+          "column": 3
+        },
+        {
+          "title": "integration editor high-contrast keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 930,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:08.630Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b1ad4c9b5349975121f2-de514456a7718ba5a000",
+          "file": "integrations.spec.ts",
+          "line": 136,
+          "column": 3
+        },
+        {
+          "title": "creates a REST service without exposing credentials to the script",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 351,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:09.570Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b1ad4c9b5349975121f2-e136b9e71bb507fb5b6c",
+          "file": "integrations.spec.ts",
+          "line": 148,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "lifecycle.spec.ts",
+      "file": "lifecycle.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "requires a change note and submits it with the BFF CSRF token",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 366,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:09.936Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1f1785dee40219527314-74463f65efd740a50749",
+          "file": "lifecycle.spec.ts",
+          "line": 111,
+          "column": 1
+        },
+        {
+          "title": "continues authoring a published script in a new draft",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 489,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:10.308Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1f1785dee40219527314-89ee8ca3f0a38952c222",
+          "file": "lifecycle.spec.ts",
+          "line": 126,
+          "column": 1
+        },
+        {
+          "title": "exposes semantic and JSON diff modes with keyboard navigation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 435,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:10.804Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1f1785dee40219527314-3049808f5a7146e8fad6",
+          "file": "lifecycle.spec.ts",
+          "line": 155,
+          "column": 1
+        },
+        {
+          "title": "filters the six industry templates without losing tenant gallery access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 704,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:11.245Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1f1785dee40219527314-f3efb727a66ee1e1cf00",
+          "file": "lifecycle.spec.ts",
+          "line": 164,
+          "column": 1
+        },
+        {
+          "title": "release accessibility in Light",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1235,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:11.958Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1f1785dee40219527314-c8c04f61833dfd3aa286",
+          "file": "lifecycle.spec.ts",
+          "line": 178,
+          "column": 3
+        },
+        {
+          "title": "release accessibility in Dark",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1271,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:13.201Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1f1785dee40219527314-2dade33fa68ced43129c",
+          "file": "lifecycle.spec.ts",
+          "line": 178,
+          "column": 3
+        },
+        {
+          "title": "release accessibility in High contrast",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1282,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:14.481Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1f1785dee40219527314-90d159f888f1fa61f905",
+          "file": "lifecycle.spec.ts",
+          "line": 178,
+          "column": 3
+        },
+        {
+          "title": "mention notification target opens the matching node thread",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 418,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:15.772Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1f1785dee40219527314-143d03bf19cb7deff7bf",
+          "file": "lifecycle.spec.ts",
+          "line": 186,
+          "column": 1
+        },
+        {
+          "title": "approval and publication require passed regression, then update release state",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 781,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:16.199Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1f1785dee40219527314-6070d2250468077c949a",
+          "file": "lifecycle.spec.ts",
+          "line": 216,
+          "column": 1
+        },
+        {
+          "title": "assigns the script to a campaign using the BFF CSRF boundary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 426,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:16.988Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1f1785dee40219527314-947e8c4c2c863953f155",
+          "file": "lifecycle.spec.ts",
+          "line": 264,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "performance.spec.ts",
+      "file": "performance.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "1000 nodes keep the layer DOM bounded and record a drag frame budget",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2567,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:30.494Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "drag-frame-budget",
+                      "contentType": "application/json",
+                      "body": "eyJmcHMiOjYwLjE5ODY1NTU2MzM2NzUzLCJwOTUiOjE2Ljc5OTk5OTk5OTk5OTk1NSwiZnJhbWVzIjpbMTAuMDY1OTk5OTk5NzIwNTg5LDE2LjUsMTYuNSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5MSwxNi41OTk5OTk5OTk5OTk5NjYsMTYuNjAwMDAwMDAwMDAwMDIzLDE2LjYwMDAwMDAwMDAwMDAyMywxNi42MDAwMDAwMDAwMDAwMjMsMTYuNjAwMDAwMDAwMDAwMDIzLDE2LjYwMDAwMDAwMDAwMDAyMywxNi42MDAwMDAwMDAwMDAwMjMsMTYuNjAwMDAwMDAwMDAwMDIzLDE2LjYwMDAwMDAwMDAwMDAyMywxNi42MDAwMDAwMDAwMDAxMzYsMTYuNjAwMDAwMDAwMDAwMzY0LDE2LjYwMDAwMDAwMDAwMDM2NCwxNi42MzQwMDAwMDAwMDAwMTUsMTYuNjk5OTk5OTk5OTk5ODE4LDE2LjY5OTk5OTk5OTk5OTgxOCwxNi42OTk5OTk5OTk5OTk4MTgsMTYuNjk5OTk5OTk5OTk5ODE4LDE2LjY5OTk5OTk5OTk5OTgxOCwxNi42OTk5OTk5OTk5OTk4MTgsMTYuNjk5OTk5OTk5OTk5ODE4LDE2LjY5OTk5OTk5OTk5OTgxOCwxNi42OTk5OTk5OTk5OTk4MTgsMTYuNjk5OTk5OTk5OTk5ODE4LDE2LjY5OTk5OTk5OTk5OTgxOCwxNi42OTk5OTk5OTk5OTk4MTgsMTYuNjk5OTk5OTk5OTk5ODE4LDE2LjY5OTk5OTk5OTk5OTkzMiwxNi42OTk5OTk5OTk5OTk5MzIsMTYuNjk5OTk5OTk5OTk5OTMyLDE2LjY5OTk5OTk5OTk5OTkzMiwxNi42OTk5OTk5OTk5OTk5MzIsMTYuNjk5OTk5OTk5OTk5OTksMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAwNDUsMTYuNzAwMDAwMDAwMDAwMDQ1LDE2LjcwMDAwMDAwMDAwMDA0NSwxNi43MDAwMDAwMDAwMDAyNzMsMTYuNzAwMDAwMDAwMDAwMjczLDE2LjcwMDAwMDAwMDAwMDI3MywxNi43MDAwMDAwMDAwMDAyNzMsMTYuNzAwMDAwMDAwMDAwMjczLDE2LjcwMDAwMDAwMDAwMDI3MywxNi43OTk5OTk5OTk5OTk5NTUsMTYuNzk5OTk5OTk5OTk5OTU1LDE2LjgwMDAwMDAwMDAwMDA2OCwxNi44MDAwMDAwMDAwMDAxODIsMTYuODAwMDAwMDAwMDAwMTgyLDE2LjgwMDAwMDAwMDAwMDE4Ml19"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b15d6361b2fc38288977-de4ae8d27456f27b27d0",
+          "file": "performance.spec.ts",
+          "line": 37,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "preview.spec.ts",
+      "file": "preview.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "runs actual runtime in a device frame and restores a selected state",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1327,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:17.424Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7191c1356a09079afd8-d4e2e0eb8ebe68c084c5",
+          "file": "preview.spec.ts",
+          "line": 57,
+          "column": 1
+        },
+        {
+          "title": "device preview blocks scripts and inline event handlers from frame content",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1174,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:18.757Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7191c1356a09079afd8-e67825fd675e2ea45f83",
+          "file": "preview.spec.ts",
+          "line": 72,
+          "column": 1
+        },
+        {
+          "title": "records a synthetic session with CSRF and disables live mode without permission",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2231,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:19.941Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7191c1356a09079afd8-c185fca9de55b91f527f",
+          "file": "preview.spec.ts",
+          "line": 103,
+          "column": 1
+        },
+        {
+          "title": "preview light keyboard and accessibility",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2962,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:22.183Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7191c1356a09079afd8-beb19bb8a3206b4efe8f",
+          "file": "preview.spec.ts",
+          "line": 124,
+          "column": 3
+        },
+        {
+          "title": "preview dark keyboard and accessibility",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2540,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:25.154Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7191c1356a09079afd8-e7d7461c8d9a5aeda8b0",
+          "file": "preview.spec.ts",
+          "line": 124,
+          "column": 3
+        },
+        {
+          "title": "preview high-contrast keyboard and accessibility",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2264,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:27.703Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7191c1356a09079afd8-2d0f055ef1cc8f0e5011",
+          "file": "preview.spec.ts",
+          "line": 124,
+          "column": 3
+        }
+      ]
+    },
+    {
+      "title": "collaboration-live.spec.ts",
+      "file": "collaboration-live.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "two isolated browsers synchronize edits, flush and retain them after reconnect",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Requires two distinct synthetic SSO identities and a disposable draft",
+                  "location": {
+                    "file": "/Users/ardamoustafa/agent scripting/apps/designer-web/e2e/collaboration-live.spec.ts",
+                    "line": 23,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "live",
+              "projectName": "live",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 1,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T19:11:33.607Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Requires two distinct synthetic SSO identities and a disposable draft",
+                      "location": {
+                        "file": "/Users/ardamoustafa/agent scripting/apps/designer-web/e2e/collaboration-live.spec.ts",
+                        "line": 23,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "9237a00e34cac59a2348-8a07161e432b8dc3f7ca",
+          "file": "collaboration-live.spec.ts",
+          "line": 19,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-04T19:10:29.434Z",
+    "duration": 64310.787,
+    "expected": 51,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

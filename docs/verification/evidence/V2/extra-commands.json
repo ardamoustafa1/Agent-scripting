@@ -1,0 +1,37 @@
+[
+  {
+    "name": "expr-browser",
+    "command": [
+      "pnpm",
+      "--filter",
+      "@verbis/api",
+      "exec",
+      "vitest",
+      "run",
+      "--config",
+      "../../tests/verification/v2.config.mjs",
+      "tests/verification/expr-browser.audit.spec.ts",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/expr-browser-tests.json"
+    ],
+    "durationSeconds": 5.198762893676758,
+    "exitCode": 1
+  },
+  {
+    "name": "audit-perf",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "--project",
+      "perf",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/perf-tests.json"
+    ],
+    "durationSeconds": 12.7780179977417,
+    "exitCode": 0
+  }
+]

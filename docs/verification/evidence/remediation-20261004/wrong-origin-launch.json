@@ -1,0 +1,6 @@
+{
+  "status": 403,
+  "problemCode": "VERBIS_AUTH_CSRF_FAILED",
+  "correlationId": "03574f3a-fc12-4eb1-afb6-156f36000c1d",
+  "auditCount": 1
+}

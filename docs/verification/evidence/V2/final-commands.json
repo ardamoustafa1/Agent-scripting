@@ -1,0 +1,47 @@
+[
+  {
+    "name": "final-backend",
+    "command": [
+      "pnpm",
+      "--dir",
+      "apps/api",
+      "exec",
+      "vitest",
+      "run",
+      "--config",
+      "../../tests/verification/v2.config.mjs",
+      "/Users/ardamoustafa/agent scripting/tests/verification/routes.audit.spec.ts",
+      "/Users/ardamoustafa/agent scripting/tests/verification/keycloak.audit.spec.ts",
+      "/Users/ardamoustafa/agent scripting/tests/verification/runtime-ws.audit.spec.ts",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/final-backend-tests.json"
+    ],
+    "durationSeconds": 35.898,
+    "exitCode": 1,
+    "environment": {}
+  },
+  {
+    "name": "final-network",
+    "command": [
+      "pnpm",
+      "--dir",
+      "apps/api",
+      "exec",
+      "vitest",
+      "run",
+      "--config",
+      "../../tests/verification/v2.config.mjs",
+      "/Users/ardamoustafa/agent scripting/tests/verification/expr-browser.audit.spec.ts",
+      "/Users/ardamoustafa/agent scripting/tests/verification/siem-network.audit.spec.ts",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/final-network-tests.json"
+    ],
+    "durationSeconds": 1.456,
+    "exitCode": 0,
+    "environment": {
+      "V2_NO_DB": "1"
+    }
+  }
+]

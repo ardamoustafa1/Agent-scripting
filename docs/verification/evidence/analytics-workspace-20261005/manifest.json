@@ -1,0 +1,588 @@
+{
+  "date": "2026-10-05",
+  "scope": "Analytics and Studio command bar, preserve all existing features",
+  "quality": {
+    "passed": 77,
+    "cached": 71,
+    "executed": 6,
+    "vitestPassed": 4993,
+    "docsNodePassed": 4,
+    "coverageWorkspaces": 18
+  },
+  "browser": {
+    "designerFullUpdatePassed": 96,
+    "designerFullNormalPassed": 96,
+    "analyticsIncludedScenarios": 19,
+    "analyticsVisualReferences": 36,
+    "sharedCatalogNormalPassed": 6,
+    "locales": [
+      "tr",
+      "en"
+    ],
+    "themes": [
+      "light",
+      "dark",
+      "high-contrast"
+    ],
+    "widths": [
+      320,
+      768,
+      1440
+    ]
+  },
+  "dataNote": "Populated screenshots use synthetic test metrics; empty screenshots use a zero-session fixture.",
+  "sources": [
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts",
+      "bytes": 9099,
+      "sha256": "eae4c775492503e890c0c9037ae5984fe116c4ed6c58994a3da6d7bb0d22aa36"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-dark-1440-empty-chromium-darwin.png",
+      "bytes": 159028,
+      "sha256": "4fd9f7e54daf6f927e968828e9c704902d3d4c3723c9279a1837b7cab3c68aa3"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-dark-1440-populated-chromium-darwin.png",
+      "bytes": 253711,
+      "sha256": "96a2084461d0d0353c28672d97a43c58607c8b24ce17d51dead2865d4d340797"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-dark-320-empty-chromium-darwin.png",
+      "bytes": 149408,
+      "sha256": "df9c07df4c93a5ba61edce09ad4db8f9f3f9a0b0cdbe64bf0207c7bce75fe5f2"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-dark-320-populated-chromium-darwin.png",
+      "bytes": 252190,
+      "sha256": "81fa9d8a80b1ef27b392845d8cb4a5f0d348e98313cdf729a4e673b907dd77e7"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-dark-768-empty-chromium-darwin.png",
+      "bytes": 155209,
+      "sha256": "593c92cf1504bf569fcffaa37e801bada7b038f441f1fc90104485b480ea237d"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-dark-768-populated-chromium-darwin.png",
+      "bytes": 259933,
+      "sha256": "7bc20587a6946664008ad52a689f526b26a4985105c152c5b15cf2fa9b65b332"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-high-contrast-1440-empty-chromium-darwin.png",
+      "bytes": 138207,
+      "sha256": "1b026bc9f5c39ff466477eb60ac92e0d3d0caf51e71a03cad78b1d8a37952614"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-high-contrast-1440-populated-chromium-darwin.png",
+      "bytes": 221064,
+      "sha256": "e3174a42f988e1d3bf0729a462e945e1b276e26f620b178f4c7c7a30ddb7a1ea"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-high-contrast-320-empty-chromium-darwin.png",
+      "bytes": 128029,
+      "sha256": "e5d28d8493df0accf91b7e5fa2d5d0d8912150281c68396137c1ff0a6138a1f1"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-high-contrast-320-populated-chromium-darwin.png",
+      "bytes": 219430,
+      "sha256": "0240d221b850e2d6c03e7265d515243614308e33eb1c57a7f570d07a5ed69134"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-high-contrast-768-empty-chromium-darwin.png",
+      "bytes": 133464,
+      "sha256": "bbc8973321835f3bf2e5631de19c38e2eb663f8788209e2a0ca86f824bf10e2f"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-high-contrast-768-populated-chromium-darwin.png",
+      "bytes": 226165,
+      "sha256": "6f4c5843c456ca7db3b092f9cfd310e4b193c4763231ba02a90d5cc3176fec8c"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-light-1440-empty-chromium-darwin.png",
+      "bytes": 158644,
+      "sha256": "9fba9459f4f0d429b7fdc271380237ce4f02b864b33b0fa48feb4f6fb548702a"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-light-1440-populated-chromium-darwin.png",
+      "bytes": 253809,
+      "sha256": "e217f52f82e8e12bc2a5d00717cc97d985e2f8e8954124794d8dc6d2e538fbf6"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-light-320-empty-chromium-darwin.png",
+      "bytes": 148544,
+      "sha256": "7fc63299495ffe4f3bb9bc086cae4d54865bc9b2b9ab88fe452de43f8815a5f7"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-light-320-populated-chromium-darwin.png",
+      "bytes": 251219,
+      "sha256": "7e5d14b19d171441c50426dc164ea41ab9455a621faf420942ad42be180722fb"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-light-768-empty-chromium-darwin.png",
+      "bytes": 154048,
+      "sha256": "5fca46e52e95adde43ac6d7812ec5507c2c19fc8e1847c6fb8a42d7bb5fae253"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-en-light-768-populated-chromium-darwin.png",
+      "bytes": 258765,
+      "sha256": "cf6e3c8dc68182b6a15aed7502b8d533403462f24d589cac40898dbb21cb9073"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-dark-1440-empty-chromium-darwin.png",
+      "bytes": 157162,
+      "sha256": "0b6a3a489ab9bbdba4ecf737af0f8ed294d99636b74f55bc16097fa6936aa41d"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-dark-1440-populated-chromium-darwin.png",
+      "bytes": 246356,
+      "sha256": "9001e5150a21483725fc5f4144ad9b48fb0f4192fe4274e950860dfc3337f91b"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-dark-320-empty-chromium-darwin.png",
+      "bytes": 149634,
+      "sha256": "65376440ba265e04798046ac67d8248c7c93be0d74c53db9827dad55cc2fe9bb"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-dark-320-populated-chromium-darwin.png",
+      "bytes": 244653,
+      "sha256": "b7a4c61f8a1e02e09be6f96b9803a13051b3c1b6e8d8c423f6325d328951900b"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-dark-768-empty-chromium-darwin.png",
+      "bytes": 152911,
+      "sha256": "18017e1cdc1857e59f0674ee2ddce8f89575ecbb6e1fe6d22626191df6d1d800"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-dark-768-populated-chromium-darwin.png",
+      "bytes": 249672,
+      "sha256": "ac78fe9947d98d2de9c536031b2071a70764719028c909f3f8047a6ff92c2cec"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-high-contrast-1440-empty-chromium-darwin.png",
+      "bytes": 137764,
+      "sha256": "49a9df8665f93677688a5543712b36c9e19fa46fd686b6e9439c62f3cdaa28c2"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-high-contrast-1440-populated-chromium-darwin.png",
+      "bytes": 216877,
+      "sha256": "1a3e7f6c1a74f3d28c32bec840743bf67eabcf8c948392f118715830f5ef8b4e"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-high-contrast-320-empty-chromium-darwin.png",
+      "bytes": 129757,
+      "sha256": "5323fef8db8a462f562ce4c52076aa29149fddf9ab0940faa76d0b5b56016d4a"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-high-contrast-320-populated-chromium-darwin.png",
+      "bytes": 215047,
+      "sha256": "72ec283ca5648804592e535eaf19ac714ad27f8adf4bb2f324f454993b4604cf"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-high-contrast-768-empty-chromium-darwin.png",
+      "bytes": 132845,
+      "sha256": "2fd215565dfcd9e6ce81686cca1b0e9c1a6c465998c730675055ca61add2a1cd"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-high-contrast-768-populated-chromium-darwin.png",
+      "bytes": 219190,
+      "sha256": "5409fff82428c7c0565eec5d7b1862f87a78dce5d4ee139cefd41e59246fb977"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-light-1440-empty-chromium-darwin.png",
+      "bytes": 156903,
+      "sha256": "e3a3627e620ca83ee1cfc8809e3fc891da28d6c111c31660c459403dabb659e6"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-light-1440-populated-chromium-darwin.png",
+      "bytes": 247011,
+      "sha256": "08ac8af86e3b55405478c85bbbd2406a4db36c6ffbbf7a859cb8f1a3a6a8a73f"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-light-320-empty-chromium-darwin.png",
+      "bytes": 148803,
+      "sha256": "39f5b6cb051710684cb64dd562a59feb99ae4537afe2a57dd46d23d78093d0e7"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-light-320-populated-chromium-darwin.png",
+      "bytes": 244244,
+      "sha256": "431719ae46759d0dd28abcdd68d81325813fa88b862b890d07a022647f844a63"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-light-768-empty-chromium-darwin.png",
+      "bytes": 152626,
+      "sha256": "cf49bbaea94648e72c8b9f601bcc648d5a2da82d4375a2ca2bae32d4326ead06"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-design.spec.ts-snapshots/insights-tr-light-768-populated-chromium-darwin.png",
+      "bytes": 249482,
+      "sha256": "79d61a2dc9c3755f036048fab25a38caa93d4d4c892c0d65d1d0c743247e3d65"
+    },
+    {
+      "path": "apps/designer-web/e2e/analytics-fixture.ts",
+      "bytes": 2070,
+      "sha256": "e36a1cbbed081c33643ea867287318c1c9ec1162413215d9791d77ca02f48dc4"
+    },
+    {
+      "path": "apps/designer-web/e2e/editor.spec.ts-snapshots/designer-web-dark-chromium-darwin.png",
+      "bytes": 113679,
+      "sha256": "3449a72bedabf6e053f6fbdeec11515176a94a56d474db3447f102624b6fb22c"
+    },
+    {
+      "path": "apps/designer-web/e2e/editor.spec.ts-snapshots/designer-web-light-chromium-darwin.png",
+      "bytes": 114580,
+      "sha256": "d4773da4362556e9d1156fb9a22eb0a2b1b574a6cfa8af5deeb5174a56299fd2"
+    },
+    {
+      "path": "apps/designer-web/src/pages/analytics.tsx",
+      "bytes": 3663,
+      "sha256": "c2da1ba6bac2baf9afcfbb238072d3fefe646690a9d90722e8cb0dbbd3b3c0ea"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/shell.tsx",
+      "bytes": 18077,
+      "sha256": "f04776a321a6ed12d48c9e8c951734c87ef551e5ff093e3892e87c375c1e2477"
+    },
+    {
+      "path": "apps/designer-web/src/workspace/styles.css",
+      "bytes": 19833,
+      "sha256": "836641d0e1c66e0d29be4ab02b31024e06c90cbe97633f341faff85511bf486f"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "bytes": 152494,
+      "sha256": "28989200d0b354fb1a902ed9849d35f5234dd8c553a8625c00f70ed643c87e76"
+    },
+    {
+      "path": "docs/verification/ANALYTICS_WORKSPACE_2026-10-05.md",
+      "bytes": 4550,
+      "sha256": "e15bada861172900b5f86ad857d0424bbf176ba1611bf53f6cb8f84dee642d3e"
+    },
+    {
+      "path": "packages/i18n/src/locales/en.ts",
+      "bytes": 70701,
+      "sha256": "e9f2887a015ea329403534f79384ec0fd994b64fd9b1506a26c5735c3fcf8e09"
+    },
+    {
+      "path": "packages/i18n/src/locales/tr.ts",
+      "bytes": 75964,
+      "sha256": "d02f88834dfdb6224b87660baea0a3f300a995c403249431e8d5df3a0769c5e1"
+    },
+    {
+      "path": "packages/ui/e2e/__screenshots__/chromium/analytics-dark-en.png",
+      "bytes": 173867,
+      "sha256": "2d8181e62084125a3e7e666028852d3bd20eabbe6a240d84ad50b9d9e007957d"
+    },
+    {
+      "path": "packages/ui/e2e/__screenshots__/chromium/analytics-dark-tr.png",
+      "bytes": 170309,
+      "sha256": "b2cd4fd42ccf7b113eb63e1ab1bf60059c6de357632caaeaca875780dc1cd33b"
+    },
+    {
+      "path": "packages/ui/e2e/__screenshots__/chromium/analytics-high-contrast-en.png",
+      "bytes": 150369,
+      "sha256": "48f9a6a372c67558927e112819005bea07327e80f8c54f86072cfdd21533d95a"
+    },
+    {
+      "path": "packages/ui/e2e/__screenshots__/chromium/analytics-high-contrast-tr.png",
+      "bytes": 148143,
+      "sha256": "94ebe3da21a2961be353aa8a68cd44633a5e0bc07123dfab9783547eac643be8"
+    },
+    {
+      "path": "packages/ui/e2e/__screenshots__/chromium/analytics-light-en.png",
+      "bytes": 173718,
+      "sha256": "68640f9af02bfec7ccee31d32f752424fb4c510ed179a0291d9c7babe524b052"
+    },
+    {
+      "path": "packages/ui/e2e/__screenshots__/chromium/analytics-light-tr.png",
+      "bytes": 170680,
+      "sha256": "e56f39ff2572d4f454eadfc2c2aa0cc63db9e8b11072c3f64b78ff11671a6898"
+    },
+    {
+      "path": "packages/ui/package.json",
+      "bytes": 2497,
+      "sha256": "c8143e47ddd0e7f75585c5bec21fd255f7b70a4a417c6ea7c52ca4fd54b166ce"
+    },
+    {
+      "path": "packages/ui/src/analytics.css",
+      "bytes": 10355,
+      "sha256": "20508f72964bdf8860b1db49c6893e5154706f06affb8e2d6bbabac6d321e228"
+    },
+    {
+      "path": "packages/ui/src/components/analytics-dashboard.spec.tsx",
+      "bytes": 11364,
+      "sha256": "5f4306a722f35c2b26b50fffeed36697296206054c8689d4cc0c991ddf92b855"
+    },
+    {
+      "path": "packages/ui/src/components/analytics-dashboard.tsx",
+      "bytes": 22717,
+      "sha256": "210c9e5a0ae710f0c6f2c3d4468aacf28e4256e9bed2fcd4dc6638873d3557d6"
+    },
+    {
+      "path": "packages/ui/src/tokens.css",
+      "bytes": 36824,
+      "sha256": "33d03bd09e8dc27454d53c2afc5014e1dae47c9b1d76840c8d485d56ae6927af"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/actions.log",
+      "bytes": 344,
+      "sha256": "71cf16df89ee27fa66c26be7656b005c18a69f1d82fee0af91176bab938a5768"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/analytics-dark-320-empty.png",
+      "bytes": 149634,
+      "sha256": "65376440ba265e04798046ac67d8248c7c93be0d74c53db9827dad55cc2fe9bb"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/analytics-dark-768-empty.png",
+      "bytes": 152911,
+      "sha256": "18017e1cdc1857e59f0674ee2ddce8f89575ecbb6e1fe6d22626191df6d1d800"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/analytics-dark-empty.png",
+      "bytes": 157162,
+      "sha256": "0b6a3a489ab9bbdba4ecf737af0f8ed294d99636b74f55bc16097fa6936aa41d"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/analytics-dark-populated.png",
+      "bytes": 246356,
+      "sha256": "9001e5150a21483725fc5f4144ad9b48fb0f4192fe4274e950860dfc3337f91b"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/analytics-light-empty.png",
+      "bytes": 156903,
+      "sha256": "e3a3627e620ca83ee1cfc8809e3fc891da28d6c111c31660c459403dabb659e6"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/analytics-light-populated.png",
+      "bytes": 247011,
+      "sha256": "08ac8af86e3b55405478c85bbbd2406a4db36c6ffbbf7a859cb8f1a3a6a8a73f"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/browser-current.log",
+      "bytes": 44141,
+      "sha256": "b3ef766505ab42377a64f988a23b8538f5fa8869686b4a817090faab40587fb1"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/browser-final-update.log",
+      "bytes": 9587,
+      "sha256": "e3e673c235a3fbaac6d296c124924ed3a79270cb462a760a0ca939d8bc7f5491"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/browser-final-verified.log",
+      "bytes": 3154,
+      "sha256": "9d3d66e17556187169c62ed5b32fc47125470a8148141243e2923a96f067c667"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/browser-layout.log",
+      "bytes": 12205,
+      "sha256": "5d22ec5b78253e154b807cef7844d08254d96a19eec894bcdfd797c66fca6a72"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/browser-refined.log",
+      "bytes": 66260,
+      "sha256": "3ec68081a4e99ae18cd1d5b87563cdb4808a8830084f3e94ca7dbeb7c20ffecc"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/browser-update.log",
+      "bytes": 46436,
+      "sha256": "3414f82692062d152733a49adeef87cbe3f28329931868d286c78f066618ede9"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/catalog-update.log",
+      "bytes": 2322,
+      "sha256": "ff166a5f6b8929837b5739dbeecbd30692c12a1b4f9eb5d95837add8be9d0693"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/catalog-verified.log",
+      "bytes": 1510,
+      "sha256": "b652843b2cd0d89d0981f28a81f367f5936fd6b55eb952843806213514d9c8bb"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/coverage-final.log",
+      "bytes": 1557,
+      "sha256": "f4feee43167f345782c4189b3ea768ece5684803606e1789dff3201b700fe02a"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/designer-suite-updated.log",
+      "bytes": 14324,
+      "sha256": "d1ed870db7edf6a82788af5735f2d9d1e96fc7aad02461d65b3e6e93faad9f7a"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/designer-suite-verified.log",
+      "bytes": 12931,
+      "sha256": "b9d40947e7ce75bbdfd655ed646cc96d4d9cf64683efaf22c516f239bee05f76"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/format.log",
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/i18n-inventory.log",
+      "bytes": 56,
+      "sha256": "eae773718b6b998efd2fca422dbfe0eec7cd36c6449f554878ff9b326c635e55"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/quality-accepted.log",
+      "bytes": 637,
+      "sha256": "0b28cd617b36311a39582275b9b04aec6e6c420699f3079e32adc7ac80875c73"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/quality-final.log",
+      "bytes": 47811,
+      "sha256": "6ee9fef2660a808993cc4bb0b142217da2697a0421c0b14ff17a233871cdbe8a"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/quality.log",
+      "bytes": 750,
+      "sha256": "20e979875e7a971a901cf60860ff3160feedc40b332c88a61fdbd93d42a5170d"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/regression-before.log",
+      "bytes": 9231,
+      "sha256": "0d61be3962e66fd7680ffab89b04d7a6242c3347bd3190177e31dc202755d6ff"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/ui-build-axe.log",
+      "bytes": 104,
+      "sha256": "e4fd470806ca684cadcfa0c6dfff17383f387f0c78d2c6cc9a2ccfe83fdaa7c4"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/ui-build-refined.log",
+      "bytes": 104,
+      "sha256": "e4fd470806ca684cadcfa0c6dfff17383f387f0c78d2c6cc9a2ccfe83fdaa7c4"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/ui-focused-accepted.log",
+      "bytes": 223,
+      "sha256": "9506bdb78a2e478cc65c600fd400ce7cee601e328314464366649d5694594b25"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/ui-focused.log",
+      "bytes": 1434,
+      "sha256": "31292a342d22f50669c6ed7cf5071709b13cbcf780b47a7c0ddb7794cab033c5"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/ui-lint.log",
+      "bytes": 853,
+      "sha256": "5e300e7e14aeaf5d6391a1f986d4ce682ee058568c77e5c7882e6b3f92a1b4dc"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/ui-typecheck.log",
+      "bytes": 111,
+      "sha256": "894fc696820bfd8dbe8344ff4ae22a6ad847cba8caec91b4926a535c799cd7e8"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/admin-web.log",
+      "bytes": 5502,
+      "sha256": "3e6ce8d3dda2ab9e3159bb4f4c8ccf471587dbc599600234097fd14e0a7e944c"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/agent-web.log",
+      "bytes": 4839,
+      "sha256": "c1f81cbf769a87c9959418a47079ea58ad39b2e08577034b7690eb2d6564ff1b"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/api.log",
+      "bytes": 45547,
+      "sha256": "2fba6e2f218883c76bbb60617d2747b3b3d600196e56bff820357e02181a697d"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/authz.log",
+      "bytes": 1723,
+      "sha256": "624eab897e48c6e092248d91198d9f4618e5ca1b720c74abffc854c8dc747617"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/collaboration.log",
+      "bytes": 925,
+      "sha256": "00a2f47f9273e43b6e256e1c42dac8f7b928f5f0a22892bda41da81c8b7406dc"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/components.log",
+      "bytes": 2860,
+      "sha256": "1cc49078724280c62762dc633f01ac8465d6568ac62312dfaba4f3e8f2f9ab92"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/connector-hub.log",
+      "bytes": 10772,
+      "sha256": "bcd577f510f59a891e40d081dc3d31b18db7ee5e1232c912c5c8a9a70722b480"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/core-runtime.log",
+      "bytes": 12859,
+      "sha256": "957e48ba543d5691dbeddddf3a4891ec3514a43ff2bed385692f105c5a6667e5"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/designer-web.log",
+      "bytes": 13492,
+      "sha256": "c1b365b7abecdccdfb529da975e1bb3ee3b229d226e580f1b3e7eda83507308b"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/docs-site.log",
+      "bytes": 562,
+      "sha256": "06855a8e5927bc1e42ec598bbf82cf57ed29649a925617ac0f9625be38ea0acc"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/expr.log",
+      "bytes": 2223,
+      "sha256": "7b70d1f72635797f224c44923c4db7f30bfce233338f75850929844d35385b7f"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/i18n.log",
+      "bytes": 1156,
+      "sha256": "c59ba53553e4ce4dfb5965cf829db62ff1c0c4c8dfba6bf331906c0e60e89dfd"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/observability.log",
+      "bytes": 1241,
+      "sha256": "a7c4d238f9afd36b9b079bf8fa47ecdc4c1a96a5ad0c0c9e6d4687d7ba80a543"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/script-schema.log",
+      "bytes": 5106,
+      "sha256": "071854424e747b51f337bbcc5b632add6477c15c10ece04abfea295f37fff90f"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/sdk-component.log",
+      "bytes": 1635,
+      "sha256": "7eb4dd8d67beb99a411bb4129436de7f0a2b8ba00aac62169ebce6966f163fb7"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/sdk-connector.log",
+      "bytes": 3167,
+      "sha256": "6f78026debf715b667547b399ee3c59ea25d426b3324afa81caf8082ba67ca14"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/shared-types.log",
+      "bytes": 1881,
+      "sha256": "aaa9e36c632390e5eee5844af63e0ad5d3b17172bfd5eacd722dcb91dbb87f44"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/test-utils.log",
+      "bytes": 934,
+      "sha256": "853e1861e396773c60308a48cbb01acf870e4c78d5424bf05b53560cf2bebac3"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/unit-logs/ui.log",
+      "bytes": 5295,
+      "sha256": "de617417cf537adf2f2c6cc3129e3f1144d235562d3b049e6ec2cd4c7003c672"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/workspace-dark.png",
+      "bytes": 113679,
+      "sha256": "3449a72bedabf6e053f6fbdeec11515176a94a56d474db3447f102624b6fb22c"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/workspace-light.png",
+      "bytes": 114580,
+      "sha256": "d4773da4362556e9d1156fb9a22eb0a2b1b574a6cfa8af5deeb5174a56299fd2"
+    },
+    {
+      "path": "docs/verification/evidence/analytics-workspace-20261005/workspace-visual-update.log",
+      "bytes": 775,
+      "sha256": "e2c0ccbb8006279133dcc52074502e1ad721273495d17618ef8b9e5f93b78cb5"
+    }
+  ]
+}

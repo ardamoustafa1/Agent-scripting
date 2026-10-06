@@ -1,0 +1,66 @@
+{
+  "connector-genesys-engage-sidecar": [
+    {
+      "name": "io.verbis.engage.sidecar.NatsBridgeIT",
+      "tests": "1",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-04T18:59:55.391Z",
+      "hostname": "2985e419761b",
+      "time": "3.963"
+    },
+    {
+      "name": "io.verbis.engage.sidecar.nats.TelemetryPrivacyTest",
+      "tests": "1",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-04T19:00:00.020Z",
+      "hostname": "2985e419761b",
+      "time": "4.398"
+    },
+    {
+      "name": "io.verbis.engage.sidecar.EnvelopeContractTest",
+      "tests": "5",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-04T18:59:59.916Z",
+      "hostname": "2985e419761b",
+      "time": "0.102"
+    }
+  ],
+  "connector-avaya-aes-sidecar": [
+    {
+      "name": "io.verbis.avaya.sidecar.AvayaSidecarUnitTest",
+      "tests": "8",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-04T18:59:59.395Z",
+      "hostname": "c7e539ad4a33",
+      "time": "0.147"
+    },
+    {
+      "name": "io.verbis.avaya.sidecar.NatsBridgeIT",
+      "tests": "1",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-04T18:59:55.037Z",
+      "hostname": "c7e539ad4a33",
+      "time": "3.888"
+    },
+    {
+      "name": "io.verbis.avaya.sidecar.nats.TelemetryPrivacyTest",
+      "tests": "1",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-04T18:59:59.543Z",
+      "hostname": "c7e539ad4a33",
+      "time": "4.25"
+    }
+  ]
+}

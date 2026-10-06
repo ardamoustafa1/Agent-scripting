@@ -1,0 +1,33 @@
+{
+  "recordedAt": "2026-10-05T16:42:09.718445+00:00",
+  "scope": "real local process SIGKILL / concurrent HTTP / shared PostgreSQL Redis NATS; no multi-host, 2000-agent or production acceptance",
+  "results": {
+    "apiFull": 1836,
+    "finalSupplemental": 42,
+    "newCases": 3
+  },
+  "sha256": {
+    "apps/api/test/integration/runtime.int.spec.ts": "069f43beb2384480a2a93b89f3009052135dc39fd779973c6bbf1f80f45df4c8",
+    "apps/api/test/support/api-process.ts": "586fa65dbb36865741878c441848685fcfc5a48b9035bd4f6d71b91e693cbbc0",
+    "apps/api/test/support/api-process-worker.mjs": "409c9470428ff89fd5463af47be22121d5db930d8d7055df0307ac1a25855792",
+    "apps/api/src/modules/runtime/runtime-engine.service.ts": "578aee08385027decff5280c073205722408de30a8bdd256cdc122369a9dc1ba",
+    "apps/api/src/modules/runtime/runtime-state.store.ts": "706c6e5876e3b9cc1a8851650fc978547bfa17c154786b39d21f8e85e80ca303",
+    "apps/api/src/modules/runtime/runtime-cipher.ts": "7f599abcccd533c2fc2cee21ad2326a3b833bdeb752f31da6f02616da3aee64b",
+    "apps/api/dist/bootstrap.js": "a8e499471271c825918fd635d3d4ef06ef111bcb10d1ac8618db2a9ff897e9d7",
+    "apps/api/dist/modules/runtime/runtime-engine.service.js": "ac355be454def1fcf47793433700c02fac60149a4f9c581a7f833828839ff8c5",
+    "apps/api/dist/modules/runtime/runtime-state.store.js": "27d3d63a1c91d200204e4c20404df088a1e3758bf58db4c98e6bffd5c094064c",
+    "apps/api/dist/modules/runtime/runtime-cipher.js": "fd9ca49b84b5f5550f135518482a0a49e5bb8067c9ff6fb5652ae47f68c39207",
+    "docs/verification/PROCESS_RECOVERY_2026-10-05.md": "e85e6cf9be19ad9a8fe4cee38783a0a56812dec02d1a0d8af7a1185ed9fbaff8",
+    "docs/verification/CORE_RESILIENCE_2026-10-05.md": "c3efa42c65cc727a15c1c65ef2ab3697b2c2002775e9afb367416dbc152e8f13",
+    "docs/PROGRESS.md": "1c068152948edde42d03814879f06fe58dd77ee43ef7b5c3b038e03b910ece41",
+    "docs/verification/evidence/process-recovery-20261005/api-full.log": "06d45704ad8b5d5e4fde65b1d3ba61a9ac1e87d7d935827dac7e2335c0295823",
+    "docs/verification/evidence/process-recovery-20261005/format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+    "docs/verification/evidence/process-recovery-20261005/integration-final.log": "51aa037a6654403a08f15005e01dd0b7d2d21892fe4db37129ca09501ae48406",
+    "docs/verification/evidence/process-recovery-20261005/integration-recovery.log": "232b801197c3553f87aefb96ecb7dd835dc823d050051cee409c33482062d854",
+    "docs/verification/evidence/process-recovery-20261005/lint-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/verification/evidence/process-recovery-20261005/lint-first.log": "ffc762d6ded0664d7803320950697def36576d4aee5a057ea095f5b3165b486a",
+    "docs/verification/evidence/process-recovery-20261005/runtime-first.log": "72afa3d3ab2e5c93d32b6eb07214809fce925e90a79b375a73144c68cf264a95",
+    "docs/verification/evidence/process-recovery-20261005/typecheck-final.log": "ecf4d9a655095c3d63f3b28609f0308bf17905802341ab321ccf502acd336e34",
+    "docs/verification/evidence/process-recovery-20261005/typecheck.log": "db32d357d0bd1138f5f00a3b4fa3527c885096c506f8d131e9a946b6d4cded66"
+  }
+}

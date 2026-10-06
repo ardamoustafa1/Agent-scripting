@@ -1,0 +1,68 @@
+{
+  "note": "Actual Fastify/swagger/cors registration probe, not full API auth proof. /audit-get-probe checks implicit HEAD behavior only.",
+  "routes": [
+    {
+      "method": "OPTIONS",
+      "path": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/docs"
+    },
+    {
+      "method": "HEAD",
+      "path": "/api/docs"
+    },
+    {
+      "method": "HEAD",
+      "path": "/api/docs/"
+    },
+    {
+      "method": "GET",
+      "path": "/api/docs/static/index.html"
+    },
+    {
+      "method": "HEAD",
+      "path": "/api/docs/static/index.html"
+    },
+    {
+      "method": "GET",
+      "path": "/api/docs/static/swagger-initializer.js"
+    },
+    {
+      "method": "HEAD",
+      "path": "/api/docs/static/swagger-initializer.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/docs/json"
+    },
+    {
+      "method": "HEAD",
+      "path": "/api/docs/json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/docs/yaml"
+    },
+    {
+      "method": "HEAD",
+      "path": "/api/docs/yaml"
+    },
+    {
+      "method": [
+        "HEAD",
+        "GET"
+      ],
+      "path": "/api/docs/static/*"
+    },
+    {
+      "method": "GET",
+      "path": "/audit-get-probe"
+    },
+    {
+      "method": "HEAD",
+      "path": "/audit-get-probe"
+    }
+  ]
+}

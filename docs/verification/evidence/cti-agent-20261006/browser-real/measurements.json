@@ -1,0 +1,26 @@
+[
+  {
+    "engine": "chromium",
+    "launchMs": 305,
+    "coldRenderMs": 302,
+    "warmRenderMs": 174,
+    "pageTransitionMs": 17.6,
+    "writebackMs": 157
+  },
+  {
+    "engine": "firefox",
+    "launchMs": 242,
+    "coldRenderMs": 317,
+    "warmRenderMs": 303,
+    "pageTransitionMs": 24,
+    "writebackMs": 181
+  },
+  {
+    "engine": "webkit",
+    "launchMs": 209,
+    "coldRenderMs": 476,
+    "warmRenderMs": 214,
+    "pageTransitionMs": 19,
+    "writebackMs": 168
+  }
+]

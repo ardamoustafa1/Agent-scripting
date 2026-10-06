@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-05",
+  "scope": "internal scripting controls and logic",
+  "newUnitRegressions": 7,
+  "newBrowserScenarios": 2,
+  "chromium": {
+    "passed": 200,
+    "log": "browser-final.log"
+  },
+  "realInternal": {
+    "passed": 3,
+    "unselected": 42,
+    "log": "real-internal.log"
+  },
+  "sourceSha256": {
+    "apps/designer-web/src/editor/store.ts": "13498a6dabe3762e6bc7d69a9a66089852d33ceb7504f1917d55f2137193f531",
+    "apps/designer-web/src/editor/store.spec.ts": "2cd2586fd15826f74ef22402fd1d39d6b55c1fe2a14cbd42a9b99d2127892a39",
+    "apps/designer-web/src/rules/builder.tsx": "9f9fa3179cfb97cf9cff8f037d87172656a0bf61769244b2dd2860715f990321",
+    "apps/designer-web/src/rules/manager.tsx": "eda891927054d4c7763110afe973dbe280a891b3b5ff4b627f9039e96c5cfac0",
+    "apps/designer-web/src/rules/behavior.spec.tsx": "2ba123e89db0538b7fd6271c1f1f95bb384191e415a89484a1337f564e3de5fb",
+    "apps/designer-web/src/flow/styles.css": "197922f372a7aa2c9d49d7e26a123f3e8226137a3ee232844a7df9acbb1aa5d7",
+    "apps/designer-web/e2e/editor.spec.ts": "812de215238d3d874194d29d975bc3af4892b40553e14b97f3c0217138917357"
+  },
+  "unit": {
+    "passed": 341,
+    "files": 49,
+    "log": "unit-final.log",
+    "coverage": {
+      "statements": 89.59,
+      "branches": 80.97,
+      "functions": 87.45,
+      "lines": 91.57
+    }
+  },
+  "checks": {
+    "typecheck": "typecheck-layout.log",
+    "lint": "lint-layout.log",
+    "build": "build-layout.log"
+  }
+}

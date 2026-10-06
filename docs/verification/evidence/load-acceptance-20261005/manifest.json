@@ -1,0 +1,25 @@
+{
+  "recordedAt": "2026-10-05T16:27:07.231672+00:00",
+  "scope": "offline load-tool acceptance preparation; no application traffic or 2000-agent capacity run",
+  "sha256": {
+    "infra/k6/profile.js": "74bb8db5eaca365ea6b7e5ab281dc616ab4eb6b58adbfd0ccf06a4cbd00661c6",
+    "infra/k6/profile.spec.mjs": "a11109a228d6d9fa9b07e5b6664da7096176a911d97932109f1d082a24449c3b",
+    "infra/k6/agent-load.js": "efd68bc197575e9258146026990d4b2bc0189ed5374962fd68b0a9c08d6b3b04",
+    "infra/k6/agent-socket-soak.js": "92afafe552c6955ffb90a9605e8d303c1ced9850592cd344b7f5d9ff9c6e4189",
+    "infra/k6/fixture.example.json": "a6a9e965e9bd554364370e15472755943513d52378f3b4b22f81cec13a1ea64d",
+    "scripts/k6-preflight.mjs": "1b1da147837a1792333f2a3d4c4e7a740e4ef53854d5eec79e3aad8c6a167f67",
+    "scripts/k6-preflight.spec.mjs": "b8435b5b43ab324f55151d5ece0e810cfe0161f69144230f44aa3f366ea4acd1",
+    "package.json": "b11bda82fccf2e6077e7198f230380e164b42216b39c18cd7adba61b498accf2",
+    "docs/ops/PERFORMANCE.md": "240748c901b3dab8e4a86d95d286a94a8b97614f4499cba9daee05a292c71b96",
+    "docs/verification/LOAD_ACCEPTANCE_PREPARATION_2026-10-05.md": "86ab2b8cda1e7b0a8a78386cc402fcd0edbf1269504a4731bd43bcff6b037656",
+    "docs/PROGRESS.md": "17b9e050d6e6f791924c36a68cc7f1d7c2bc782c9d707791e5a0037c0263cedb",
+    "docs/verification/evidence/load-acceptance-20261005/after.log": "2f491e9f37a1cbfcd1d72ea121d66df02c8a40eecb8227da426c1664d9cbae0b",
+    "docs/verification/evidence/load-acceptance-20261005/before.log": "0bc74dde54ec7a1748c13d0a0668df32ee021cccf727a49e509a7447c2d64c00",
+    "docs/verification/evidence/load-acceptance-20261005/confirmed.log": "b4dfa7bd8a6d5f01e67481db964ef1e616dece11e342932548ed54661e76101a",
+    "docs/verification/evidence/load-acceptance-20261005/edge-before.log": "7177b0eb4af843b61ba4ae7bdef6fd30e96cb5341f82ee13dd34e70113f84078",
+    "docs/verification/evidence/load-acceptance-20261005/format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+    "docs/verification/evidence/load-acceptance-20261005/lint-before.log": "87d6ffdf853679255dbb5db60f3c9f7e27781ad98a71978c83ed00d6ec93a68f",
+    "docs/verification/evidence/load-acceptance-20261005/lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/verification/evidence/load-acceptance-20261005/policy.log": "0a35765b9175a62fa44d4891af8f6ee621fba93f24c5eb9c267bbf654008daa6"
+  }
+}

@@ -1,0 +1,665 @@
+{
+  "commands": 51,
+  "vitestPassed": 4897,
+  "browserPassed": 455,
+  "browserFailed": 5,
+  "browserSkipped": 9,
+  "routes": 231,
+  "routesWithoutLiteralCandidate": 71,
+  "onlyTR": [],
+  "onlyEN": [],
+  "zeroCoverageFiles": 9,
+  "productionReady": false,
+  "failedBrowserTests": [
+    {
+      "workspace": "apps/designer-web",
+      "file": "apps/designer-web/e2e/editor.spec.ts",
+      "line": 116,
+      "title": "editor.spec.ts \u203a virtual layer drag reorders siblings in one undo step",
+      "project": "chromium",
+      "status": "unexpected",
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 1,
+          "status": "failed",
+          "duration": 5694,
+          "error": {
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 1\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    \"home-root\",\u001b[22m\n\u001b[2m    \"btn-next\",\u001b[22m\n\u001b[32m-   \"fixture-0\",\u001b[39m\n\u001b[2m    \"fixture-1\",\u001b[22m\n\u001b[31m+   \"fixture-0\",\u001b[39m\n\u001b[2m  ]\u001b[22m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate",
+            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 1\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    \"home-root\",\u001b[22m\n\u001b[2m    \"btn-next\",\u001b[22m\n\u001b[32m-   \"fixture-0\",\u001b[39m\n\u001b[2m    \"fixture-1\",\u001b[22m\n\u001b[31m+   \"fixture-0\",\u001b[39m\n\u001b[2m  ]\u001b[22m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate\n    at /private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e/editor.spec.ts:141:26",
+            "location": {
+              "file": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e/editor.spec.ts",
+              "column": 26,
+              "line": 141
+            },
+            "snippet": "  139 |   await expect.poll(ids).toEqual(['home-root', 'btn-next', 'fixture-1', 'fixture-0']);\n  140 |   await page.getByRole('button', { name: 'Undo', exact: true }).click();\n> 141 |   await expect.poll(ids).toEqual(['home-root', 'btn-next', 'fixture-0', 'fixture-1']);\n      |                          ^\n  142 | });\n  143 | test('draft writes carry CSRF, optimistic version and linked screen pins', async ({ page }) => {\n  144 |   const fixture = {"
+          },
+          "errors": [
+            {
+              "location": {
+                "file": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e/editor.spec.ts",
+                "column": 26,
+                "line": 141
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 1\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    \"home-root\",\u001b[22m\n\u001b[2m    \"btn-next\",\u001b[22m\n\u001b[32m-   \"fixture-0\",\u001b[39m\n\u001b[2m    \"fixture-1\",\u001b[22m\n\u001b[31m+   \"fixture-0\",\u001b[39m\n\u001b[2m  ]\u001b[22m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate\n\n  139 |   await expect.poll(ids).toEqual(['home-root', 'btn-next', 'fixture-1', 'fixture-0']);\n  140 |   await page.getByRole('button', { name: 'Undo', exact: true }).click();\n> 141 |   await expect.poll(ids).toEqual(['home-root', 'btn-next', 'fixture-0', 'fixture-1']);\n      |                          ^\n  142 | });\n  143 | test('draft writes carry CSRF, optimistic version and linked screen pins', async ({ page }) => {\n  144 |   const fixture = {\n    at /private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e/editor.spec.ts:141:26"
+            }
+          ],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-10-04T08:09:43.998Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "error-context",
+              "contentType": "text/markdown",
+              "path": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/test-results/editor-virtual-layer-drag-reorders-siblings-in-one-undo-step-chromium/error-context.md"
+            },
+            {
+              "name": "trace",
+              "contentType": "application/zip",
+              "path": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/test-results/editor-virtual-layer-drag-reorders-siblings-in-one-undo-step-chromium/trace.zip"
+            }
+          ],
+          "errorLocation": {
+            "file": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e/editor.spec.ts",
+            "column": 26,
+            "line": 141
+          }
+        },
+        {
+          "workerIndex": 2,
+          "parallelIndex": 1,
+          "status": "failed",
+          "duration": 5856,
+          "error": {
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 1\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    \"home-root\",\u001b[22m\n\u001b[2m    \"btn-next\",\u001b[22m\n\u001b[32m-   \"fixture-0\",\u001b[39m\n\u001b[2m    \"fixture-1\",\u001b[22m\n\u001b[31m+   \"fixture-0\",\u001b[39m\n\u001b[2m  ]\u001b[22m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate",
+            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 1\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    \"home-root\",\u001b[22m\n\u001b[2m    \"btn-next\",\u001b[22m\n\u001b[32m-   \"fixture-0\",\u001b[39m\n\u001b[2m    \"fixture-1\",\u001b[22m\n\u001b[31m+   \"fixture-0\",\u001b[39m\n\u001b[2m  ]\u001b[22m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate\n    at /private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e/editor.spec.ts:141:26",
+            "location": {
+              "file": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e/editor.spec.ts",
+              "column": 26,
+              "line": 141
+            },
+            "snippet": "  139 |   await expect.poll(ids).toEqual(['home-root', 'btn-next', 'fixture-1', 'fixture-0']);\n  140 |   await page.getByRole('button', { name: 'Undo', exact: true }).click();\n> 141 |   await expect.poll(ids).toEqual(['home-root', 'btn-next', 'fixture-0', 'fixture-1']);\n      |                          ^\n  142 | });\n  143 | test('draft writes carry CSRF, optimistic version and linked screen pins', async ({ page }) => {\n  144 |   const fixture = {"
+          },
+          "errors": [
+            {
+              "location": {
+                "file": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e/editor.spec.ts",
+                "column": 26,
+                "line": 141
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 1\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    \"home-root\",\u001b[22m\n\u001b[2m    \"btn-next\",\u001b[22m\n\u001b[32m-   \"fixture-0\",\u001b[39m\n\u001b[2m    \"fixture-1\",\u001b[22m\n\u001b[31m+   \"fixture-0\",\u001b[39m\n\u001b[2m  ]\u001b[22m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate\n\n  139 |   await expect.poll(ids).toEqual(['home-root', 'btn-next', 'fixture-1', 'fixture-0']);\n  140 |   await page.getByRole('button', { name: 'Undo', exact: true }).click();\n> 141 |   await expect.poll(ids).toEqual(['home-root', 'btn-next', 'fixture-0', 'fixture-1']);\n      |                          ^\n  142 | });\n  143 | test('draft writes carry CSRF, optimistic version and linked screen pins', async ({ page }) => {\n  144 |   const fixture = {\n    at /private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e/editor.spec.ts:141:26"
+            }
+          ],
+          "stdout": [],
+          "stderr": [],
+          "retry": 1,
+          "startTime": "2026-10-04T08:09:50.268Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "error-context",
+              "contentType": "text/markdown",
+              "path": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/test-results/editor-virtual-layer-drag-reorders-siblings-in-one-undo-step-chromium-retry1/error-context.md"
+            },
+            {
+              "name": "trace",
+              "contentType": "application/zip",
+              "path": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/test-results/editor-virtual-layer-drag-reorders-siblings-in-one-undo-step-chromium-retry1/trace.zip"
+            }
+          ],
+          "errorLocation": {
+            "file": "/private/tmp/verbis-v1-quality-20261004/apps/designer-web/e2e/editor.spec.ts",
+            "column": 26,
+            "line": 141
+          }
+        }
+      ]
+    },
+    {
+      "workspace": "packages/ui",
+      "file": "packages/ui/e2e/design-system.spec.ts",
+      "line": 88,
+      "title": "design-system.spec.ts \u203a DatePicker / light: axe and visual baseline",
+      "project": "chromium",
+      "status": "unexpected",
+      "results": [
+        {
+          "workerIndex": 0,
+          "parallelIndex": 0,
+          "status": "failed",
+          "duration": 2206,
+          "error": {
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  12 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-light-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-light-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n",
+            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  12 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-light-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-light-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28",
+            "location": {
+              "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+              "column": 28,
+              "line": 112
+            },
+            "snippet": "  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {"
+          },
+          "errors": [
+            {
+              "location": {
+                "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+                "column": 28,
+                "line": 112
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  12 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-light-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-light-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n\n  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28"
+            }
+          ],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-10-04T08:10:54.949Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "DatePicker-light-open-expected.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/__screenshots__/chromium/DatePicker-light-open.png"
+            },
+            {
+              "name": "DatePicker-light-open-actual.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-light-axe-and-visual-baseline-chromium/DatePicker-light-open-actual.png"
+            },
+            {
+              "name": "DatePicker-light-open-diff.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-light-axe-and-visual-baseline-chromium/DatePicker-light-open-diff.png"
+            },
+            {
+              "name": "error-context",
+              "contentType": "text/markdown",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-light-axe-and-visual-baseline-chromium/error-context.md"
+            },
+            {
+              "name": "trace",
+              "contentType": "application/zip",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-light-axe-and-visual-baseline-chromium/trace.zip"
+            }
+          ],
+          "errorLocation": {
+            "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+            "column": 28,
+            "line": 112
+          }
+        },
+        {
+          "workerIndex": 2,
+          "parallelIndex": 0,
+          "status": "failed",
+          "duration": 2207,
+          "error": {
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  12 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-light-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-light-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n",
+            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  12 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-light-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-light-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28",
+            "location": {
+              "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+              "column": 28,
+              "line": 112
+            },
+            "snippet": "  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {"
+          },
+          "errors": [
+            {
+              "location": {
+                "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+                "column": 28,
+                "line": 112
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  12 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-light-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-light-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 12 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n\n  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28"
+            }
+          ],
+          "stdout": [],
+          "stderr": [],
+          "retry": 1,
+          "startTime": "2026-10-04T08:10:57.640Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "DatePicker-light-open-expected.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/__screenshots__/chromium/DatePicker-light-open.png"
+            },
+            {
+              "name": "DatePicker-light-open-actual.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-light-axe-and-visual-baseline-chromium-retry1/DatePicker-light-open-actual.png"
+            },
+            {
+              "name": "DatePicker-light-open-diff.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-light-axe-and-visual-baseline-chromium-retry1/DatePicker-light-open-diff.png"
+            },
+            {
+              "name": "error-context",
+              "contentType": "text/markdown",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-light-axe-and-visual-baseline-chromium-retry1/error-context.md"
+            },
+            {
+              "name": "trace",
+              "contentType": "application/zip",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-light-axe-and-visual-baseline-chromium-retry1/trace.zip"
+            }
+          ],
+          "errorLocation": {
+            "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+            "column": 28,
+            "line": 112
+          }
+        }
+      ]
+    },
+    {
+      "workspace": "packages/ui",
+      "file": "packages/ui/e2e/design-system.spec.ts",
+      "line": 88,
+      "title": "design-system.spec.ts \u203a DatePicker / dark: axe and visual baseline",
+      "project": "chromium",
+      "status": "unexpected",
+      "results": [
+        {
+          "workerIndex": 1,
+          "parallelIndex": 1,
+          "status": "failed",
+          "duration": 3109,
+          "error": {
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-dark-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-dark-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n",
+            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-dark-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-dark-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28",
+            "location": {
+              "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+              "column": 28,
+              "line": 112
+            },
+            "snippet": "  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {"
+          },
+          "errors": [
+            {
+              "location": {
+                "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+                "column": 28,
+                "line": 112
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-dark-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-dark-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n\n  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28"
+            }
+          ],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-10-04T08:11:27.435Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "DatePicker-dark-open-expected.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/__screenshots__/chromium/DatePicker-dark-open.png"
+            },
+            {
+              "name": "DatePicker-dark-open-actual.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-dark-axe-and-visual-baseline-chromium/DatePicker-dark-open-actual.png"
+            },
+            {
+              "name": "DatePicker-dark-open-diff.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-dark-axe-and-visual-baseline-chromium/DatePicker-dark-open-diff.png"
+            },
+            {
+              "name": "error-context",
+              "contentType": "text/markdown",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-dark-axe-and-visual-baseline-chromium/error-context.md"
+            },
+            {
+              "name": "trace",
+              "contentType": "application/zip",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-dark-axe-and-visual-baseline-chromium/trace.zip"
+            }
+          ],
+          "errorLocation": {
+            "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+            "column": 28,
+            "line": 112
+          }
+        },
+        {
+          "workerIndex": 4,
+          "parallelIndex": 1,
+          "status": "failed",
+          "duration": 3020,
+          "error": {
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-dark-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-dark-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n",
+            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-dark-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-dark-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28",
+            "location": {
+              "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+              "column": 28,
+              "line": 112
+            },
+            "snippet": "  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {"
+          },
+          "errors": [
+            {
+              "location": {
+                "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+                "column": 28,
+                "line": 112
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-dark-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-dark-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n\n  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28"
+            }
+          ],
+          "stdout": [],
+          "stderr": [],
+          "retry": 1,
+          "startTime": "2026-10-04T08:11:31.413Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "DatePicker-dark-open-expected.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/__screenshots__/chromium/DatePicker-dark-open.png"
+            },
+            {
+              "name": "DatePicker-dark-open-actual.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-dark-axe-and-visual-baseline-chromium-retry1/DatePicker-dark-open-actual.png"
+            },
+            {
+              "name": "DatePicker-dark-open-diff.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-dark-axe-and-visual-baseline-chromium-retry1/DatePicker-dark-open-diff.png"
+            },
+            {
+              "name": "error-context",
+              "contentType": "text/markdown",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-dark-axe-and-visual-baseline-chromium-retry1/error-context.md"
+            },
+            {
+              "name": "trace",
+              "contentType": "application/zip",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-dark-axe-and-visual-baseline-chromium-retry1/trace.zip"
+            }
+          ],
+          "errorLocation": {
+            "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+            "column": 28,
+            "line": 112
+          }
+        }
+      ]
+    },
+    {
+      "workspace": "packages/ui",
+      "file": "packages/ui/e2e/design-system.spec.ts",
+      "line": 88,
+      "title": "design-system.spec.ts \u203a DatePicker / high-contrast: axe and visual baseline",
+      "project": "chromium",
+      "status": "unexpected",
+      "results": [
+        {
+          "workerIndex": 5,
+          "parallelIndex": 1,
+          "status": "failed",
+          "duration": 2112,
+          "error": {
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  26 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-high-contrast-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-high-contrast-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n",
+            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  26 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-high-contrast-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-high-contrast-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28",
+            "location": {
+              "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+              "column": 28,
+              "line": 112
+            },
+            "snippet": "  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {"
+          },
+          "errors": [
+            {
+              "location": {
+                "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+                "column": 28,
+                "line": 112
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  26 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-high-contrast-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-high-contrast-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n\n  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28"
+            }
+          ],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-10-04T08:12:00.606Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "DatePicker-high-contrast-open-expected.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/__screenshots__/chromium/DatePicker-high-contrast-open.png"
+            },
+            {
+              "name": "DatePicker-high-contrast-open-actual.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-h-103c4-ast-axe-and-visual-baseline-chromium/DatePicker-high-contrast-open-actual.png"
+            },
+            {
+              "name": "DatePicker-high-contrast-open-diff.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-h-103c4-ast-axe-and-visual-baseline-chromium/DatePicker-high-contrast-open-diff.png"
+            },
+            {
+              "name": "error-context",
+              "contentType": "text/markdown",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-h-103c4-ast-axe-and-visual-baseline-chromium/error-context.md"
+            },
+            {
+              "name": "trace",
+              "contentType": "application/zip",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-h-103c4-ast-axe-and-visual-baseline-chromium/trace.zip"
+            }
+          ],
+          "errorLocation": {
+            "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+            "column": 28,
+            "line": 112
+          }
+        },
+        {
+          "workerIndex": 6,
+          "parallelIndex": 1,
+          "status": "failed",
+          "duration": 2396,
+          "error": {
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  26 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-high-contrast-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-high-contrast-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n",
+            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  26 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-high-contrast-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-high-contrast-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28",
+            "location": {
+              "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+              "column": 28,
+              "line": 112
+            },
+            "snippet": "  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {"
+          },
+          "errors": [
+            {
+              "location": {
+                "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+                "column": 28,
+                "line": 112
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  26 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-high-contrast-open.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-high-contrast-open.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 26 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n\n  110 |         ].includes(component)\n  111 |       )\n> 112 |         await expect(page).toHaveScreenshot(`${component}-${theme}-open.png`, { fullPage: true });\n      |                            ^\n  113 |     });\n  114 |   }\n  115 |   test(`workspace / ${theme}`, async ({ page }) => {\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:112:28"
+            }
+          ],
+          "stdout": [],
+          "stderr": [],
+          "retry": 1,
+          "startTime": "2026-10-04T08:12:03.400Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "DatePicker-high-contrast-open-expected.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/__screenshots__/chromium/DatePicker-high-contrast-open.png"
+            },
+            {
+              "name": "DatePicker-high-contrast-open-actual.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-h-103c4-ast-axe-and-visual-baseline-chromium-retry1/DatePicker-high-contrast-open-actual.png"
+            },
+            {
+              "name": "DatePicker-high-contrast-open-diff.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-h-103c4-ast-axe-and-visual-baseline-chromium-retry1/DatePicker-high-contrast-open-diff.png"
+            },
+            {
+              "name": "error-context",
+              "contentType": "text/markdown",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-h-103c4-ast-axe-and-visual-baseline-chromium-retry1/error-context.md"
+            },
+            {
+              "name": "trace",
+              "contentType": "application/zip",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-h-103c4-ast-axe-and-visual-baseline-chromium-retry1/trace.zip"
+            }
+          ],
+          "errorLocation": {
+            "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+            "column": 28,
+            "line": 112
+          }
+        }
+      ]
+    },
+    {
+      "workspace": "packages/ui",
+      "file": "packages/ui/e2e/design-system.spec.ts",
+      "line": 128,
+      "title": "design-system.spec.ts \u203a DatePicker: EN and RTL",
+      "project": "chromium",
+      "status": "unexpected",
+      "results": [
+        {
+          "workerIndex": 7,
+          "parallelIndex": 1,
+          "status": "failed",
+          "duration": 2101,
+          "error": {
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-en-rtl.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-en-rtl.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n",
+            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-en-rtl.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-en-rtl.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:134:24",
+            "location": {
+              "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+              "column": 24,
+              "line": 134
+            },
+            "snippet": "  132 |     await openInteractiveState(page, component);\n  133 |     await noViolations(page);\n> 134 |     await expect(page).toHaveScreenshot(`${component}-en-rtl.png`, { fullPage: true });\n      |                        ^\n  135 |   });\n  136 | }\n  137 |"
+          },
+          "errors": [
+            {
+              "location": {
+                "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+                "column": 24,
+                "line": 134
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-en-rtl.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-en-rtl.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n\n  132 |     await openInteractiveState(page, component);\n  133 |     await noViolations(page);\n> 134 |     await expect(page).toHaveScreenshot(`${component}-en-rtl.png`, { fullPage: true });\n      |                        ^\n  135 |   });\n  136 | }\n  137 |\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:134:24"
+            }
+          ],
+          "stdout": [],
+          "stderr": [],
+          "retry": 0,
+          "startTime": "2026-10-04T08:12:31.162Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "DatePicker-en-rtl-expected.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/__screenshots__/chromium/DatePicker-en-rtl.png"
+            },
+            {
+              "name": "DatePicker-en-rtl-actual.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-EN-and-RTL-chromium/DatePicker-en-rtl-actual.png"
+            },
+            {
+              "name": "DatePicker-en-rtl-diff.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-EN-and-RTL-chromium/DatePicker-en-rtl-diff.png"
+            },
+            {
+              "name": "error-context",
+              "contentType": "text/markdown",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-EN-and-RTL-chromium/error-context.md"
+            },
+            {
+              "name": "trace",
+              "contentType": "application/zip",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-EN-and-RTL-chromium/trace.zip"
+            }
+          ],
+          "errorLocation": {
+            "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+            "column": 24,
+            "line": 134
+          }
+        },
+        {
+          "workerIndex": 8,
+          "parallelIndex": 1,
+          "status": "failed",
+          "duration": 1975,
+          "error": {
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-en-rtl.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-en-rtl.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n",
+            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-en-rtl.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-en-rtl.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:134:24",
+            "location": {
+              "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+              "column": 24,
+              "line": 134
+            },
+            "snippet": "  132 |     await openInteractiveState(page, component);\n  133 |     await noViolations(page);\n> 134 |     await expect(page).toHaveScreenshot(`${component}-en-rtl.png`, { fullPage: true });\n      |                        ^\n  135 |   });\n  136 | }\n  137 |"
+          },
+          "errors": [
+            {
+              "location": {
+                "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+                "column": 24,
+                "line": 134
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveScreenshot\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n  18 pixels (ratio 0.01 of all image pixels) are different.\n\n  Snapshot: DatePicker-en-rtl.png\n\nCall log:\n\u001b[2m  - Expect \"toHaveScreenshot(DatePicker-en-rtl.png)\" with timeout 5000ms\u001b[22m\n\u001b[2m    - verifying given screenshot expectation\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\u001b[2m  - waiting 100ms before taking screenshot\u001b[22m\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\u001b[2m  - captured a stable screenshot\u001b[22m\n\u001b[2m  - 18 pixels (ratio 0.01 of all image pixels) are different.\u001b[22m\n\n\n  132 |     await openInteractiveState(page, component);\n  133 |     await noViolations(page);\n> 134 |     await expect(page).toHaveScreenshot(`${component}-en-rtl.png`, { fullPage: true });\n      |                        ^\n  135 |   });\n  136 | }\n  137 |\n    at /private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts:134:24"
+            }
+          ],
+          "stdout": [],
+          "stderr": [],
+          "retry": 1,
+          "startTime": "2026-10-04T08:12:34.118Z",
+          "annotations": [],
+          "attachments": [
+            {
+              "name": "DatePicker-en-rtl-expected.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/__screenshots__/chromium/DatePicker-en-rtl.png"
+            },
+            {
+              "name": "DatePicker-en-rtl-actual.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-EN-and-RTL-chromium-retry1/DatePicker-en-rtl-actual.png"
+            },
+            {
+              "name": "DatePicker-en-rtl-diff.png",
+              "contentType": "image/png",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-EN-and-RTL-chromium-retry1/DatePicker-en-rtl-diff.png"
+            },
+            {
+              "name": "error-context",
+              "contentType": "text/markdown",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-EN-and-RTL-chromium-retry1/error-context.md"
+            },
+            {
+              "name": "trace",
+              "contentType": "application/zip",
+              "path": "/private/tmp/verbis-v1-quality-20261004/packages/ui/test-results/design-system-DatePicker-EN-and-RTL-chromium-retry1/trace.zip"
+            }
+          ],
+          "errorLocation": {
+            "file": "/private/tmp/verbis-v1-quality-20261004/packages/ui/e2e/design-system.spec.ts",
+            "column": 24,
+            "line": 134
+          }
+        }
+      ]
+    }
+  ]
+}

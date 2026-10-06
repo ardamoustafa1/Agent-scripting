@@ -1,0 +1,74 @@
+[
+  {
+    "path": "apps/api/src/modules/scripts/collaboration.service.ts",
+    "sha256": "6176d4454f47392bebb88078df9e292e3f30a9501f34100f2e867678891ed455"
+  },
+  {
+    "path": "apps/api/src/modules/scripts/collaboration-hooks.spec.ts",
+    "sha256": "66e58807351f2896594a59431f6ad4c6585952ebeae89457393283626dd33613"
+  },
+  {
+    "path": "apps/designer-web/src/workspace/shell.tsx",
+    "sha256": "3654c9c51261726ab732544ccfa55f5546cb72ce139274094bdf3d568e0c07b6"
+  },
+  {
+    "path": "apps/designer-web/src/workspace/styles.css",
+    "sha256": "1db3da02ad9e09f98de5b0e40ccffb39c521689cf0a40dbc591c70c2d77f54fc"
+  },
+  {
+    "path": "apps/designer-web/src/workspace/shell-behavior.spec.tsx",
+    "sha256": "026b37feae6e09c3eff66096c2069c6330b2f168a53edd565d7f727138012335"
+  },
+  {
+    "path": "apps/designer-web/src/editor/editor.css",
+    "sha256": "d68e5c076eb5f81be04fdd0a9e140ec332edd0a23d791eca4a394fb9c33e9f42"
+  },
+  {
+    "path": "apps/designer-web/src/lifecycle/styles.css",
+    "sha256": "93be2d43c591ee2fa178c1ce7b72bccfd649f4dc74dddd600b8f07f9598cd661"
+  },
+  {
+    "path": "apps/designer-web/src/integrations/styles.css",
+    "sha256": "0a6ce0410e6bf60fa18469b66d4b5daa981cf729ce05a465df489d3460ef1061"
+  },
+  {
+    "path": "apps/designer-web/src/integrations/list.tsx",
+    "sha256": "75ba7b8a7be41fdf61d0aeabf3f96dc8e6824c057db7752f3225fd0e53c91691"
+  },
+  {
+    "path": "apps/designer-web/src/pages/library.tsx",
+    "sha256": "a3e5e1ffeb55b8d7ced73407a9bcec139f1d43033fc1d8a899d356c40f1c80fc"
+  },
+  {
+    "path": "apps/designer-web/src/pages/ai.tsx",
+    "sha256": "284b96a6193aac93ecd2fcb6fd9c9738c6aecfa72ab4878e2f5beb8603df30bd"
+  },
+  {
+    "path": "apps/designer-web/src/pages/ai-behavior.spec.tsx",
+    "sha256": "ba96e669aa1ffc659338e59451f9ff72b906315483989bd09fe98db738537551"
+  },
+  {
+    "path": "apps/designer-web/e2e/collaboration-live.spec.ts",
+    "sha256": "94396273733b295fa0ff0cea7680fbe1e396e2e522916056baa5862f3da3cd19"
+  },
+  {
+    "path": "apps/admin-web/src/workspace/workspace.css",
+    "sha256": "0cd47223172928a1919c86c28451fda9dbcf8405c7f1beafc10e0e812cc09865"
+  },
+  {
+    "path": "apps/agent-web/src/desktop/styles.css",
+    "sha256": "5e8768317cfc35f347167d11f6f8c8259656887688429f18ecd500532d454f60"
+  },
+  {
+    "path": "packages/ui/src/components/layout.tsx",
+    "sha256": "555df15f9f1af193db29e4fa42feb76244b0b8ac268d9289aa7f5a557639f73f"
+  },
+  {
+    "path": "packages/ui/src/tokens.css",
+    "sha256": "7890e2dd8cc7629396b80ecab068cc739153e25459fac25874dfc0125a0eef90"
+  },
+  {
+    "path": "tests/verification/product-browser.audit.spec.ts",
+    "sha256": "0eef7293ab9fb870ac7c2817d6d30dc609c813ac8eda265df21f11616f0f0550"
+  }
+]

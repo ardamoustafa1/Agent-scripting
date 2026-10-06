@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-05",
+  "productionAcceptance": false,
+  "newUnitTests": 3,
+  "newIntegrationTests": 2,
+  "freshResults": {
+    "apiFull": 1833,
+    "agentUnit": 125,
+    "coreRuntimeUnitFinal": 124,
+    "restModule": 130,
+    "internalIntegration": 39
+  },
+  "sourceSha256": {
+    "apps/api/src/modules/integrations/engine/executor.ts": "364d4d5915c11f5a8c450afe609310af2363f78b87cbda9c7e9f03aa8fba85a0",
+    "apps/api/src/modules/integrations/engine/executor.spec.ts": "5cbe80e439e8ca84bf65b439b340672dc30c9f9665514108f800e5462f077cad",
+    "apps/api/test/integration/authoring-routing.int.spec.ts": "821c634244cb98a126af2560fa42d666726f8063cd7f8eaab8fc2b51229a7398",
+    "apps/api/test/integration/runtime.int.spec.ts": "7fbbe9592a34e2b1fd076fd2c8179791f5446e39b38b483fab01f3bb70062d97",
+    "docs/adr/0038-production-integration-mocks-and-cache-recovery.md": "2f8839df90502730307e7d393f29d764535e9f60b65dd84588e7865b05f9b96b"
+  },
+  "logSha256": {
+    "rest-before.log": "3df6ad737a03dd41004abdb76f5fe1c411e38f2ac17e61d7875a3d50c02c29b5",
+    "api-typecheck.log": "20897cc94eb5e1f58cb3cde37fc242652f70638d958195535a61534bdf9692e1",
+    "rest-final.log": "9deee02e795744be68e066c808fd1742626dabc5329f589c0f60fc1735305f2b",
+    "api-build.log": "cd6803171220a6769a724a649577f52c11557a0299d8692c1f4cc751f50dfc7f",
+    "api-lint-final.log": "1d34219d1589ad767f20f73ea1becf35209a2dab6cd2ead24c1131daba9ffc97",
+    "rest-after.log": "d44c39ff9f2c74f9a584af61d9a9ada9bcb123b20efc5737acbdb4d015fbdaa0",
+    "agent-unit.log": "d86e7bcc6a18784dbd6b29a4c44504056317be25801c2978c45ba8e383087a12",
+    "runtime-unit.log": "93f636dbc74c22e553fb06ea8c52545a12644112a47ce170cabc50bfcfa39e76",
+    "concurrency-integration.log": "b371cb9debc9ef386b1f0d3c0ae998ccbbae39e3c003b49f085e3fec831acf20",
+    "recovery-integration.log": "d04fdf0289c1848b20351af1c7aa1d3b5dc5b4281f6b4380a2c0903d246e6b93",
+    "api-full.log": "f22e996523209d2d4bed201a59e63cbb115a2769cb0b2674832ecf8cec710224",
+    "api-lint.log": "a19df841b34c202a5a634f2448e85769c66246efbace02ba313ea3f641b4ec61",
+    "runtime-final.log": "49a308a29ed373fbee507a4fc2670bbc6a136c921e561658c5909b1baf337265"
+  }
+}

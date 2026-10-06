@@ -1,0 +1,20 @@
+{
+  "command": [
+    "pnpm",
+    "--filter",
+    "@verbis/api",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "../../tests/verification/v2.config.mjs",
+    "/Users/ardamoustafa/agent scripting/tests/verification/keycloak.audit.spec.ts",
+    "/Users/ardamoustafa/agent scripting/tests/verification/runtime-ws.audit.spec.ts",
+    "/Users/ardamoustafa/agent scripting/tests/verification/routes.audit.spec.ts",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/Users/ardamoustafa/agent scripting/docs/verification/evidence/V2/backend-audit-tests.json"
+  ],
+  "durationSeconds": 28.80813694000244,
+  "exitCode": 0
+}
