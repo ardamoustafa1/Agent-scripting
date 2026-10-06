@@ -156,16 +156,17 @@ jobs:
       - name: Migrate and seed
         run: pnpm --filter @verbis/api db:migrate && pnpm --filter @verbis/api seed
       - name: Start the API
+        # Node reads .env verbatim; sourcing it in bash would strip the quotes of the JSON values.
         run: |
-          set -a; . ./.env; set +a
-          nohup node apps/api/dist/main.js > api.log 2>&1 &
+          nohup node --env-file="$GITHUB_WORKSPACE/.env" apps/api/dist/main.js > api.log 2>&1 &
           for i in $(seq 1 60); do curl -fs http://127.0.0.1:4000/health/ready && break; sleep 2; done
       - name: Install Playwright browsers
         run: pnpm --filter @verbis/admin-web exec playwright install --with-deps chromium
       - name: Keycloak login e2e
         run: |
-          set -a; . ./.env; set +a
-          E2E_KEYCLOAK=1 pnpm --filter @verbis/admin-web exec playwright test --project keycloak
+          cd apps/admin-web
+          E2E_KEYCLOAK=1 node --env-file="$GITHUB_WORKSPACE/.env" node_modules/@playwright/test/cli.js test --project keycloak
+          cd ../..
           node scripts/assert-test-results.mjs apps/admin-web/test-results/results.json playwright
       - name: Upload logs and reports
         if: failure()
