@@ -69,7 +69,7 @@ export interface ResolveContext {
   readonly attributes?: Readonly<Record<string, unknown>>;
   readonly agent?: { readonly id: string; readonly attributes?: Readonly<Record<string, unknown>> };
   readonly interactionId?: string;
-  /** A/B stickiness (customer id, ANI hash…); defaults to interactionId, then agent id. */
+  /** A/B stickiness (customer id, ANI hash…); defaults to interactionId. Never falls back to agent id. */
   readonly stickyKey?: string;
   readonly at: Date;
 }
@@ -98,6 +98,7 @@ export interface Evaluation {
 }
 
 export type NoMatchReason =
+  | 'outside_working_hours'
   | 'campaign_inactive'
   | 'campaign_out_of_window'
   | 'channel_not_in_campaign'
@@ -128,6 +129,7 @@ export interface Decision {
       readonly brokenBy: 'recency' | 'id';
     } | null;
     readonly at: string;
+    readonly abSkipped?: 'missing_sticky_key' | 'variant_not_published';
   };
 }
 
@@ -284,6 +286,8 @@ export function resolveScript(snapshot: CampaignSnapshot, context: ResolveContex
   if (campaign.channels.length > 0 && !campaign.channels.includes(context.channel)) {
     return { ...base, outcome: 'no_match', reason: 'channel_not_in_campaign', trace: empty };
   }
+  if (!workingHours.open)
+    return { ...base, outcome: 'no_match', reason: 'outside_working_hours', trace: empty };
   if (snapshot.assignments.length === 0)
     return { ...base, outcome: 'no_match', reason: 'no_assignments', trace: empty };
 
@@ -304,7 +308,11 @@ export function resolveScript(snapshot: CampaignSnapshot, context: ResolveContex
     factsRead: result.factsRead,
   }));
   const ranking = eligible.map((e) => e.assignment.id);
-  const trace = { evaluated, ranking, at: context.at.toISOString() };
+  const trace: Omit<Decision['trace'], 'tie'> = {
+    evaluated,
+    ranking,
+    at: context.at.toISOString(),
+  };
   const winner = eligible[0];
   if (winner === undefined)
     return {
@@ -338,16 +346,27 @@ export function resolveScript(snapshot: CampaignSnapshot, context: ResolveContex
   let version = winner.result.version;
   let variant: Decision['variant'];
   const variants = winner.assignment.variants;
+  let abSkipped: Decision['trace']['abSkipped'];
   if (variants !== null && variants.length > 0) {
-    const sticky = context.stickyKey ?? context.interactionId ?? context.agent?.id ?? '';
-    const bucket = bucketOf(winner.assignment.id, sticky);
-    const arm = pickVariant(variants, bucket);
-    if (arm !== undefined) {
-      variant = { key: arm.key, bucket };
-      if (arm.pinnedVersionId !== undefined) {
-        const armVersion = versionFor(snapshot, winner.assignment, arm.pinnedVersionId);
-        // An unpublished arm falls back to the assignment's version (never to nothing).
-        if (armVersion.version !== undefined) version = armVersion.version;
+    const requestedKey = context.stickyKey?.trim();
+    const sticky =
+      requestedKey === undefined || requestedKey.length === 0
+        ? context.interactionId?.trim()
+        : requestedKey;
+    if (!sticky) abSkipped = 'missing_sticky_key';
+    else {
+      const bucket = bucketOf(winner.assignment.id, sticky);
+      const arm = pickVariant(variants, bucket);
+      if (arm !== undefined) {
+        const armVersion =
+          arm.pinnedVersionId === undefined
+            ? { version }
+            : versionFor(snapshot, winner.assignment, arm.pinnedVersionId);
+        if (armVersion.version === undefined) abSkipped = 'variant_not_published';
+        else {
+          version = armVersion.version;
+          variant = { key: arm.key, bucket };
+        }
       }
     }
   }
@@ -370,6 +389,6 @@ export function resolveScript(snapshot: CampaignSnapshot, context: ResolveContex
       checksum: version.checksum,
     },
     ...(variant === undefined ? {} : { variant }),
-    trace: { ...trace, tie },
+    trace: { ...trace, tie, ...(abSkipped === undefined ? {} : { abSkipped }) },
   };
 }

@@ -1,0 +1,425 @@
+
+ RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/designer-web
+
+ ❯ src/lifecycle/assignments-behavior.spec.tsx (6 tests | 1 failed) 965ms
+   × creates campaign assignments with A/B disabled and validates date windows 175ms
+ ❯ src/rules/behavior.spec.tsx (19 tests | 1 failed) 1877ms
+   × keeps legacy assignment expressions visible but requires conversion before saving 1012ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lifecycle/assignments-behavior.spec.tsx > creates campaign assignments with A/B disabled and validates date windows
+AssertionError: expected { creates: [ { …(7) } ] } to match object { creates: [ { …(5) } ] }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,12 +1,11 @@
+  {
+    "creates": [
+      {
+        "campaignId": "01928f3a-0000-7000-8000-000000000001",
+        "expression": {
+-         "fact": "interaction.channel",
+-         "op": "exists",
++         "$expr": "true",
+        },
+        "priority": 100,
+        "scriptId": "01928f3a-0000-7000-8000-000000000002",
+        "variants": null,
+      },
+
+ ❯ src/lifecycle/assignments-behavior.spec.tsx:125:61
+    123|     expect(f.requests.some((r) => r.method === 'POST')).toBe(true);
+    124|   });
+    125|   expect(f.requests.find((r) => r.method === 'POST')!.body).toMatchObj…
+       |                                                             ^
+    126|     creates: [
+    127|       { scriptId, campaignId, priority: 100, variants: null, expressio…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/rules/behavior.spec.tsx > keeps legacy assignment expressions visible but requires conversion before saving
+TestingLibraryElementError: Unable to find an element with the text: designer.rules.routingExpressionsUnsupported. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<div
+  aria-describedby="radix-:rim:"
+  aria-labelledby="radix-:ril:"
+  class="vb-dialog "
+  data-state="open"
+  id="radix-:rik:"
+  role="dialog"
+  style="pointer-events: auto;"
+  tabindex="-1"
+>
+  <header
+    class="vb-dialog-heading"
+  >
+    <div>
+      <h2
+        class="vb-dialog-title"
+        id="radix-:ril:"
+      >
+        Assignment conditions
+      </h2>
+      <p
+        class="vb-description"
+        id="radix-:rim:"
+      >
+        This condition targets the assignment before selecting its A/B variant.
+      </p>
+    </div>
+    <button
+      aria-label="Close"
+      class="vb-button vb-icon-button "
+      data-size="md"
+      data-variant="ghost"
+      type="button"
+    >
+      <span
+        aria-hidden="true"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-x"
+          fill="none"
+          height="18"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="18"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18 6 6 18"
+          />
+          <path
+            d="m6 6 12 12"
+          />
+        </svg>
+      </span>
+    </button>
+  </header>
+  <div
+    class="vb-dialog-body"
+  >
+    <div
+      class="rb-builder"
+    >
+      <button
+        class="vb-button "
+        data-size="sm"
+        data-variant="ghost"
+        type="button"
+      >
+        Advanced expression
+      </button>
+      <div
+        class="rb-group"
+      >
+        <strong>
+          NOT
+        </strong>
+        <div
+          class="vb-alert"
+          data-tone="info"
+          role="status"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-info"
+            fill="none"
+            height="18"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+            <path
+              d="M12 16v-4"
+            />
+            <path
+              d="M12 8h.01"
+            />
+          </svg>
+          <div>
+            <strong>
+              This expression is preserved in advanced mode.
+            </strong>
+          </div>
+        </div>
+        <button
+          class="vb-button "
+          data-size="sm"
+          data-variant="ghost"
+          type="button"
+        >
+          Visual rule
+        </button>
+        <div
+          class="ed-expression"
+        >
+          <div
+            class="cm-editor ͼ1 ͼ2 ͼo"
+          >
+            <div
+              aria-live="polite"
+              class="cm-announced"
+            />
+            <div
+              class="cm-scroller"
+              tabindex="-1"
+            >
+              <div
+                aria-autocomplete="list"
+                aria-label="Check expression syntax."
+                aria-multiline="true"
+                autocapitalize="off"
+                autocorrect="off"
+                class="cm-content"
+                contenteditable="true"
+                role="textbox"
+                spellcheck="false"
+                style="tab-size: 4;"
+                translate="no"
+                writingsuggestions="false"
+              >
+                <div
+                  class="cm-line"
+                >
+                  <span
+                    class="ͼb"
+                  >
+                    false
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <button
+      class="vb-button "
+      data-size="md"
+      data-variant="primary"
+      type="button"
+    >
+      Apply
+    </button>
+  </div>
+</div>
+
+Ignored nodes: comments, script, style
+<div
+  aria-describedby="radix-:rim:"
+  aria-labelledby="radix-:ril:"
+  class="vb-dialog "
+  data-state="open"
+  id="radix-:rik:"
+  role="dialog"
+  style="pointer-events: auto;"
+  tabindex="-1"
+>
+  <header
+    class="vb-dialog-heading"
+  >
+    <div>
+      <h2
+        class="vb-dialog-title"
+        id="radix-:ril:"
+      >
+        Assignment conditions
+      </h2>
+      <p
+        class="vb-description"
+        id="radix-:rim:"
+      >
+        This condition targets the assignment before selecting its A/B variant.
+      </p>
+    </div>
+    <button
+      aria-label="Close"
+      class="vb-button vb-icon-button "
+      data-size="md"
+      data-variant="ghost"
+      type="button"
+    >
+      <span
+        aria-hidden="true"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-x"
+          fill="none"
+          height="18"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="18"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18 6 6 18"
+          />
+          <path
+            d="m6 6 12 12"
+          />
+        </svg>
+      </span>
+    </button>
+  </header>
+  <div
+    class="vb-dialog-body"
+  >
+    <div
+      class="rb-builder"
+    >
+      <button
+        class="vb-button "
+        data-size="sm"
+        data-variant="ghost"
+        type="button"
+      >
+        Advanced expression
+      </button>
+      <div
+        class="rb-group"
+      >
+        <strong>
+          NOT
+        </strong>
+        <div
+          class="vb-alert"
+          data-tone="info"
+          role="status"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-info"
+            fill="none"
+            height="18"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+            <path
+              d="M12 16v-4"
+            />
+            <path
+              d="M12 8h.01"
+            />
+          </svg>
+          <div>
+            <strong>
+              This expression is preserved in advanced mode.
+            </strong>
+          </div>
+        </div>
+        <button
+          class="vb-button "
+          data-size="sm"
+          data-variant="ghost"
+          type="button"
+        >
+          Visual rule
+        </button>
+        <div
+          class="ed-expression"
+        >
+          <div
+            class="cm-editor ͼ1 ͼ2 ͼo"
+          >
+            <div
+              aria-live="polite"
+              class="cm-announced"
+            />
+            <div
+              class="cm-scroller"
+              tabindex="-1"
+            >
+              <div
+                aria-autocomplete="list"
+                aria-label="Check expression syntax."
+                aria-multiline="true"
+                autocapitalize="off"
+                autocorrect="off"
+                class="cm-content"
+                contenteditable="true"
+                role="textbox"
+                spellcheck="false"
+                style="tab-size: 4;"
+                translate="no"
+                writingsuggestions="false"
+              >
+                <div
+                  class="cm-line"
+                >
+                  <span
+                    class="ͼb"
+                  >
+                    false
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <button
+      class="vb-button "
+      data-size="md"
+      data-variant="primary"
+      type="button"
+    >
+      Apply
+    </button>
+  </div>
+</div>
+ ❯ waitForWrapper ../../node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/rules/behavior.spec.tsx:246:31
+    244|   fireEvent.click(screen.getByRole('button'));
+    245|   const dialog = await screen.findByRole('dialog');
+    246|   expect(await within(dialog).findByText(f.label('rules.routingExpress…
+       |                               ^
+    247|   const save = within(dialog).getByRole('button', { name: f.label('edi…
+    248|   expect(save.hasAttribute('disabled')).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 23 passed (25)
+   Start at  16:08:31
+   Duration  4.37s (import 40%, tests 37%, transform 13%, environment 9%, setup 2%)
+
+undefined
+/Users/ardamoustafa/agent scripting/apps/designer-web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run src/rules/behavior.spec.tsx src/lifecycle/assignments-behavior.spec.tsx

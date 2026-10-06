@@ -52,6 +52,22 @@ export const PlatformUserSchema = z.strictObject({
   email: z.email().max(320).optional(),
 });
 
+/** Trusted connector routing dimensions; stored encrypted by the API, never accepted by launch clients. */
+export const RoutingContextSchema = z.strictObject({
+  locale: z
+    .string()
+    .trim()
+    .regex(/^[a-z]{2,3}(-[a-z]{2})?$/i)
+    .transform((value) => {
+      const [language, region] = value.split('-');
+      return `${language?.toLowerCase() ?? ''}${region === undefined ? '' : '-' + region.toUpperCase()}`;
+    })
+    .optional(),
+  skills: z.array(z.string().trim().min(1).max(128)).max(50).optional(),
+  segment: z.string().trim().min(1).max(128).optional(),
+  stickyKey: z.string().trim().min(1).max(256).optional(),
+});
+
 export const InteractionEventSchema = z.strictObject({
   /** Idempotency key: stable per platform event (retries reuse it). */
   eventId: z
@@ -81,6 +97,7 @@ export const InteractionEventSchema = z.strictObject({
   /** Attached data (flat; nested objects are not allowed). */
   attributes: z.record(z.string().regex(/^[A-Za-z0-9_.-]{1,64}$/), Attr).default({}),
   context: ChannelContextSchema.optional(),
+  routing: RoutingContextSchema.optional(),
   /** Allow-listed context carried across a transfer (requires `transferContext`). */
   transferContext: z.record(z.string().regex(/^[A-Za-z0-9_.-]{1,64}$/), Attr).optional(),
   wrapUp: z
@@ -105,5 +122,24 @@ export function parseInteractionEvent(input: unknown): InteractionEvent {
         input: event.context.channel,
       },
     ]);
-  return event;
+  // Platform mappers already allow-list attributes; promote only these documented canonical keys.
+  const attrs = event.attributes;
+  const promoted = RoutingContextSchema.parse({
+    ...(attrs['locale'] === undefined ? {} : { locale: attrs['locale'] }),
+    ...(attrs['skills'] === undefined
+      ? {}
+      : {
+          skills:
+            typeof attrs['skills'] === 'string'
+              ? attrs['skills']
+                  .split(',')
+                  .map((v) => v.trim())
+                  .filter(Boolean)
+              : attrs['skills'],
+        }),
+    ...(attrs['segment'] === undefined ? {} : { segment: attrs['segment'] }),
+    ...(attrs['routingKey'] === undefined ? {} : { stickyKey: attrs['routingKey'] }),
+    ...event.routing,
+  });
+  return Object.keys(promoted).length === 0 ? event : { ...event, routing: promoted };
 }

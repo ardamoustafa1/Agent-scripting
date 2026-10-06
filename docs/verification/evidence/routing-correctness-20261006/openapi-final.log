@@ -1,0 +1,5 @@
+
+> @verbis/api@0.0.0 openapi:generate /Users/ardamoustafa/agent scripting/apps/api
+> tsx scripts/generate-openapi.ts
+
+Wrote /Users/ardamoustafa/agent scripting/apps/api/openapi.json

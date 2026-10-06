@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { JsonValueSchema, type Variable, type JsonValue } from '@verbis/script-schema';
+import { RoutingContextSchema } from '@verbis/sdk-connector';
 
 import {
   ConflictError,
@@ -211,6 +212,7 @@ export const InteractionSchema = z.strictObject({
   customerId: z.string().max(256).optional(),
   queue: z.string().max(256).optional(),
   campaignId: Id.optional(),
+  routing: RoutingContextSchema.optional(),
   attachedData: z.record(z.string(), JsonValueSchema).default({}),
   participantData: z.array(JsonValueSchema).max(100).default([]),
   status: z.enum(['alerting', 'connected', 'held', 'transferred', 'wrapup', 'ended']),

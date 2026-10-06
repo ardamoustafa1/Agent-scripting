@@ -1,0 +1,14 @@
+
+ RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+
+ Test Files  3 passed (3)
+      Tests  45 passed (45)
+   Start at  16:19:14
+   Duration  12.25s (tests 45%, import 40%, transform 15%)

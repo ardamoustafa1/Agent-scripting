@@ -32719,7 +32719,7 @@ Requires: update:User
       "expression": {
         "anyOf": [
           {
-            "$ref": "#/components/schemas/Predicate"
+            "$ref": "#/components/schemas/RoutingPredicate"
           },
           {
             "type": "null"
@@ -34480,21 +34480,6 @@ Requires: update:User
     ],
     "additionalProperties": false
   },
-  "ExpressionRef": {
-    "type": "object",
-    "properties": {
-      "$expr": {
-        "type": "string",
-        "minLength": 1,
-        "maxLength": 2000
-      }
-    },
-    "required": [
-      "$expr"
-    ],
-    "additionalProperties": false,
-    "description": "A value computed by the safe expression engine."
-  },
   "FramePolicy": {
     "type": "object",
     "properties": {
@@ -35617,95 +35602,6 @@ Requires: update:User
     ],
     "additionalProperties": false
   },
-  "Predicate": {
-    "anyOf": [
-      {
-        "type": "object",
-        "properties": {
-          "all": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Predicate"
-            }
-          }
-        },
-        "required": [
-          "all"
-        ],
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "properties": {
-          "any": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Predicate"
-            }
-          }
-        },
-        "required": [
-          "any"
-        ],
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "properties": {
-          "not": {
-            "$ref": "#/components/schemas/Predicate"
-          }
-        },
-        "required": [
-          "not"
-        ],
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "properties": {
-          "fact": {
-            "type": "string",
-            "maxLength": 256,
-            "pattern": "^(vars|ds|interaction|agent|campaign|const)(\\.[A-Za-z0-9_]+)+$"
-          },
-          "op": {
-            "type": "string",
-            "enum": [
-              "eq",
-              "neq",
-              "gt",
-              "gte",
-              "lt",
-              "lte",
-              "in",
-              "notIn",
-              "contains",
-              "startsWith",
-              "matches",
-              "exists",
-              "between",
-              "before",
-              "after"
-            ]
-          },
-          "value": {
-            "$ref": "#/components/schemas/JsonValue"
-          }
-        },
-        "required": [
-          "fact",
-          "op"
-        ],
-        "additionalProperties": false
-      },
-      {
-        "$ref": "#/components/schemas/ExpressionRef"
-      }
-    ]
-  },
   "ProblemDetails": {
     "type": "object",
     "properties": {
@@ -36096,6 +35992,94 @@ Requires: update:User
       "use"
     ],
     "additionalProperties": false
+  },
+  "RoutingPredicate": {
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "all": {
+            "minItems": 1,
+            "maxItems": 1000,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoutingPredicate"
+            }
+          }
+        },
+        "required": [
+          "all"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "any": {
+            "minItems": 1,
+            "maxItems": 1000,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoutingPredicate"
+            }
+          }
+        },
+        "required": [
+          "any"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "not": {
+            "$ref": "#/components/schemas/RoutingPredicate"
+          }
+        },
+        "required": [
+          "not"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "fact": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^(vars|ds|interaction|agent|campaign|const)(\\.[A-Za-z0-9_]+)+$"
+          },
+          "op": {
+            "type": "string",
+            "enum": [
+              "eq",
+              "neq",
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "in",
+              "notIn",
+              "contains",
+              "startsWith",
+              "matches",
+              "exists",
+              "between",
+              "before",
+              "after"
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/JsonValue"
+          }
+        },
+        "required": [
+          "fact",
+          "op"
+        ],
+        "additionalProperties": false
+      }
+    ]
   },
   "ScimBulkRequest": {
     "type": "object",
@@ -36721,6 +36705,13 @@ Requires: update:User
           },
           "at": {
             "type": "string"
+          },
+          "abSkipped": {
+            "type": "string",
+            "enum": [
+              "missing_sticky_key",
+              "variant_not_published"
+            ]
           }
         },
         "required": [
@@ -36919,10 +36910,12 @@ Requires: update:User
       },
       "interactionId": {
         "type": "string",
+        "minLength": 1,
         "maxLength": 128
       },
       "stickyKey": {
         "type": "string",
+        "minLength": 1,
         "maxLength": 256
       },
       "at": {
@@ -38706,7 +38699,7 @@ Requires: update:User
       "expression": {
         "anyOf": [
           {
-            "$ref": "#/components/schemas/Predicate"
+            "$ref": "#/components/schemas/RoutingPredicate"
           },
           {
             "type": "null"

@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
+import { instruments } from '@verbis/observability';
 import type { Predicate } from '@verbis/script-schema';
 
+import { DomainError } from '../../common/errors/domain-errors.js';
 import { conditionsOf, variantsOf } from '../assignments/assignments.dto.js';
 
 import { WorkingHoursSchema } from './domain/working-hours.js';
@@ -22,6 +24,25 @@ export interface CampaignLookup {
 /** Loads everything the resolver needs for one campaign in one consistent read (request tx). */
 @Injectable()
 export class SnapshotRepository {
+  private readonly logger = new Logger(SnapshotRepository.name);
+
+  /** One MVCC statement over routing metadata; independent of relay/consumer availability. */
+  async revision(tx: TransactionClient, tenantId: string, campaignId: string): Promise<string> {
+    const [row] = await tx.$queryRaw<{ revision: string }[]>`
+      SELECT md5(jsonb_build_array(
+        (SELECT to_jsonb(c) FROM campaigns c WHERE c.tenant_id=${tenantId}::uuid AND c.id=${campaignId}::uuid),
+        (SELECT jsonb_agg(to_jsonb(a) ORDER BY a.id) FROM assignments a WHERE a.tenant_id=${tenantId}::uuid AND a.campaign_id=${campaignId}::uuid),
+        (SELECT jsonb_agg(jsonb_build_array(s.id,s.version,s.status,s.current_version_id,s.deleted_at) ORDER BY s.id)
+           FROM scripts s WHERE s.tenant_id=${tenantId}::uuid AND s.id IN
+             (SELECT a.script_id FROM assignments a WHERE a.tenant_id=${tenantId}::uuid AND a.campaign_id=${campaignId}::uuid)),
+        (SELECT jsonb_agg(jsonb_build_array(v.id,v.state,v.checksum,v.deleted_at) ORDER BY v.id)
+           FROM script_versions v WHERE v.tenant_id=${tenantId}::uuid AND v.script_id IN
+             (SELECT a.script_id FROM assignments a WHERE a.tenant_id=${tenantId}::uuid AND a.campaign_id=${campaignId}::uuid))
+      )::text) AS revision`;
+    if (!row) throw new DomainError('VERBIS_ROUTING_CONFIGURATION_INVALID');
+    return row.revision;
+  }
+
   async findCampaignId(
     tx: TransactionClient,
     tenantId: string,
@@ -137,6 +158,11 @@ export class SnapshotRepository {
           });
     const hours =
       campaign.workingHours === null ? null : WorkingHoursSchema.safeParse(campaign.workingHours);
+    if (hours !== null && !hours.success) {
+      this.logger.error('Campaign working hours configuration invalid');
+      instruments.operationFailures.add(1, { operation: 'routing.working_hours.invalid' });
+      throw new DomainError('VERBIS_ROUTING_CONFIGURATION_INVALID');
+    }
     return {
       campaign: {
         id: campaign.id,
@@ -145,8 +171,7 @@ export class SnapshotRepository {
         channels: campaign.channels,
         startsAt: campaign.startsAt,
         endsAt: campaign.endsAt,
-        // Malformed hours are ignored (never block routing); validation happens on write.
-        workingHours: !hours?.success ? null : hours.data,
+        workingHours: hours === null ? null : hours.data,
         attributes: {
           queues: campaign.queues,
           defaultLocale: campaign.defaultLocale,

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { PredicateSchema } from '@verbis/script-schema';
+import { PredicateLeafSchema, type Predicate } from '@verbis/script-schema';
 
 import {
   ChannelTypeSchema,
@@ -12,6 +12,7 @@ import {
 } from '../../common/dto.js';
 import { listQuerySchema, pageSchema } from '../../common/pagination/pagination.js';
 import { VariantsSchema, type Variant } from '../routing/domain/ab.js';
+import { routingPredicateIssues } from '../routing/domain/predicate.js';
 
 import type { AssignmentRow } from './assignments.repository.js';
 import type { AssignmentConditions } from '../routing/domain/resolver.js';
@@ -75,6 +76,18 @@ const window = (v: {
   v.effectiveTo === null ||
   new Date(v.effectiveTo) > new Date(v.effectiveFrom);
 
+/** Routing deliberately excludes expression references from the public write contract. */
+const RoutingPredicateSchema: z.ZodType<Predicate> = z
+  .lazy(() =>
+    z.union([
+      z.strictObject({ all: z.array(RoutingPredicateSchema).min(1).max(1000) }),
+      z.strictObject({ any: z.array(RoutingPredicateSchema).min(1).max(1000) }),
+      z.strictObject({ not: RoutingPredicateSchema }),
+      PredicateLeafSchema,
+    ]),
+  )
+  .meta({ id: 'RoutingPredicate' });
+
 const Fields = {
   priority: z.number().int().min(0).max(10_000),
   versionPolicy: VersionPolicySchema,
@@ -83,7 +96,10 @@ const Fields = {
   effectiveTo: IsoDateTime.nullable(),
   conditions: AssignmentConditionsSchema,
   /** No-code predicate (SCRIPT_MODEL §6) over interaction/agent/campaign facts. */
-  expression: PredicateSchema.nullable(),
+  expression: RoutingPredicateSchema.superRefine((predicate, ctx) => {
+    for (const issue of routingPredicateIssues(predicate))
+      ctx.addIssue({ code: 'custom', ...issue });
+  }).nullable(),
   variants: VariantsSchema.nullable(),
 };
 

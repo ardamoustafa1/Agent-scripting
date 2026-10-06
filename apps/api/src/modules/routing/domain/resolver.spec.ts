@@ -439,7 +439,7 @@ describe('ScriptResolver — explanation', () => {
     expect(pure.trace.tie).toEqual({ assignmentIds: ['a', 'b'], brokenBy: 'id' });
   });
 
-  it('reports working hours without blocking resolution', () => {
+  it('blocks resolution outside working hours', () => {
     const hours = {
       timezone: 'Europe/Istanbul',
       weekly: { thu: [{ from: '09:00', to: '12:00' }] },
@@ -448,7 +448,8 @@ describe('ScriptResolver — explanation', () => {
     // 2026-10-01 is a Thursday; 10:00Z = 13:00 Istanbul → closed.
     const closed = resolveScript(snapshot([assignment('a')], [], { workingHours: hours }), ctx());
     expect(closed).toMatchObject({
-      outcome: 'resolved',
+      outcome: 'no_match',
+      reason: 'outside_working_hours',
       workingHours: { configured: true, open: false },
     });
     const open = resolveScript(
@@ -495,11 +496,12 @@ describe('ScriptResolver — A/B variants', () => {
     expect(counts.treatment).toBeGreaterThan(4700);
   });
 
-  it('falls back to interactionId, then agent id, for stickiness', () => {
+  it('uses interactionId but skips A/B without an interaction or customer key', () => {
     const a = resolveScript(snap, ctx({ interactionId: 'i-1' }));
     expect(a.variant?.bucket).toBe(bucketOf('a', 'i-1'));
     const b = resolveScript(snap, ctx({ agent: { id: 'ag-7' } }));
-    expect(b.variant?.bucket).toBe(bucketOf('a', 'ag-7'));
+    expect(b.variant).toBeUndefined();
+    expect(b.trace).toMatchObject({ abSkipped: 'missing_sticky_key' });
   });
 
   it('an unpublished arm version falls back to the assignment version', () => {
@@ -507,7 +509,10 @@ describe('ScriptResolver — A/B variants', () => {
       [assignment('a', { variants: [{ key: 'x', weight: 10_000, pinnedVersionId: 's-a-v9' }] })],
       [version('s-a', 9, 'approved')],
     );
-    expect(resolveScript(unpublished, ctx({ stickyKey: 'k' })).version?.id).toBe('s-a-v1');
+    const result = resolveScript(unpublished, ctx({ stickyKey: 'k' }));
+    expect(result.version?.id).toBe('s-a-v1');
+    expect(result.variant).toBeUndefined();
+    expect(result.trace).toMatchObject({ abSkipped: 'variant_not_published' });
   });
 });
 
@@ -657,4 +662,75 @@ describe('same script assigned to multiple campaigns', () => {
     });
     expect(resolveScript({ ...b, assignments: [] }, ctx())).toMatchObject({ outcome: 'no_match' });
   });
+});
+
+describe('routing safety properties', () => {
+  it('never labels a fallback version as an unpublished experiment arm', () => {
+    fc.assert(
+      fc.property(
+        fc.string({ minLength: 1, maxLength: 64 }),
+        fc.constantFrom('draft', 'approved', 'retired'),
+        (stickyKey, state) => {
+          const snap = snapshot(
+            [
+              assignment('a', {
+                variants: [{ key: 'experiment', weight: 10000, pinnedVersionId: 'unavailable' }],
+              }),
+            ],
+            [version('s-a', 2, state as VersionRef['state'], 'unavailable')],
+          );
+          const decision = resolveScript(snap, ctx({ stickyKey }));
+          expect(decision.version?.id).toBe('s-a-v1');
+          expect(decision.variant).toBeUndefined();
+          expect(decision.trace).toMatchObject({ abSkipped: 'variant_not_published' });
+        },
+      ),
+      { seed: 603, numRuns: 200 },
+    );
+  });
+  it('no weekday may route a campaign with no open intervals', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: 0, max: 1000000 }), (minutes) => {
+        const decision = resolveScript(
+          snapshot([assignment('a')], [], {
+            workingHours: { timezone: 'UTC', weekly: {}, holidays: [] },
+          }),
+          ctx({ at: new Date(AT.getTime() + minutes * 60000) }),
+        );
+        expect(decision).toMatchObject({ outcome: 'no_match', reason: 'outside_working_hours' });
+      }),
+      { seed: 604, numRuns: 200 },
+    );
+  });
+});
+
+it('property: a customer key assigns the same A/B bucket across agents and interactions', () => {
+  fc.assert(
+    fc.property(
+      fc.string({ minLength: 1, maxLength: 128 }).filter((key) => key.trim().length > 0),
+      fc.uuid(),
+      fc.uuid(),
+      (stickyKey, firstAgent, secondAgent) => {
+        const snap = snapshot([
+          assignment('ab', {
+            variants: [
+              { key: 'a', weight: 5000 },
+              { key: 'b', weight: 5000 },
+            ],
+          }),
+        ]);
+        const first = resolveScript(
+          snap,
+          ctx({ stickyKey, interactionId: 'first', agent: { id: firstAgent } }),
+        );
+        const second = resolveScript(
+          snap,
+          ctx({ stickyKey, interactionId: 'second', agent: { id: secondAgent } }),
+        );
+        expect(second.variant).toEqual(first.variant);
+        expect(first.variant).toBeDefined();
+      },
+    ),
+    { seed: 605, numRuns: 200 },
+  );
 });

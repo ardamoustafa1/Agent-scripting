@@ -261,6 +261,8 @@ model Tenant {
 
   @@unique([slug], map: "tenants_slug_key")
   @@map("tenants")
+  sessionCapacityReservations SessionCapacityReservation[]
+
 }
 
 model User {
@@ -969,6 +971,17 @@ model Interaction {
   @@map("interactions")
 }
 
+/// Short-lived internal admission leases; session INSERT consumes the lease transactionally.
+model SessionCapacityReservation {
+  id        String @id @db.Uuid
+  tenantId  String @map("tenant_id") @db.Uuid
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  @@index([tenantId, expiresAt])
+  @@map("session_capacity_reservations")
+}
+
 model Session {
   /// `interaction` (secure launch) or `preview` (designer test run; never a real interaction).
   kind            String       @default("interaction") @db.VarChar(16)
@@ -1012,6 +1025,8 @@ model Session {
 
   @@index([tenantId, createdAt, id])
   @@index([tenantId, userId, state])
+  @@index([tenantId, state], map: "sessions_tenant_active_idx", where: raw("(deleted_at IS NULL)"))
+  @@index([tenantId, interactionId], map: "sessions_interaction_idx", where: raw("(deleted_at IS NULL)"))
   @@index([tenantId, expiresAt], map: "sessions_runtime_expiry", where: raw("(deleted_at IS NULL)"))
   @@map("sessions")
 }

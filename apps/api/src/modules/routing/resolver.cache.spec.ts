@@ -91,7 +91,7 @@ describe('ResolverCache', () => {
     expect(await cache.generation('t')).toBeUndefined();
     expect(await cache.get('t', 'c', '0')).toBeUndefined();
     await expect(cache.set('t', 'c', '0', snapshot)).resolves.toBeUndefined();
-    await expect(cache.invalidate('t')).resolves.toBeUndefined();
+    await expect(cache.invalidate('t')).rejects.toThrow('down');
   });
 
   it('reviveSnapshot restores Date fields', () => {

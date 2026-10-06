@@ -62,6 +62,7 @@
     "@verbis/collaboration": "workspace:*",
     "@verbis/components": "workspace:*",
     "@verbis/core-runtime": "workspace:*",
+    "@verbis/expr": "workspace:*",
     "@verbis/script-schema": "workspace:^",
     "@verbis/sdk-connector": "workspace:*",
     "@verbis/shared-types": "workspace:*",

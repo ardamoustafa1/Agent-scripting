@@ -42,8 +42,8 @@ export const ResolveRequestSchema = z
         attributes: z.record(z.string().regex(/^[A-Za-z0-9_]{1,64}$/), Attr).optional(),
       })
       .optional(),
-    interactionId: z.string().max(128).optional(),
-    stickyKey: z.string().max(256).optional(),
+    interactionId: z.string().trim().min(1).max(128).optional(),
+    stickyKey: z.string().trim().min(1).max(256).optional(),
     /** Decision time (replay/debug). Defaults to now. */
     at: IsoDateTime.optional(),
   })
@@ -90,6 +90,7 @@ export const DecisionSchema = z
         .object({ assignmentIds: z.array(z.string()), brokenBy: z.enum(['recency', 'id']) })
         .nullable(),
       at: z.string(),
+      abSkipped: z.enum(['missing_sticky_key', 'variant_not_published']).optional(),
     }),
     cache: z.enum(['hit', 'miss', 'bypass']),
   })

@@ -702,6 +702,88 @@ describe('campaigns, assignments and the resolver', () => {
       400,
     );
 
+    // No NATS invalidation is delivered: committed campaign and assignment writes are fresh immediately.
+    await owner.campaign.update({
+      where: { id: campaign.id },
+      data: { status: 'paused', version: { increment: 1 } },
+    });
+    expect((await resolve({ campaignCode: 'ROUTING' })).json()).toMatchObject({
+      outcome: 'no_match',
+      reason: 'campaign_inactive',
+      cache: 'miss',
+    });
+    await owner.campaign.update({
+      where: { id: campaign.id },
+      data: { status: 'active', channels: ['chat'], version: { increment: 1 } },
+    });
+    expect((await resolve({ campaignCode: 'ROUTING' })).json()).toMatchObject({
+      outcome: 'no_match',
+      reason: 'channel_not_in_campaign',
+    });
+    await owner.campaign.update({
+      where: { id: campaign.id },
+      data: { channels: ['voice'], version: { increment: 1 } },
+    });
+    await owner.assignment.update({
+      where: { id: a1.id },
+      data: { priority: 0, version: { increment: 1 } },
+    });
+    expect(
+      (await resolve({ campaignCode: 'ROUTING', attributes: { vip: true } })).json(),
+    ).toMatchObject({ assignmentId: a1.id });
+    await owner.assignment.update({
+      where: { id: a1.id },
+      data: { priority: 100, version: { increment: 1 } },
+    });
+    await owner.assignment.update({
+      where: { id: a2.id },
+      data: { deletedAt: new Date(), version: { increment: 1 } },
+    });
+    expect(
+      (await resolve({ campaignCode: 'ROUTING', attributes: { vip: true } })).json(),
+    ).toMatchObject({ assignmentId: a1.id });
+    await owner.assignment.update({
+      where: { id: a2.id },
+      data: { deletedAt: null, version: { increment: 1 } },
+    });
+    await owner.campaign.update({
+      where: { id: campaign.id },
+      data: { workingHours: { malformed: true }, version: { increment: 1 } },
+    });
+    const invalidHours = await resolve({ campaignCode: 'ROUTING' });
+    expect(invalidHours.statusCode).toBe(503);
+    expect(invalidHours.json()).toMatchObject({ code: 'VERBIS_ROUTING_CONFIGURATION_INVALID' });
+    await owner.campaign.update({
+      where: { id: campaign.id },
+      data: {
+        workingHours: { timezone: 'UTC', weekly: {}, holidays: [] },
+        version: { increment: 1 },
+      },
+    });
+    expect((await resolve({ campaignCode: 'ROUTING' })).json()).toMatchObject({
+      outcome: 'no_match',
+      reason: 'outside_working_hours',
+    });
+    await owner.campaign.update({
+      where: { id: campaign.id },
+      data: {
+        workingHours: {
+          timezone: 'UTC',
+          weekly: {
+            mon: [{ from: '00:00', to: '24:00' }],
+            tue: [{ from: '00:00', to: '24:00' }],
+            wed: [{ from: '00:00', to: '24:00' }],
+            thu: [{ from: '00:00', to: '24:00' }],
+            fri: [{ from: '00:00', to: '24:00' }],
+            sat: [{ from: '00:00', to: '24:00' }],
+            sun: [{ from: '00:00', to: '24:00' }],
+          },
+          holidays: [],
+        },
+        version: { increment: 1 },
+      },
+    });
+
     // Publishing v2 of General: until invalidated the cached snapshot is served; the
     // invalidator (normally driven by the outbox → JetStream event) makes the next read fresh.
     await newVersion(general.id);

@@ -1,12 +1,8 @@
+import { regexTest } from '@verbis/expr';
 import type { Predicate, PredicateLeaf } from '@verbis/script-schema';
 
-/**
- * Safe evaluator for the no-code predicate tree (SCRIPT_MODEL §6) used by assignment conditions.
- * Pure data walking: no eval, no dynamic code (CLAUDE.md §1.10). `{$expr}` nodes need the
- * expression engine (roadmap step 13) and evaluate to "unsupported" → the rule fails closed.
- * `matches` uses a bounded, anchored-free RegExp built from tenant data, with a length cap and a
- * catastrophic-pattern guard.
- */
+/** Bounded no-code predicate evaluator. Routing expressions are rejected on write until a
+ * routing fact scope is supported; regex uses the same linear-time RE2 engine as expressions. */
 export type Facts = Readonly<Record<string, unknown>>;
 
 export interface PredicateResult {
@@ -18,8 +14,52 @@ export interface PredicateResult {
 
 const MAX_DEPTH = 32;
 const MAX_REGEX = 200;
-// Nested quantifiers like (a+)+ or (a*)* are the classic ReDoS shapes.
-const DANGEROUS_REGEX = /\((?:[^()\\]|\\.)*[+*](?:[^()\\]|\\.)*\)[+*{]/;
+/** Admission and legacy-read validation; inspect every branch, including short-circuited ones. */
+export function routingPredicateIssues(predicate: Predicate) {
+  const issues: { path: (string | number)[]; message: string }[] = [];
+  const pending: { node: Predicate; path: (string | number)[]; depth: number }[] = [
+    { node: predicate, path: [], depth: 0 },
+  ];
+  let visited = 0;
+  while (pending.length > 0) {
+    const item = pending.pop();
+    if (!item) break;
+    const { node, path, depth } = item;
+    if (++visited > 1000 || depth > MAX_DEPTH) {
+      issues.push({ path, message: 'Routing predicate exceeds size/depth limits' });
+      break;
+    }
+    if ('$expr' in node)
+      issues.push({ path, message: '$expr is unsupported in routing; use fact predicates' });
+    else if ('fact' in node && node.op === 'matches') {
+      if (typeof node.value !== 'string' || node.value.length > MAX_REGEX)
+        issues.push({
+          path: [...path, 'value'],
+          message: 'matches requires a RE2 pattern of at most 200 characters',
+        });
+      else {
+        try {
+          regexTest('', node.value);
+        } catch {
+          issues.push({ path: [...path, 'value'], message: 'Invalid or unsupported RE2 pattern' });
+        }
+      }
+    } else if ('not' in node)
+      pending.push({ node: node.not, path: [...path, 'not'], depth: depth + 1 });
+    else if ('all' in node || 'any' in node) {
+      const key = 'all' in node ? 'all' : 'any';
+      const children = 'all' in node ? node.all : node.any;
+      if (children.length + pending.length + visited > 1000) {
+        issues.push({ path, message: 'Routing predicate exceeds size limits' });
+        break;
+      }
+      children.forEach((child, index) =>
+        pending.push({ node: child, path: [...path, key, index], depth: depth + 1 }),
+      );
+    }
+  }
+  return issues;
+}
 
 export function readFact(facts: Facts, path: string): unknown {
   let current: unknown = facts;
@@ -69,20 +109,13 @@ function leaf(node: PredicateLeaf, facts: Facts): boolean {
       return isString(actual) && isString(expected) && actual.includes(expected);
     case 'startsWith':
       return isString(actual) && isString(expected) && actual.startsWith(expected);
-    case 'matches': {
-      if (
-        !isString(actual) ||
-        !isString(expected) ||
-        expected.length > MAX_REGEX ||
-        DANGEROUS_REGEX.test(expected)
-      )
-        return false;
-      try {
-        return new RegExp(expected, 'u').test(actual.slice(0, 1000));
-      } catch {
-        return false;
-      }
-    }
+    case 'matches':
+      return (
+        isString(actual) &&
+        isString(expected) &&
+        actual.length <= 1000 &&
+        regexTest(actual, expected)
+      );
     case 'between': {
       if (!Array.isArray(expected) || expected.length !== 2) return false;
       const [lo, hi] = expected;
@@ -106,6 +139,8 @@ function leaf(node: PredicateLeaf, facts: Facts): boolean {
 }
 
 export function evaluatePredicate(predicate: Predicate, facts: Facts): PredicateResult {
+  if (routingPredicateIssues(predicate).length > 0)
+    return { value: false, facts: [], unsupported: true };
   const read = new Set<string>();
   let unsupported = false;
   // Read through a function: the flag is set inside the recursive walk.

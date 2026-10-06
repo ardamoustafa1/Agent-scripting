@@ -237,3 +237,20 @@ it('enumerates typed source and data-source facts without duplicate paths', () =
   for (const type of ['date', 'number', 'boolean', 'array', 'object', 'unknown'] as const)
     expect(operators(type)).toContain('exists');
 });
+
+it('keeps legacy assignment expressions visible but requires conversion before saving', async () => {
+  const path = `/v1/assignments/${campaignId}`;
+  const f = await mountDesigner(<AssignmentRule id={campaignId} ab={false} />, {
+    [path]: { id: campaignId, version: 1, expression: { not: { $expr: 'false' } } },
+  });
+  fireEvent.click(screen.getByRole('button'));
+  const dialog = await screen.findByRole('dialog');
+  expect(
+    await within(dialog).findByText(f.label('rules.routingExpressionsUnsupported')),
+  ).toBeTruthy();
+  const save = within(dialog).getByRole('button', { name: f.label('editor.apply') });
+  expect(save.hasAttribute('disabled')).toBe(true);
+  expect(within(dialog).queryByRole('button', { name: f.label('rules.advanced') })).toBeNull();
+  fireEvent.click(within(dialog).getByRole('button', { name: f.label('rules.visual') }));
+  expect(save.hasAttribute('disabled')).toBe(false);
+});

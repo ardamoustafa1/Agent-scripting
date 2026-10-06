@@ -1,0 +1,271 @@
+
+ RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+
+ ❯ |unit| src/modules/routing/domain/predicate.spec.ts (28 tests | 1 failed) 8ms
+   × rejects unsupported regex syntax even through negation 4ms
+ ❯ |unit| src/modules/routing/domain/resolver.spec.ts (63 tests | 5 failed) 62ms
+   ❯ ScriptResolver — explanation (3)
+     × blocks resolution outside working hours 13ms
+   ❯ ScriptResolver — A/B variants (5)
+     × uses interactionId but skips A/B without an interaction or customer key 1ms
+     × an unpublished arm version falls back to the assignment version 0ms
+   ❯ routing safety properties (2)
+     × never labels a fallback version as an unpublished experiment arm 2ms
+     × no weekday may route a campaign with no open intervals 1ms
+ ❯ |unit| src/modules/assignments/assignments.dto.spec.ts (27 tests | 7 failed) 11ms
+   ❯ routing expression admission (7)
+     × rejects unsupported expressions in create, patch and legacy aliases ({"$expr":"interaction.vip"}) 4ms
+     × rejects unsupported expressions in create, patch and legacy aliases ({"not":{"$expr":"true"}}) 0ms
+     × rejects unsupported expressions in create, patch and legacy aliases ({"any":[{"fact":"interaction.vip","op":"eq","value":true},{"$expr":"false"}]}) 0ms
+     × rejects non-RE2 routing patterns at admission ([) 0ms
+     × rejects non-RE2 routing patterns at admission ((a)\1) 0ms
+     × rejects non-RE2 routing patterns at admission ((?=a)a) 0ms
+     × rejects non-RE2 routing patterns at admission (xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx) 0ms
+[Nest] 81592  - 10/06/2026, 2:05:34 PM    WARN [ResolverCache] Resolver cache invalidation failed; entries expire by TTL
+ ❯ |unit| src/modules/routing/resolver.cache.spec.ts (8 tests | 1 failed) 5ms
+   ❯ ResolverCache (4)
+     × degrades to "no cache" when Redis fails 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |unit| src/modules/assignments/assignments.dto.spec.ts > routing expression admission > rejects unsupported expressions in create, patch and legacy aliases ({"$expr":"interaction.vip"})
+ FAIL  |unit| src/modules/assignments/assignments.dto.spec.ts > routing expression admission > rejects unsupported expressions in create, patch and legacy aliases ({"not":{"$expr":"true"}})
+ FAIL  |unit| src/modules/assignments/assignments.dto.spec.ts > routing expression admission > rejects unsupported expressions in create, patch and legacy aliases ({"any":[{"fact":"interaction.vip","op":"eq","value":true},{"$expr":"false"}]})
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/modules/assignments/assignments.dto.spec.ts:101:78
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  |unit| src/modules/assignments/assignments.dto.spec.ts > routing expression admission > rejects non-RE2 routing patterns at admission ([)
+ FAIL  |unit| src/modules/assignments/assignments.dto.spec.ts > routing expression admission > rejects non-RE2 routing patterns at admission ((a)\1)
+ FAIL  |unit| src/modules/assignments/assignments.dto.spec.ts > routing expression admission > rejects non-RE2 routing patterns at admission ((?=a)a)
+ FAIL  |unit| src/modules/assignments/assignments.dto.spec.ts > routing expression admission > rejects non-RE2 routing patterns at admission (xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/modules/assignments/assignments.dto.spec.ts:107:78
+    105|   it.each(['[', '(a)\\1', '(?=a)a', 'x'.repeat(201)])('rejects non-RE2…
+    106|     const expression = { fact: 'interaction.name', op: 'matches', valu…
+    107|     expect(CreateAssignmentSchema.safeParse({ ...ids, expression }).su…
+       |                                                                              ^
+    108|     expect(UpdateAssignmentSchema.safeParse({ expression }).success).t…
+    109|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  |unit| src/modules/routing/resolver.cache.spec.ts > ResolverCache > degrades to "no cache" when Redis fails
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ src/modules/routing/resolver.cache.spec.ts:94:35
+     92|     expect(await cache.get('t', 'c', '0')).toBeUndefined();
+     93|     await expect(cache.set('t', 'c', '0', snapshot)).resolves.toBeUnde…
+     94|     await expect(cache.invalidate('t')).rejects.toThrow('down');
+       |                                   ^
+     95|   });
+     96|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  |unit| src/modules/routing/domain/predicate.spec.ts > rejects unsupported regex syntax even through negation
+AssertionError: expected { value: false, …(2) } to match object { value: false, unsupported: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "unsupported": true,
++   "unsupported": false,
+    "value": false,
+  }
+
+ ❯ src/modules/routing/domain/predicate.spec.ts:98:18
+     96|  it('rejects unsupported regex syntax even through negation', () => {
+     97|   const result = evaluatePredicate({ not: { fact: 'interaction.name', …
+     98|   expect(result).toMatchObject({ value: false, unsupported: true });
+       |                  ^
+     99| });
+    100|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  |unit| src/modules/routing/domain/resolver.spec.ts > ScriptResolver — explanation > blocks resolution outside working hours
+AssertionError: expected { campaignId: 'camp', …(6) } to match object { outcome: 'no_match', …(2) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "outcome": "no_match",
+-   "reason": "outside_working_hours",
++   "outcome": "resolved",
+    "workingHours": {
+      "configured": true,
+      "open": false,
+    },
+  }
+
+ ❯ src/modules/routing/domain/resolver.spec.ts:450:20
+    448|     // 2026-10-01 is a Thursday; 10:00Z = 13:00 Istanbul → closed.
+    449|     const closed = resolveScript(snapshot([assignment('a')], [], { wor…
+    450|     expect(closed).toMatchObject({
+       |                    ^
+    451|       outcome: 'no_match',
+    452|       reason: 'outside_working_hours',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  |unit| src/modules/routing/domain/resolver.spec.ts > ScriptResolver — A/B variants > uses interactionId but skips A/B without an interaction or customer key
+AssertionError: expected { key: 'treatment', bucket: 9485 } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "bucket": 9485,
+  "key": "treatment",
+}
+
+ ❯ src/modules/routing/domain/resolver.spec.ts:503:23
+    501|     expect(a.variant?.bucket).toBe(bucketOf('a', 'i-1'));
+    502|     const b = resolveScript(snap, ctx({ agent: { id: 'ag-7' } }));
+    503|     expect(b.variant).toBeUndefined();
+       |                       ^
+    504|     expect(b.trace).toMatchObject({ abSkipped: 'missing_sticky_key' });
+    505|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  |unit| src/modules/routing/domain/resolver.spec.ts > ScriptResolver — A/B variants > an unpublished arm version falls back to the assignment version
+AssertionError: expected { key: 'x', bucket: 3610 } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "bucket": 3610,
+  "key": "x",
+}
+
+ ❯ src/modules/routing/domain/resolver.spec.ts:514:28
+    512|     const result = resolveScript(unpublished, ctx({ stickyKey: 'k' }));
+    513|     expect(result.version?.id).toBe('s-a-v1');
+    514|     expect(result.variant).toBeUndefined();
+       |                            ^
+    515|     expect(result.trace).toMatchObject({ abSkipped: 'variant_not_publi…
+    516|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  |unit| src/modules/routing/domain/resolver.spec.ts > routing safety properties > never labels a fallback version as an unpublished experiment arm
+Error: Property failed after 1 tests
+{ seed: 603, path: "0:0:0:0", endOnFailure: true }
+Counterexample: [" ","draft"]
+Shrunk 3 time(s)
+Got AssertionError: expected { key: 'experiment', bucket: 5909 } to be undefined
+    at /Users/ardamoustafa/agent scripting/apps/api/src/modules/routing/domain/resolver.spec.ts:673:32
+    at Property.predicate (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/property/Property.js:14:54)
+    at Property.run (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/property/Property.generic.js:46:33)
+    at runIt (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:18:30)
+    at check (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:62:11)
+    at Module.assert (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:65:17)
+    at /Users/ardamoustafa/agent scripting/apps/api/src/modules/routing/domain/resolver.spec.ts:669:8
+    at file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@24.19.0_@vitest+coverage-v8@5.0.3_jsdom@27._wdxdrxz2tc6vfbbdmudczhsxsa/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35
+    at file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@24.19.0_@vitest+coverage-v8@5.0.3_jsdom@27._wdxdrxz2tc6vfbbdmudczhsxsa/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26
+    at file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@24.19.0_@vitest+coverage-v8@5.0.3_jsdom@27._wdxdrxz2tc6vfbbdmudczhsxsa/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run
+ ❯ src/modules/routing/domain/resolver.spec.ts:673:32
+    671|       const decision = resolveScript(snap, ctx({ stickyKey }));
+    672|       expect(decision.version?.id).toBe('s-a-v1');
+    673|       expect(decision.variant).toBeUndefined();
+       |                                ^
+    674|       expect(decision.trace).toMatchObject({ abSkipped: 'variant_not_p…
+    675|     }), { seed: 603, numRuns: 200 });
+ ❯ Property.predicate ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/property/Property.js:14:54
+ ❯ Property.run ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/property/Property.generic.js:46:33
+ ❯ runIt ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:18:30
+ ❯ check ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:62:11
+ ❯ Module.assert ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:65:17
+ ❯ src/modules/routing/domain/resolver.spec.ts:669:8
+ ❯ buildError ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/utils/RunDetailsFormatter.js:126:15
+ ❯ throwIfFailed ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/utils/RunDetailsFormatter.js:138:11
+ ❯ reportRunDetails ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/utils/RunDetailsFormatter.js:151:16
+ ❯ Module.assert ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:69:9
+ ❯ src/modules/routing/domain/resolver.spec.ts:669:8
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  |unit| src/modules/routing/domain/resolver.spec.ts > routing safety properties > no weekday may route a campaign with no open intervals
+Error: Property failed after 1 tests
+{ seed: 604, path: "0:0", endOnFailure: true }
+Counterexample: [0]
+Shrunk 1 time(s)
+Got AssertionError: expected { campaignId: 'camp', …(6) } to match object { outcome: 'no_match', …(1) }
+(16 matching properties omitted from actual)
+    at Proxy.<anonymous> (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@24.19.0_@vitest+coverage-v8@5.0.3_jsdom@27._wdxdrxz2tc6vfbbdmudczhsxsa/node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:2050:10)
+    at Proxy.<anonymous> (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@24.19.0_@vitest+coverage-v8@5.0.3_jsdom@27._wdxdrxz2tc6vfbbdmudczhsxsa/node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:1944:14)
+    at Proxy.toMatchObject (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/chai@6.3.0/node_modules/chai/index.js:1737:25)
+    at /Users/ardamoustafa/agent scripting/apps/api/src/modules/routing/domain/resolver.spec.ts:680:24
+    at Property.predicate (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/property/Property.js:14:54)
+    at Property.run (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/property/Property.generic.js:46:33)
+    at runIt (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:18:30)
+    at check (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:62:11)
+    at Module.assert (file:///Users/ardamoustafa/agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:65:17)
+    at /Users/ardamoustafa/agent scripting/apps/api/src/modules/routing/domain/resolver.spec.ts:678:8
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run
+ ❯ src/modules/routing/domain/resolver.spec.ts:680:24
+    678|     fc.assert(fc.property(fc.integer({ min: 0, max: 1000000 }), (minut…
+    679|       const decision = resolveScript(snapshot([assignment('a')], [], {…
+    680|       expect(decision).toMatchObject({ outcome: 'no_match', reason: 'o…
+       |                        ^
+    681|     }), { seed: 604, numRuns: 200 });
+    682|   });
+ ❯ Property.predicate ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/property/Property.js:14:54
+ ❯ Property.run ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/property/Property.generic.js:46:33
+ ❯ runIt ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:18:30
+ ❯ check ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:62:11
+ ❯ Module.assert ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:65:17
+ ❯ src/modules/routing/domain/resolver.spec.ts:678:8
+ ❯ buildError ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/utils/RunDetailsFormatter.js:126:15
+ ❯ throwIfFailed ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/utils/RunDetailsFormatter.js:138:11
+ ❯ reportRunDetails ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/utils/RunDetailsFormatter.js:151:16
+ ❯ Module.assert ../../../agent%20scripting/node_modules/.pnpm/fast-check@3.23.2/node_modules/fast-check/lib/esm/check/runner/Runner.js:69:9
+ ❯ src/modules/routing/domain/resolver.spec.ts:678:8
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+
+ Test Files  4 failed | 1 passed (5)
+      Tests  14 failed | 127 passed (141)
+   Start at  14:05:34
+   Duration  545ms (import 50%, transform 41%, tests 9%, worker 1%)
+
+undefined
+/Users/ardamoustafa/agent scripting/apps/api:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run --project unit src/modules/routing src/modules/assignments/assignments.dto.spec.ts

@@ -183,6 +183,7 @@ export class ConnectorHubService {
       ...(event.queue === undefined ? {} : { queue: event.queue }),
       ...(campaignId === undefined ? {} : { campaignId }),
       attachedData,
+      ...(event.routing === undefined ? {} : { routing: event.routing }),
       participantData: [],
       status: STATUS_OF_EVENT[event.type],
       ...(agentId === undefined ? {} : { agentId, platformAgentId: assignee?.id }),

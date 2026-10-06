@@ -14,37 +14,50 @@ function Tree({
   change,
   fields,
   depth = 0,
+  allowExpressions,
 }: {
   value: Predicate;
   change: (value: Predicate) => void;
   fields: readonly RuleField[];
   depth?: number;
+  allowExpressions: boolean;
 }) {
   const { t } = useTranslation();
   if (depth > 16) return <Alert title={t('designer.rules.depth')} tone="warning" />;
   if ('$expr' in value)
     return (
       <>
-        <Alert title={t('designer.rules.advancedLeaf')} tone="info" />
+        <Alert
+          title={t(
+            allowExpressions
+              ? 'designer.rules.advancedLeaf'
+              : 'designer.rules.routingExpressionsUnsupported',
+          )}
+          tone={allowExpressions ? 'info' : 'warning'}
+        />
         <Button
           size="sm"
           variant="ghost"
           onClick={() => {
-            change({
-              all: [{ fact: fields[0]?.path ?? 'interaction.channel', op: 'eq', value: '' }],
-            });
+            change(
+              allowExpressions
+                ? { all: [{ fact: fields[0]?.path ?? 'interaction.channel', op: 'eq', value: '' }] }
+                : { fact: fields[0]?.path ?? 'interaction.channel', op: 'exists' },
+            );
           }}
         >
           {t('designer.rules.visual')}
         </Button>
-        <ExpressionEditor
-          value={value.$expr}
-          variables={fields.filter((f) => f.path.startsWith('vars.')).map((f) => f.path.slice(5))}
-          label={t('designer.editor.invalidExpression')}
-          onChange={(source) => {
-            if (source) change({ $expr: source });
-          }}
-        />
+        {allowExpressions && (
+          <ExpressionEditor
+            value={value.$expr}
+            variables={fields.filter((f) => f.path.startsWith('vars.')).map((f) => f.path.slice(5))}
+            label={t('designer.editor.invalidExpression')}
+            onChange={(source) => {
+              if (source) change({ $expr: source });
+            }}
+          />
+        )}
       </>
     );
   if ('not' in value)
@@ -57,6 +70,7 @@ function Tree({
             change({ not });
           }}
           fields={fields}
+          allowExpressions={allowExpressions}
           depth={depth + 1}
         />
       </div>
@@ -86,6 +100,7 @@ function Tree({
                 next(items.map((p, i) => (i === index ? value : p)));
               }}
               fields={fields}
+              allowExpressions={allowExpressions}
               depth={depth + 1}
             />
             <Button
@@ -264,12 +279,22 @@ function JsonValue({
     </>
   );
 }
+export function containsExpression(value: Predicate): boolean {
+  if ('$expr' in value) return true;
+  if ('not' in value) return containsExpression(value.not);
+  if ('all' in value) return value.all.some(containsExpression);
+  if ('any' in value) return value.any.some(containsExpression);
+  return false;
+}
+
 export function RuleBuilder({
   value,
   onChange,
   fields,
+  allowExpressions = true,
 }: {
   value: Predicate;
+  allowExpressions?: boolean;
   onChange: (value: Predicate) => void;
   fields: readonly RuleField[];
 }) {
@@ -299,9 +324,11 @@ export function RuleBuilder({
   };
   return (
     <div className="rb-builder">
-      <Button size="sm" variant="ghost" onClick={toggle}>
-        {t(advanced ? 'designer.rules.visual' : 'designer.rules.advanced')}
-      </Button>
+      {allowExpressions && (
+        <Button size="sm" variant="ghost" onClick={toggle}>
+          {t(advanced ? 'designer.rules.visual' : 'designer.rules.advanced')}
+        </Button>
+      )}
       {advanced ? (
         <>
           <ExpressionEditor
@@ -324,7 +351,7 @@ export function RuleBuilder({
           </Button>
         </>
       ) : (
-        <Tree value={value} change={onChange} fields={fields} />
+        <Tree value={value} change={onChange} fields={fields} allowExpressions={allowExpressions} />
       )}{' '}
       {error && <Alert title={t('designer.rules.invalid')} tone="danger" />}
     </div>

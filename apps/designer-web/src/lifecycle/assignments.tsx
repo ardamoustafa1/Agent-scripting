@@ -25,7 +25,7 @@ import { PredicateSchema, type Predicate } from '@verbis/script-schema';
 import { Alert, Button, Input, MultiSelect, Select, Textarea, Badge } from '@verbis/ui';
 
 import { request, PageSchema, VersionsSchema } from '../api/client.js';
-import { RuleBuilder } from '../rules/builder.js';
+import { RuleBuilder, containsExpression } from '../rules/builder.js';
 import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
 import './styles.css';
@@ -142,7 +142,7 @@ export default function AssignmentsPage() {
     [to, setTo] = useState(''),
     [ab, setAb] = useState('50'),
     [useAb, setUseAb] = useState(false),
-    [condition, setCondition] = useState<Predicate>({ $expr: 'true' }),
+    [condition, setCondition] = useState<Predicate>({ fact: 'interaction.channel', op: 'exists' }),
     [busy, setBusy] = useState(false),
     [failed, setFailed] = useState(false),
     [channel, setChannel] = useState('voice'),
@@ -274,7 +274,7 @@ export default function AssignmentsPage() {
                       setTo(localDate(row.effectiveTo));
                       setAVersion(row.variants?.[0]?.pinnedVersionId ?? 'policy');
                       setBVersion(row.variants?.[1]?.pinnedVersionId ?? 'policy');
-                      setCondition(row.expression ?? { $expr: 'true' });
+                      setCondition(row.expression ?? { fact: 'interaction.channel', op: 'exists' });
                       setUseAb(!!row.variants);
                       setAb(String((row.variants?.[0]?.weight ?? 5000) / 100));
                     }}
@@ -382,17 +382,23 @@ export default function AssignmentsPage() {
             </>
           )}
           <RuleBuilder
+            allowExpressions={false}
             value={condition}
             onChange={setCondition}
-            fields={['channel', 'locale', 'queue', 'skill', 'segment'].map((key) => ({
-              path: `interaction.${key}`,
-              type: 'string',
-              label: `interaction.${key}`,
-            }))}
+            fields={[
+              ...['channel', 'locale', 'queue', 'segment'].map((key) => ({
+                path: `interaction.${key}`,
+                type: 'string' as const,
+                label: `interaction.${key}`,
+              })),
+              { path: 'interaction.skills', type: 'array', label: 'interaction.skills' },
+            ]}
           />
           <Button
             loading={busy}
-            disabled={!writable || !valid || (!editing && !selected.length)}
+            disabled={
+              !writable || !valid || containsExpression(condition) || (!editing && !selected.length)
+            }
             onClick={() => {
               void perform(
                 '/v1/assignments/batch',

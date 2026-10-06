@@ -1,0 +1,14 @@
+
+> verbis@ test:audit /Users/ardamoustafa/agent scripting
+> node --test scripts/final-audit.spec.mjs
+
+✔ every mutation-shaped controller route maps to a transaction audit or explicit audit call (6977.3705ms)
+✔ TR/EN catalogs contain every literal production translation key and identical nonempty leaves (526.884875ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7807.759459

@@ -95,3 +95,23 @@ describe('assignment authoring validation', () => {
     );
   });
 });
+
+describe('routing expression admission', () => {
+  it.each([
+    { $expr: 'interaction.vip' },
+    { not: { $expr: 'true' } },
+    { any: [{ fact: 'interaction.vip', op: 'eq', value: true }, { $expr: 'false' }] },
+  ])('rejects unsupported expressions in create, patch and legacy aliases (%j)', (expression) => {
+    expect(CreateAssignmentSchema.safeParse({ ...ids, expression }).success).toBe(false);
+    expect(UpdateAssignmentSchema.safeParse({ expression }).success).toBe(false);
+    expect(UpdateAssignmentSchema.safeParse({ rule: expression }).success).toBe(false);
+  });
+  it.each(['[', '(a)\\1', '(?=a)a', 'x'.repeat(201)])(
+    'rejects non-RE2 routing patterns at admission (%s)',
+    (value) => {
+      const expression = { fact: 'interaction.name', op: 'matches', value };
+      expect(CreateAssignmentSchema.safeParse({ ...ids, expression }).success).toBe(false);
+      expect(UpdateAssignmentSchema.safeParse({ expression }).success).toBe(false);
+    },
+  );
+});

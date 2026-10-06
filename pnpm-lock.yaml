@@ -378,6 +378,9 @@ importers:
       '@verbis/core-runtime':
         specifier: workspace:*
         version: link:../../packages/core-runtime
+      '@verbis/expr':
+        specifier: workspace:*
+        version: link:../../packages/expr
       '@verbis/observability':
         specifier: workspace:*
         version: link:../../packages/observability

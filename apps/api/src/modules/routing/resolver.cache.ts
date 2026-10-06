@@ -1,5 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
+import { instruments } from '@verbis/observability';
+
 import { type ApiEnv, API_ENV } from '../../env.js';
 import { RedisService } from '../../infra/redis/redis.service.js';
 
@@ -68,8 +70,10 @@ export class ResolverCache {
   async invalidate(tenantId: string): Promise<void> {
     try {
       await this.redis.client.incr(this.#genKey(tenantId));
-    } catch {
-      this.#logger.warn('Resolver cache invalidation failed; entries expire by TTL');
+    } catch (error) {
+      instruments.operationFailures.add(1, { operation: 'routing.cache.invalidate' });
+      this.#logger.warn('Resolver cache invalidation failed; delivery must retry');
+      throw error;
     }
   }
 }

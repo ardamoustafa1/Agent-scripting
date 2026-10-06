@@ -1100,6 +1100,8 @@ export const en = {
       add: 'Add rule',
       description: 'Description',
       depth: 'Nesting limit reached.',
+      routingExpressionsUnsupported:
+        'Advanced expressions are unsupported in assignments. Convert to field rules before saving.',
       advancedLeaf: 'This expression is preserved in advanced mode.',
       not: 'NOT',
       group: 'Condition group',

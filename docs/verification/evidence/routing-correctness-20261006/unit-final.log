@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+
+[Nest] 87516  - 10/06/2026, 4:14:53 PM    WARN [ResolverCache] Resolver cache invalidation failed; delivery must retry
+
+ Test Files  7 passed (7)
+      Tests  154 passed (154)
+   Start at  16:14:53
+   Duration  729ms (transform 50%, import 42%, tests 7%, worker 1%)

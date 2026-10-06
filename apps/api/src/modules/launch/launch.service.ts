@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 import { Inject, Injectable, Optional } from '@nestjs/common';
 
 import { instruments } from '@verbis/observability';
@@ -19,7 +21,7 @@ import { AuthzService } from '../authz/authz.service.js';
 import { ResolverService } from '../routing/resolver.service.js';
 import { ResolveRequestSchema } from '../routing/routing.dto.js';
 import { RuntimeEngineService } from '../runtime/runtime-engine.service.js';
-import { reserveTenantCapacity } from '../tenancy/quota.js';
+import { reserveSessionCapacity } from '../tenancy/quota.js';
 
 import { peekIssuer, PublicJwksSchema, verifyLaunchJws } from './domain/launch-jws.js';
 import {
@@ -293,7 +295,7 @@ export class LaunchService {
         'Live data sources need integration execute permission',
       );
     const sessionId = uuidv7(this.#now().getTime());
-    await reserveTenantCapacity(tx, principal.tenantId, 'sessions');
+    await reserveSessionCapacity(this.db, principal.tenantId, sessionId);
     await tx.session.create({
       data: {
         id: sessionId,
@@ -367,14 +369,20 @@ export class LaunchService {
     // Script is resolved server-side from verified interaction attributes (never by the client).
     if (interaction.campaignId === null)
       throw new DomainError('VERBIS_LAUNCH_NO_ASSIGNMENT', 'The interaction has no campaign');
+    const context = this.engine.routingInput(interaction, principal.tenantId);
     const request = ResolveRequestSchema.safeParse({
       campaignId: interaction.campaignId,
       channel: interaction.channelType,
       ...(interaction.queue === null ? {} : { queue: interaction.queue }),
-      attributes: flatAttributes(interaction.attributes),
+      ...context.routing,
+      attributes: flatAttributes(context.attributes),
       agent: { id: principal.id },
       interactionId: interaction.id,
-      stickyKey: interaction.id,
+      stickyKey:
+        context.routing.stickyKey ??
+        (context.customerId
+          ? createHash('sha256').update(`${principal.tenantId}:${context.customerId}`).digest('hex')
+          : interaction.id),
     });
     if (!request.success)
       throw new DomainError(
@@ -394,7 +402,7 @@ export class LaunchService {
       select: { groupId: true },
     });
     const sessionId = uuidv7(now.getTime());
-    await reserveTenantCapacity(tx, principal.tenantId, 'sessions');
+    await reserveSessionCapacity(this.db, principal.tenantId, sessionId);
     await tx.session.create({
       data: {
         id: sessionId,

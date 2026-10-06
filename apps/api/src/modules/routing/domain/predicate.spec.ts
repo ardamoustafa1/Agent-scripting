@@ -1,3 +1,4 @@
+import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
 import type { Predicate } from '@verbis/script-schema';
@@ -91,4 +92,50 @@ describe('predicate evaluator', () => {
     for (let i = 0; i < 40; i += 1) deep = { not: { not: deep } };
     expect(evaluatePredicate(deep, facts).unsupported).toBe(true);
   });
+});
+
+it('rejects unsupported regex syntax even through negation', () => {
+  const result = evaluatePredicate(
+    { not: { fact: 'interaction.name', op: 'matches', value: '(?=A)A' } },
+    facts,
+  );
+  expect(result).toMatchObject({ value: false, unsupported: true });
+});
+
+it('property: ambiguous alternations remain safe for long nonmatching input', () => {
+  fc.assert(
+    fc.property(
+      fc.integer({ min: 1, max: 999 }),
+      fc.constantFrom('^(a|aa)+$', '^(a|a?)+$', '^(a+)+$'),
+      (length, pattern) => {
+        const result = evaluatePredicate(
+          { fact: 'interaction.value', op: 'matches', value: pattern },
+          { interaction: { value: 'a'.repeat(length) + 'b' } },
+        );
+        expect(result).toMatchObject({ value: false, unsupported: false });
+      },
+    ),
+    { seed: 607, numRuns: 200 },
+  );
+});
+it('property: RE2 matches literal prefixes consistently for normalized routing facts', () => {
+  fc.assert(
+    fc.property(
+      fc
+        .array(fc.constantFrom('a', 'b', 'c'), { maxLength: 100 })
+        .map((letters) => letters.join('')),
+      fc
+        .array(fc.constantFrom('a', 'b', 'c'), { maxLength: 100 })
+        .map((letters) => letters.join('')),
+      (prefix, suffix) => {
+        expect(
+          evaluatePredicate(
+            { fact: 'interaction.value', op: 'matches', value: '^' + prefix },
+            { interaction: { value: prefix + suffix } },
+          ).value,
+        ).toBe(true);
+      },
+    ),
+    { seed: 608, numRuns: 200 },
+  );
 });

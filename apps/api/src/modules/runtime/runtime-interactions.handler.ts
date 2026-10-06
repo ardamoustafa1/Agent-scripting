@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { z } from 'zod';
 
+import { RoutingContextSchema } from '@verbis/sdk-connector';
+
 import { requestContext } from '../../common/context/request-context.js';
 import { ForbiddenError } from '../../common/errors/domain-errors.js';
 import { actorRef } from '../../common/security/principal.js';
@@ -81,6 +83,22 @@ export class RuntimeInteractionsHandler implements EventHandler {
     const principal = requestContext.require().principal;
     if (principal === undefined) throw new ForbiddenError();
     const actor = actorRef(principal);
+    const previousEnvelope = z.object({ sealed: z.string() }).safeParse(existing?.attributes);
+    const previous = previousEnvelope.success
+      ? z
+          .object({
+            routing: RoutingContextSchema.optional(),
+            customerId: z.string().optional(),
+          })
+          .parse(
+            JSON.parse(
+              this.keys.openString(
+                previousEnvelope.data.sealed,
+                `runtime:interaction:${event.tenantId}:${input.id}`,
+              ),
+            ),
+          )
+      : {};
     const data = {
       platform: input.platform,
       externalId: input.platformInteractionId,
@@ -95,9 +113,10 @@ export class RuntimeInteractionsHandler implements EventHandler {
         sealed: this.keys.seal(
           JSON.stringify({
             platformAgentId: input.platformAgentId,
+            routing: input.routing ?? previous.routing,
             ani: input.ani,
             dnis: input.dnis,
-            customerId: input.customerId,
+            customerId: input.customerId ?? previous.customerId,
             attachedData: input.attachedData,
             participantData: input.participantData,
           }),

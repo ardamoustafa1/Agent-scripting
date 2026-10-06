@@ -1,17 +1,22 @@
 import { X509Certificate } from 'node:crypto';
 
 import { exportJWK, generateKeyPair, SignJWT, type CryptoKey } from 'jose';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ScriptDocumentSchema, TestScenarioSchema } from '@verbis/script-schema';
 import { surveyScript } from '@verbis/script-schema/fixtures';
 
+import { Prisma } from '../../src/generated/prisma/client.js';
+import { TenantDb } from '../../src/infra/database/tenant-db.js';
 import { RedisService } from '../../src/infra/redis/redis.service.js';
 import { sha256Base64Url } from '../../src/modules/identity/crypto/random.js';
 import { generateSpCredential } from '../../src/modules/identity/saml/sp-credentials.js';
 import { launchAudience } from '../../src/modules/launch/domain/launch-jws.js';
 import { launchCodeHash, newLaunchCode } from '../../src/modules/launch/domain/launch.js';
 import { LaunchPorts } from '../../src/modules/launch/launch-ports.js';
+import { ResolverCache } from '../../src/modules/routing/resolver.cache.js';
+import { RuntimeEngineService } from '../../src/modules/runtime/runtime-engine.service.js';
+import { reserveSessionCapacity } from '../../src/modules/tenancy/quota.js';
 import { createTokenKit, type TokenKit } from '../support/tokens.js';
 
 import {
@@ -263,7 +268,7 @@ async function serviceHeaders(withCert = true, tenant: TenantFixture = a) {
     sub: 'connector-hub',
     tnt: tenant.tenantId,
     typ: 'service',
-    scp: ['create:Session'],
+    scp: ['create:Session', 'update:Connector'],
     ...(withCert ? { cnf: { 'x5t#S256': thumbprint } } : {}),
   });
   return {
@@ -703,4 +708,247 @@ it('deduplicates concurrent push intent creation in PostgreSQL across pipeline i
       where: { tenantId: a.tenantId, interactionId: i.id, userId: agentId },
     }),
   ).toBe(1);
+});
+
+it('routes ingested encrypted locale/skills/segment and attached predicates through secure launch', async () => {
+  const assignment = await owner.assignment.findFirstOrThrow({ where: { campaignId } });
+  await owner.assignment.update({
+    where: { id: assignment.id },
+    data: {
+      conditions: { locales: ['tr'], skills: ['cards'], segments: ['gold'] },
+      rule: { fact: 'interaction.vip', op: 'eq', value: true },
+      version: { increment: 1 },
+    },
+  });
+  await app.get(ResolverCache).invalidate(a.tenantId);
+  const mapped = await app.inject({
+    method: 'PUT',
+    url: `/v1/admin/users/${agentId}/connector-mapping`,
+    headers: await a.auth(),
+    payload: { platform: 'genesys_cloud', platformUserId: 'g-agent-one' },
+  });
+  expect(mapped.statusCode, mapped.body).toBe(200);
+  const mapping = await owner.campaignExternalMapping.create({
+    data: {
+      id: sid(),
+      tenantId: a.tenantId,
+      campaignId,
+      platform: 'genesys-cloud',
+      kind: 'campaign',
+      externalId: `routing-${sid()}`,
+      createdBy: 'test',
+    },
+  });
+  const received = await app.inject({
+    method: 'POST',
+    url: `/v1/connector-hub/connectors/${connectorId}/events`,
+    headers: await serviceHeaders(),
+    payload: {
+      event: {
+        eventId: `routing-${sid()}`,
+        type: 'connected',
+        occurredAt: new Date().toISOString(),
+        platformInteractionId: `routing-${sid()}`,
+        channel: 'voice',
+        direction: 'inbound',
+        agent: { id: 'g-agent-one' },
+        campaignRef: { kind: 'campaign', externalId: mapping.externalId },
+        routing: {
+          locale: 'tr-TR',
+          skills: ['cards'],
+          segment: 'gold',
+          stickyKey: 'synthetic-customer',
+        },
+        attributes: { vip: true },
+      },
+    },
+  });
+  try {
+    expect(received.statusCode, received.body).toBe(201);
+    const i = received.json<{ interactionId: string; agentId: string }>();
+    expect(i.agentId).toBe(agentId);
+    const stored = await owner.interaction.findUniqueOrThrow({ where: { id: i.interactionId } });
+    expect(JSON.stringify(stored.attributes)).not.toContain('synthetic-customer');
+    const held = await app.inject({
+      method: 'POST',
+      url: `/v1/connector-hub/connectors/${connectorId}/events`,
+      headers: await serviceHeaders(),
+      payload: {
+        event: {
+          eventId: `held-${sid()}`,
+          type: 'held',
+          occurredAt: new Date().toISOString(),
+          platformInteractionId: stored.externalId,
+          channel: 'voice',
+          direction: 'inbound',
+          agent: { id: 'g-agent-one' },
+          campaignRef: { kind: 'campaign', externalId: mapping.externalId },
+          attributes: { vip: true },
+        },
+      },
+    });
+    expect(held.statusCode, held.body).toBe(201);
+
+    const intent = await createIntent(agentId, i.interactionId);
+    const result = await redeem(intent.code, await userHeaders(agentId));
+    expect(result.statusCode, result.body).toBe(201);
+    const session = await owner.session.findUniqueOrThrow({
+      where: { id: result.json<{ sessionId: string }>().sessionId },
+    });
+    expect(session.assignmentId).toBe(assignment.id);
+  } finally {
+    await owner.assignment.update({
+      where: { id: assignment.id },
+      data: {
+        conditions: {},
+        rule: { fact: 'interaction.channel', op: 'eq', value: 'voice' },
+        version: { increment: 1 },
+      },
+    });
+  }
+});
+
+it('releases the tenant quota lock before runtime initialization and consumes admission atomically', async () => {
+  const tenant = await owner.tenant.findUniqueOrThrow({ where: { id: a.tenantId } });
+  const active = await owner.session.count({
+    where: {
+      tenantId: a.tenantId,
+      deletedAt: null,
+      state: { in: ['launching', 'active', 'paused', 'wrapup'] },
+    },
+  });
+  await owner.tenant.update({
+    where: { id: a.tenantId },
+    data: {
+      settings: { quotas: { maxUsers: 1000, maxScripts: 1000, maxActiveSessions: active + 1 } },
+    },
+  });
+  const engine = app.get(RuntimeEngineService);
+  const initialize = engine.initialize.bind(engine);
+  let enter = (): void => {
+    throw new Error('enter callback not initialized');
+  };
+  let release = (): void => {
+    throw new Error('release callback not initialized');
+  };
+  const entered = new Promise<void>((resolve) => {
+    enter = resolve;
+  });
+  const wait = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const spy = vi.spyOn(engine, 'initialize').mockImplementation(async (id) => {
+    enter();
+    await wait;
+    return initialize(id);
+  });
+  const intent = await createIntent(agentId, (await interaction()).id);
+  const pending = redeem(intent.code, await userHeaders(agentId));
+  try {
+    await Promise.race([
+      entered,
+      pending.then((result) => {
+        throw new Error(`Launch failed before initialization: ${result.statusCode}`);
+      }),
+    ]);
+    // Runtime I/O is stalled; tenant policy is independently writable within 1s.
+    await owner.$transaction(async (tx) => {
+      await tx.$executeRaw`SET LOCAL lock_timeout = '1000ms'`;
+      await tx.tenant.update({
+        where: { id: a.tenantId },
+        data: { updatedBy: 'quota-lock-probe' },
+      });
+    });
+    // An uncommitted session still owns its committed reservation; no oversubscription.
+    await expect(reserveSessionCapacity(app.get(TenantDb), a.tenantId, sid())).rejects.toThrow(
+      'quota reached',
+    );
+  } finally {
+    release();
+    spy.mockRestore();
+    const result = await pending;
+    expect(result.statusCode, result.body).toBe(201);
+    await owner.tenant.update({
+      where: { id: a.tenantId },
+      data: { settings: tenant.settings ?? Prisma.JsonNull },
+    });
+  }
+  expect(await owner.sessionCapacityReservation.count({ where: { tenantId: a.tenantId } })).toBe(0);
+});
+
+it('admits exactly the remaining capacity under concurrent reservations and recovers failed leases', async () => {
+  const tenant = await owner.tenant.findUniqueOrThrow({ where: { id: a.tenantId } });
+  const active = await owner.session.count({
+    where: {
+      tenantId: a.tenantId,
+      deletedAt: null,
+      state: { in: ['launching', 'active', 'paused', 'wrapup'] },
+    },
+  });
+  await owner.tenant.update({
+    where: { id: a.tenantId },
+    data: {
+      settings: { quotas: { maxUsers: 1000, maxScripts: 1000, maxActiveSessions: active + 3 } },
+    },
+  });
+  try {
+    const attempts = await Promise.allSettled(
+      Array.from({ length: 8 }, () => reserveSessionCapacity(app.get(TenantDb), a.tenantId, sid())),
+    );
+    expect(attempts.filter((result) => result.status === 'fulfilled')).toHaveLength(3);
+    expect(attempts.filter((result) => result.status === 'rejected')).toHaveLength(5);
+    const reservation = await owner.sessionCapacityReservation.findFirstOrThrow({
+      where: { tenantId: a.tenantId },
+    });
+    const session = await owner.session.findFirstOrThrow({ where: { tenantId: a.tenantId } });
+    await expect(
+      owner.$transaction(async (tx) => {
+        await tx.session.create({
+          data: {
+            id: reservation.id,
+            tenantId: a.tenantId,
+            kind: 'preview',
+            userId: a.adminId,
+            scriptVersionId: session.scriptVersionId,
+            checksum: session.checksum,
+            createdBy: 'synthetic',
+            updatedBy: 'synthetic',
+          },
+        });
+        throw new Error('synthetic rollback');
+      }),
+    ).rejects.toThrow('synthetic rollback');
+    expect(await owner.sessionCapacityReservation.count({ where: { tenantId: a.tenantId } })).toBe(
+      3,
+    );
+    await owner.sessionCapacityReservation.updateMany({
+      where: { tenantId: a.tenantId },
+      data: { expiresAt: new Date(0) },
+    });
+    await expect(
+      owner.session.create({
+        data: {
+          id: reservation.id,
+          tenantId: a.tenantId,
+          kind: 'preview',
+          userId: a.adminId,
+          scriptVersionId: session.scriptVersionId,
+          checksum: session.checksum,
+          createdBy: 'synthetic',
+          updatedBy: 'synthetic',
+        },
+      }),
+    ).rejects.toMatchObject({ code: 'P2034' });
+    expect(await owner.session.count({ where: { id: reservation.id } })).toBe(0);
+    await reserveSessionCapacity(app.get(TenantDb), a.tenantId, sid());
+    expect(await owner.sessionCapacityReservation.count({ where: { tenantId: a.tenantId } })).toBe(
+      1,
+    );
+  } finally {
+    await owner.sessionCapacityReservation.deleteMany({ where: { tenantId: a.tenantId } });
+    await owner.tenant.update({
+      where: { id: a.tenantId },
+      data: { settings: tenant.settings ?? Prisma.JsonNull },
+    });
+  }
 });

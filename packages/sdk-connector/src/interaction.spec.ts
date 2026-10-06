@@ -33,3 +33,28 @@ describe('interaction events', () => {
     expect(canTransition('wrapup', 'held')).toBe(false);
   });
 });
+
+it('validates explicit routing dimensions and promotes only named platform attributes', () => {
+  const routing = {
+    locale: 'tr-TR',
+    skills: ['cards'],
+    segment: 'gold',
+    stickyKey: 'synthetic-customer',
+  };
+  expect(parseInteractionEvent({ ...base, routing })).toMatchObject({ routing });
+  expect(
+    parseInteractionEvent({
+      ...base,
+      attributes: {
+        locale: 'tr-TR',
+        skills: 'cards, sales',
+        segment: 'gold',
+        privateField: 'synthetic',
+      },
+    }),
+  ).toMatchObject({ routing: { locale: 'tr-TR', skills: ['cards', 'sales'], segment: 'gold' } });
+  expect(parseInteractionEvent({ ...base, routing: { locale: ' TR-tr ' } })).toMatchObject({
+    routing: { locale: 'tr-TR' },
+  });
+  expect(() => parseInteractionEvent({ ...base, routing: { locale: 'invalid_locale' } })).toThrow();
+});

@@ -1,0 +1,39 @@
+
+ RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+ ❯ |integration| test/integration/launch.int.spec.ts (21 tests | 1 failed | 20 skipped) 708ms
+   × routes ingested encrypted locale/skills/segment and attached predicates through secure launch 61ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |integration| test/integration/launch.int.spec.ts > routes ingested encrypted locale/skills/segment and attached predicates through secure launch
+AssertionError: {"type":"https://errors.verbis.io/launch/no-assignment","title":"No script is assigned to this interaction","status":422,"code":"VERBIS_LAUNCH_NO_ASSIGNMENT","instance":"/v1/launch/redeem","correlationId":"420a2859-4677-405a-9d39-62f5ef577aa7","detail":"No script is assigned to this interaction"}: expected 422 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 422
+
+ ❯ test/integration/launch.int.spec.ts:736:44
+    734|     const intent = await createIntent(agentId, i.interactionId);
+    735|     const result = await redeem(intent.code, await userHeaders(agentId…
+    736|     expect(result.statusCode, result.body).toBe(201);
+       |                                            ^
+    737|     const session = await owner.session.findUniqueOrThrow({ where: { i…
+    738|     expect(session.assignmentId).toBe(assignment.id);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 20 skipped (21)
+   Start at  16:06:43
+   Duration  6.81s (import 55%, transform 28%, tests 17%)
+
+undefined
+/Users/ardamoustafa/agent scripting/apps/api:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run --project integration test/integration/launch.int.spec.ts -t routes ingested

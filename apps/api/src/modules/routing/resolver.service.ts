@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { NotFoundError } from '../../common/errors/domain-errors.js';
+import { ConflictError, NotFoundError } from '../../common/errors/domain-errors.js';
 import { TenantDb } from '../../infra/database/tenant-db.js';
 import { AuditService } from '../audit/audit.service.js';
 
@@ -20,37 +20,28 @@ export class ResolverService {
     @Inject(AuditService) private readonly audit: AuditService,
   ) {}
 
-  /** Generation is read BEFORE the database, so a snapshot can never be cached under a newer one. */
+  /** Redis generation accelerates invalidation; authoritative metadata revisions fence every hit/load. */
   async snapshot(
     campaignId: string,
   ): Promise<{ snapshot: CampaignSnapshot; cache: 'hit' | 'miss' | 'bypass' }> {
     const tenantId = this.db.tenantId();
+    const tx = this.db.current();
     const generation = await this.cache.generation(tenantId);
-    if (generation !== undefined) {
-      const cached = await this.cache.get(tenantId, campaignId, generation);
-      if (cached !== undefined) {
-        const scripts = await this.db.current().script.findMany({
-          where: {
-            tenantId,
-            id: { in: [...new Set(cached.assignments.map((a) => a.scriptId))] },
-            deletedAt: null,
-          },
-          select: { id: true, currentVersionId: true },
-        });
-        const fresh =
-          scripts.length === new Set(cached.assignments.map((a) => a.scriptId)).size &&
-          scripts.every((s) =>
-            cached.versions.some(
-              (v) => v.scriptId === s.id && v.current === true && v.id === s.currentVersionId,
-            ),
-          );
-        if (fresh) return { snapshot: cached, cache: 'hit' };
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const revision = await this.snapshots.revision(tx, tenantId, campaignId);
+      const key = generation === undefined ? undefined : `${generation}:${revision}`;
+      if (key !== undefined) {
+        const cached = await this.cache.get(tenantId, campaignId, key);
+        if (cached !== undefined) return { snapshot: cached, cache: 'hit' };
       }
+      const loaded = await this.snapshots.load(tx, tenantId, campaignId);
+      if (loaded === undefined) throw new NotFoundError('Campaign');
+      // A commit during the multi-query load cannot be stamped as an older or newer revision.
+      if (revision !== (await this.snapshots.revision(tx, tenantId, campaignId))) continue;
+      if (key !== undefined) await this.cache.set(tenantId, campaignId, key, loaded);
+      return { snapshot: loaded, cache: key === undefined ? 'bypass' : 'miss' };
     }
-    const loaded = await this.snapshots.load(this.db.current(), tenantId, campaignId);
-    if (loaded === undefined) throw new NotFoundError('Campaign');
-    if (generation !== undefined) await this.cache.set(tenantId, campaignId, generation, loaded);
-    return { snapshot: loaded, cache: generation === undefined ? 'bypass' : 'miss' };
+    throw new ConflictError('Routing configuration changed; retry resolution');
   }
 
   lookupCampaign(request: ResolveRequest) {
@@ -108,6 +99,7 @@ export class ResolverService {
         versionId: decision.version?.id ?? null,
         checksum: decision.version?.checksum ?? null,
         variant: decision.variant?.key ?? null,
+        abSkipped: decision.trace.abSkipped ?? null,
         ranking: decision.trace.ranking,
         tie: decision.trace.tie,
         rejected: decision.trace.evaluated

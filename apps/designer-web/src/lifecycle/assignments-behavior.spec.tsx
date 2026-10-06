@@ -124,7 +124,13 @@ it('creates campaign assignments with A/B disabled and validates date windows', 
   });
   expect(f.requests.find((r) => r.method === 'POST')!.body).toMatchObject({
     creates: [
-      { scriptId, campaignId, priority: 100, variants: null, expression: { $expr: 'true' } },
+      {
+        scriptId,
+        campaignId,
+        priority: 100,
+        variants: null,
+        expression: { fact: 'interaction.channel', op: 'exists' },
+      },
     ],
   });
 });

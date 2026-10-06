@@ -1,0 +1,74 @@
+
+ RUN  v5.0.3 /Users/ardamoustafa/agent scripting/apps/api
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+ ❯ |integration| test/integration/launch.int.spec.ts (20 tests | 1 failed) 2251ms
+   × releases the tenant quota lock before runtime initialization and consumes admission atomically 1059ms
+ ❯ |integration| test/integration/authoring-routing.int.spec.ts (16 tests | 1 failed) 1713ms
+   ❯ campaigns, assignments and the resolver (2)
+     × resolves deterministically with a trace, warns about conflicts, caches and invalidates 218ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |integration| test/integration/authoring-routing.int.spec.ts > campaigns, assignments and the resolver > resolves deterministically with a trace, warns about conflicts, caches and invalidates
+AssertionError: expected { …(8) } to match object { outcome: 'no_match', …(2) }
+(16 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "cache": "miss",
+-   "outcome": "no_match",
+-   "reason": "campaign_inactive",
++   "cache": "hit",
++   "outcome": "resolved",
+  }
+
+ ❯ test/integration/authoring-routing.int.spec.ts:707:65
+    705|     // No NATS invalidation is delivered: committed campaign and assig…
+    706|     await owner.campaign.update({ where: { id: campaign.id }, data: { …
+    707|     expect((await resolve({ campaignCode: 'ROUTING' })).json()).toMatc…
+       |                                                                 ^
+    708|     await owner.campaign.update({ where: { id: campaign.id }, data: { …
+    709|     expect((await resolve({ campaignCode: 'ROUTING' })).json()).toMatc…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |integration| test/integration/launch.int.spec.ts > releases the tenant quota lock before runtime initialization and consumes admission atomically
+PrismaClientKnownRequestError:
+Invalid `tx.tenant.update()` invocation in
+/Users/ardamoustafa/agent scripting/apps/api/test/integration/launch.int.spec.ts:760:23
+
+  757 // Runtime I/O is stalled; tenant policy is independently writable within 1s.
+  758 await owner.$transaction(async (tx) => {
+  759   await tx.$executeRaw`SET LOCAL lock_timeout = '1000ms'`;
+→ 760   await tx.tenant.update(
+Database error. Code: `55P03`. Message: `canceling statement due to lock timeout`
+ ❯ vn.handleRequestError ../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+node@24.19.0_@types+react-dom@18.3.7_@types+react@_qhhh3nr4kjvaomtcai3ec2x4ry/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError ../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+node@24.19.0_@types+react-dom@18.3.7_@types+react@_qhhh3nr4kjvaomtcai3ec2x4ry/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request ../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+node@24.19.0_@types+react-dom@18.3.7_@types+react@_qhhh3nr4kjvaomtcai3ec2x4ry/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a ../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+node@24.19.0_@types+react-dom@18.3.7_@types+react@_qhhh3nr4kjvaomtcai3ec2x4ry/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ test/integration/launch.int.spec.ts:760:7
+    758|     await owner.$transaction(async (tx) => {
+    759|       await tx.$executeRaw`SET LOCAL lock_timeout = '1000ms'`;
+    760|       await tx.tenant.update({ where: { id: a.tenantId }, data: { upda…
+       |       ^
+    761|     });
+    762|     // An uncommitted session still owns its committed reservation; no…
+ ❯ Proxy._transactionWithCallback ../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+node@24.19.0_@types+react-dom@18.3.7_@types+react@_qhhh3nr4kjvaomtcai3ec2x4ry/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ test/integration/launch.int.spec.ts:758:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 34 passed (36)
+   Start at  14:14:21
+   Duration  11.41s (tests 46%, import 41%, transform 13%)
+
+undefined
+/Users/ardamoustafa/agent scripting/apps/api:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run --project integration test/integration/authoring-routing.int.spec.ts test/integration/launch.int.spec.ts

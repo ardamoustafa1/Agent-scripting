@@ -283,4 +283,11 @@ test('assigns the script to a campaign using the BFF CSRF boundary', async ({ pa
   expect(saved.headers()['x-csrf-token']).toBe(sessionFixture.csrfToken);
   expect(JSON.stringify(saved.postDataJSON())).toContain(scriptId);
   expect(JSON.stringify(saved.postDataJSON())).toContain(campaignId);
+  expect(saved.postDataJSON()).toMatchObject({
+    creates: [{ expression: { fact: 'interaction.channel', op: 'exists' } }],
+  });
+  await expect(page.getByRole('button', { name: 'Advanced expression', exact: true })).toHaveCount(
+    0,
+  );
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });

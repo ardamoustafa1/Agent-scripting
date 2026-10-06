@@ -1,0 +1,6 @@
+
+> verbis@ format:check /Users/ardamoustafa/agent scripting
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!

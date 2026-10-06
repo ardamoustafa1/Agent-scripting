@@ -1,0 +1,39 @@
+
+ RUN  v5.0.3 /Users/ardamoustafa/agent scripting/packages/sdk-connector
+
+ ❯ src/interaction.spec.ts (4 tests | 1 failed) 6ms
+   × validates explicit routing dimensions and promotes only named platform attributes 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/interaction.spec.ts > validates explicit routing dimensions and promotes only named platform attributes
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "routing"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"routing\""
+  }
+]
+ ❯ parseInteractionEvent src/interaction.ts:98:40
+     96| /** Validates and normalizes an event; channel/context mismatch is rej…
+     97| export function parseInteractionEvent(input: unknown): InteractionEven…
+     98|   const event = InteractionEventSchema.parse(input);
+       |                                        ^
+     99|   if (event.context !== undefined && event.context.channel !== event.c…
+    100|     throw new z.ZodError([
+ ❯ src/interaction.spec.ts:39:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  14:08:03
+   Duration  100ms (import 48%, transform 37%, tests 12%, worker 3%)
+
+undefined
+/Users/ardamoustafa/agent scripting/packages/sdk-connector:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run src/interaction.spec.ts

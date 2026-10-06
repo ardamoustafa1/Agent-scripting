@@ -10,7 +10,7 @@ import { Button, Dialog, Alert } from '@verbis/ui';
 import { request, ApiError } from '../api/client.js';
 import { useWorkspace } from '../workspace/context.js';
 
-import { RuleBuilder } from './builder.js';
+import { RuleBuilder, containsExpression } from './builder.js';
 
 import type { RuleField } from './fields.js';
 
@@ -20,11 +20,12 @@ const Assignment = z.object({
   expression: PredicateSchema.nullable(),
 });
 const fields: RuleField[] = [
-  ...['channel', 'locale', 'queue', 'skill', 'segment', 'direction'].map((key) => ({
+  ...['channel', 'locale', 'queue', 'segment', 'direction'].map((key) => ({
     path: `interaction.${key}`,
     type: 'string' as const,
     label: `interaction.${key}`,
   })),
+  { path: 'interaction.skills', type: 'array', label: 'interaction.skills' },
   { path: 'agent.id', type: 'string', label: 'agent.id' },
   { path: 'campaign.id', type: 'string', label: 'campaign.id' },
 ];
@@ -32,13 +33,15 @@ function Form({ data, close }: { data: z.infer<typeof Assignment>; close: () => 
   const { t } = useTranslation(),
     { session } = useWorkspace(),
     query = useQueryClient();
-  const [value, setValue] = useState<Predicate>(data.expression ?? { $expr: 'true' }),
+  const [value, setValue] = useState<Predicate>(
+      data.expression ?? { fact: 'interaction.channel', op: 'exists' },
+    ),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(false),
     [conflict, setConflict] = useState(false);
   return (
     <>
-      <RuleBuilder value={value} onChange={setValue} fields={fields} />
+      <RuleBuilder allowExpressions={false} value={value} onChange={setValue} fields={fields} />
       {error && (
         <Alert
           tone="danger"
@@ -47,7 +50,7 @@ function Form({ data, close }: { data: z.infer<typeof Assignment>; close: () => 
       )}
       <Button
         loading={busy}
-        disabled={conflict}
+        disabled={conflict || containsExpression(value)}
         onClick={() => {
           setBusy(true);
           setError(false);

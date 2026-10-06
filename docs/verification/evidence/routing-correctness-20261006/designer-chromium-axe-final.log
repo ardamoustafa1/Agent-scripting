@@ -1,0 +1,29 @@
+[WebServer] (node:86384) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:86385) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 5 workers
+
+(node:86455) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86451) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86453) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86452) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86454) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [chromium] › e2e/lifecycle.spec.ts:155:1 › exposes semantic and JSON diff modes with keyboard navigation (1.7s)
+  ✓   5 [chromium] › e2e/lifecycle.spec.ts:111:1 › requires a change note and submits it with the BFF CSRF token (1.7s)
+  ✓   3 [chromium] › e2e/lifecycle.spec.ts:164:1 › filters the six industry templates without losing tenant gallery access (2.0s)
+  ✓   2 [chromium] › e2e/lifecycle.spec.ts:126:1 › continues authoring a published script in a new draft (2.1s)
+  ✓   1 [chromium] › e2e/lifecycle.spec.ts:178:3 › release accessibility in Light (3.1s)
+  ✓   8 [chromium] › e2e/lifecycle.spec.ts:188:1 › mention notification target opens the matching node thread (1.1s)
+  ✓   9 [chromium] › e2e/lifecycle.spec.ts:218:1 › approval and publication require passed regression, then update release state (1.4s)
+  ✓   6 [chromium] › e2e/lifecycle.spec.ts:178:3 › release accessibility in Dark (2.0s)
+  ✓   7 [chromium] › e2e/lifecycle.spec.ts:178:3 › release accessibility in High contrast (2.0s)
+  ✓  10 [chromium] › e2e/lifecycle.spec.ts:273:1 › assigns the script to a campaign using the BFF CSRF boundary (1.4s)
+
+  10 passed (6.7s)

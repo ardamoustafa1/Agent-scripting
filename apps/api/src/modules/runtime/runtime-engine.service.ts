@@ -12,6 +12,7 @@ import {
   type JsonValue,
   type ScriptDocument,
 } from '@verbis/script-schema';
+import { RoutingContextSchema } from '@verbis/sdk-connector';
 
 import { requestContext } from '../../common/context/request-context.js';
 import {
@@ -151,6 +152,30 @@ export class RuntimeEngineService {
       queue: row.interaction.queue,
       channel: row.interaction.channelType,
       status: row.interaction.status,
+    };
+  }
+  routingInput(interaction: { id: string; attributes: unknown }, tenantId: string) {
+    const envelope = z.object({ sealed: z.string() }).safeParse(interaction.attributes);
+    const data = envelope.success
+      ? z
+          .object({
+            routing: RoutingContextSchema.optional(),
+            customerId: z.string().max(256).optional(),
+            attachedData: z.record(z.string(), JsonValueSchema).optional(),
+          })
+          .parse(
+            JSON.parse(
+              this.keys.openString(
+                envelope.data.sealed,
+                `runtime:interaction:${tenantId}:${interaction.id}`,
+              ),
+            ),
+          )
+      : { attachedData: z.record(z.string(), JsonValueSchema).parse(interaction.attributes ?? {}) };
+    return {
+      routing: data.routing ?? {},
+      customerId: data.customerId,
+      attributes: data.attachedData ?? {},
     };
   }
   mappedPlatformIdentity(

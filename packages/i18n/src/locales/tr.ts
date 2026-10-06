@@ -1110,6 +1110,8 @@ export const tr: Catalog = {
       add: 'Kural ekle',
       description: 'Açıklama',
       depth: 'İç içe koşul sınırına ulaşıldı.',
+      routingExpressionsUnsupported:
+        'Atamalarda gelişmiş ifadeler desteklenmiyor. Kaydetmek için alan kurallarına dönüştürün.',
       advancedLeaf: 'Bu ifade gelişmiş modda korunur.',
       not: 'DEĞİL',
       group: 'Koşul grubu',

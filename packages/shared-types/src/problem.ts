@@ -275,6 +275,11 @@ export const PROBLEM_CATALOG = {
     slug: 'script/document-invalid',
     title: 'Script document is invalid',
   },
+  VERBIS_ROUTING_CONFIGURATION_INVALID: {
+    status: 503,
+    title: 'Routing configuration invalid',
+    slug: 'routing-configuration-invalid',
+  },
   VERBIS_INTEGRATION_FAILED: {
     status: 502,
     slug: 'integration-failed',

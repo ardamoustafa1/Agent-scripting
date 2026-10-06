@@ -1423,6 +1423,7 @@
     "designer.rules.ops.neq",
     "designer.rules.ops.notIn",
     "designer.rules.ops.startsWith",
+    "designer.rules.routingExpressionsUnsupported",
     "designer.rules.title",
     "designer.rules.value",
     "designer.rules.visual",
@@ -3185,6 +3186,7 @@
     "designer.rules.ops.neq",
     "designer.rules.ops.notIn",
     "designer.rules.ops.startsWith",
+    "designer.rules.routingExpressionsUnsupported",
     "designer.rules.title",
     "designer.rules.value",
     "designer.rules.visual",
@@ -3526,7 +3528,7 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 797,
+  "literalKeyCount": 796,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
@@ -4298,27 +4300,31 @@
     },
     {
       "file": "apps/designer-web/src/rules/assignment-rule.tsx",
-      "line": 45
+      "line": 48
     },
     {
       "file": "apps/designer-web/src/rules/assignment-rule.tsx",
-      "line": 108
+      "line": 111
     },
     {
       "file": "apps/designer-web/src/rules/assignment-rule.tsx",
-      "line": 113
+      "line": 116
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 76
+      "line": 31
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 153
+      "line": 90
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 303
+      "line": 168
+    },
+    {
+      "file": "apps/designer-web/src/rules/builder.tsx",
+      "line": 329
     },
     {
       "file": "apps/designer-web/src/rules/manager.tsx",

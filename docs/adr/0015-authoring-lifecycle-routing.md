@@ -39,3 +39,6 @@
 - New tables and columns in migration `20261001070000_authoring_routing`; enum value `approved`.
 - `DELETE` on `script_versions` is revoked from the runtime role.
 - Prompt-3 assignment fields (`validFrom`, `validTo`, `rule`) remain accepted as aliases.
+
+
+Routing context, hours gating, predicate admission, cache freshness and session admission are refined by [ADR-0040](0040-authoritative-routing-and-session-admission.md).
