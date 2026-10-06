@@ -143,8 +143,10 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      # pnpm install creates .env from .env.example (dev-only placeholders) and generates local keys.
       - run: pnpm install --frozen-lockfile
+      # `prepare` is skipped in CI, so create .env (dev-only placeholders, local keys) explicitly.
+      - name: Create dev .env
+        run: node scripts/ensure-env.mjs
       - name: Start PostgreSQL, Redis, NATS and Keycloak
         run: docker compose up -d --wait postgres redis nats keycloak
       - name: Migrate and seed

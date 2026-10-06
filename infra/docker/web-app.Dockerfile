@@ -33,5 +33,5 @@ COPY infra/docker/frame-sources.conf /etc/nginx/snippets/frame-sources.conf
 COPY infra/docker/security-headers.conf /etc/nginx/snippets/security-headers.conf
 COPY --from=builder /out /usr/share/nginx/html
 USER 101
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 CMD-SHELL wget -q -O- http://127.0.0.1:8080/health >/dev/null || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 CMD wget -q -O- http://127.0.0.1:8080/health >/dev/null || exit 1
 EXPOSE 8080
