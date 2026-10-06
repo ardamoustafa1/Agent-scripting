@@ -1,0 +1,31 @@
+name: Visual baselines (Linux)
+# Manual: regenerates the Linux screenshot baselines in the CI environment and uploads them.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  baselines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @verbis/agent-web exec playwright install --with-deps chromium
+      - run: pnpm build
+      - name: Update baselines
+        run: |
+          for app in designer-web agent-web admin-web; do
+            pnpm --filter "@verbis/$app" exec playwright test --project chromium --update-snapshots || true
+          done
+      - uses: actions/upload-artifact@v7
+        with:
+          name: linux-visual-baselines
+          path: apps/*/e2e/**/*-chromium-linux.png
+          if-no-files-found: error
+          retention-days: 7

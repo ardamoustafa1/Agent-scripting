@@ -149,10 +149,10 @@ jobs:
         run: node scripts/ensure-env.mjs
       - name: Start PostgreSQL, Redis, NATS and Keycloak
         run: docker compose up -d --wait postgres redis nats keycloak
-      - name: Migrate and seed
-        run: pnpm --filter @verbis/api db:migrate && pnpm --filter @verbis/api seed
       - name: Build
         run: pnpm --filter @verbis/api... --filter @verbis/admin-web... build
+      - name: Migrate and seed
+        run: pnpm --filter @verbis/api db:migrate && pnpm --filter @verbis/api seed
       - name: Start the API
         run: |
           set -a; . ./.env; set +a
@@ -408,7 +408,7 @@ jobs:
         run: SECURITY_BASE_URL=http://127.0.0.1:18080 node scripts/test-security.mjs headers
       - name: Passive baseline (no real tenant data or external target)
         run: |
-          docker run --rm --network verbis-zap -v "$PWD/zap-report:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://web:8080 -m 1 -c /dev/null -r baseline.html -J baseline.json
+          docker run --rm --network verbis-zap -v "$PWD/zap-report:/zap/wrk:rw" -v "$PWD/infra/zap/baseline.conf:/zap/wrk/baseline.conf:ro" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://web:8080 -m 1 -c baseline.conf -r baseline.html -J baseline.json
       - uses: actions/upload-artifact@v7
         if: always()
         with:
