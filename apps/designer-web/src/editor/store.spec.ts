@@ -211,3 +211,19 @@ describe('editor document transactions', () => {
     expect(store.getSnapshot().document).toEqual(fixture().getSnapshot().document);
   });
 });
+describe('field-level problems (D-09)', () => {
+  it('tracks problems by key, notifies subscribers, and ignores no-op updates', () => {
+    const store = fixture();
+    let calls = 0;
+    store.subscribe(() => calls++);
+    store.setFieldProblem('a', true);
+    store.setFieldProblem('a', true);
+    store.setFieldProblem('b', true);
+    expect(store.getSnapshot().fieldProblems).toBe(2);
+    store.setFieldProblem('a', false);
+    store.setFieldProblem('missing', false);
+    expect(store.getSnapshot().fieldProblems).toBe(1);
+    expect(calls).toBe(3);
+    expect(store.getSnapshot().history).toBe(0);
+  });
+});

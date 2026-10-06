@@ -221,6 +221,7 @@ export default function AssignmentsPage() {
   if (assignments.isError || campaigns.isError)
     return (
       <Failure
+        error={assignments.error}
         retry={() => {
           void assignments.refetch();
           void campaigns.refetch();
@@ -231,6 +232,7 @@ export default function AssignmentsPage() {
   const options = campaigns.data.data.map((c) => ({ value: c.id, label: c.name }));
   return (
     <section>
+      {!writable && <Alert title={t('designer.editor.assignmentPermission')} tone="info" />}
       <Link className="dw-back" to={`/scripts/${id}`}>
         {t('designer.workspace.back')}
       </Link>

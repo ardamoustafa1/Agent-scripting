@@ -10,7 +10,12 @@ async function fixture(
   failure?: number | 'script',
   policy?: 'block' | 'continue' | 'manual',
   integrationError?: 'TIMEOUT' | 'CIRCUIT_OPEN',
+  count = 2,
 ) {
+  const ids = Array.from(
+    { length: count },
+    (_, index) => `01928f3a-0000-7000-8000-${String(index + 1).padStart(12, '0')}`,
+  );
   const attaches: string[] = [];
   const states: Record<
     string,
@@ -97,7 +102,11 @@ async function fixture(
           id,
           userId: ids[0],
           state: 'wrapup',
-          startedAt: `2026-10-06T10:0${index}:00Z`,
+          desktopLabel: {
+            channel: index === 1 ? 'chat' : 'voice',
+            customerName: index === 1 ? 'Bora' : 'Ayşe',
+          },
+          startedAt: new Date(Date.UTC(2026, 9, 6, 10, index)).toISOString(),
         })),
         page: { nextCursor: null },
       };
@@ -180,11 +189,11 @@ for (const width of [390, 1440]) {
     await expect(page.getByRole('textbox', { name: 'Notes', exact: true })).toHaveCount(1);
     await expect(page.locator(`#interaction-${ids[0]}`)).toHaveAttribute('inert', '');
     await expect(page.locator(`#interaction-${ids[0]}`)).toBeHidden();
-    expect(attaches.filter((path) => path.endsWith('/attach'))).toHaveLength(2);
+    await expect.poll(() => attaches.filter((path) => path.endsWith('/attach')).length).toBe(2);
     await page.keyboard.press('Home');
     await expect(voice).toBeFocused();
     await expect(voice).toHaveAttribute('aria-selected', 'true');
-    expect(attaches.filter((path) => path.endsWith('/attach'))).toHaveLength(2);
+    await expect.poll(() => attaches.filter((path) => path.endsWith('/attach')).length).toBe(2);
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   });
 }
@@ -245,3 +254,26 @@ for (const reason of ['TIMEOUT', 'CIRCUIT_OPEN'] as const) {
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   });
 }
+
+test('25 session tabs hydrate only the active runtime and attach once', async ({ page }) => {
+  const requests: string[] = [];
+  page.on('request', (request) => {
+    requests.push(new URL(request.url()).pathname);
+  });
+  const started = Date.now();
+  const attaches = await fixture(page, undefined, undefined, undefined, 25);
+  await expect(page.getByRole('tab')).toHaveCount(25);
+  await expect(page.getByRole('textbox', { name: 'Notes', exact: true })).toBeVisible();
+  expect(attaches.filter((path) => path.endsWith('/attach'))).toHaveLength(1);
+  expect(requests.filter((path) => path.endsWith('/desktop')).length).toBeLessThanOrEqual(2);
+  expect(requests.filter((path) => path.endsWith('/socket-ticket')).length).toBeLessThanOrEqual(2);
+  test.info().annotations.push({
+    type: 'measurement',
+    description: JSON.stringify({
+      sessions: 25,
+      firstPanelMs: Date.now() - started,
+      desktopRequests: requests.filter((path) => path.endsWith('/desktop')).length,
+      attaches: attaches.length,
+    }),
+  });
+});

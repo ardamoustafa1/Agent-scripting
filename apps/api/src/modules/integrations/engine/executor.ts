@@ -32,6 +32,7 @@ import { checkGraphql, soapEnvelope, xmlToJson } from './protocols.js';
 import { IntegrationError, secureTransport } from './transport.js';
 
 import type { Call, DataSource, WireRequest, WireResponse } from './contracts.js';
+import type { GatewayDispatch } from './gateway-dispatch.js';
 import type { Transport } from './transport.js';
 
 export interface IntegrationCache {
@@ -59,6 +60,7 @@ export class IntegrationExecutor {
   constructor(
     private readonly cache: IntegrationCache,
     private readonly transport: Transport = secureTransport,
+    private readonly gateway?: GatewayDispatch,
   ) {
     this.authentication = new Authentication(transport);
     instruments.breakerOpen.addCallback((result) => {
@@ -165,6 +167,8 @@ export class IntegrationExecutor {
         result = await mapValue(source.definition.mapping.response, raw);
       } else {
         const canCache =
+          !source.definition.privateGateway &&
+          source.protocol !== 'sql' &&
           source.policy.cacheTtlSeconds > 0 &&
           source.policy.piiPaths.length === 0 &&
           !source.policy.containsPii &&
@@ -265,7 +269,13 @@ export class IntegrationExecutor {
               outgoing.body = soapEnvelope(source.definition.soap, encoded, authResult.security);
           }
           const response = await inSpan('integration.upstream', () =>
-            this.transport(outgoing, source.policy, tenantOrigins, signal),
+            source.definition.privateGateway
+              ? this.gateway
+                ? this.gateway(tenant, source, call, outgoing, tenantOrigins, signal)
+                : Promise.reject(new IntegrationError('GATEWAY_DISABLED'))
+              : source.protocol === 'sql'
+                ? Promise.reject(new IntegrationError('SQL_GATEWAY_REQUIRED'))
+                : this.transport(outgoing, source.policy, tenantOrigins, signal),
           );
           if (response.status === 401) this.authentication.invalidate(tenant);
           if (response.status >= 400)

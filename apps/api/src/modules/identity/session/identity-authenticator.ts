@@ -139,11 +139,18 @@ export class IdentityAuthenticator implements RequestAuthenticator {
 
   /**
    * RFC 8705 `x5t#S256` of the client certificate: from this process's TLS socket, or from the
-   * trusted proxy header (MTLS_CLIENT_CERT_HEADER, URL-encoded PEM) when configured.
+   * verified proxy header (URL-encoded PEM + shared MTLS_PROXY_SECRET proof) when configured.
    */
   clientCertificateThumbprint(request: FastifyRequest): string | undefined {
     try {
       if (this.env.MTLS_CLIENT_CERT_HEADER !== '') {
+        const proof = request.headers['x-verbis-mtls-proxy-secret'];
+        if (
+          this.env.MTLS_PROXY_SECRET.length < 32 ||
+          typeof proof !== 'string' ||
+          !safeEqual(proof, this.env.MTLS_PROXY_SECRET)
+        )
+          return undefined;
         const value = request.headers[this.env.MTLS_CLIENT_CERT_HEADER];
         if (typeof value !== 'string' || value === '') return undefined;
         const certificate = new X509Certificate(decodeURIComponent(value));

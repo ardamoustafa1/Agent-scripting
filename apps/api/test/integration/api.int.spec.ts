@@ -794,6 +794,31 @@ describe('other modules', () => {
     expect(secrets.body).not.toContain('ciphertext');
   });
 
+  it('lists team groups by name for scope pickers without leaking other tenants (U-05)', async () => {
+    const by = { createdBy: 't', updatedBy: 't' };
+    await owner.group.create({ data: { tenantId: a.tenantId, displayName: 'Ekip Kuzey', ...by } });
+    await owner.group.create({
+      data: { tenantId: b.tenantId, displayName: 'Foreign team', ...by },
+    });
+    const res = await app.inject({
+      method: 'GET',
+      url: '/v1/groups?sort=displayName&limit=100',
+      headers: await a.auth(),
+    });
+    expect(res.statusCode).toBe(200);
+    const page = res.json<{ data: { id: string; displayName: string }[] }>();
+    expect(page.data.map((group) => group.displayName)).toContain('Ekip Kuzey');
+    expect(res.body).not.toContain('Foreign team');
+    // Names only: membership and IdP linkage are not exposed to pickers.
+    expect(Object.keys(page.data[0] ?? {}).sort()).toEqual([
+      'createdAt',
+      'displayName',
+      'id',
+      'updatedAt',
+      'version',
+    ]);
+  });
+
   it('creates assignments only with same-tenant references', async () => {
     const auth = await a.auth();
     const campaign = (await createCampaign(a, { name: 'Assigned' })).json<{ id: string }>();

@@ -196,3 +196,25 @@ it('shows assignment loading errors', async () => {
   );
   expect(await screen.findByRole('button', { name: f.label('workspace.retry') })).toBeTruthy();
 });
+it('explains campaign permission when a designer cannot save assignments', async () => {
+  const f = await mountDesigner(
+    <AssignmentsPage />,
+    {
+      [params]: { data: [row], page: { nextCursor: null } },
+      '/v1/campaigns?limit=100': {
+        data: [{ id: campaignId, name: 'Synthetic campaign' }],
+        page: { nextCursor: null },
+      },
+    },
+    {
+      path: `/scripts/${scriptId}/assignments`,
+      route: '/scripts/:id/assignments',
+      ability: createAbility([
+        { action: 'read', subject: 'Campaign' },
+        { action: 'read', subject: 'Script' },
+      ]),
+    },
+  );
+  expect(await screen.findByText(f.label('editor.assignmentPermission'))).toBeTruthy();
+  expect(f.requests.some((r) => r.method === 'POST')).toBe(false);
+});

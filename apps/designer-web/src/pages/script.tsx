@@ -91,7 +91,7 @@ export default function ScriptPage() {
               newDocument({
                 id,
                 name: script.data.name,
-                pageName: t('designer.editor.pages'),
+                pageName: t('designer.editor.pageDefault', { number: 1 }),
                 next: {
                   tr: t('designer.workspace.next', { lng: 'tr' }),
                   en: t('designer.workspace.next', { lng: 'en' }),
@@ -122,6 +122,7 @@ export default function ScriptPage() {
   if (script.isError)
     return (
       <Failure
+        error={script.error}
         retry={() => {
           void script.refetch();
         }}
@@ -228,6 +229,7 @@ export default function ScriptPage() {
                 <Loading />
               ) : versions.isError ? (
                 <Failure
+                  error={versions.error}
                   retry={() => {
                     void versions.refetch();
                   }}
@@ -349,6 +351,7 @@ export default function ScriptPage() {
               label: t('designer.workspace.nav.variables'),
               content: document.isError ? (
                 <Failure
+                  error={document.error}
                   retry={() => {
                     void document.refetch();
                   }}

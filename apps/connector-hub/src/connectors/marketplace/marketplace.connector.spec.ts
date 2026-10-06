@@ -33,7 +33,7 @@ describe('marketplace registry and security', () => {
         createConnector(
           profile.type.replaceAll('-', '_'),
           { kind: profile.kind },
-          { simulatorEnabled: false },
+          { simulatorEnabled: false, marketplaceBridgeEnabled: true },
         )?.kind,
       ).toBe(profile.kind);
       expect(

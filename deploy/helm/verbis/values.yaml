@@ -86,6 +86,9 @@ services:
       CONNECTOR_HUB_HOST: 0.0.0.0
       CONNECTOR_HUB_PORT: '4100'
       SIMULATOR_ENABLED: 'false'
+      HUB_MARKETPLACE_BRIDGE_ENABLED: 'false'
+      # HUB_DLQ_NATS_URL (required in production) comes from existingSecret.
+      NATS_STREAM_REPLICAS: '3'
       HUB_CLIENT_CERT_FILE: /var/run/verbis/client.crt
       HUB_CLIENT_KEY_FILE: /var/run/verbis/client.key
       HUB_CA_FILE: /var/run/verbis/ca.crt
@@ -341,6 +344,8 @@ internalIngress:
   host: api.internal.example.invalid
   tlsSecret: verbis-internal-tls
   clientCASecret: verbis-client-ca
+  # Operator-managed edge header map; never commit its shared secret value.
+  proxyHeadersConfigMap: verbis-private-mtls-headers
 routing:
   apiService: ''
   hubService: ''

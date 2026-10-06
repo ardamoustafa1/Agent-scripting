@@ -1,0 +1,9 @@
+# Fake test fixtures only (integration edge-proxy secret, Avaya signer test key).
+apps/api/test/integration/connector-hub.int.spec.ts:generic-api-key:34
+apps/api/test/integration/connector-hub.int.spec.ts:generic-api-key:91
+apps/api/test/integration/identity-local-service.int.spec.ts:generic-api-key:302
+apps/api/test/integration/identity-local-service.int.spec.ts:generic-api-key:56
+apps/api/test/integration/launch.int.spec.ts:generic-api-key:284
+apps/api/test/integration/launch.int.spec.ts:generic-api-key:59
+apps/api/test/integration/private-egress.int.spec.ts:generic-api-key:28
+apps/connector-avaya-aes-sidecar/src/test/java/io/verbis/avaya/sidecar/aacc/NotifyTokenSignerTest.java:generic-api-key:10

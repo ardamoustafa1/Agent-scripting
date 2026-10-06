@@ -5,6 +5,7 @@ import { Box, Button, useRuntimePaths, type RendererProps } from '@verbis/core-r
 import type { ActionInput, JsonValue } from '@verbis/script-schema';
 
 import { readPath } from './environment.js';
+import { isSecureInput } from './secure-input-types.js';
 
 export interface ItemScope {
   item: JsonValue;
@@ -115,9 +116,7 @@ export function useField(component: RendererProps) {
     else {
       const binding = component.node.bindings.find((b) => b.prop === prop && 'variable' in b);
       if (binding && 'variable' in binding) {
-        const secure = ['tcknInput', 'vknInput', 'ibanInput', 'creditCardInput'].includes(
-          component.node.type,
-        );
+        const secure = isSecureInput(component.node.type);
         if (secure)
           component.runtime.store.setVariable(
             binding.variable,

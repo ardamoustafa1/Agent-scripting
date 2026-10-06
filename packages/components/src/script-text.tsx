@@ -26,8 +26,11 @@ export function interpolateText(
 ): string {
   if (source.length > 16384) throw new RuntimeProblem('VERBIS_TEMPLATE_LIMIT');
   return source.replace(/\{\{\s*([a-zA-Z][a-zA-Z0-9_.]*)\s*\}\}/g, (_match, path: string) => {
-    const format = (value: unknown) =>
-      escape ? escapeTemplateValue(display(value)) : display(value);
+    // Empty values stay visible as `[path]` (M-Z6/D-10) instead of collapsing the sentence.
+    const format = (value: unknown) => {
+      const shown = display(value).trim() === '' ? `[${path}]` : display(value);
+      return escape ? escapeTemplateValue(shown) : shown;
+    };
     if (path.startsWith('item.')) return format(readPath(item, path.slice(5)));
     const variablePath = path.startsWith('vars.') ? path.slice(5) : path;
     const [key, ...rest] = variablePath.split('.');

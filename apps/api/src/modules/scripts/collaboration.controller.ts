@@ -1,6 +1,7 @@
-import { Controller, Post, HttpCode, Inject, Req } from '@nestjs/common';
+import { Controller, Get, Post, HttpCode, Inject, Req } from '@nestjs/common';
 import { z } from 'zod';
 
+import { ScriptDocumentSchema } from '@verbis/script-schema';
 import { CollaborationTicketSchema } from '@verbis/shared-types';
 
 import { UuidSchema } from '../../common/dto.js';
@@ -32,6 +33,35 @@ export class CollaborationController {
     @ZParam('number', NumberSchema) number: number,
   ) {
     return this.service.issue(request, id, number);
+  }
+  @Get('conflicts')
+  @Can('update', 'Script')
+  @ApiOperation({ summary: 'List preserved collaborative conflicts for this version' })
+  @ApiResponse(
+    200,
+    'Recovery copies',
+    z.array(
+      z.object({
+        id: z.uuid(),
+        baseVersion: z.int(),
+        currentVersion: z.int(),
+        createdAt: z.string(),
+      }),
+    ),
+  )
+  conflicts(@ZParam('id', UuidSchema) id: string, @ZParam('number', NumberSchema) number: number) {
+    return this.service.conflicts(id, number);
+  }
+  @Get('conflicts/:conflictId')
+  @Can('update', 'Script')
+  @ApiOperation({ summary: 'Read a tenant-scoped recovery document without overwriting the draft' })
+  @ApiResponse(200, 'Preserved document', z.object({ document: ScriptDocumentSchema }))
+  conflict(
+    @ZParam('id', UuidSchema) id: string,
+    @ZParam('number', NumberSchema) number: number,
+    @ZParam('conflictId', UuidSchema) conflictId: string,
+  ) {
+    return this.service.conflict(id, number, conflictId);
   }
   @ApiOperation({ summary: 'Persist and freeze the room before changing the draft lifecycle' })
   @ApiResponse(200, 'Room closed', z.object({ closed: z.boolean() }))

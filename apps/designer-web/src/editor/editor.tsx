@@ -37,7 +37,10 @@ import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
 
 import { Canvas } from './canvas.js';
-import { DropGuides } from './drop-guides.js';
+import { DataSources } from './data-sources.js';
+import { dragAnnouncements, dragInstructions, dragLabel } from './drag-a11y.js';
+import { DropGuides, measureNodes } from './drop-guides.js';
+import { resolveDrop } from './drop-position.js';
 import { HeatmapContext, useHeatmap } from './heatmap.js';
 import { Inspector } from './inspector.js';
 import { LeftPanel } from './layers.js';
@@ -94,6 +97,7 @@ export default function EditorPage() {
   if (version.isError)
     return (
       <Failure
+        error={version.error}
         retry={() => {
           void version.refetch();
         }}
@@ -124,6 +128,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
     [help, setHelp] = useState(false),
     [expanded, setExpanded] = useState(false),
     [ghost, setGhost] = useState<string | null>(null),
+    [placed, setPlaced] = useState(''),
     [save, setSave] = useState('saved'),
     [saved, setSaved] = useState(state.document),
     [documentRevision, setDocumentRevision] = useState(version.version);
@@ -315,22 +320,20 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
         activatorEvent instanceof MouseEvent
           ? { x: activatorEvent.clientX + delta.x, y: activatorEvent.clientY + delta.y }
           : null;
-      const elements = [...document.querySelectorAll('[data-editor-node]')].reverse();
-      if (pointer)
-        for (const element of elements) {
-          const rect = element.firstElementChild?.getBoundingClientRect();
-          if (
-            rect &&
-            pointer.x >= rect.left &&
-            pointer.x <= rect.right &&
-            pointer.y >= rect.top &&
-            pointer.y <= rect.bottom
-          ) {
-            parent = element.getAttribute('data-editor-node') ?? undefined;
-            break;
-          }
-        }
-      parent ??= target();
+      const kind = data?.type ?? (data?.nodeId ? store.node(data.nodeId)?.type : undefined);
+      const resolved =
+        pointer && kind ? resolveDrop(store, kind, data?.nodeId, pointer, measureNodes()) : null;
+      if (resolved) {
+        parent = resolved.parent;
+        index = resolved.index;
+      } else {
+        // Keyboard drops insert after the selected leaf (or append to the selected container).
+        const picked = state.selection[0];
+        const pickedLocation = picked ? store.location(picked) : undefined;
+        parent = target();
+        if (data?.type && pickedLocation?.parent?.id === parent && picked !== parent && !pointer)
+          index = (pickedLocation?.index ?? 0) + 1;
+      }
     }
     const type = data?.type ?? (data?.nodeId ? store.node(data.nodeId)?.type : undefined);
     while (parent && type && !store.canDrop(parent, type, data?.nodeId))
@@ -360,6 +363,22 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
         });
       }
     });
+    // D-04: dnd-kit only knows the droppable id; announce the real sibling position.
+    const placedId = data?.type ? store.getSnapshot().selection[0] : data?.nodeId;
+    const placedAt = placedId ? store.location(placedId) : undefined;
+    if (placedAt?.parent)
+      setPlaced(
+        t('designer.editor.dnd.placed', {
+          name: t(`designer.editor.componentNames.${placedAt.node.type}`, {
+            defaultValue: placedAt.node.type,
+          }),
+          position: (placedAt.index ?? 0) + 1,
+          count: placedAt.parent.children?.length ?? 1,
+          target: t(`designer.editor.componentNames.${placedAt.parent.type}`, {
+            defaultValue: placedAt.parent.type,
+          }),
+        }),
+      );
   };
   const selected = state.selection[0];
   const ancestors: string[] = [];
@@ -370,6 +389,12 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
   }
   return (
     <div className="ed-workspace" data-expanded={expanded}>
+      <a className="vb-skip-link" href="#editor-palette">
+        {t('designer.editor.jumpPalette')}
+      </a>
+      <a className="vb-skip-link" href="#editor-canvas">
+        {t('designer.editor.jumpCanvas')}
+      </a>
       <header className="ed-toolbar">
         <div className="ed-identity">
           <Badge>{t('designer.editor.title')}</Badge>
@@ -388,6 +413,9 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
           </Badge>
         </div>
         <div className="ed-commands">
+          {version.state === 'draft' &&
+            ability.can('update', 'Script') &&
+            ability.can('read', 'Integration') && <DataSources store={store} />}
           {(
             ['undo', 'redo', 'copy', 'paste', 'duplicate', 'delete', 'group', 'ungroup'] as const
           ).map((action) => (
@@ -547,9 +575,16 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
           </Button>
         ))}
       </nav>
+      {mode === 'screen' && store.readonlyPages.has(state.pageId) && (
+        <Alert title={t('designer.editor.linkedReadonly')} tone="warning" />
+      )}
       {mode === 'screen' && (
         <DndContext
           sensors={sensors}
+          accessibility={{
+            announcements: dragAnnouncements(store, t),
+            screenReaderInstructions: dragInstructions(t),
+          }}
           collisionDetection={(args) => {
             const hits = pointerWithin(args);
             return hits.length ? hits : rectIntersection(args);
@@ -563,7 +598,13 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
           }}
         >
           <DropGuides store={store} />
-          <fieldset className="ed-grid" disabled={state.writeSuspended}>
+          <span className="vb-sr-only" role="status">
+            {placed}
+          </span>
+          <fieldset
+            className="ed-grid"
+            disabled={state.writeSuspended || store.readonlyPages.has(state.pageId)}
+          >
             <legend className="vb-sr-only">{t('designer.editor.title')}</legend>
             <LeftPanel store={store} />
             <HeatmapContext.Provider value={heatmap.rows}>
@@ -571,7 +612,9 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
             </HeatmapContext.Provider>
             <Inspector store={store} />
           </fieldset>
-          <DragOverlay>{ghost && <div className="ed-drag-ghost">{ghost}</div>}</DragOverlay>
+          <DragOverlay>
+            {ghost && <div className="ed-drag-ghost">{dragLabel(ghost, store, t)}</div>}
+          </DragOverlay>
         </DndContext>
       )}
       <Suspense fallback={<Loading />}>
@@ -630,7 +673,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
         </details>
         <span role="status">
           {t('designer.editor.validation', {
-            count: issues.filter((i) => i.severity === 'error').length,
+            count: issues.filter((i) => i.severity === 'error').length + state.fieldProblems,
           })}
         </span>
         <span>

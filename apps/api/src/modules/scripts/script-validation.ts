@@ -72,10 +72,16 @@ export async function validateDataSourceReferences(
       where: { tenantId, key, deletedAt: null },
       select: { id: true, version: true, definition: true },
     });
-    const definition = IntegrationDefinitionSchema.safeParse(row?.definition);
+    const snapshot = row
+      ? await tx.dataSourceVersion.findFirst({
+          where: { tenantId, dataSourceId: row.id, version: source.version },
+        })
+      : null;
+    const revision = snapshot ?? row;
+    const definition = IntegrationDefinitionSchema.safeParse(revision?.definition);
     const message = !row
       ? 'data source is missing in this tenant'
-      : row.version !== source.version
+      : revision?.version !== source.version
         ? 'data source version does not match the pinned version'
         : !definition.success
           ? 'data source definition is invalid'

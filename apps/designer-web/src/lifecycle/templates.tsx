@@ -100,7 +100,7 @@ export default function TemplateGallery() {
       setBusy(false);
     }
   };
-  if (query.isError) return <Failure retry={() => void query.refetch()} />;
+  if (query.isError) return <Failure error={query.error} retry={() => void query.refetch()} />;
   if (!query.data) return <Loading />;
   const label = (row: z.infer<typeof Templates>[number]) =>
     row.builtIn ? t(`designer.lifecycle.templates.${row.id}`) : row.name;

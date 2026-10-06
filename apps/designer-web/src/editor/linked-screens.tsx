@@ -9,6 +9,7 @@ import { request } from '../api/client.js';
 import { useWorkspace } from '../workspace/context.js';
 
 const Impact = z.object({
+  hiddenCampaignCount: z.int().nonnegative().default(0),
   affected: z.array(
     z.object({
       scriptId: z.uuid(),
@@ -80,6 +81,9 @@ export function LinkedScreens({ ids }: { ids: readonly string[] }) {
       <p>{t('designer.editor.linkedReadonly')}</p>
       {impacts.map((q, index) => (
         <div key={ids[index]}>
+          {Boolean(q.data?.hiddenCampaignCount) && (
+            <p>{t('designer.editor.hiddenCampaigns', { count: q.data?.hiddenCampaignCount })}</p>
+          )}
           {q.isError ? (
             <Alert title={t('designer.editor.impactUnavailable')} tone="warning" />
           ) : q.isPending ? (

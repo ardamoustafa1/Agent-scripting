@@ -10,6 +10,7 @@ import {
   RuntimeCommandsController,
   RuntimeSupervisorController,
 } from './runtime-commands.controller.js';
+import { RuntimeDataService } from './runtime-data.service.js';
 import { RuntimeEngineService } from './runtime-engine.service.js';
 import { RuntimeEventsHandler } from './runtime-events.handler.js';
 import { RuntimeInteractionsHandler } from './runtime-interactions.handler.js';
@@ -32,6 +33,7 @@ import { SecureCaptureService } from './secure-capture.service.js';
     RuntimeSupervisorController,
   ],
   providers: [
+    RuntimeDataService,
     RuntimeCipher,
     RuntimeService,
     RuntimeRepository,

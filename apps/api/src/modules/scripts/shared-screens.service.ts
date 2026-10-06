@@ -1,14 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { z } from 'zod';
 
+import { asSubject } from '@verbis/authz';
 import { PageSchema } from '@verbis/script-schema';
 
 import { currentActor } from '../../common/actor.js';
 import { canonicalJson, sha256Hex } from '../../common/crypto/canonical-json.js';
+import { uuidv7 } from '../../common/crypto/uuid.js';
 import { ConflictError, DomainError, NotFoundError } from '../../common/errors/domain-errors.js';
 import { TenantDb } from '../../infra/database/tenant-db.js';
 import { OutboxWriter } from '../../infra/outbox/outbox.writer.js';
 import { AuditService } from '../audit/audit.service.js';
+import { AuthzService } from '../authz/authz.service.js';
 
 import {
   ScreenFragmentSchema,
@@ -80,6 +83,7 @@ export class SharedScreensService {
     @Inject(TenantDb) private readonly db: TenantDb,
     @Inject(AuditService) private readonly audit: AuditService,
     @Inject(OutboxWriter) private readonly outbox: OutboxWriter,
+    @Inject(AuthzService) private readonly authz: AuthzService,
   ) {}
 
   async list() {
@@ -118,7 +122,7 @@ export class SharedScreensService {
       throw new ConflictError('A shared screen with this key exists');
     }
     const actor = currentActor();
-    const id = crypto.randomUUID();
+    const id = uuidv7();
     await tx.sharedScreen.create({
       data: {
         id,
@@ -180,6 +184,16 @@ export class SharedScreensService {
       input.fragment,
     );
     const impact = await this.impact(sharedScreenId);
+    // Domain events must invalidate every consumer, regardless of the caller's display scope.
+    const consumers = await tx.scriptScreenLink.findMany({
+      where: {
+        tenantId,
+        sharedScreenId,
+        mode: 'linked',
+        scriptVersion: { deletedAt: null, state: { not: 'retired' } },
+      },
+      select: { scriptVersion: { select: { scriptId: true } } },
+    });
     await this.audit.record(tx, {
       action: 'screen.sharedScreen.versionPublished',
       target: { type: 'SharedScreen', id: sharedScreenId },
@@ -194,7 +208,7 @@ export class SharedScreensService {
         sharedScreenId,
         number: version.number,
         semver: input.semver,
-        affectedScriptIds: [...new Set(impact.affected.map((a) => a.scriptId))],
+        affectedScriptIds: [...new Set(consumers.map((link) => link.scriptVersion.scriptId))],
       },
     });
     return { version, impact };
@@ -231,7 +245,38 @@ export class SharedScreensService {
       },
       orderBy: [{ scriptVersionId: 'asc' }],
     });
-    const affected = links.map((l) => ({
+    const assignments = await tx.assignment.findMany({
+      where: {
+        tenantId,
+        scriptId: { in: [...new Set(links.map((link) => link.scriptVersion.script.id))] },
+        deletedAt: null,
+        campaign: { deletedAt: null },
+      },
+      select: { scriptId: true, campaignId: true, campaign: { select: { name: true } } },
+    });
+    const campaignIds = [...new Set(assignments.map((a) => a.campaignId))];
+    const hiddenCampaignCount = campaignIds.filter(
+      (id) => !this.authz.can('read', asSubject('Campaign', { id })),
+    ).length;
+    const campaigns = [
+      ...new Map(
+        assignments
+          .filter((a) => this.authz.can('read', asSubject('Campaign', { id: a.campaignId })))
+          .map((a) => [a.campaignId, { id: a.campaignId, name: a.campaign.name }]),
+      ).values(),
+    ];
+    const visibleLinks = links.filter((link) =>
+      this.authz.can(
+        'read',
+        asSubject('Script', {
+          id: link.scriptVersion.script.id,
+          campaignIds: assignments
+            .filter((a) => a.scriptId === link.scriptVersion.script.id)
+            .map((a) => a.campaignId),
+        }),
+      ),
+    );
+    const affected = visibleLinks.map((l) => ({
       scriptId: l.scriptVersion.script.id,
       scriptName: l.scriptVersion.script.name,
       versionId: l.scriptVersion.id,
@@ -244,7 +289,7 @@ export class SharedScreensService {
       /** Drafts pick the update up when re-saved; published versions need a new script version. */
       action: l.scriptVersion.state === 'draft' ? 'resave_draft' : 'new_script_version',
     }));
-    return { sharedScreenId, latest, affected };
+    return { sharedScreenId, latest, affected, campaigns, hiddenCampaignCount };
   }
 
   /** Resolves requested uses to fragments (pinned to a concrete shared-screen version). */
@@ -292,7 +337,7 @@ export class SharedScreensService {
     const checksum = fragmentChecksum(fragment);
     const row = await tx.sharedScreenVersion.create({
       data: {
-        id: crypto.randomUUID(),
+        id: uuidv7(),
         tenantId: this.db.tenantId(),
         sharedScreenId,
         number,

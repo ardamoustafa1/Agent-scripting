@@ -80,6 +80,7 @@ function fixture(signing = keys) {
     assignment: { findMany: vi.fn().mockResolvedValue([{ campaignId: tenant }]) },
     sharedScreen: { findFirst: vi.fn().mockResolvedValue(null) },
     sharedScreenVersion: { findFirst: vi.fn().mockResolvedValue({ number: 1 }) },
+    dataSourceVersion: { findFirst: vi.fn().mockResolvedValue(null) },
     dataSource: { findFirst: vi.fn().mockResolvedValue(null) },
   };
   const scripts = {
@@ -218,6 +219,22 @@ it('exports pinned integration dependencies without production profiles, pending
   expect(pkg.payload.integrations![0]!.definition.pendingPromotion).toBeUndefined();
   expect(f.source.definition.profiles.prod).toBeDefined();
   expect(f.source.definition.pendingPromotion).toBeDefined();
+});
+
+it('rejects export of different immutable pins for the same integration key without losing a dependency', async () => {
+  const f = dependencyFixture();
+  const second = structuredClone(f.version);
+  second.document.dataSources[0]!.version = 2;
+  f.tx.scriptVersion.findFirst.mockResolvedValueOnce(f.version).mockResolvedValueOnce(second);
+  await expect(
+    run(() =>
+      f.service.export({
+        ...input,
+        items: [...input.items, { scriptId: tenant, versionNumber: 1 }],
+      }),
+    ),
+  ).rejects.toThrow('Conflicting integration pins');
+  expect(f.audit.record).not.toHaveBeenCalled();
 });
 
 it.each([null, 2])(
@@ -468,3 +485,38 @@ it.each(['newScreen', 'sameVersion', 'changedChecksum', 'olderVersion', 'newerVe
     }
   },
 );
+
+it('exports the historical pinned integration rather than the changed live definition', async () => {
+  const f = fixture();
+  f.version.document.dataSources = [
+    DataSourceRefSchema.parse({ id: 'lookup', ref: 'tenant-datasource:lookup', version: 1 }),
+  ];
+  const revision = {
+    id,
+    tenantId: tenant,
+    key: 'lookup',
+    version: 1,
+    protocol: 'rest',
+    definition: IntegrationDefinitionSchema.parse({
+      baseUrl: 'https://old.test',
+      endpoint: '/old',
+    }),
+    policy: IntegrationPolicySchema.parse({}),
+    secretRefs: [],
+  };
+  f.tx.dataSource.findFirst.mockResolvedValue({
+    ...revision,
+    version: 2,
+    definition: IntegrationDefinitionSchema.parse({
+      baseUrl: 'https://new.test',
+      endpoint: '/new',
+    }),
+  });
+  f.tx.dataSourceVersion.findFirst.mockResolvedValue(revision);
+  const result = await run(() =>
+    f.service.export({ items: [{ scriptId: id, versionNumber: 1 }], targetEnvironments: [] }),
+  );
+  expect(result.payload.integrations).toMatchObject([
+    { version: 1, definition: { baseUrl: 'https://old.test', endpoint: '/old' } },
+  ]);
+});

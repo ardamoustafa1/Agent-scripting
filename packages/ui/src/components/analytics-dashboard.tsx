@@ -52,7 +52,28 @@ export interface AnalyticsDashboardProps {
   onSchedule?: (schedule: AnalyticsSchedule) => Promise<void>;
   schedules?: { id: string; nextRunAt: string }[] | undefined;
   onDeleteSchedule?: (id: string) => Promise<void>;
+  /** Named choices; without them the filters fall back to typed ids (U-05). */
+  campaignOptions?: readonly AnalyticsOption[] | undefined;
+  teamOptions?: readonly AnalyticsOption[] | undefined;
+  recipientOptions?: readonly AnalyticsOption[] | undefined;
+  /** D-17: ask the server for matches instead of filtering only the already loaded page. */
+  onOptionSearch?: ((kind: 'campaign' | 'team' | 'recipient', query: string) => void) | undefined;
 }
+export interface AnalyticsOption {
+  value: string;
+  label: string;
+}
+const CHANNELS = [
+  'voice',
+  'chat',
+  'email',
+  'video',
+  'social',
+  'messaging',
+  'sms',
+  'whatsapp',
+  'callback',
+] as const;
 function SankeyView({ paths }: { paths: Dashboard['paths'] }) {
   // Stage copies turn revisits and cyclic paths into a DAG; never feed cycles to Sankey layout.
   const links = paths.slice(0, 24);
@@ -88,6 +109,10 @@ export function AnalyticsDashboard({
   onSchedule,
   schedules,
   onDeleteSchedule,
+  campaignOptions,
+  teamOptions,
+  recipientOptions,
+  onOptionSearch,
 }: AnalyticsDashboardProps) {
   const { t, i18n } = useTranslation(),
     [busy, setBusy] = useState(false),
@@ -95,7 +120,10 @@ export function AnalyticsDashboard({
     [confirmation, setConfirmation] = useState(''),
     [frequency, setFrequency] = useState<'daily' | 'weekly'>('weekly'),
     [hour, setHour] = useState(8),
-    [recipients, setRecipients] = useState('');
+    [recipients, setRecipients] = useState(''),
+    [picked, setPicked] = useState<string[]>([]),
+    [recipientSearch, setRecipientSearch] = useState(''),
+    [recipientsMissing, setRecipientsMissing] = useState(false);
   const number = (n: number | null) =>
       n === null
         ? '—'
@@ -240,6 +268,14 @@ export function AnalyticsDashboard({
         className="vb-analytics-filters"
         onSubmit={(e) => {
           e.preventDefault();
+          const recipientUserIds = recipientOptions
+            ? picked
+            : recipients
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean);
+          setRecipientsMissing(recipientUserIds.length === 0);
+          if (!recipientUserIds.length) return;
           void operation(
             () =>
               onSchedule({
@@ -247,10 +283,7 @@ export function AnalyticsDashboard({
                 frequency,
                 hourUtc: hour,
                 enabled: true,
-                recipientUserIds: recipients
-                  .split(',')
-                  .map((s) => s.trim())
-                  .filter(Boolean),
+                recipientUserIds,
               }),
             'analytics.scheduleSaved',
           );
@@ -280,18 +313,71 @@ export function AnalyticsDashboard({
             }}
           />
         </label>
-        <label>
-          {t('analytics.recipients')}
-          <input
-            required
-            value={recipients}
-            onChange={(e) => {
-              setRecipients(e.target.value);
-            }}
-            placeholder={t('analytics.recipientsPlaceholder')}
-          />
-        </label>
-        <p className="vb-analytics-help">{t('analytics.recipientsHint')}</p>
+        {recipientOptions ? (
+          <fieldset className="vb-analytics-recipients">
+            <legend>{t('analytics.recipients')}</legend>
+            <label>
+              <span className="vb-sr-only">{t('analytics.recipientSearch')}</span>
+              <input
+                type="search"
+                value={recipientSearch}
+                placeholder={t('analytics.recipientSearch')}
+                onChange={(e) => {
+                  setRecipientSearch(e.target.value);
+                  onOptionSearch?.('recipient', e.target.value);
+                }}
+              />
+            </label>
+            <div className="vb-analytics-recipient-list">
+              {recipientOptions
+                .filter((option) =>
+                  option.label
+                    .toLocaleLowerCase(i18n.language)
+                    .includes(recipientSearch.toLocaleLowerCase(i18n.language)),
+                )
+                .map((option) => (
+                  <label key={option.value} className="vb-analytics-recipient">
+                    <input
+                      type="checkbox"
+                      checked={picked.includes(option.value)}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setPicked((current) =>
+                          checked
+                            ? [...new Set([...current, option.value])]
+                            : current.filter((value) => value !== option.value),
+                        );
+                      }}
+                    />
+                    {option.label}
+                  </label>
+                ))}
+            </div>
+            <p className="vb-analytics-help" aria-live="polite">
+              {t('analytics.recipientsSelected', { count: picked.length })}
+            </p>
+          </fieldset>
+        ) : (
+          <>
+            <label>
+              {t('analytics.recipients')}
+              <input
+                required
+                value={recipients}
+                onChange={(e) => {
+                  setRecipients(e.target.value);
+                }}
+                placeholder={t('analytics.recipientsPlaceholder')}
+              />
+            </label>
+            <p className="vb-analytics-help">{t('analytics.recipientsHint')}</p>
+          </>
+        )}
+        {recipientsMissing ? (
+          <p role="alert" className="vb-analytics-help">
+            {t('analytics.recipientsRequired')}
+          </p>
+        ) : null}
         <Button type="submit" disabled={busy} endIcon={<ArrowRight size={16} aria-hidden />}>
           {t('analytics.save')}
         </Button>
@@ -399,22 +485,43 @@ export function AnalyticsDashboard({
                   }}
                 >
                   <option value="">{t('analytics.all')}</option>
-                  {[
-                    'voice',
-                    'chat',
-                    'email',
-                    'video',
-                    'social',
-                    'messaging',
-                    'sms',
-                    'whatsapp',
-                    'callback',
-                  ].map((c) => (
+                  {CHANNELS.map((c) => (
                     <option key={c} value={c}>
-                      {c}
+                      {t(`analytics.channels.${c}`)}
                     </option>
                   ))}
                 </select>
+              ) : (key === 'campaignId' && campaignOptions) || (key === 'teamId' && teamOptions) ? (
+                <>
+                  {onOptionSearch ? (
+                    <input
+                      type="search"
+                      aria-label={t(
+                        key === 'campaignId' ? 'analytics.campaignSearch' : 'analytics.teamSearch',
+                      )}
+                      placeholder={t(
+                        key === 'campaignId' ? 'analytics.campaignSearch' : 'analytics.teamSearch',
+                      )}
+                      onChange={(e) => {
+                        onOptionSearch(key === 'campaignId' ? 'campaign' : 'team', e.target.value);
+                      }}
+                    />
+                  ) : null}
+                  <select
+                    aria-label={t('analytics.' + key)}
+                    value={filter[key] ?? ''}
+                    onChange={(e) => {
+                      set(key, e.target.value);
+                    }}
+                  >
+                    <option value="">{t('analytics.all')}</option>
+                    {(key === 'campaignId' ? campaignOptions : teamOptions)?.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </>
               ) : (
                 <input
                   type={key === 'from' || key === 'to' ? 'date' : 'text'}
@@ -632,7 +739,10 @@ export function AnalyticsDashboard({
                   <tbody>
                     {data.liveCampaigns.map((c) => (
                       <tr key={c.key}>
-                        <th scope="row">{c.key}</th>
+                        <th scope="row">
+                          {campaignOptions?.find((option) => option.value === c.key)?.label ??
+                            c.key}
+                        </th>
                         <td>{c.active}</td>
                         <td>{c.completed}</td>
                       </tr>

@@ -35,6 +35,15 @@ function fixture() {
       updateMany: sourceUpdate,
     },
     collaborationSnapshot: { upsert: snapshot },
+    collaborationConflict: {
+      create: vi
+        .fn<
+          (input: {
+            data: { baseVersion: number; currentVersion: number; state: Uint8Array };
+          }) => Promise<{ id: string }>
+        >()
+        .mockResolvedValue({ id: 'conflict-copy' }),
+    },
   };
   const record = vi.fn().mockResolvedValue(undefined),
     renew = vi.fn().mockResolvedValue(undefined),
@@ -89,6 +98,7 @@ function fixture() {
     renew,
     authorize,
     version,
+    conflictCopy: tx.collaborationConflict.create,
   };
 }
 describe('collaboration snapshot fence', () => {
@@ -128,6 +138,15 @@ describe('collaboration snapshot fence', () => {
       code: 'VERBIS_SCRIPT_INVALID_TRANSITION',
     });
     expect(f.room.frozen).toBe(true);
+    expect(f.conflictCopy).toHaveBeenCalledOnce();
+    const copy = f.conflictCopy.mock.calls[0]![0].data;
+    expect(copy).toMatchObject({ baseVersion: 4, currentVersion: 9 });
+    expect(copy.state).toBeInstanceOf(Uint8Array);
+    const state = copy.state;
+    const recovered = new Y.Doc();
+    Y.applyUpdate(recovered, state);
+    expect(recovered.getMap('script').size).toBeGreaterThan(0);
+    recovered.destroy();
     expect(f.updateDraft).not.toHaveBeenCalled();
     expect(f.room.version).toBe(4);
     f.doc.destroy();

@@ -45,8 +45,8 @@ export interface GenesysCloudDeps extends GenesysClientDeps {
   readonly scheduler?: Scheduler;
 }
 
-const ContactSchema = z.object({ data: z.record(z.string(), z.unknown()).default({}) });
-const MembersSchema = z.object({
+export const ContactSchema = z.object({ data: z.record(z.string(), z.unknown()).default({}) });
+export const MembersSchema = z.object({
   entities: z.array(z.object({ id: z.string() })).default([]),
   pageCount: z.number().int().optional(),
 });

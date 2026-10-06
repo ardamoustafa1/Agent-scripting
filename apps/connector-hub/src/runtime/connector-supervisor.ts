@@ -118,7 +118,15 @@ export class ConnectorSupervisor {
       health: undefined,
     };
     this.#instances.set(definition.id, instance);
-    if (connector === undefined) return instance;
+    if (connector === undefined) {
+      // Admins must see why nothing happens (e.g. a marketplace adapter without a bridge).
+      await this.#report(instance, {
+        status: 'down',
+        detail: 'unsupported adapter on this hub',
+        checkedAt: this.#now().toISOString(),
+      });
+      return instance;
+    }
     const parsed = connector.configSchema.safeParse(definition.config);
     if (!parsed.success) {
       instance.state = 'stopped';

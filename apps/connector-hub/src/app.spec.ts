@@ -64,6 +64,20 @@ describe('connector-hub', () => {
     expect(res.headers['content-type']).toContain('application/problem+json');
   });
 
+  it('requires a durable dead-letter queue in production', () => {
+    expect(() => loadHubEnv({ NODE_ENV: 'production' })).toThrow(/HUB_DLQ_NATS_URL/);
+    expect(() =>
+      loadHubEnv({ NODE_ENV: 'production', HUB_DLQ_NATS_URL: 'http://nats:4222' }),
+    ).toThrow(/HUB_DLQ_NATS_URL/);
+    const env = loadHubEnv({
+      NODE_ENV: 'production',
+      HUB_DLQ_NATS_URL: 'tls://nats-1:4222, tls://nats-2:4222',
+    });
+    expect(env.HUB_DLQ_NATS_URL).toEqual(['tls://nats-1:4222', 'tls://nats-2:4222']);
+    expect(env.HUB_DLQ_STREAM).toBe('VERBIS_HUB_DLQ');
+    expect(loadHubEnv({ HUB_DLQ_NATS_URL: '' }).HUB_DLQ_NATS_URL).toBeUndefined();
+  });
+
   it('rejects an invalid port', () => {
     expect(() => loadHubEnv({ CONNECTOR_HUB_PORT: '70000' })).toThrow(/CONNECTOR_HUB_PORT/);
   });

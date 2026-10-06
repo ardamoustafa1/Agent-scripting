@@ -129,7 +129,6 @@ export const SYSTEM_ROLES: Readonly<Record<SystemRoleKey, SystemRoleDefinition>>
       { action: 'create', subject: 'Session' },
       { action: ['read', 'update'], subject: 'Session', conditions: { agentId: ME } },
       { action: 'reveal', subject: 'Session', fields: ['customer'], conditions: { agentId: ME } },
-      { action: 'read', subject: 'User', conditions: { id: ME } },
     ],
     { scopedBy: ['campaignIds'] },
   ),

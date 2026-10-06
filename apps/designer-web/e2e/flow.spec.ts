@@ -58,7 +58,7 @@ test('add, arrange, drag and undo a flow node; Page double-click opens its canva
   // ELK is asynchronous. Starting a drag before layout completes cancels that
   // layout and leaves the newly added node on top of the page node.
   await expect(page.getByRole('button', { name: 'Auto layout', exact: true })).toBeEnabled();
-  const node = page.locator('.react-flow__node-verbis').filter({ hasText: 'n-home' });
+  const node = page.locator('.react-flow__node-verbis[data-id="n-home"]');
   const rectangle = await node.boundingBox();
   if (!rectangle) throw new Error('Missing node');
   const position = () =>
@@ -91,6 +91,20 @@ test('rename commits all references atomically and uses CSRF + optimistic versio
   expect(saved.headers()['if-match']).toBeDefined();
   expect(JSON.stringify(saved.postDataJSON())).toContain('vars.client');
   expect(JSON.stringify(saved.postDataJSON())).not.toContain('vars.customer');
+});
+test('selects inside the variable dialog are usable with a real mouse (D-11/D-28)', async ({
+  page,
+}) => {
+  await page.goto(`/scripts/${scriptId}/versions/1/edit`);
+  await openMode(page, 'Variables');
+  await page.getByRole('button', { name: 'customer', exact: true }).click();
+  const dialog = page.getByRole('dialog');
+  const kind = dialog.getByRole('combobox', { name: 'Type', exact: true });
+  await kind.click();
+  const option = page.getByRole('option', { name: 'Number', exact: true });
+  // A real click (no force/keyboard): fails when the overlay intercepts pointer events.
+  await option.click({ timeout: 3000 });
+  await expect(kind).toContainText('Number');
 });
 for (const mode of ['Flow', 'Rules', 'Variables']) {
   for (const theme of ['light', 'dark', 'high-contrast']) {

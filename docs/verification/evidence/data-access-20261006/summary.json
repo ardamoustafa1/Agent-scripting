@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-06",
+  "suites": [
+    {
+      "report": "reports/data-access/api-unit.json",
+      "sha256": "50d115a0d0000e136df371a9c1effaf881998b0d20f6ea4e30ff889a04d63126",
+      "success": true,
+      "passed": 1656,
+      "failed": 0,
+      "pending": 0
+    },
+    {
+      "report": "reports/data-access/api-integration.json",
+      "sha256": "bff9328f5d86190053e0e18dfedc445fbfecfa1bd25d64dc9f152f2d0dd93b41",
+      "success": true,
+      "passed": 105,
+      "failed": 0,
+      "pending": 0
+    }
+  ],
+  "other_checks": {
+    "authz": 590,
+    "shared_integration_contract": 4,
+    "admin_identity": 10,
+    "dev_bootstrap_mtls": 6,
+    "helm": 8,
+    "docs_reference": 4,
+    "api_lint": "passed",
+    "api_designer_admin_typecheck": "passed",
+    "authz_shared_i18n_admin_scripts_lint": "passed"
+  }
+}

@@ -1,6 +1,6 @@
 # Server-side WebService engine
 
-REST, SOAP and read-only GraphQL requests execute in the API. Agent applications never receive upstream credentials or connect directly to external systems. Definitions reference write-only secrets; SQL read-only and gRPC adapters have the `ExtensionDriver` contract but are not enabled.
+REST, SOAP and read-only GraphQL requests execute in the API. Agent applications never receive upstream credentials or connect directly to external systems. Definitions reference write-only secrets. Opt-in PostgreSQL named reads and private HTTP/SOAP/GraphQL now execute through an outbound-only customer worker; see [private egress setup](../../../../../docs/integrations/PRIVATE_EGRESS.md). gRPC remains deferred.
 
 ## Configuration
 

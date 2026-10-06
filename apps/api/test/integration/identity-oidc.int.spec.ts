@@ -577,3 +577,51 @@ describe('session lifecycle', () => {
     ({ tenant, slug, idpId } = previous);
   });
 });
+
+it('scopes an SSO-only agent assignment without a manual duplicate, preserves it on re-login and denies user enumeration', async () => {
+  const before = idp.user;
+  try {
+    idp.user = { ...idp.user, groups: [] };
+    const first = await login();
+    const user = (await sessionInfo(first.session ?? '')).json<{ user: { id: string } }>().user;
+    const campaign = await owner.campaign.create({
+      data: {
+        tenantId: tenant.tenantId,
+        name: 'SSO campaign scope',
+        createdBy: 'fixture',
+        updatedBy: 'fixture',
+      },
+    });
+    const response = await app.inject({
+      method: 'PUT',
+      url: `/v1/authz/users/${user.id}/role-scope`,
+      headers: await tenant.auth(),
+      payload: { role: 'agent', scope: { campaignIds: [campaign.id] } },
+    });
+    expect(response.statusCode, response.body).toBe(200);
+    await login();
+    const assignments = await owner.userRole.findMany({
+      where: { tenantId: tenant.tenantId, userId: user.id, deletedAt: null },
+      include: { role: true },
+    });
+    expect(assignments).toHaveLength(1);
+    expect(assignments[0]).toMatchObject({
+      source: `claims:${idpId}`,
+      scope: { campaignIds: [campaign.id] },
+      role: { name: 'agent' },
+    });
+    const headers = { cookie: cookieHeader({ [SESSION]: first.session ?? '' }) };
+    for (const url of [
+      '/v1/users',
+      `/v1/users/${tenant.adminId}`,
+      `/v1/users/${user.id}`,
+      '/v1/groups',
+    ])
+      expect((await app.inject({ method: 'GET', url, headers })).statusCode).toBe(403);
+    expect(
+      (await app.inject({ method: 'GET', url: '/v1/me/permissions', headers })).statusCode,
+    ).toBe(200);
+  } finally {
+    idp.user = before;
+  }
+});

@@ -52,7 +52,7 @@ export const baseTokens = {
   'ease-standard': 'cubic-bezier(0.2, 0, 0, 1)',
   'z-base': '0',
   'z-sticky': '10',
-  'z-popover': '40',
+  'z-popover': '70',
   'z-overlay': '50',
   'z-dialog': '60',
   'z-toast': '80',

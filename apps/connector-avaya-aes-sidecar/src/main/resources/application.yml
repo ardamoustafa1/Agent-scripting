@@ -8,8 +8,10 @@ spring:
 verbis:
   sidecar:
     connector-id: ${VERBIS_CONNECTOR_ID}
-    # aes | aacc | replay (one platform per connector; outbound is an add-on to aes/aacc)
-    source: ${SIDECAR_SOURCE:replay}
+    # aes | aacc (required; one platform per connector; outbound is an add-on to aes/aacc).
+    # replay (recorded events) is dev/test only and additionally needs SIDECAR_ALLOW_REPLAY=true.
+    source: ${SIDECAR_SOURCE:}
+    allow-replay: ${SIDECAR_ALLOW_REPLAY:false}
     nats:
       servers: ${NATS_SERVERS:nats://127.0.0.1:4222}
       creds-file: ${NATS_CREDS_FILE:}
@@ -31,8 +33,15 @@ verbis:
       ccmm-url: ${AACC_CCMM_URL:}
       ccmm-user: ${AACC_CCMM_USER:}
       ccmm-password-file: ${AACC_CCMM_PASSWORD_FILE:}
-      # Shared secret the CCT WS-Notification push must present (X-Verbis-Notify-Token)
-      notify-token-file: ${AACC_NOTIFY_TOKEN_FILE:}
+      # HMAC secret (>= 32 bytes, mounted file) signing the CCT callback token; required in aacc mode.
+      notify-secret-file: ${AACC_NOTIFY_SECRET_FILE:}
+      # CCT WS-BaseNotification endpoint (https) and this sidecar's public https base URL; the
+      # sidecar subscribes/renews/unsubscribes itself (unverified against a real CCT).
+      cct-url: ${AACC_CCT_URL:}
+      cct-user: ${AACC_CCT_USER:}
+      cct-password-file: ${AACC_CCT_PASSWORD_FILE:}
+      callback-base-url: ${AACC_CALLBACK_BASE_URL:}
+      subscription-ttl-seconds: ${AACC_SUBSCRIPTION_TTL_SECONDS:3600}
       intrinsics-allow-list: ${AACC_INTRINSICS_ALLOW:}
     outbound:
       system: ${OUTBOUND_SYSTEM:none} # pom | pc | none

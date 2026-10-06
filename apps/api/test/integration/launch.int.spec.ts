@@ -54,7 +54,12 @@ const sid = () => crypto.randomUUID();
 beforeAll(async () => {
   kit = await createTokenKit();
   owner = ownerPrisma();
-  app = await startApp(integrationEnv(kit.jwks, { MTLS_CLIENT_CERT_HEADER: 'x-client-cert' }));
+  app = await startApp(
+    integrationEnv(kit.jwks, {
+      MTLS_PROXY_SECRET: 'integration-edge-secret-32-characters',
+      MTLS_CLIENT_CERT_HEADER: 'x-client-cert',
+    }),
+  );
   a = await createTenant(owner, kit, uniqueSlug('launch-a'), {
     embedding: { frameAncestors: ['https://apps.mypurecloud.de', 'https://*.crm.example.com'] },
   });
@@ -274,7 +279,12 @@ async function serviceHeaders(withCert = true, tenant: TenantFixture = a) {
   return {
     ...json,
     authorization: `Bearer ${token}`,
-    ...(withCert ? { 'x-client-cert': encodeURIComponent(cert) } : {}),
+    ...(withCert
+      ? {
+          'x-verbis-mtls-proxy-secret': 'integration-edge-secret-32-characters',
+          'x-client-cert': encodeURIComponent(cert),
+        }
+      : {}),
   };
 }
 

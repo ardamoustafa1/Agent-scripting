@@ -8,6 +8,7 @@ import {
   VariableScopeSchema,
   ClassificationSchema,
   JsonValueSchema,
+  IdentifierSchema,
   type Variable,
 } from '@verbis/script-schema';
 import { Button, Input, Textarea, Select, DataTable, Dialog, Alert } from '@verbis/ui';
@@ -16,25 +17,29 @@ import { useEditor, type EditorStore } from '../editor/store.js';
 
 import { jsonDefault, renameVariable, variableUses } from './variables.js';
 
+type FieldErrors = Partial<Record<'name' | 'default' | 'enum' | 'linked' | 'other', string>>;
 function VariableForm({
   variable,
   store,
   close,
+  isNew = false,
 }: {
   variable: Variable;
   store: EditorStore;
   close: () => void;
+  isNew?: boolean;
 }) {
   const { t } = useTranslation();
   const [key, setKey] = useState(variable.key),
     [value, setValue] = useState(variable),
     [source, setSource] = useState(JSON.stringify(variable.default ?? null)),
-    [error, setError] = useState(false);
+    [errors, setErrors] = useState<FieldErrors>({});
   const uses = variableUses(store.getSnapshot().document, variable.key);
   return (
     <>
       <Input
         label={t('designer.variables.name')}
+        {...(errors.name ? { error: t(errors.name) } : {})}
         value={key}
         onChange={(e) => {
           setKey(e.target.value);
@@ -43,7 +48,10 @@ function VariableForm({
       <Select
         label={t('designer.workspace.kind')}
         value={value.type}
-        options={VariableTypeSchema.options.map((value) => ({ value, label: value }))}
+        options={VariableTypeSchema.options.map((value) => ({
+          value,
+          label: t(`designer.variables.types.${value}`),
+        }))}
         onValueChange={(type) => {
           const next = VariableTypeSchema.parse(type);
           setValue({
@@ -57,7 +65,10 @@ function VariableForm({
       <Select
         label={t('designer.workspace.scope')}
         value={value.scope}
-        options={VariableScopeSchema.options.map((value) => ({ value, label: value }))}
+        options={VariableScopeSchema.options.map((value) => ({
+          value,
+          label: t(`designer.variables.scopes.${value}`),
+        }))}
         onValueChange={(scope) => {
           setValue({ ...value, scope: VariableScopeSchema.parse(scope) });
         }}
@@ -65,7 +76,10 @@ function VariableForm({
       <Select
         label={t('designer.workspace.classification')}
         value={value.classification}
-        options={ClassificationSchema.options.map((value) => ({ value, label: value }))}
+        options={ClassificationSchema.options.map((value) => ({
+          value,
+          label: t(`designer.variables.classifications.${value}`),
+        }))}
         onValueChange={(classification) => {
           const next = ClassificationSchema.parse(classification);
           setValue({
@@ -98,6 +112,7 @@ function VariableForm({
       </label>
       <Textarea
         label={t('designer.variables.default')}
+        {...(errors.default ? { error: t(errors.default) } : {})}
         value={source}
         onChange={(e) => {
           setSource(e.target.value);
@@ -106,6 +121,7 @@ function VariableForm({
       {value.type === 'enum' && (
         <Input
           label={t('designer.variables.enum')}
+          {...(errors.enum ? { error: t(errors.enum) } : {})}
           value={value.enumValues?.join(',') ?? ''}
           onChange={(e) => {
             setValue({ ...value, enumValues: e.target.value.split(',').map((v) => v.trim()) });
@@ -120,17 +136,37 @@ function VariableForm({
           </code>
         ))}
       </details>
-      {error && <Alert title={t('designer.variables.renameFailed')} tone="danger" />}
+      {(errors.linked ?? errors.other) && (
+        <Alert title={t(errors.linked ?? errors.other ?? '')} tone="danger" />
+      )}
       <Button
         onClick={() => {
+          const found: FieldErrors = {};
+          const name = IdentifierSchema.safeParse(key);
+          if (!name.success) found.name = 'designer.variables.errors.name';
+          else if (
+            key !== variable.key &&
+            store.getSnapshot().document.variables.some((v) => v.key === key)
+          )
+            found.name = 'designer.variables.errors.nameTaken';
+          let parsedDefault: ReturnType<typeof JsonValueSchema.parse> | undefined;
           try {
-            const parsed = VariableSchema.parse({
-              ...value,
-              key,
-              default: JsonValueSchema.parse(JSON.parse(source) as unknown),
-            });
-            if (!literalMatchesType(parsed, parsed.default ?? null))
-              throw new Error('VERBIS_VARIABLE_DEFAULT');
+            parsedDefault = JsonValueSchema.parse(JSON.parse(source) as unknown);
+          } catch {
+            found.default = 'designer.variables.errors.defaultJson';
+          }
+          if (value.type === 'enum' && !value.enumValues?.some((v) => v !== ''))
+            found.enum = 'designer.variables.errors.enumEmpty';
+          if (Object.keys(found).length || parsedDefault === undefined) {
+            setErrors(found);
+            return;
+          }
+          try {
+            const parsed = VariableSchema.parse({ ...value, key, default: parsedDefault });
+            if (!literalMatchesType(parsed, parsed.default ?? null)) {
+              setErrors({ default: 'designer.variables.errors.defaultType' });
+              return;
+            }
             const original = store.getSnapshot().document;
             if (
               [...store.readonlyPages].some((pageId) => {
@@ -140,17 +176,27 @@ function VariableForm({
                   uses.some((u) => u.path.startsWith(`/pages/${original.pages.indexOf(page)}/`))
                 );
               })
-            )
-              throw new Error('VERBIS_LINKED_VARIABLE');
-            const renamed = renameVariable(original, variable.key, key);
-            store.edit((d) => {
-              Object.assign(d, renamed);
-              const index = d.variables.findIndex((v) => v.key === key);
-              d.variables[index] = parsed;
+            ) {
+              setErrors({ linked: 'designer.variables.errors.linked' });
+              return;
+            }
+            store.execute(() => {
+              if (isNew) {
+                store.edit((d) => {
+                  d.variables.push(parsed);
+                });
+              } else {
+                const renamed = renameVariable(original, variable.key, key);
+                store.edit((d) => {
+                  Object.assign(d, renamed);
+                  const index = d.variables.findIndex((v) => v.key === key);
+                  d.variables[index] = parsed;
+                });
+              }
             });
             close();
           } catch {
-            setError(true);
+            setErrors({ other: 'designer.variables.renameFailed' });
           }
         }}
       >
@@ -168,25 +214,26 @@ export function VariableManager({
 }) {
   const state = useEditor(store),
     { t } = useTranslation();
-  const [selected, setSelected] = useState<string | null>(null);
-  const variable = state.document.variables.find((v) => v.key === selected);
+  const [selected, setSelected] = useState<string | null>(null),
+    [draft, setDraft] = useState<Variable | null>(null);
+  const variable = draft ?? state.document.variables.find((v) => v.key === selected);
   return (
     <section className="fd-manager">
       <h2>{t('designer.variables.title')}</h2>
       <Button
         disabled={readOnly}
         onClick={() => {
-          store.execute(() => {
-            let index = 1;
-            while (state.document.variables.some((v) => v.key === `variable${index}`)) index++;
-            const key = `variable${index}`;
-            store.edit((d) => {
-              d.variables.push(
-                VariableSchema.parse({ key, type: 'string', scope: 'session', default: '' }),
-              );
-            });
-            setSelected(key);
-          });
+          let index = 1;
+          while (state.document.variables.some((v) => v.key === `variable${index}`)) index++;
+          setSelected(null);
+          setDraft(
+            VariableSchema.parse({
+              key: `variable${index}`,
+              type: 'string',
+              scope: 'session',
+              default: '',
+            }),
+          );
         }}
       >
         {t('designer.variables.add')}
@@ -212,12 +259,20 @@ export function VariableManager({
               </Button>
             ),
           },
-          { id: 'type', header: t('designer.workspace.kind'), accessor: (v) => v.type },
-          { id: 'scope', header: t('designer.workspace.scope'), accessor: (v) => v.scope },
+          {
+            id: 'type',
+            header: t('designer.workspace.kind'),
+            accessor: (v) => t(`designer.variables.types.${v.type}`),
+          },
+          {
+            id: 'scope',
+            header: t('designer.workspace.scope'),
+            accessor: (v) => t(`designer.variables.scopes.${v.scope}`),
+          },
           {
             id: 'pii',
             header: t('designer.workspace.classification'),
-            accessor: (v) => v.classification,
+            accessor: (v) => t(`designer.variables.classifications.${v.classification}`),
           },
           {
             id: 'default',
@@ -235,18 +290,23 @@ export function VariableManager({
       <Dialog
         open={!!variable}
         onOpenChange={(open) => {
-          if (!open) setSelected(null);
+          if (!open) {
+            setSelected(null);
+            setDraft(null);
+          }
         }}
-        title={t('designer.variables.edit')}
+        title={t(draft ? 'designer.variables.add' : 'designer.variables.edit')}
         description={t('designer.variables.renameDescription')}
       >
         {variable && (
           <VariableForm
-            key={variable.key}
+            key={draft ? `new:${variable.key}` : variable.key}
             variable={variable}
             store={store}
+            isNew={!!draft}
             close={() => {
               setSelected(null);
+              setDraft(null);
             }}
           />
         )}

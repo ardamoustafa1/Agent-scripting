@@ -183,3 +183,29 @@ pnpm --filter @verbis/api exec vitest run src/modules/connectors/genesys-cloud
 pnpm --filter @verbis/agent-web exec vitest run src/launch/genesys-link.spec.ts
 pnpm --filter @verbis/admin-web exec vitest run src/genesys
 ```
+
+### 8.1 Sandbox contract test (real Genesys Cloud org)
+
+`sandbox.contract.spec.ts` runs against a **real** Genesys Cloud sandbox org and validates the
+live responses with the same zod schemas the connector uses, so a vendor API drift fails here,
+not in production. It is skipped unless `GENESYS_SANDBOX=1`. It is read-only, except for one
+notification channel, which expires on its own after 24 h.
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `GENESYS_SANDBOX_REGION` | yes | Region key from the allow-list (e.g. `mypurecloud.ie`) |
+| `GENESYS_SANDBOX_CLIENT_ID` / `GENESYS_SANDBOX_CLIENT_SECRET` | yes | Client-credentials OAuth client of a synthetic sandbox org with least privilege. Never use a production org. Pass these from a secret store; they are never logged. |
+| `GENESYS_SANDBOX_USER_ID` | yes | User whose `v2.users.{id}.conversations` topic is subscribed |
+| `GENESYS_SANDBOX_QUEUE_ID` | no | Validates queue members with `MembersSchema` |
+| `GENESYS_SANDBOX_CONVERSATION_ID` | no | Validates a conversation with `ConversationSchema` |
+
+It covers rows 2, 4, 6, 7 and 8 of §1: token, organization, channel, subscription, and the
+`channel.metadata` heartbeat on the `streaming.` host. Rows 5 and 12 are covered when the
+optional ids are set.
+
+```bash
+GENESYS_SANDBOX=1 pnpm --filter @verbis/connector-hub exec vitest run src/connectors/genesys-cloud/sandbox.contract.spec.ts
+```
+
+Status: written, but **not yet run against a sandbox org** (no credentials in this environment).
+Until it passes, the **A** rows in §1 stay assumptions.

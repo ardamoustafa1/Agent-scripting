@@ -43,6 +43,8 @@ export class LaunchApiError extends Error {
     readonly code: string,
     readonly correlationId: string = crypto.randomUUID(),
     readonly status = 503,
+    /** Seconds from a valid Retry-After header (429/503), when present. */
+    readonly retryAfterSeconds?: number,
   ) {
     super(code);
   }
@@ -53,7 +55,19 @@ export async function fetchAgentSession(): Promise<AgentSession | null> {
     credentials: 'same-origin',
     headers: { accept: 'application/json' },
   });
-  if (!response.ok) return null;
+  // Only 401 means "signed out". Rate limiting (429) or outages must never look like a logout.
+  if (response.status === 401) return null;
+  if (!response.ok) {
+    const problem = ProblemSchema.safeParse(await response.json().catch(() => null));
+    const header = response.headers.get('retry-after');
+    const retryAfter = header !== null && /^\d{1,5}$/.test(header) ? Number(header) : undefined;
+    throw new LaunchApiError(
+      problem.success ? problem.data.code : 'VERBIS_HTTP_UNAVAILABLE',
+      problem.success ? problem.data.correlationId : undefined,
+      response.status,
+      retryAfter,
+    );
+  }
   const parsed = AgentSessionSchema.safeParse(await response.json().catch(() => null));
   return parsed.success ? parsed.data : null;
 }

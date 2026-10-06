@@ -7,7 +7,7 @@ export interface DeliveryQueueOptions<T> {
   /** Partition key: items of one key are delivered strictly in order (one interaction). */
   key(item: T): string;
   handle(item: T): Promise<void>;
-  onDeadLetter?(item: T, error: unknown): void;
+  onDeadLetter?(item: T, error: unknown, reason: 'rejected' | 'exhausted'): void;
   sleep?(ms: number): Promise<void>;
   random?(): number;
 }
@@ -71,6 +71,21 @@ export class DeliveryQueue<T> {
     this.#closed = true;
   }
 
+  /**
+   * After `close`: removes and returns every item that has not started delivery (the head of an
+   * in-flight partition stays with its worker), so shutdown can persist them instead of losing them.
+   */
+  takePending(): T[] {
+    const pending: T[] = [];
+    for (const [key, items] of this.#partitions) {
+      const keep = this.#active.has(key) ? 1 : 0;
+      pending.push(...items.splice(keep));
+      if (items.length === 0) this.#partitions.delete(key);
+    }
+    this.#size -= pending.length;
+    return pending;
+  }
+
   #pump(): void {
     for (const [key, items] of this.#partitions) {
       if (this.#active.size >= this.options.concurrency) return;
@@ -95,9 +110,10 @@ export class DeliveryQueue<T> {
           this.#delivered += 1;
           break;
         } catch (error) {
-          if (!isRetryable(error) || attempt + 1 >= maxAttempts) {
+          const retryable = isRetryable(error);
+          if (!retryable || attempt + 1 >= maxAttempts) {
             this.#dead += 1;
-            this.options.onDeadLetter?.(item, error);
+            this.options.onDeadLetter?.(item, error, retryable ? 'exhausted' : 'rejected');
             break;
           }
           this.#retried += 1;

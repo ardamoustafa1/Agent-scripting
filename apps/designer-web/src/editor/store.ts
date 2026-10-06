@@ -38,6 +38,8 @@ export interface EditorState {
   zoom: number;
   message: string | null;
   writeSuspended: boolean;
+  /** D-09: inspector fields holding input the document model rejected (not part of the document). */
+  fieldProblems: number;
 }
 export interface EditorIssue {
   severity: string;
@@ -51,6 +53,13 @@ interface HistoryEntry {
   inversePatches: EditResult['inversePatches'];
 }
 export class EditorStore {
+  private fieldProblemKeys = new Set<string>();
+  setFieldProblem(key: string, active: boolean) {
+    if (this.fieldProblemKeys.has(key) === active) return;
+    if (active) this.fieldProblemKeys.add(key);
+    else this.fieldProblemKeys.delete(key);
+    this.publish({ fieldProblems: this.fieldProblemKeys.size });
+  }
   setWriteSuspended(writeSuspended: boolean) {
     this.publish({ writeSuspended });
   }
@@ -101,6 +110,7 @@ export class EditorStore {
       zoom: 1,
       message: null,
       writeSuspended: false,
+      fieldProblems: 0,
     };
     this.index();
   }
@@ -456,7 +466,15 @@ export class EditorStore {
     const id = this.idFactory();
     this.edit((doc) => {
       doc.pages.push(PageSchema.parse({ id, name, layout: { id: this.idFactory(), type: 'box' } }));
-      doc.flow.nodes.push({ id: `flow-${id}`, type: 'page', page: id });
+      const node = { id: `flow-${id}`, type: 'page' as const, page: id };
+      doc.flow.nodes.push(node);
+      // D-13: splice into the first plain edge that reaches an end node: previous → new → end.
+      const endIds = new Set(doc.flow.nodes.filter((n) => n.type === 'end').map((n) => n.id));
+      const incoming = doc.flow.edges.find((e) => endIds.has(e.to) && !e.maxIterations);
+      if (incoming) {
+        doc.flow.edges.push({ id: `edge-${this.idFactory()}`, from: node.id, to: incoming.to });
+        incoming.to = node.id;
+      }
     });
     this.setView({ pageId: id });
   }

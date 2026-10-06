@@ -151,3 +151,28 @@ it('keeps the active page valid when undo removes the newly created page', () =>
     store.getSnapshot().document.pages.some((page) => page.id === store.getSnapshot().pageId),
   ).toBe(true);
 });
+// D-13: a new page joins the flow between its predecessor and the end instead of being orphaned.
+it('wires a new page into the flow before the end node and keeps it undoable', () => {
+  const store = fixture();
+  const before = store.getSnapshot().document;
+  store.addPage('Second');
+  const flow = store.getSnapshot().document.flow;
+  const added = store.getSnapshot().pageId;
+  const node = flow.nodes.find((n) => n.type === 'page' && n.page === added)!;
+  expect(flow.edges.filter((e) => e.to === node.id)).toHaveLength(1);
+  expect(flow.edges.filter((e) => e.from === node.id)).toHaveLength(1);
+  const end = flow.nodes.find((n) => n.type === 'end')!;
+  expect(flow.edges.find((e) => e.from === node.id)?.to).toBe(end.id);
+  expect(flow.edges.some((e) => e.from === 'n-home' && e.to === end.id)).toBe(false);
+  expect(store.issues().filter((i) => i.severity === 'error')).toEqual([]);
+  store.undo();
+  expect(store.getSnapshot().document).toEqual(before);
+});
+it('leaves the flow untouched when there is no edge into an end node', () => {
+  const store = fixture();
+  store.edit((doc) => {
+    doc.flow.edges = [];
+  });
+  store.addPage('Floating');
+  expect(store.getSnapshot().document.flow.edges).toEqual([]);
+});

@@ -1,9 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { z } from 'zod';
 
 import {
   findEscalations,
   matrixToRules,
   RESOURCE_ACTIONS,
+  RuleDefinitionSchema,
   RESOURCES,
   rulesToMatrix,
   SCOPE_FIELDS,
@@ -50,10 +52,14 @@ const ROLE_SELECT = {
   version: true,
 } as const;
 
+const StoredRulesSchema = z.array(RuleDefinitionSchema).max(500);
+
+/** Invalid stored rules grant nothing (fail closed), exactly like `grantFromRow`. */
 function storedRules(row: RoleRow): RuleDefinition[] {
   if (row.isSystem && (SYSTEM_ROLE_KEYS as readonly string[]).includes(row.name))
     return [...SYSTEM_ROLES[row.name as keyof typeof SYSTEM_ROLES].rules];
-  return Array.isArray(row.rules) ? (row.rules as unknown as RuleDefinition[]) : [];
+  const parsed = StoredRulesSchema.safeParse(row.rules);
+  return parsed.success ? (parsed.data as RuleDefinition[]) : [];
 }
 
 export function toRoleDto(row: RoleRow): RoleDto {
@@ -185,39 +191,47 @@ export class RolesService {
     return dto;
   }
 
-  /** Sets the ABAC scope of a user's manual assignment of a role. */
+  /** Sets scope on all active assignments of this role, including SSO/SCIM sources. */
   async setScope(userId: string, input: RoleScopeAssignment) {
     const tx = this.db.current();
     const tenantId = this.db.tenantId();
-    const link = await tx.userRole.findFirst({
+    const links = await tx.userRole.findMany({
       where: {
         tenantId,
         userId,
-        source: 'manual',
         deletedAt: null,
         role: { name: input.role, deletedAt: null },
       },
-      select: { id: true, scope: true, version: true },
+      select: { id: true, source: true, scope: true, version: true },
     });
-    if (link === null) throw new NotFoundError('Role assignment');
+    if (links.length === 0) throw new NotFoundError('Role assignment');
     // Scoping a role you could not grant yourself would be an escalation path too.
     const role = await tx.role.findFirstOrThrow({
       where: { tenantId, name: input.role, deletedAt: null },
       select: ROLE_SELECT,
     });
     this.assertGrantable(storedRules(role));
-    await tx.userRole.update({
-      where: { id: link.id },
+    const changed = await tx.userRole.updateMany({
+      where: {
+        tenantId,
+        userId,
+        deletedAt: null,
+        OR: links.map((link) => ({ id: link.id, version: link.version })),
+      },
       data: {
         scope: input.scope,
         updatedBy: currentActor(),
         version: { increment: 1 },
       },
     });
+    if (changed.count !== links.length) throw new VersionMismatchError();
     await this.audit.record(tx, {
       action: 'authz.roleAssignment.scopeChanged',
       target: { type: 'User', id: userId },
-      before: { role: input.role, scope: link.scope },
+      before: {
+        role: input.role,
+        assignments: links.map(({ source, scope }) => ({ source, scope })),
+      },
       after: { role: input.role, scope: input.scope },
     });
     await this.outbox.record(tx, {

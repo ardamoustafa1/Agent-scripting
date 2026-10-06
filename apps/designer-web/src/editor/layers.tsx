@@ -15,10 +15,23 @@ function PaletteItem({ type, insert }: { type: string; insert: () => void }) {
   const drag = useDraggable({ id: `palette:${type}`, data: { type } });
   return (
     <div ref={drag.setNodeRef} className="ed-palette-item" data-component-type={type}>
-      <button {...drag.listeners} {...drag.attributes} aria-label={label} className="ed-grip">
+      <button
+        {...drag.listeners}
+        {...drag.attributes}
+        aria-label={t('designer.editor.moveComponent', { name: label })}
+        tabIndex={-1}
+        className="ed-grip"
+      >
         <GripVertical size={14} aria-hidden />
       </button>
-      <Button variant="ghost" onClick={insert}>
+      <Button
+        variant="ghost"
+        onClick={insert}
+        onKeyDown={(event) => {
+          if (drag.isDragging || (event.shiftKey && event.code === 'Space'))
+            drag.listeners?.['onKeyDown']?.(event);
+        }}
+      >
         {label}
       </Button>
     </div>
@@ -110,7 +123,8 @@ export function LeftPanel({ store }: { store: EditorStore }) {
   const [tab, setTab] = useState('components'),
     [search, setSearch] = useState('');
   const [nodeSearch, setNodeSearch] = useState('');
-  const [pageSearch, setPageSearch] = useState('');
+  const [pageSearch, setPageSearch] = useState(''),
+    [newPageName, setNewPageName] = useState('');
   const [searchPage, setSearchPage] = useState(0);
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(new Set());
   const scroll = useRef<HTMLDivElement>(null);
@@ -144,7 +158,7 @@ export function LeftPanel({ store }: { store: EditorStore }) {
   );
   const categories = [...new Set(editorRegistry.list().map((d) => d.designerMeta.category))];
   const insert = (type: string) => {
-    let target = state.selection[0] ?? page?.layout.id;
+    let target = page?.layout.id;
     while (target && !store.canDrop(target, type)) target = store.location(target)?.parent?.id;
     if (target)
       store.execute(() => {
@@ -152,7 +166,12 @@ export function LeftPanel({ store }: { store: EditorStore }) {
       });
   };
   return (
-    <aside className="ed-left" aria-label={t('designer.editor.components')}>
+    <aside
+      id="editor-palette"
+      tabIndex={-1}
+      className="ed-left"
+      aria-label={t('designer.editor.components')}
+    >
       <Tabs
         label={t('designer.editor.components')}
         value={tab}
@@ -172,12 +191,14 @@ export function LeftPanel({ store }: { store: EditorStore }) {
               setSearch(e.target.value);
             }}
           />
+          <p>{t('designer.editor.insertionTarget', { name: page?.name ?? '' })}</p>
           <div className="ed-palette">
             {categories.map((category) => (
               <section key={category}>
-                <h3>
+                {/* A-04: palette groups sit directly under the document h1. */}
+                <h2>
                   {t(`designer.editor.componentGroups.${category}`, { defaultValue: category })}
-                </h3>
+                </h2>
                 {editorRegistry
                   .list()
                   .filter(
@@ -343,7 +364,7 @@ export function LeftPanel({ store }: { store: EditorStore }) {
         <div className="ed-page-controls">
           {page && (
             <Input
-              label={t('designer.editor.pageName')}
+              label={t('designer.editor.renamePage')}
               value={page.name}
               maxLength={120}
               disabled={store.readonlyPages.has(page.id)}
@@ -380,11 +401,25 @@ export function LeftPanel({ store }: { store: EditorStore }) {
               </Button>
             ))}
           </div>
+          <Input
+            label={t('designer.editor.newPageName')}
+            value={newPageName}
+            maxLength={120}
+            onChange={(event) => {
+              setNewPageName(event.target.value);
+            }}
+          />
           <Button
             onClick={() => {
+              const name =
+                newPageName.trim() ||
+                t('designer.editor.pageDefault', {
+                  number: store.getSnapshot().document.pages.length + 1,
+                });
               store.execute(() => {
-                store.addPage(t('designer.editor.newPage'));
+                store.addPage(name);
               });
+              setNewPageName('');
             }}
           >
             {t('designer.editor.addPage')}

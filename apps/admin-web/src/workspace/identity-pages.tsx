@@ -33,7 +33,10 @@ import {
   JsonView,
   Feedback,
   Picker,
+  ScopePicker,
+  useEnumLabel,
   useLabels,
+  useRoleText,
 } from './widgets.js';
 
 const MappingSchema = z.object({
@@ -125,6 +128,7 @@ function IdpWizard() {
           label={l('protocol')}
           value={protocol}
           onChange={setProtocol}
+          enumName="protocol"
           options={['oidc', 'saml']}
         />
         <Field label={l('displayName')} value={name} onChange={setName} required />
@@ -243,6 +247,7 @@ function IdpEditor({ row }: { row: Row }) {
           label={l('status')}
           value={status}
           onChange={setStatus}
+          enumName="status"
           options={['draft', 'active', 'disabled']}
         />
         {row['protocol'] === 'oidc' ? (
@@ -488,6 +493,8 @@ export function Users() {
 }
 function UserEditor({ id }: { id: string }) {
   const l = useLabels(),
+    enumLabel = useEnumLabel(),
+    { label: roleLabel } = useRoleText(),
     can = useCan(),
     write = useWrite(),
     assignments = useResource(
@@ -497,9 +504,9 @@ function UserEditor({ id }: { id: string }) {
     roles = useResource('/v1/authz/roles', ListSchema),
     [manual, setManual] = useState<string[] | null>(null),
     [scopeRole, setScopeRole] = useState(''),
-    [campaigns, setCampaigns] = useState(''),
-    [teams, setTeams] = useState(''),
-    [sites, setSites] = useState(''),
+    [campaigns, setCampaigns] = useState<'*' | string[]>([]),
+    [teams, setTeams] = useState<'*' | string[]>([]),
+    [sites, setSites] = useState<'*' | string[]>([]),
     [selectedSession, setSession] = useState<Row | null>(null);
   const current =
     manual ??
@@ -513,7 +520,7 @@ function UserEditor({ id }: { id: string }) {
         .filter((role) => role.source !== 'manual')
         .map((role) => (
           <p key={`${role.name}:${role.source}`}>
-            {role.name} · {role.source}
+            {roleLabel(role.name)} · {enumLabel('roleSource', role.source)}
           </p>
         ))}
       <SaveForm
@@ -524,7 +531,7 @@ function UserEditor({ id }: { id: string }) {
           {roles.data?.data.map((role) => (
             <Check
               key={role.id}
-              label={text(role, 'name')}
+              label={roleLabel(text(role, 'name'))}
               checked={current.includes(text(role, 'name'))}
               onChange={(checked) => {
                 setManual(
@@ -545,9 +552,9 @@ function UserEditor({ id }: { id: string }) {
             {
               role: scopeRole,
               scope: {
-                campaignIds: campaigns === '*' ? '*' : csv(campaigns),
-                teamIds: teams === '*' ? '*' : csv(teams),
-                siteIds: sites === '*' ? '*' : csv(sites),
+                campaignIds: campaigns,
+                teamIds: teams,
+                siteIds: sites,
               },
             },
             'PUT',
@@ -558,11 +565,33 @@ function UserEditor({ id }: { id: string }) {
           label={l('role')}
           value={scopeRole}
           onChange={setScopeRole}
-          options={['', ...(assignments.data?.roles.map((role) => role.name) ?? [])]}
+          options={['', ...new Set(assignments.data?.roles.map((role) => role.name) ?? [])]}
+          optionLabel={(name) => (name ? roleLabel(name) : l('choose'))}
         />
-        <Field label={l('campaignIds')} value={campaigns} onChange={setCampaigns} />
-        <Field label={l('teamIds')} value={teams} onChange={setTeams} />
-        <Field label={l('siteIds')} value={sites} onChange={setSites} />
+        <ScopePicker
+          path="/v1/campaigns?limit=100"
+          label={l('campaignIds')}
+          allLabel={l('allCampaigns')}
+          nameKey="name"
+          value={campaigns}
+          onChange={setCampaigns}
+        />
+        <ScopePicker
+          path="/v1/groups?limit=100&sort=displayName"
+          label={l('teamIds')}
+          allLabel={l('allTeams')}
+          nameKey="displayName"
+          value={teams}
+          onChange={setTeams}
+        />
+        <ScopePicker
+          path="/v1/locations?limit=100"
+          label={l('siteIds')}
+          allLabel={l('allSites')}
+          nameKey="name"
+          value={sites}
+          onChange={setSites}
+        />
         <p>{l('scopeHint')}</p>
       </SaveForm>
       <h3>{l('sessions')}</h3>
@@ -597,6 +626,8 @@ function UserEditor({ id }: { id: string }) {
 }
 function RoleEditor() {
   const l = useLabels(),
+    enumLabel = useEnumLabel(),
+    role = useRoleText(),
     can = useCan(),
     write = useWrite(),
     [name, setName] = useState(''),
@@ -604,7 +635,12 @@ function RoleEditor() {
     [matrix, setMatrix] = useState<CustomRole['matrix']>({});
   return (
     <Card title={l('customRole')}>
-      <ResourceList path="/v1/authz/roles" title={l('roles')} columns={['name', 'description']} />
+      <ResourceList
+        path="/v1/authz/roles"
+        title={l('roles')}
+        columns={['name', 'description']}
+        format={{ name: (row) => role.label(text(row, 'name')), description: role.description }}
+      />
       <SaveForm
         disabled={!can('create', 'Role')}
         onSave={() =>
@@ -616,10 +652,11 @@ function RoleEditor() {
         <div className="aw-matrix">
           {RESOURCES.map((resource) => (
             <fieldset key={resource}>
-              <legend>{resource}</legend>
+              <legend>{enumLabel('resource', resource)}</legend>
               <Field
                 label={l('scope')}
                 value={matrix[resource]?.scope ?? 'all'}
+                enumName="scope"
                 options={['all', ...Object.keys(SCOPE_FIELDS[resource])]}
                 onChange={(value) => {
                   setMatrix((current) => {
@@ -661,7 +698,7 @@ function RoleEditor() {
                       });
                     }}
                   />
-                  {action}
+                  {enumLabel('action', action)}
                 </label>
               ))}
             </fieldset>

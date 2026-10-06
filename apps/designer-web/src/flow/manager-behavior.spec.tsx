@@ -30,13 +30,19 @@ it('creates collision-free variables, validates defaults, edits enum type and pr
   change('variables.name', 'syntheticChoice');
   change('variables.default', '{');
   fireEvent.click(within(dialog).getByRole('button', { name: f.label('editor.apply') }));
-  expect(await screen.findByRole('alert')).toBeTruthy();
-  expect(store.getSnapshot().document.variables.at(-1)?.key).toBe('variable2');
-  await choose(f.label('workspace.kind'), 'enum');
+  expect((await screen.findByRole('alert')).textContent).toContain(
+    f.label('variables.errors.defaultJson'),
+  );
+  // D-12: nothing exists until Apply succeeds.
+  expect(store.getSnapshot().document.variables.map((v) => v.key)).toEqual(['variable1']);
+  expect(within(dialog).getByLabelText(f.label('variables.name')).getAttribute('value')).toBe(
+    'syntheticChoice',
+  );
+  await choose(f.label('workspace.kind'), f.label('variables.types.enum'));
   change('variables.enum', 'alpha,beta');
   change('variables.default', '"alpha"');
-  await choose(f.label('workspace.scope'), 'page');
-  await choose(f.label('workspace.classification'), 'pci');
+  await choose(f.label('workspace.scope'), f.label('variables.scopes.page'));
+  await choose(f.label('workspace.classification'), f.label('variables.classifications.pci'));
   change('variables.default', 'null');
   fireEvent.click(within(dialog).getByRole('button', { name: f.label('editor.apply') }));
   await waitFor(() => {
@@ -185,4 +191,83 @@ it.each([200, 503])('imports a pinned source version and handles HTTP %s', async
     expect(imported).not.toHaveBeenCalled();
     expect(store.getSnapshot().document.pages).toHaveLength(1);
   }
+});
+it('shows localized variable type, scope and classification labels instead of raw enums', async () => {
+  const store = new EditorStore(minimalScript());
+  store.edit((doc) => {
+    doc.variables.push(
+      VariableSchema.parse({
+        key: 'syntheticAmount',
+        type: 'number',
+        scope: 'interaction',
+        classification: 'internal',
+      }),
+    );
+  });
+  const f = await mountDesigner(<VariableManager store={store} />);
+  const showAll = screen.queryByRole('button', { name: /show all rows/i });
+  if (showAll) fireEvent.click(showAll);
+  const table = screen.getByRole('table');
+  for (const key of ['types.number', 'scopes.interaction', 'classifications.internal']) {
+    expect(f.label(`variables.${key}`)).not.toBe(`designer.variables.${key}`);
+    expect(within(table).getByText(f.label(`variables.${key}`))).toBeTruthy();
+  }
+  expect(within(table).queryByText('interaction')).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'syntheticAmount' }));
+  await screen.findByRole('dialog');
+  fireEvent.click(screen.getByRole('combobox', { name: f.label('workspace.kind') }));
+  for (const type of ['string', 'number', 'boolean', 'date', 'object', 'array', 'enum'])
+    expect(
+      await screen.findByRole('option', { name: f.label(`variables.types.${type}`) }),
+    ).toBeTruthy();
+});
+// D-12: the add dialog edits a draft; cancelling must not leave residual variables.
+it('adds nothing when the add dialog is cancelled and titles it "add"', async () => {
+  const store = new EditorStore(minimalScript());
+  const f = await mountDesigner(<VariableManager store={store} />);
+  for (let i = 0; i < 3; i++) {
+    fireEvent.click(screen.getByRole('button', { name: f.label('variables.add') }));
+    const dialog = await screen.findByRole('dialog');
+    expect(within(dialog).getByText(f.label('variables.add'))).toBeTruthy();
+    expect(within(dialog).queryByText(f.label('variables.edit'))).toBeNull();
+    fireEvent.keyDown(dialog, { key: 'Escape' });
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull();
+    });
+  }
+  expect(store.getSnapshot().document.variables).toHaveLength(0);
+  expect(store.getSnapshot().history).toBe(0);
+});
+it('explains which field failed: invalid name, taken name, wrong default type, empty enum', async () => {
+  const store = new EditorStore(minimalScript());
+  store.edit((doc) => {
+    doc.variables.push(VariableSchema.parse({ key: 'taken', type: 'string', scope: 'session' }));
+  });
+  const f = await mountDesigner(<VariableManager store={store} />);
+  fireEvent.click(screen.getByRole('button', { name: f.label('variables.add') }));
+  const dialog = await screen.findByRole('dialog');
+  const apply = () =>
+    fireEvent.click(within(dialog).getByRole('button', { name: f.label('editor.apply') }));
+  const change = (key: string, value: string) =>
+    fireEvent.change(within(dialog).getByLabelText(f.label(key)), { target: { value } });
+  const field = (key: string) => within(dialog).getByLabelText(f.label(key));
+  change('variables.name', 'bad name!');
+  apply();
+  expect(field('variables.name').getAttribute('aria-invalid')).toBe('true');
+  expect(within(dialog).getByText(f.label('variables.errors.name'))).toBeTruthy();
+  change('variables.name', 'taken');
+  apply();
+  expect(within(dialog).getByText(f.label('variables.errors.nameTaken'))).toBeTruthy();
+  change('variables.name', 'fresh');
+  change('variables.default', '5');
+  apply();
+  expect(within(dialog).getByText(f.label('variables.errors.defaultType'))).toBeTruthy();
+  expect(field('variables.name').getAttribute('aria-invalid')).not.toBe('true');
+  expect(store.getSnapshot().document.variables).toHaveLength(1);
+  change('variables.default', '"ok"');
+  apply();
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+  expect(store.getSnapshot().document.variables.map((v) => v.key)).toEqual(['taken', 'fresh']);
 });

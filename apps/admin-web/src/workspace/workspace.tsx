@@ -20,8 +20,9 @@ import { useTranslation } from 'react-i18next';
 
 import { abilityFromSerialized, MePermissionsSchema } from '@verbis/authz';
 import { AccessLayout, Button, UiProvider, THEMES, useTheme, type Theme } from '@verbis/ui';
+import { RetryAfterNotice } from '@verbis/ui';
 
-import { fetchSession, logout, type AuthSession } from '../auth/auth-api.js';
+import { fetchSession, logout, AuthApiError, type AuthSession } from '../auth/auth-api.js';
 import { AuthSection } from '../auth/auth-section.js';
 
 import { allowed as canAccess, AccessContext } from './access.js';
@@ -99,7 +100,13 @@ export class WorkspaceBoundary extends Component<
 }
 export function AdminWorkspace() {
   const l = useLabels(),
-    session = useQuery({ queryKey: ['auth-session'], queryFn: fetchSession, retry: false });
+    session = useQuery({
+      queryKey: ['auth-session'],
+      queryFn: fetchSession,
+      retry: false,
+      staleTime: 60000,
+      refetchOnWindowFocus: false,
+    });
   if (session.isPending)
     return (
       <AccessLayout appName={l('title')}>
@@ -110,6 +117,13 @@ export function AdminWorkspace() {
     return (
       <AccessLayout appName={l('title')}>
         <Feedback error={session.error} />
+        {session.error instanceof AuthApiError && session.error.retryAfter !== undefined && (
+          <RetryAfterNotice
+            seconds={session.error.retryAfter}
+            trigger={session.error}
+            retry={() => void session.refetch()}
+          />
+        )}
         <Button onClick={() => void session.refetch()}>{l('retry')}</Button>
       </AccessLayout>
     );
@@ -288,7 +302,7 @@ function Authenticated({ session }: { session: AuthSession }) {
               <div className="aw-heading">
                 <span className="aw-caption">{l('controlCenter')}</span>
                 <h1>{active ? l(active.id) : l('title')}</h1>
-                <p>{l('intro')}</p>
+                <p>{active ? l(`intros.${active.id}`) : l('intro')}</p>
               </div>
               <Feedback error={error ?? grants.error ?? tenant.error} />
               {grants.isPending ? (

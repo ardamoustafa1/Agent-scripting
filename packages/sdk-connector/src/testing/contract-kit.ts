@@ -28,6 +28,8 @@ export interface ContractSubject {
   readonly fixtures: readonly ConnectorFixture[];
   /** Payloads the mapper must refuse (schema violations, wrong types, oversize). */
   readonly invalidPayloads: readonly unknown[];
+  /** Vendor-native attributes used to exercise write-back capabilities. */
+  readonly commandAttributes?: Readonly<Record<string, string>>;
   /** Feeds a raw platform payload into the connector as its transport would (webhook, socket…). */
   ingest(connector: Connector, payload: unknown): Promise<void>;
   /** After all fixtures were ingested: a pair that must verify, from the fixtures. */
@@ -177,7 +179,10 @@ export function runConnectorContract(subject: ContractSubject): void {
         const run = () => {
           switch (name) {
             case 'writeAttributes':
-              return harness.connector.writeAttributes(target, { verbisOutcome: 'sale' });
+              return harness.connector.writeAttributes(
+                target,
+                subject.commandAttributes ?? { verbisOutcome: 'sale' },
+              );
             case 'setWrapUp':
               return harness.connector.setWrapUp(target, { code: 'SALE', subCodes: [] });
             case 'pauseRecording':

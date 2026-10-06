@@ -13,6 +13,8 @@ export function createDevMtlsProxy(env) {
   const header = env.MTLS_CLIENT_CERT_HEADER;
   if (!header || !/^[a-z0-9-]+$/.test(header))
     throw new Error('Configure dev mTLS with pnpm dev:bootstrap');
+  if (!env.MTLS_PROXY_SECRET || env.MTLS_PROXY_SECRET.length < 32)
+    throw new Error('Configure MTLS_PROXY_SECRET with pnpm dev:bootstrap');
   return createServer(
     {
       key: readFileSync(env.DEV_MTLS_KEY_FILE),
@@ -36,6 +38,7 @@ export function createDevMtlsProxy(env) {
       const headers = {
         ...request.headers,
         host: target.host,
+        'x-verbis-mtls-proxy-secret': env.MTLS_PROXY_SECRET,
         [header]: encodeURIComponent(new X509Certificate(peer.raw).toString()),
       };
       delete headers.connection;

@@ -171,3 +171,17 @@ it.each([
   });
   await expect(f.client.token()).resolves.toBe('synthetic');
 });
+
+it('requests the token from the configured token path (M-25)', async () => {
+  const request = vi.fn<typeof fetch>().mockResolvedValue(token());
+  const client = new AxpClient(
+    { host: 'na.api.avayacloud.com', accountId: 'acme' },
+    () => Promise.resolve({ clientId: 'id', clientSecret: 'secret', appKey: 'key' }),
+    { fetch: request },
+    { tokenPath: '/api/auth/v1/{accountId}/protocol/openid-connect/token' },
+  );
+  await client.token();
+  expect(request.mock.calls[0]?.[0]).toBe(
+    'https://na.api.avayacloud.com/api/auth/v1/acme/protocol/openid-connect/token',
+  );
+});

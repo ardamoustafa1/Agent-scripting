@@ -10,7 +10,14 @@ import {
 } from '@nestjs/common';
 import { z, ZodError } from 'zod';
 
-import { initializeDocument, readDocument, Y } from '@verbis/collaboration';
+import {
+  MAX_FRAME_BYTES,
+  UpdateTooLargeError,
+  assertUpdateWithinLimit,
+  initializeDocument,
+  readDocument,
+  Y,
+} from '@verbis/collaboration';
 import { instruments } from '@verbis/observability';
 import { ScriptDocumentSchema } from '@verbis/script-schema';
 
@@ -42,6 +49,7 @@ interface Room {
   lease: string;
   document?: Document;
   frozen: boolean;
+  recoveryId?: string;
   contributors: Set<string>;
   owners: Map<number, string>;
 }
@@ -159,7 +167,7 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
       maxDebounce: 10000,
       timeout: 30000,
       maxUnauthenticatedQueueSize: 65536,
-      websocketOptions: { maxPayload: 2 * 1024 * 1024 },
+      websocketOptions: { maxPayload: MAX_FRAME_BYTES },
       onAuthenticate: async ({ token, requestHeaders, documentName }) => {
         if (
           (this.rooms.size >= 100 && !this.rooms.has(documentName)) ||
@@ -222,9 +230,14 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
         if (!room || room.frozen) throw new ForbiddenError();
         room.grant = context;
       },
-      // eslint-disable-next-line @typescript-eslint/require-await
       beforeSync: async ({ type, payload, document, documentName, context }) => {
         if (type === 0) return;
+        try {
+          assertUpdateWithinLimit(payload);
+        } catch (error) {
+          if (error instanceof UpdateTooLargeError) await this.rejectOversize(context, error.size);
+          throw error;
+        }
         const shadow = new Y.Doc();
         try {
           Y.applyUpdate(shadow, Y.encodeStateAsUpdate(document));
@@ -315,6 +328,28 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
     }, 10000);
     this.timer.unref();
   }
+  /** Metric + audit for a refused oversize update; never throws (the caller closes the socket). */
+  private async rejectOversize(grant: Grant, size: number): Promise<void> {
+    instruments.operationFailures.add(1, { operation: 'collaboration.update.oversize' });
+    this.logger.warn('Collaboration update exceeds size limit');
+    try {
+      await this.run(
+        grant,
+        async () => {
+          await this.audit.record(this.db.current(), {
+            action: 'script.collaboration.updateRejected',
+            target: { type: 'Script', id: grant.scriptId },
+            outcome: 'denied',
+            reason: 'update_too_large',
+            metadata: { scriptVersion: grant.number, size },
+          });
+        },
+        false,
+      );
+    } catch {
+      instruments.operationFailures.add(1, { operation: 'collaboration.update.oversize.audit' });
+    }
+  }
   private readonly stores = new Map<string, Promise<void>>();
   async persist(name: string, document: Document): Promise<void> {
     const prior = this.stores.get(name) ?? Promise.resolve();
@@ -322,7 +357,7 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
       .catch(() => undefined)
       .then(async () => {
         const room = this.rooms.get(name);
-        if (!room) return;
+        if (!room || room.recoveryId) return;
         const state = new Uint8Array(Y.encodeStateAsUpdate(document)),
           stateVector = Array.from(Y.encodeStateVector(document)),
           content = readDocument(document),
@@ -333,12 +368,30 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
           room.grant,
           async () => {
             const current = await this.scripts.getVersion(room.grant.scriptId, room.grant.number);
-            if (current.state !== 'draft' || current.version !== room.version)
-              throw new DomainError(
-                'VERBIS_SCRIPT_INVALID_TRANSITION',
-                'Draft changed outside collaboration',
-              );
             await this.team.authorize(room.grant.scriptId, room.grant.number, 'update');
+            if (current.state !== 'draft' || current.version !== room.version) {
+              const copy = await this.db.current().collaborationConflict.create({
+                data: {
+                  id: uuidv7(),
+                  tenantId: room.grant.tenantId,
+                  scriptVersionId: current.id,
+                  state,
+                  baseVersion: room.version,
+                  currentVersion: current.version,
+                },
+              });
+              await this.audit.record(this.db.current(), {
+                action: 'script.collaboration.conflictPreserved',
+                target: { type: 'ScriptVersion', id: current.id },
+                metadata: {
+                  recoveryId: copy.id,
+                  baseVersion: room.version,
+                  currentVersion: current.version,
+                  contributors: actors,
+                },
+              });
+              return { recoveryId: copy.id };
+            }
             const candidate = ScriptDocumentSchema.parse(content);
             const prepared = await this.scripts.composeForCollaboration(this.db.current(), {
               document: candidate,
@@ -408,11 +461,18 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
               metadata: { checksum: saved.checksum, contributors: actors },
             });
             // In-memory version advances only after the tenant transaction commits.
-            return saved.version;
+            return { version: saved.version };
           },
           false,
-        ).then((version) => {
-          room.version = version;
+        ).then((result) => {
+          if ('recoveryId' in result) {
+            room.recoveryId = result.recoveryId;
+            throw new DomainError(
+              'VERBIS_SCRIPT_INVALID_TRANSITION',
+              'Draft changed outside collaboration; edits preserved',
+            );
+          }
+          room.version = result.version;
           for (const id of actors) room.contributors.delete(id);
         });
         document.broadcastStateless(
@@ -432,10 +492,43 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
           (error.code === 'VERBIS_SCRIPT_DOCUMENT_INVALID' ||
             error.code === 'VERBIS_SCREEN_COMPOSITION_CONFLICT'));
       if (room && !invalid) room.frozen = true;
-      document.broadcastStateless(JSON.stringify({ type: invalid ? 'invalid' : 'conflict' }));
+      document.broadcastStateless(
+        JSON.stringify({
+          type: invalid ? 'invalid' : 'conflict',
+          ...(room?.recoveryId ? { recoveryId: room.recoveryId } : {}),
+        }),
+      );
       throw error;
     } finally {
       if (this.stores.get(name) === next) this.stores.delete(name);
+    }
+  }
+  async conflicts(scriptId: string, number: number) {
+    const version = await this.team.authorize(scriptId, number, 'update');
+    const rows = await this.db.current().collaborationConflict.findMany({
+      where: { tenantId: this.db.tenantId(), scriptVersionId: version.id },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
+      select: { id: true, baseVersion: true, currentVersion: true, createdAt: true },
+    });
+    return rows.map((row) => ({ ...row, createdAt: row.createdAt.toISOString() }));
+  }
+  async conflict(scriptId: string, number: number, id: string) {
+    const version = await this.team.authorize(scriptId, number, 'update');
+    const row = await this.db.current().collaborationConflict.findFirst({
+      where: {
+        id,
+        tenantId: this.db.tenantId(),
+        scriptVersionId: version.id,
+      },
+    });
+    if (!row) throw new ForbiddenError();
+    const document = new Y.Doc();
+    try {
+      Y.applyUpdate(document, row.state);
+      return { document: ScriptDocumentSchema.parse(readDocument(document)) };
+    } finally {
+      document.destroy();
     }
   }
   async flush(scriptId: string, number: number) {
@@ -444,6 +537,11 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
       room = this.rooms.get(name);
     if (!room) return { closed: true };
     room.frozen = true;
+    if (room.recoveryId)
+      throw new DomainError(
+        'VERBIS_SCRIPT_INVALID_TRANSITION',
+        'Draft changed outside collaboration; edits preserved',
+      );
     try {
       if (room.document) await this.persist(name, room.document);
       this.server?.hocuspocus.closeConnections(name);
@@ -451,7 +549,7 @@ export class CollaborationService implements OnApplicationBootstrap, OnModuleDes
       this.rooms.delete(name);
       return { closed: true };
     } catch (error) {
-      room.frozen = false;
+      room.frozen = room.recoveryId !== undefined;
       throw error;
     }
   }

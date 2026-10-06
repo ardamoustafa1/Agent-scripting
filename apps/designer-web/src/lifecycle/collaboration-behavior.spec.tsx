@@ -291,3 +291,96 @@ it('converges peer rule edits after adding a rule to an initially empty shared d
   );
   expect(a.getSnapshot().document.rules).toEqual(b.getSnapshot().document.rules);
 });
+
+it('opens the preserved collaboration copy without acknowledging the newer REST draft', async () => {
+  const f = await setup();
+  const recoveryId = '01928f3a-0000-7000-8000-000000000049';
+  const preserved = structuredClone(f.store.getSnapshot().document);
+  preserved.meta.name = 'Preserved debounce edit';
+  f.responses[`/v1/scripts/${scriptId}/versions/1/collaboration/conflicts/${recoveryId}`] = {
+    document: preserved,
+  };
+  act(() => {
+    f.socket.options.onStateless({ payload: JSON.stringify({ type: 'conflict', recoveryId }) });
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.label('editor.recoverConflict') }));
+  await waitFor(() => {
+    expect(f.store.getSnapshot().document.meta.name).toBe('Preserved debounce edit');
+  });
+  expect(f.saved).not.toHaveBeenCalled();
+  expect(f.store.getSnapshot().writeSuspended).toBe(true);
+});
+
+it.each([true, false])(
+  'creates a recovery draft only after a successful authorized save: %s',
+  async (success) => {
+    const f = await setup(),
+      recoveryId = '01928f3a-0000-7000-8000-000000000049';
+    const preserved = structuredClone(f.store.getSnapshot().document);
+    preserved.meta.name = 'Recovered local edits';
+    f.responses[`/v1/scripts/${scriptId}/versions/1/collaboration/conflicts/${recoveryId}`] = {
+      document: preserved,
+    };
+    f.responses[`POST /v1/scripts/${scriptId}/versions`] = success
+      ? { number: 2, version: 1 }
+      : Response.json({}, { status: 422 });
+    act(() => {
+      f.socket.options.onStateless({ payload: JSON.stringify({ type: 'conflict', recoveryId }) });
+    });
+    fireEvent.click(screen.getByRole('button', { name: f.label('editor.recoverConflict') }));
+    const create = await screen.findByRole('button', {
+      name: f.label('editor.createRecoveryDraft'),
+    });
+    fireEvent.click(create);
+    await waitFor(() => {
+      expect(f.requests.some((r) => r.method === 'POST' && r.path.endsWith('/versions'))).toBe(
+        true,
+      );
+    });
+    const posted = f.requests.find((r) => r.method === 'POST' && r.path.endsWith('/versions'))!;
+    expect(posted.body).toEqual({ document: preserved, screens: [] });
+    expect(new Headers(posted.init?.headers).get('x-csrf-token')).toBe(sessionFixture.csrfToken);
+    expect(new Headers(posted.init?.headers).get('idempotency-key')).toBeTruthy();
+    if (success) {
+      await waitFor(() => {
+        expect(f.router.state.location.pathname).toBe(`/scripts/${scriptId}/versions/2/edit`);
+      });
+      expect(f.saved).toHaveBeenCalledWith(1);
+    } else {
+      await waitFor(() => {
+        expect((create as HTMLButtonElement).disabled).toBe(false);
+      });
+      expect(f.saved).not.toHaveBeenCalled();
+      expect(f.store.getSnapshot().document).toEqual(preserved);
+      expect(f.store.getSnapshot().writeSuspended).toBe(true);
+    }
+  },
+);
+
+it('leaves a failed initial connection and restores REST editing without losing the draft', async () => {
+  const store = new EditorStore(minimalScript()),
+    active = vi.fn();
+  const f = await mountDesigner(
+    <CollaborationPanel
+      store={store}
+      scriptId={scriptId}
+      number={1}
+      ready
+      onSaved={vi.fn()}
+      onActive={active}
+    />,
+  );
+  fireEvent.click(screen.getByRole('button', { name: f.label('lifecycle.join') }));
+  await waitFor(() => {
+    expect(active).toHaveBeenCalledWith(true);
+  });
+  const socket = transport.instances.at(-1)!;
+  act(() => {
+    socket.options.onAuthenticationFailed();
+  });
+  await screen.findByRole('button', { name: f.label('lifecycle.join') });
+  expect(store.getSnapshot().writeSuspended).toBe(false);
+  expect(active).toHaveBeenLastCalledWith(false);
+  expect(socket.destroy).toHaveBeenCalledOnce();
+  expect(await screen.findByRole('alert')).toBeTruthy();
+});

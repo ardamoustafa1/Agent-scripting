@@ -1,0 +1,9 @@
+{
+  "source": "Chromium recovery.spec.ts, mocked API, 25 sessions",
+  "measurement": {
+    "sessions": 25,
+    "firstPanelMs": 510,
+    "desktopRequests": 1,
+    "attaches": 1
+  }
+}

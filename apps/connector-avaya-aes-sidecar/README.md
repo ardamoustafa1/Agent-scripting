@@ -4,13 +4,15 @@ Java 21 + Spring Boot sidecar for the Avaya connectors. See
 [docs/connectors/avaya.md](../../docs/connectors/avaya.md) and
 [ADR-0020](../../docs/adr/0020-avaya-connectors.md).
 
-One sidecar process serves one Verbis connector. Choose the platform with `SIDECAR_SOURCE`:
+One sidecar process serves one Verbis connector. Choose the platform with `SIDECAR_SOURCE` (required; an empty or unknown value stops startup):
 
 | `SIDECAR_SOURCE` | What it does                                                                                                                                                                  |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `aes`            | Avaya Aura AES over JTAPI/TSAPI. It observes agent stations and VDNs and reads the UCID, UUI, VDN and skill.                                                                  |
 | `aacc`           | Avaya Aura Contact Center. It receives CCT WS-Notification pushes on `POST /aacc/notify` and uses CCMM web services for contact intrinsics, contact details and CloseContact. |
 | `replay`         | Replays recorded envelopes. For development and tests only.                                                                                                                   |
+
+`replay` is refused unless `SIDECAR_ALLOW_REPLAY=true` is also set, so a production deployment can never fall back to recorded events. `/actuator/health` reports the active `source`.
 
 Outbound is an add-on to either platform (`OUTBOUND_SYSTEM=pom|pc`):
 

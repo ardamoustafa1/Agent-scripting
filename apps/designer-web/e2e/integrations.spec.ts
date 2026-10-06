@@ -229,3 +229,25 @@ test('console refuses malformed JSON instead of executing its previous valid inp
   await expect(page.locator('.ig-code')).toContainText('"mock": true');
   expect(calls).toBe(1);
 });
+test('SQL form authors a named read-only query and passes axe', async ({ page }) => {
+  await page.goto('/integrations/new');
+  await page.getByRole('tab', { name: 'Request', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Protocol', exact: true }).click();
+  await page.getByRole('option', { name: 'SQL', exact: true }).click();
+  await page
+    .getByRole('textbox', { name: 'Private gateway client ID', exact: true })
+    .fill('01990000-0000-7000-8000-000000000001');
+  await page.getByRole('textbox', { name: 'Gateway target', exact: true }).fill('crm-readonly');
+  await page.getByRole('textbox', { name: 'Named query key', exact: true }).fill("x'; DROP--");
+  await expect(page.getByText('Use lowercase letters', { exact: false })).toBeVisible();
+  await page.getByRole('textbox', { name: 'Named query key', exact: true }).fill('customer-by-id');
+  await page.getByRole('button', { name: 'Add parameter', exact: true }).click();
+  await page
+    .getByRole('textbox', { name: 'Input path for parameter 1', exact: true })
+    .fill('customer.id');
+  await expect(page.getByRole('textbox', { name: 'Base URL', exact: true })).toHaveCount(0);
+  const results = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+    .analyze();
+  expect(results.violations).toEqual([]);
+});

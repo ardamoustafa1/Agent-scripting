@@ -166,3 +166,4 @@ export function applyDocumentChange(doc: Y.Doc, before: unknown, after: unknown)
   }, LOCAL_EDIT);
 }
 export { Y };
+export * from './limits.js';

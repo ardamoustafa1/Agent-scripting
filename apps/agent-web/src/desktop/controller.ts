@@ -94,6 +94,7 @@ export class AgentController {
         variables,
         interaction: desktop.interaction.context,
         campaign: { name: desktop.campaign.name },
+        agent: desktop.agent ?? {},
         locale,
       },
       ports: {

@@ -38,7 +38,19 @@ val jtapiJar = providers.gradleProperty("avaya.jtapi").orNull
 
 repositories { mavenCentral() }
 
-if (jtapiJar != null) sourceSets["main"].java.srcDir("src/jtapi/java")
+val vendorStubs = providers.gradleProperty("vendorStubs").map { it == "true" }.getOrElse(false)
+check(!(vendorStubs && jtapiJar != null)) { "-PvendorStubs and -Pavaya.jtapi are mutually exclusive" }
+val stubSources = sourceSets.create("vendorStubs") { java.srcDir("src/vendorStubs/java") }
+val vendorStubsJar = tasks.register<Jar>("vendorStubsJar") {
+    archiveBaseName.set("jtapi-stubs")
+    destinationDirectory.set(layout.buildDirectory.dir("stubs"))
+    from(stubSources.output)
+}
+if (jtapiJar != null || vendorStubs) sourceSets["main"].java.srcDir("src/jtapi/java")
+if (vendorStubs) {
+    tasks.named("bootJar") { enabled = false }
+    tasks.named("jar") { enabled = false }
+}
 
 dependencies {
     implementation(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.20.0"))
@@ -49,6 +61,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("io.nats:jnats:2.21.4")
     if (jtapiJar != null) implementation(files(jtapiJar))
+    if (vendorStubs) compileOnly(files(vendorStubsJar))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:junit-jupiter:1.21.3")
     testImplementation("org.testcontainers:testcontainers:1.21.3")

@@ -9,6 +9,7 @@ import { createConnector } from '../../registry.js';
 
 import { isAvayaWss } from './axp-notifications.js';
 import { AxpConnector } from './axp.connector.js';
+import { AxpEndpointsSchema } from './endpoints.js';
 
 const config = {
   kind: 'workspaces',
@@ -24,9 +25,14 @@ const secrets = {
   recorderSecret: 'rec-secret-test',
 };
 const fakes = new WeakMap<Connector, FakeAxp>();
+const WRAPUP_ENDPOINTS = AxpEndpointsSchema.parse({
+  wrapUpMode: 'rest',
+  wrapUpPath: '/api/interactions/v1/accounts/{accountId}/interactions/{interactionId}/wrapup',
+});
 const create = () => {
   const fake = new FakeAxp();
   const connector = new AxpConnector({
+    endpoints: WRAPUP_ENDPOINTS,
     fetch: fake.fetch,
     socket: null,
     sleep: () => Promise.resolve(),
@@ -132,6 +138,49 @@ describe('avaya experience platform connector', () => {
         { a: 'b' },
       ),
     ).rejects.toBeInstanceOf(CommandNotSupportedError);
+  });
+
+  it('refuses wrap-up by default (REST endpoint unverified) and does not advertise it', async () => {
+    const harness = await startHarness({
+      ...subject,
+      create: () => new AxpConnector({ fetch: new FakeAxp().fetch, socket: null }),
+    });
+    expect(harness.connector.capabilities.features).not.toContain('wrapUpCodes');
+    await expect(
+      harness.connector.setWrapUp(
+        { platformInteractionId: ENG, commandId: 'cmd-1' },
+        { code: 'SALE', subCodes: [] },
+      ),
+    ).rejects.toBeInstanceOf(CommandNotSupportedError);
+  });
+
+  it('wraps up on the configured REST path and token path when explicitly enabled', async () => {
+    const fake = new FakeAxp();
+    const connector = new AxpConnector({
+      fetch: fake.fetch,
+      socket: null,
+      endpoints: AxpEndpointsSchema.parse({
+        tokenPath: '/api/auth/v1/{accountId}/protocol/openid-connect/token',
+        wrapUpMode: 'rest',
+        wrapUpPath: '/api/custom/{accountId}/{interactionId}/done',
+      }),
+    });
+    expect(connector.capabilities.features).toContain('wrapUpCodes');
+    fakes.set(connector, fake);
+    const harness = await startHarness({ ...subject, create: () => connector });
+    for (const fixture of load('axp-voice.json').fixtures) {
+      fake.observe(fixture.payload);
+      await (harness.connector as AxpConnector).ingest(fixture.payload);
+      if (fixture.name === 'AgentParticipant REMOVED (ACW)') break;
+    }
+    await harness.connector.setWrapUp(
+      { platformInteractionId: ENG, commandId: 'cmd-9' },
+      { code: 'SALE', subCodes: [] },
+    );
+    expect(fake.calls.some((c) => c.url.endsWith(`/api/custom/ACME01/${ENG}/done`))).toBe(true);
+    expect(
+      fake.calls.some((c) => c.url.endsWith('/api/auth/v1/ACME01/protocol/openid-connect/token')),
+    ).toBe(true);
   });
 
   it('secure pause goes to the recording system for voice, is a no-op for chat', async () => {

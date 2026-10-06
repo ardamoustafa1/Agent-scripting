@@ -60,6 +60,7 @@ export default function Campaign() {
   if (!valid || campaign.isError)
     return (
       <Failure
+        error={campaign.error}
         retry={() => {
           void campaign.refetch();
         }}
@@ -113,6 +114,7 @@ export default function Campaign() {
             label: t('designer.workspace.assignedScripts'),
             content: assignments.isError ? (
               <Failure
+                error={assignments.error}
                 retry={() => {
                   void assignments.refetch();
                 }}

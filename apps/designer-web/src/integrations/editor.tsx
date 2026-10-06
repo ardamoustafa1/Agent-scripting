@@ -30,6 +30,8 @@ import {
 } from './importers.js';
 import { JsonField } from './json-field.js';
 import { MappingEditor } from './mapping.js';
+import { SqlEditor } from './sql-form.js';
+import { emptySqlForm, sqlDefinitionPatch, sqlFormOf, withoutSql } from './sql-model.js';
 import './styles.css';
 
 type Draft = z.infer<typeof IntegrationSaveSchema>;
@@ -61,6 +63,7 @@ export default function IntegrationEditor() {
   if (query.isError)
     return (
       <Failure
+        error={query.error}
         retry={() => {
           void query.refetch();
         }}
@@ -216,13 +219,14 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                       ...draft,
                       protocol,
                       definition: {
-                        ...draft.definition,
+                        ...withoutSql(draft.definition),
                         method: protocol === 'rest' ? 'GET' : 'POST',
+                        ...(protocol === 'sql' ? sqlDefinitionPatch(emptySqlForm()) : {}),
                         ...(protocol === 'soap'
                           ? {
                               soap: {
-                                namespace: 'https://service.example.com',
-                                operation: 'Operation',
+                                namespace: '',
+                                operation: '',
                                 action: '',
                               },
                             }
@@ -246,6 +250,7 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                   <Input
                     label={t('designer.integrations.key')}
                     value={draft.key}
+                    readOnly={Boolean(initial)}
                     onChange={(e) => {
                       setDraft({ ...draft, key: e.target.value });
                     }}
@@ -253,7 +258,7 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                   <Select
                     label={t('designer.integrations.protocol')}
                     value={draft.protocol}
-                    options={['rest', 'soap', 'graphql'].map((value) => ({
+                    options={['rest', 'soap', 'graphql', 'sql'].map((value) => ({
                       value,
                       label: value.toUpperCase(),
                     }))}
@@ -263,13 +268,14 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                         ...draft,
                         protocol: type,
                         definition: {
-                          ...draft.definition,
+                          ...withoutSql(draft.definition),
                           method: type === 'rest' ? 'GET' : 'POST',
+                          ...(type === 'sql' ? sqlDefinitionPatch(emptySqlForm()) : {}),
                           ...(type === 'soap'
                             ? {
                                 soap: {
-                                  namespace: 'https://service.example.com',
-                                  operation: 'Operation',
+                                  namespace: '',
+                                  operation: '',
                                   action: '',
                                 },
                               }
@@ -287,82 +293,94 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                       });
                     }}
                   />
-                  <Select
-                    label={t('designer.integrations.method')}
-                    value={draft.definition.method}
-                    options={['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'].map((value) => ({
-                      value,
-                      label: value,
-                    }))}
-                    onValueChange={(method) => {
-                      patch({ method: IntegrationDefinitionSchema.shape.method.parse(method) });
-                    }}
-                  />
-                  <Input
-                    label={t('designer.integrations.baseUrl')}
-                    value={draft.definition.baseUrl}
-                    onChange={(e) => {
-                      patch({ baseUrl: e.target.value });
-                    }}
-                  />
-                  <Input
-                    label={t('designer.integrations.endpoint')}
-                    value={draft.definition.endpoint}
-                    onChange={(e) => {
-                      patch({ endpoint: e.target.value });
-                    }}
-                  />
-                  <p>{t('designer.integrations.templateHelp')}</p>
-                  <JsonField
-                    label={t('designer.integrations.headers')}
-                    value={draft.definition.headers}
-                    change={(value) => {
-                      patch({ headers: z.record(z.string(), z.string()).parse(value) });
-                    }}
-                  />
-                  <JsonField
-                    label={t('designer.integrations.query')}
-                    value={draft.definition.query}
-                    change={(value) => {
-                      patch({ query: z.record(z.string(), z.string()).parse(value) });
-                    }}
-                  />
-                  <JsonField
-                    label={t('designer.integrations.body')}
-                    value={draft.definition.body}
-                    change={(body) => {
-                      patch({ body });
-                    }}
-                  />
-                  <AuthEditor
-                    value={draft.definition.auth}
-                    change={(auth) => {
-                      patch({ auth });
-                    }}
-                  />
-                  {draft.protocol === 'soap' && (
-                    <JsonField
-                      label={t('designer.integrations.soap')}
-                      value={draft.definition.soap}
-                      change={(value) => {
-                        patch({ soap: IntegrationDefinitionSchema.shape.soap.parse(value) });
+                  {draft.protocol === 'sql' ? (
+                    <SqlEditor
+                      value={sqlFormOf(draft.definition)}
+                      change={(_form, definitionPatch) => {
+                        patch(definitionPatch);
                       }}
                     />
-                  )}
-                  {draft.protocol === 'graphql' && (
-                    <Textarea
-                      label={t('designer.integrations.graphqlQuery')}
-                      value={draft.definition.graphql?.query ?? ''}
-                      onChange={(e) => {
-                        patch({
-                          graphql: {
-                            query: e.target.value,
-                            maxDepth: draft.definition.graphql?.maxDepth ?? 8,
-                            maxComplexity: draft.definition.graphql?.maxComplexity ?? 200,
-                          },
-                        });
-                      }}
-                    />
+                  ) : (
+                    <>
+                      <Select
+                        label={t('designer.integrations.method')}
+                        value={draft.definition.method}
+                        options={['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'].map((value) => ({
+                          value,
+                          label: value,
+                        }))}
+                        onValueChange={(method) => {
+                          patch({ method: IntegrationDefinitionSchema.shape.method.parse(method) });
+                        }}
+                      />
+                      <Input
+                        label={t('designer.integrations.baseUrl')}
+                        placeholder="https://api.example.com"
+                        value={draft.definition.baseUrl}
+                        onChange={(e) => {
+                          patch({ baseUrl: e.target.value });
+                        }}
+                      />
+                      <Input
+                        label={t('designer.integrations.endpoint')}
+                        value={draft.definition.endpoint}
+                        onChange={(e) => {
+                          patch({ endpoint: e.target.value });
+                        }}
+                      />
+                      <p>{t('designer.integrations.templateHelp')}</p>
+                      <JsonField
+                        label={t('designer.integrations.headers')}
+                        value={draft.definition.headers}
+                        change={(value) => {
+                          patch({ headers: z.record(z.string(), z.string()).parse(value) });
+                        }}
+                      />
+                      <JsonField
+                        label={t('designer.integrations.query')}
+                        value={draft.definition.query}
+                        change={(value) => {
+                          patch({ query: z.record(z.string(), z.string()).parse(value) });
+                        }}
+                      />
+                      <JsonField
+                        label={t('designer.integrations.body')}
+                        value={draft.definition.body}
+                        change={(body) => {
+                          patch({ body });
+                        }}
+                      />
+                      <AuthEditor
+                        value={draft.definition.auth}
+                        change={(auth) => {
+                          patch({ auth });
+                        }}
+                      />
+                      {draft.protocol === 'soap' && (
+                        <JsonField
+                          label={t('designer.integrations.soap')}
+                          value={draft.definition.soap}
+                          change={(value) => {
+                            patch({ soap: IntegrationDefinitionSchema.shape.soap.parse(value) });
+                          }}
+                        />
+                      )}
+                      {draft.protocol === 'graphql' && (
+                        <Textarea
+                          label={t('designer.integrations.graphqlQuery')}
+                          value={draft.definition.graphql?.query ?? ''}
+                          onChange={(e) => {
+                            patch({
+                              graphql: {
+                                query: e.target.value,
+                                maxDepth: draft.definition.graphql?.maxDepth ?? 8,
+                                maxComplexity: draft.definition.graphql?.maxComplexity ?? 200,
+                              },
+                            });
+                          }}
+                        />
+                      )}
+                    </>
                   )}
                 </>
               )}
@@ -539,7 +557,7 @@ function ImportWizard({
       <Select
         label={t('designer.integrations.protocol')}
         value={draft.protocol}
-        options={['rest', 'soap', 'graphql'].map((value) => ({
+        options={['rest', 'soap', 'graphql', 'sql'].map((value) => ({
           value,
           label: value.toUpperCase(),
         }))}
@@ -547,119 +565,122 @@ function ImportWizard({
           onProtocol(IntegrationSaveSchema.shape.protocol.parse(value));
         }}
       />
-      <p>{t('designer.integrations.importHelp')}</p>
-      <label>
-        {t('designer.integrations.file')}
-        <input
-          type="file"
-          accept={draft.protocol === 'soap' ? '.wsdl,.xml' : '.json,.yaml,.yml'}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            if (file.size > 1048576) {
-              setError(true);
-              return;
+      {draft.protocol === 'sql' ? (
+        <Alert title={t('designer.integrations.sql.noImport')} tone="info" />
+      ) : (
+        <>
+          <p>{t('designer.integrations.importHelp')}</p>
+          <label>
+            {t('designer.integrations.file')}
+            <input
+              type="file"
+              accept={draft.protocol === 'soap' ? '.wsdl,.xml' : '.json,.yaml,.yml'}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                if (file.size > 1048576) {
+                  setError(true);
+                  return;
+                }
+                void file
+                  .text()
+                  .then(setSource)
+                  .catch(() => {
+                    setError(true);
+                  });
+              }}
+            />
+          </label>
+          <Textarea
+            label={t('designer.integrations.importSource')}
+            value={source}
+            onChange={(e) => {
+              setSource(e.target.value);
+            }}
+          />
+          <Button
+            disabled={
+              busy ||
+              (draft.protocol !== 'rest' && !initial) ||
+              (draft.protocol === 'graphql' && environment === 'prod')
             }
-            void file
-              .text()
-              .then(setSource)
-              .catch(() => {
-                setError(true);
-              });
-          }}
-        />
-      </label>
-      <Textarea
-        label={t('designer.integrations.importSource')}
-        value={source}
-        onChange={(e) => {
-          setSource(e.target.value);
-        }}
-      />
-      <Button
-        disabled={
-          busy ||
-          (draft.protocol !== 'rest' && !initial) ||
-          (draft.protocol === 'graphql' && environment === 'prod')
-        }
-        loading={busy}
-        onClick={() => {
-          setError(false);
-          setBusy(true);
-          void (async () => {
-            if (draft.protocol === 'rest') {
-              if (source.trim().startsWith('curl')) patch(importCurl(source));
-              else {
-                const { parse } = await import('yaml');
-                const parsed: unknown = parse(source, { maxAliasCount: 0 });
-                setOperations(openApiOperations(parsed));
-              }
-            } else if (draft.protocol === 'soap' && initial) {
-              const result = await request(
-                `/v1/data-sources/${initial.id}/wsdl`,
-                z.object({
-                  operations: z.array(z.object({ name: z.string(), action: z.string() })),
-                  namespace: z.string().optional(),
-                }),
-                { method: 'POST', csrf: session.csrfToken, body: { xml: source } },
-              );
-              setOperations(
-                result.operations.map((operation) => ({
-                  key: operation.name,
-                  label: operation.name,
-                  definition: {
-                    soap: {
-                      namespace:
-                        result.namespace ??
-                        draft.definition.soap?.namespace ??
-                        'https://service.example.com',
-                      operation: operation.name,
-                      action: operation.action,
-                    },
-                    method: 'POST',
-                  },
-                })),
-              );
-            } else if (initial && environment !== 'prod')
-              setSchema(
-                await request(`/v1/data-sources/${initial.id}/introspection`, object, {
-                  method: 'POST',
-                  csrf: session.csrfToken,
-                  body: { environment },
-                }),
-              );
-          })()
-            .catch(() => {
-              setError(true);
-            })
-            .finally(() => {
-              setBusy(false);
-            });
-        }}
-      >
-        {t(
-          draft.protocol === 'graphql'
-            ? 'designer.integrations.introspect'
-            : 'designer.integrations.import',
-        )}
-      </Button>
-      {!initial && draft.protocol !== 'rest' && (
-        <Alert title={t('designer.integrations.saveFirst')} tone="info" />
+            loading={busy}
+            onClick={() => {
+              setError(false);
+              setBusy(true);
+              void (async () => {
+                if (draft.protocol === 'rest') {
+                  if (source.trim().startsWith('curl')) patch(importCurl(source));
+                  else {
+                    const { parse } = await import('yaml');
+                    const parsed: unknown = parse(source, { maxAliasCount: 0 });
+                    setOperations(openApiOperations(parsed));
+                  }
+                } else if (draft.protocol === 'soap' && initial) {
+                  const result = await request(
+                    `/v1/data-sources/${initial.id}/wsdl`,
+                    z.object({
+                      operations: z.array(z.object({ name: z.string(), action: z.string() })),
+                      namespace: z.string().optional(),
+                    }),
+                    { method: 'POST', csrf: session.csrfToken, body: { xml: source } },
+                  );
+                  setOperations(
+                    result.operations.map((operation) => ({
+                      key: operation.name,
+                      label: operation.name,
+                      definition: {
+                        soap: {
+                          namespace: result.namespace ?? draft.definition.soap?.namespace ?? '',
+                          operation: operation.name,
+                          action: operation.action,
+                        },
+                        method: 'POST',
+                      },
+                    })),
+                  );
+                } else if (initial && environment !== 'prod')
+                  setSchema(
+                    await request(`/v1/data-sources/${initial.id}/introspection`, object, {
+                      method: 'POST',
+                      csrf: session.csrfToken,
+                      body: { environment },
+                    }),
+                  );
+              })()
+                .catch(() => {
+                  setError(true);
+                })
+                .finally(() => {
+                  setBusy(false);
+                });
+            }}
+          >
+            {t(
+              draft.protocol === 'graphql'
+                ? 'designer.integrations.introspect'
+                : 'designer.integrations.import',
+            )}
+          </Button>
+          {!initial && draft.protocol !== 'rest' && (
+            <Alert title={t('designer.integrations.saveFirst')} tone="info" />
+          )}
+          {!!operations.length && (
+            <Select
+              label={t('designer.integrations.operation')}
+              value={chosen}
+              options={operations.map((o) => ({ value: o.key, label: o.label }))}
+              onValueChange={(key) => {
+                setChosen(key);
+                const value = operations.find((o) => o.key === key);
+                if (value) patch(value.definition);
+              }}
+            />
+          )}
+          {schema !== null && <pre className="ig-code">{JSON.stringify(schema, null, 2)}</pre>}
+          {error && <Alert title={t('designer.integrations.importError')} tone="danger" />}
+        </>
       )}
-      {!!operations.length && (
-        <Select
-          label={t('designer.integrations.operation')}
-          value={chosen}
-          options={operations.map((o) => ({ value: o.key, label: o.label }))}
-          onValueChange={(key) => {
-            setChosen(key);
-            const value = operations.find((o) => o.key === key);
-            if (value) patch(value.definition);
-          }}
-        />
-      )}
-      {schema !== null && <pre className="ig-code">{JSON.stringify(schema, null, 2)}</pre>}
-      {error && <Alert title={t('designer.integrations.importError')} tone="danger" />}
     </>
   );
 }

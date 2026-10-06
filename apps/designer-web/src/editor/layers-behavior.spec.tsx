@@ -117,7 +117,7 @@ it('renames the selected page without changing its id or flow references and pre
   const f = await mountDesigner(<LeftPanel store={store} />);
   fireEvent.mouseDown(screen.getByRole('tab', { name: f.label('editor.pages') }), { button: 0 });
   const flow = store.getSnapshot().document.flow;
-  fireEvent.change(screen.getByLabelText(f.label('editor.pageName')), {
+  fireEvent.change(screen.getByLabelText(f.label('editor.renamePage')), {
     target: { value: 'Delivery welcome' },
   });
   expect(store.getSnapshot().document.pages[0]).toMatchObject({
@@ -134,7 +134,7 @@ it('renames the selected page without changing its id or flow references and pre
     <LeftPanel store={new EditorStore(editorFixture().document, new Set(['home']))} />,
   );
   fireEvent.mouseDown(screen.getByRole('tab', { name: f.label('editor.pages') }), { button: 0 });
-  expect(screen.getByLabelText<HTMLInputElement>(f.label('editor.pageName')).disabled).toBe(true);
+  expect(screen.getByLabelText<HTMLInputElement>(f.label('editor.renamePage')).disabled).toBe(true);
 });
 
 it('finds displayed localized content and tolerates Turkish accents without searching unrelated messages', async () => {
@@ -199,4 +199,21 @@ it('bounds large search result lists and keeps later matches reachable without e
     target: { value: 'btn-next' },
   });
   expect(within(results).getByRole('button', { name: /btn-next/ })).toBeTruthy();
+});
+// D-13: the name field of "Add page" names the new page; renaming the current one is separate.
+it('adds a page with its own name, a numbered default, and leaves the selected page untouched', async () => {
+  const store = new EditorStore(editorFixture().document);
+  const original = store.getSnapshot().document.pages[0]!.name;
+  const f = await mountDesigner(<LeftPanel store={store} />);
+  fireEvent.mouseDown(screen.getByRole('tab', { name: f.label('editor.pages') }), { button: 0 });
+  fireEvent.change(screen.getByLabelText(f.label('editor.newPageName')), {
+    target: { value: 'Offer' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.label('editor.addPage') }));
+  let pages = store.getSnapshot().document.pages;
+  expect(pages.map((p) => p.name)).toEqual([original, 'Offer']);
+  expect(screen.getByLabelText<HTMLInputElement>(f.label('editor.newPageName')).value).toBe('');
+  fireEvent.click(screen.getByRole('button', { name: f.label('editor.addPage') }));
+  pages = store.getSnapshot().document.pages;
+  expect(pages.at(-1)?.name).toBe(f.i18n.t('designer.editor.pageDefault', { number: 3 }));
 });

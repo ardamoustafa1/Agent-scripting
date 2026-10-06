@@ -50,6 +50,11 @@ describe('migrations', () => {
       '20261003210000_observability',
       '20261006103000_runtime_resilience',
       '20261006120000_routing_correctness',
+      '20261006133000_sql_datasource_protocol',
+      '20261006182000_collaboration_conflict_recovery',
+      '20261006190000_data_source_versions',
+      '20261006200000_data_source_identity',
+      '20261006200000_location_catalog',
     ]);
     expect(rows.every((row) => row.finished_at !== null && row.rolled_back_at === null)).toBe(true);
   });
@@ -109,7 +114,7 @@ describe('isolation catalogue', () => {
          AND c.relname NOT IN ('_prisma_migrations', 'audit_policy')
        GROUP BY c.relname, c.relrowsecurity, c.relforcerowsecurity
        ORDER BY c.relname`);
-    expect(rows.length).toBe(58);
+    expect(rows.length).toBe(61);
     for (const row of rows) {
       expect(row.rls, row.table).toBe(true);
       expect(row.forced, row.table).toBe(!NOT_FORCED.includes(row.table));
@@ -206,6 +211,43 @@ describe('isolation catalogue', () => {
         : 'search_path=public, pg_temp';
       expect(row.config, row.name).toContain(searchPath);
       expect(row.public_exec, row.name).toBe(false);
+    }
+  });
+});
+
+describe('hot-path partial indexes (M-20)', () => {
+  it('matches the migration predicates and the optimizer uses tenant/interaction and script indexes', async () => {
+    const indexes = await owner.query<{ indexname: string; indexdef: string }>(
+      `SELECT indexname, indexdef FROM pg_indexes WHERE schemaname='public' AND indexname IN ('sessions_interaction_idx','sessions_tenant_active_idx','assignments_tenant_script_active_idx')`,
+    );
+    expect(indexes.rows).toHaveLength(3);
+    for (const index of indexes.rows)
+      expect(index.indexdef).toMatch(/WHERE \(deleted_at IS NULL\)/);
+    const tenant = '01990000-0000-7000-8000-000000000001';
+    // Empty ephemeral tables naturally prefer seq scans; disabling them verifies index eligibility,
+    // not a fabricated latency claim. Production selectivity is workload dependent.
+    await owner.query('BEGIN');
+    try {
+      await owner.query('SET LOCAL enable_seqscan=off');
+      for (const [sql, expected] of [
+        [
+          'SELECT id FROM sessions WHERE tenant_id=$1 AND interaction_id=$1 AND deleted_at IS NULL',
+          'sessions_interaction_idx',
+        ],
+        [
+          "SELECT id FROM sessions WHERE tenant_id=$1 AND state='active' AND deleted_at IS NULL",
+          'Index Scan',
+        ],
+        [
+          'SELECT id FROM assignments WHERE tenant_id=$1 AND script_id=$1 AND deleted_at IS NULL',
+          'assignments_tenant_script_active_idx',
+        ],
+      ]) {
+        const plan = await owner.query(`EXPLAIN (FORMAT JSON) ${sql}`, [tenant]);
+        expect(JSON.stringify(plan.rows)).toContain(expected);
+      }
+    } finally {
+      await owner.query('ROLLBACK');
     }
   });
 });

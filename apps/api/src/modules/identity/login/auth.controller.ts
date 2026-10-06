@@ -72,6 +72,14 @@ export const AuthSessionSchema = z
   })
   .meta({ id: 'AuthSession' });
 
+/** Same as `AuthSession`, but a signed-out browser gets 200 instead of a console-noisy 401 (U-01). */
+export const AuthSessionStatusSchema = z
+  .union([
+    z.object({ authenticated: z.literal(false) }),
+    AuthSessionSchema.extend({ authenticated: z.literal(true) }),
+  ])
+  .meta({ id: 'AuthSessionStatus' });
+
 export const LogoutResponseSchema = z
   .object({ redirectUrl: z.string() })
   .meta({ id: 'LogoutResponse' });
@@ -229,6 +237,16 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Current BFF session (and its CSRF token)' })
   @ApiResponse(200, 'The session', AuthSessionSchema)
+  @ApiResponse(
+    429,
+    'Too many session checks (RFC 7807, VERBIS_HTTP_RATE_LIMITED). Limited per session cookie plus a shared per-IP cap; clients must not treat this as a signed-out state.',
+    undefined,
+    {
+      'Retry-After': 'Seconds until the current rate-limit window ends',
+      'RateLimit-Limit': 'Requests allowed per window for this key',
+      'RateLimit-Remaining': 'Requests left in the current window',
+    },
+  )
   @AnyAuthenticated()
   @Get('session')
   session(@Req() request: FastifyRequest, @Res({ passthrough: true }) reply: FastifyReply) {
@@ -236,6 +254,32 @@ export class AuthController {
     if (session === undefined) throw new UnauthenticatedError();
     void reply.header('cache-control', 'no-store');
     return {
+      user: {
+        id: session.record.userId,
+        tenantId: session.record.tenantId,
+        authMethod: session.record.kind,
+      },
+      session: summarize(session.record),
+      csrfToken: session.record.csrfToken,
+    };
+  }
+
+  @ApiOperation({
+    summary: 'Session probe that answers 200 {authenticated:false} when signed out (no 401)',
+  })
+  @ApiResponse(200, 'Signed-in session or {authenticated:false}', AuthSessionStatusSchema)
+  @ApiResponse(
+    429,
+    'Too many session checks (RFC 7807, VERBIS_HTTP_RATE_LIMITED); shares the /auth/session budget. Clients must not treat this as a signed-out state.',
+  )
+  @Public()
+  @Get('session/status')
+  sessionStatus(@Req() request: FastifyRequest, @Res({ passthrough: true }) reply: FastifyReply) {
+    void reply.header('cache-control', 'no-store');
+    const session = request.verbisSession;
+    if (session === undefined) return { authenticated: false as const };
+    return {
+      authenticated: true as const,
       user: {
         id: session.record.userId,
         tenantId: session.record.tenantId,

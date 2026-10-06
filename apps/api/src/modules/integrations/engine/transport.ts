@@ -55,8 +55,20 @@ export async function resolveTarget(
   return target;
 }
 export function createSecureTransport(resolver?: Resolver): Transport {
+  return createPinnedTransport((url, policy, origins) =>
+    resolveTarget(url, policy, origins, resolver),
+  );
+}
+/** Socket transport shared with the separately validated customer-network worker. */
+export function createPinnedTransport(
+  resolve: (
+    url: URL,
+    policy: Policy,
+    origins: readonly string[],
+  ) => Promise<{ address: string; family: number }>,
+): Transport {
   return async (wire, policy, tenantOrigins, signal) => {
-    const target = await resolveTarget(wire.url, policy, tenantOrigins, resolver);
+    const target = await resolve(wire.url, policy, tenantOrigins);
     signal.throwIfAborted();
     return new Promise<WireResponse>((resolve, reject) => {
       const send = wire.url.protocol === 'https:' ? httpsRequest : httpRequest;

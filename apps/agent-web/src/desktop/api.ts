@@ -42,6 +42,14 @@ export const Desktop = z.object({
       }),
     ),
   }),
+  /** Own name for `agent.*` personalization (M-Z6); absent from older API responses. */
+  agent: z
+    .object({
+      id: z.string(),
+      displayName: z.string().nullable(),
+      firstName: z.string().nullable(),
+    })
+    .optional(),
   writeback: z.enum(['none', 'queued', 'success']),
 });
 export type Desktop = z.infer<typeof Desktop>;

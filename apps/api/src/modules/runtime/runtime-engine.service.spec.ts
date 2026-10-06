@@ -12,6 +12,7 @@ import {
   SecureFieldSchema,
   RecordingSchema,
 } from './domain/runtime.js';
+import { readEvidenceChecksum } from './read-evidence.js';
 import { RuntimeCipher } from './runtime-cipher.js';
 import { RuntimeEngineService, type EngineSession, tokenHash } from './runtime-engine.service.js';
 import { RuntimePorts } from './runtime-ports.js';
@@ -338,7 +339,27 @@ it.each(['field.observed', 'text.acknowledged'] as const)(
       f.service.recordActivity(id, { type, name: node.id, status: 'success', durationMs: 100 }),
     );
     expect(f.events.append.mock.calls[0]![1]).toEqual([
-      { sessionId: id, type, payload: { name: node.id, status: 'success', durationMs: 100 } },
+      {
+        sessionId: id,
+        type,
+        payload: {
+          name: node.id,
+          status: 'success',
+          durationMs: 100,
+          // Legal-text acknowledgements are bound to the exact wording that was shown.
+          ...(type === 'text.acknowledged'
+            ? {
+                scriptChecksum: f.row.checksum,
+                scriptVersionId: f.row.scriptVersionId,
+                textChecksum: readEvidenceChecksum({
+                  pageId: 'home',
+                  nodeId: node.id,
+                  props: node.props,
+                }),
+              }
+            : {}),
+        },
+      },
     ]);
     expect(f.outbox.record.mock.calls[0]![1]).toMatchObject({
       payload: { analytics: { nodeId: node.id, durationMs: 100, error: false } },

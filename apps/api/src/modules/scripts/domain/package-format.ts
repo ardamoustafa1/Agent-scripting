@@ -76,7 +76,7 @@ export const PackageSchema = z
           z.strictObject({
             key: z.string().regex(/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/),
             version: z.number().int().positive(),
-            protocol: z.enum(['rest', 'soap', 'graphql']),
+            protocol: z.enum(['rest', 'soap', 'graphql', 'sql']),
             definition: IntegrationDefinitionSchema,
             policy: IntegrationPolicySchema,
             secretRefs: z.array(z.uuid()).max(20),

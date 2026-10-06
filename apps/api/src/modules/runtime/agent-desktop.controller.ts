@@ -3,9 +3,8 @@ import { z } from 'zod';
 
 import { JsonValueSchema } from '@verbis/script-schema';
 
-import { requestContext } from '../../common/context/request-context.js';
 import { UuidSchema } from '../../common/dto.js';
-import { ForbiddenError, NotFoundError } from '../../common/errors/domain-errors.js';
+import { ForbiddenError } from '../../common/errors/domain-errors.js';
 import { NoResponseReplay } from '../../common/idempotency/idempotency.interceptor.js';
 import { ZParam, ZBody } from '../../common/validation/zod.js';
 import { TenantDb } from '../../infra/database/tenant-db.js';
@@ -14,9 +13,13 @@ import { ApiOperation, ApiResponse, ApiTag } from '../../openapi/metadata.js';
 import { AuditService } from '../audit/audit.service.js';
 import { RequirePermissions } from '../authz/permissions.js';
 import { OutcomeSchema } from '../campaigns/campaigns.dto.js';
-import { IntegrationEngineService } from '../integrations/integration-engine.service.js';
 
 import { CommandSchema, RuntimeViewSchema } from './domain/runtime.js';
+import {
+  RuntimeDataService,
+  RuntimeDataCallSchema as DataCall,
+  assertRuntimeOwner,
+} from './runtime-data.service.js';
 import { RuntimeEngineService } from './runtime-engine.service.js';
 import { SecureCaptureService } from './secure-capture.service.js';
 
@@ -25,10 +28,6 @@ const DataRecovery = CommandSchema.omit({ command: true }).extend({
   mode: z.enum(['continue', 'manual']),
 });
 
-const DataCall = CommandSchema.omit({ command: true }).extend({
-  sourceId: z.string().max(128),
-  input: z.record(z.string(), JsonValueSchema),
-});
 export const AgentDesktopSchema = z.object({
   view: RuntimeViewSchema,
   document: z.unknown(),
@@ -44,6 +43,12 @@ export const AgentDesktopSchema = z.object({
     context: z.record(z.string(), JsonValueSchema),
   }),
   campaign: z.object({ name: z.string(), outcomes: z.array(OutcomeSchema) }),
+  /** The owning agent's own name for `agent.*` script personalization (M-Z6). */
+  agent: z.object({
+    id: z.uuid(),
+    displayName: z.string().nullable(),
+    firstName: z.string().nullable(),
+  }),
   writeback: z.enum(['none', 'queued', 'success']),
 });
 @ApiTag('agent-desktop')
@@ -52,19 +57,12 @@ export class AgentDesktopController {
   constructor(
     @Inject(TenantDb) private readonly db: TenantDb,
     @Inject(RuntimeEngineService) private readonly runtime: RuntimeEngineService,
-    @Inject(IntegrationEngineService) private readonly integrations: IntegrationEngineService,
+    @Inject(RuntimeDataService) private readonly data: RuntimeDataService,
     @Inject(AuditService) private readonly audit: AuditService,
     @Inject(SecureCaptureService) private readonly capture: SecureCaptureService,
   ) {}
   private requireOwner(userId: string) {
-    const actor = requestContext.require().principal;
-    if (
-      actor?.type !== 'user' ||
-      actor.id !== userId ||
-      actor.authMethod !== 'sso' ||
-      !actor.sessionId
-    )
-      throw new ForbiddenError();
+    assertRuntimeOwner(userId);
   }
   @Get(':id/desktop')
   @RequirePermissions('read:Session')
@@ -83,6 +81,15 @@ export class AgentDesktopController {
           where: { id: row.interaction.campaignId, tenantId: row.tenantId, deletedAt: null },
         })
       : null;
+    const user = await this.db.current().user.findFirst({
+      where: { id: row.userId, tenantId: row.tenantId, deletedAt: null },
+      select: { displayName: true, email: true },
+    });
+    // JIT falls back to the e-mail when the IdP sends no name; that is not a greeting name.
+    const displayName =
+      user && user.displayName.trim() !== '' && user.displayName !== user.email
+        ? user.displayName.trim()
+        : null;
     const acknowledgement =
       row.state === 'completed'
         ? await this.db.current().auditEvent.findFirst({
@@ -126,6 +133,11 @@ export class AgentDesktopController {
       campaign: {
         name: campaign?.name ?? '',
         outcomes: z.array(OutcomeSchema).parse(campaign?.outcomeSet ?? []),
+      },
+      agent: {
+        id: row.userId,
+        displayName,
+        firstName: displayName?.split(/\s+/)[0] ?? null,
       },
       writeback: row.state === 'completed' ? (acknowledgement ? 'success' : 'queued') : 'none',
     };
@@ -258,45 +270,6 @@ export class AgentDesktopController {
     @ZParam('id', UuidSchema) id: string,
     @ZBody(DataCall) input: z.infer<typeof DataCall>,
   ) {
-    const context = requestContext.require();
-    const scoped = <T>(work: () => Promise<T>) =>
-      this.db.run(this.db.tenantId(), (tx) => requestContext.run({ ...context, tx }, work));
-    const prepared = await scoped(async () => {
-      const row = await this.runtime.row(id, true);
-      this.requireOwner(row.userId);
-      this.runtime.claim(row, input);
-      const source = this.runtime.document(row).dataSources.find((s) => s.id === input.sourceId);
-      if (!source) throw new NotFoundError('DataSource');
-      const record = await this.db.current().dataSource.findFirst({
-        where: {
-          tenantId: row.tenantId,
-          key: source.ref.replace(/^tenant-datasource:/, ''),
-          version: source.version,
-          deletedAt: null,
-        },
-        select: { id: true },
-      });
-      if (!record) throw new NotFoundError('Pinned DataSource');
-      return this.integrations.prepareAuthorized(record.id, id, {
-        input: input.input,
-        environment: 'prod',
-      });
-    });
-    // No request transaction or session row lock is held across upstream I/O.
-    const result = await this.integrations.executePrepared(prepared);
-    const view = await scoped(async () => {
-      const row = await this.runtime.row(id, true);
-      this.requireOwner(row.userId);
-      this.runtime.claim(row, input);
-      await this.runtime.recordActivity(id, {
-        type: 'datasource.called',
-        name: input.sourceId,
-        status: result.error ? 'failure' : 'success',
-        durationMs: Math.min(300000, Math.round(result.durationMs)),
-      });
-      return this.runtime.view(id);
-    });
-    if (result.value === undefined) throw this.integrations.failure(result.error);
-    return { value: result.value, view };
+    return this.data.call(id, input);
   }
 }

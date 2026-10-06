@@ -14,7 +14,11 @@
       "types": "./dist/fixtures/index.d.ts",
       "default": "./dist/fixtures/index.js"
     },
-    "./script-document.schema.json": "./schema/script-document.schema.json"
+    "./script-document.schema.json": "./schema/script-document.schema.json",
+    "./templates": {
+      "types": "./dist/templates/index.d.ts",
+      "default": "./dist/templates/index.js"
+    }
   },
   "files": [
     "dist",

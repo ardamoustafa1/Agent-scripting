@@ -127,6 +127,28 @@ it('allows re-verifying an embedded hint after a denied launch and refuses malfo
     code: 'VERBIS_HTTP_UNAVAILABLE',
   });
 });
+it('maps only 401 to signed-out; 429/5xx become errors that carry Retry-After', async () => {
+  const fetch = network();
+  fetch.mockResolvedValue(new Response(null, { status: 401 }));
+  expect(await fetchAgentSession()).toBeNull();
+  fetch.mockResolvedValue(
+    Response.json(
+      { code: 'VERBIS_HTTP_RATE_LIMITED' },
+      { status: 429, headers: { 'retry-after': '17' } },
+    ),
+  );
+  await expect(fetchAgentSession()).rejects.toMatchObject({
+    code: 'VERBIS_HTTP_RATE_LIMITED',
+    status: 429,
+    retryAfterSeconds: 17,
+  });
+  fetch.mockResolvedValue(new Response('boom', { status: 503, headers: { 'retry-after': 'x' } }));
+  await expect(fetchAgentSession()).rejects.toMatchObject({
+    code: 'VERBIS_HTTP_UNAVAILABLE',
+    status: 503,
+    retryAfterSeconds: undefined,
+  });
+});
 it('validates session and socket-ticket bodies and treats ignored URL-parameter signals as best effort', async () => {
   const fetch = network();
   fetch.mockResolvedValue(new Response('{broken'));

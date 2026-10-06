@@ -173,7 +173,7 @@ it('sets mock outcomes and debugger breakpoints without making live calls', asyn
     );
   });
   fireEvent.click(screen.getByRole('checkbox', { name: 'Home' }));
-  fireEvent.click(screen.getByRole('checkbox', { name: 'next' }));
+  fireEvent.click(screen.getByRole('checkbox', { name: f.label('preview.actions.next') }));
   expect(f.requests.some((r) => r.method === 'POST')).toBe(false);
 });
 it('blocks live execution and scenario recording for dirty documents', async () => {
@@ -199,4 +199,12 @@ it('loads an existing scenario and edits channel and interaction context before 
   fireEvent.click(screen.getByRole('button', { name: f.label('preview.restart') }));
   f.tab('watch');
   expect(screen.getByLabelText<HTMLInputElement>('synthetic').value).toBe('7');
+});
+
+it('isolates the preview from scripts and exposes the page name', async () => {
+  const f = await setup();
+  const frame = screen.getByTitle<HTMLIFrameElement>(f.label('preview.deviceFrame'));
+  expect(frame.getAttribute('sandbox')).toBe('allow-same-origin');
+  expect(frame.srcdoc).toContain("script-src 'none'");
+  expect(screen.getByText(new RegExp(f.label('preview.page') + ':')).textContent).toContain('Home');
 });

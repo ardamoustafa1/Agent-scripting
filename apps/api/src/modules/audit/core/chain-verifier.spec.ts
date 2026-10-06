@@ -1,6 +1,8 @@
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
+import { securityPropertyOptions } from '@verbis/test-utils';
+
 import { GENESIS_HASH, recomputeHash, type StoredAuditRow } from './audit-event.js';
 import { ChainVerifier, GENESIS_ANCHOR } from './chain-verifier.js';
 
@@ -223,7 +225,7 @@ describe('ChainVerifier — tamper detection', () => {
           expect(result.breaks[0]?.seq).toBe(String(index + 1));
         },
       ),
-      { numRuns: 300, seed: 20261001 },
+      securityPropertyOptions(20261001),
     );
   });
 
@@ -237,7 +239,7 @@ describe('ChainVerifier — tamper detection', () => {
           expect(verify(kept, 20n).valid).toBe(false);
         },
       ),
-      { numRuns: 200, seed: 42 },
+      securityPropertyOptions(42),
     );
   });
 });

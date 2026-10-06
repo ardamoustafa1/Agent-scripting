@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { keysetOrderBy, keysetWhere } from '../../common/pagination/pagination.js';
 
-import type { IdpListQuery, RoleListQuery, UserListQuery } from './identity.dto.js';
+import type { GroupListQuery, IdpListQuery, RoleListQuery, UserListQuery } from './identity.dto.js';
 import type { Prisma } from '../../generated/prisma/client.js';
 import type { TransactionClient } from '../../infra/database/prisma.service.js';
 
@@ -32,6 +32,15 @@ const ROLE_SELECT = {
 } satisfies Prisma.RoleSelect;
 export type RoleRow = Prisma.RoleGetPayload<{ select: typeof ROLE_SELECT }>;
 
+const GROUP_SELECT = {
+  id: true,
+  displayName: true,
+  createdAt: true,
+  updatedAt: true,
+  version: true,
+} satisfies Prisma.GroupSelect;
+export type GroupRow = Prisma.GroupGetPayload<{ select: typeof GROUP_SELECT }>;
+
 export const IDP_SELECT = {
   id: true,
   protocol: true,
@@ -56,6 +65,14 @@ export class IdentityRepository {
       tenantId,
       deletedAt: null,
       ...(query.filters.status === undefined ? {} : { status: query.filters.status }),
+      ...(query.filters.q === undefined
+        ? {}
+        : {
+            OR: [
+              { displayName: { contains: query.filters.q, mode: 'insensitive' } },
+              { email: { contains: query.filters.q, mode: 'insensitive' } },
+            ],
+          }),
     };
     return tx.user.findMany({
       where: and(where, keysetWhere(query)) as Prisma.UserWhereInput,
@@ -75,6 +92,22 @@ export class IdentityRepository {
       orderBy: keysetOrderBy(query),
       take: query.limit + 1,
       select: ROLE_SELECT,
+    });
+  }
+
+  listGroups(tx: TransactionClient, tenantId: string, query: GroupListQuery): Promise<GroupRow[]> {
+    const where: Prisma.GroupWhereInput = {
+      tenantId,
+      deletedAt: null,
+      ...(query.filters.q === undefined
+        ? {}
+        : { displayName: { contains: query.filters.q, mode: 'insensitive' } }),
+    };
+    return tx.group.findMany({
+      where: and(where, keysetWhere(query)) as Prisma.GroupWhereInput,
+      orderBy: keysetOrderBy(query),
+      take: query.limit + 1,
+      select: GROUP_SELECT,
     });
   }
 

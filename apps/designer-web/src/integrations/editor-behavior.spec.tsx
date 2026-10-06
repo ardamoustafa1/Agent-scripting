@@ -12,7 +12,13 @@ import { scriptId } from '../test-fixtures.js';
 import IntegrationEditor from './editor.js';
 import { defaults } from './importers.js';
 
-const initial = IntegrationRecordSchema.parse({ id: scriptId, ...defaults(), version: 3 });
+const initial = IntegrationRecordSchema.parse({
+  id: scriptId,
+  ...defaults(),
+  key: 'synthetic-existing',
+  definition: { ...defaults().definition, baseUrl: 'https://customer.example.io' },
+  version: 3,
+});
 async function setup(isNew = false, extra: Record<string, unknown> = {}) {
   const f = await mountDesigner(
     <IntegrationEditor />,
@@ -112,6 +118,16 @@ it.each(['SOAP', 'GRAPHQL'])('configures protocol-specific fields for %s', async
   await choose(f.label('integrations.protocol'), protocol);
   const label = protocol === 'SOAP' ? 'soap' : 'graphqlQuery';
   expect(screen.getByLabelText(f.label(`integrations.${label}`))).toBeTruthy();
+  if (protocol === 'SOAP') {
+    change(
+      f.label('integrations.soap'),
+      JSON.stringify({
+        namespace: 'https://customer.example.io/soap',
+        operation: 'SyntheticLookup',
+        action: '',
+      }),
+    );
+  }
   if (protocol === 'GRAPHQL')
     change(f.label('integrations.graphqlQuery'), 'query Synthetic { synthetic }');
   fireEvent.click(screen.getByRole('button', { name: f.label('integrations.save') }));

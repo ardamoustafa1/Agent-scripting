@@ -156,6 +156,8 @@
     "adminWorkspace.after",
     "adminWorkspace.agentTitle",
     "adminWorkspace.ai",
+    "adminWorkspace.allCampaigns",
+    "adminWorkspace.allTeams",
     "adminWorkspace.analytics",
     "adminWorkspace.analyticsDays",
     "adminWorkspace.audit",
@@ -207,8 +209,116 @@
     "adminWorkspace.empty",
     "adminWorkspace.en",
     "adminWorkspace.entityId",
+    "adminWorkspace.enum.action.approve",
+    "adminWorkspace.enum.action.create",
+    "adminWorkspace.enum.action.delete",
+    "adminWorkspace.enum.action.execute",
+    "adminWorkspace.enum.action.export",
+    "adminWorkspace.enum.action.manage",
+    "adminWorkspace.enum.action.publish",
+    "adminWorkspace.enum.action.read",
+    "adminWorkspace.enum.action.reveal",
+    "adminWorkspace.enum.action.update",
+    "adminWorkspace.enum.adapterType.amazon_connect",
+    "adminWorkspace.enum.adapterType.avaya_aacc",
+    "adminWorkspace.enum.adapterType.avaya_aes",
+    "adminWorkspace.enum.adapterType.avaya_axp",
+    "adminWorkspace.enum.adapterType.cisco",
+    "adminWorkspace.enum.adapterType.five9",
+    "adminWorkspace.enum.adapterType.generic",
+    "adminWorkspace.enum.adapterType.genesys_cloud",
+    "adminWorkspace.enum.adapterType.genesys_engage",
+    "adminWorkspace.enum.adapterType.nice_cxone",
+    "adminWorkspace.enum.classification.internal",
+    "adminWorkspace.enum.classification.pci",
+    "adminWorkspace.enum.classification.pii",
+    "adminWorkspace.enum.classification.public",
+    "adminWorkspace.enum.ctiKind.campaign",
+    "adminWorkspace.enum.ctiKind.dnis",
+    "adminWorkspace.enum.ctiKind.flow",
+    "adminWorkspace.enum.ctiKind.queue",
+    "adminWorkspace.enum.ctiKind.routingPoint",
+    "adminWorkspace.enum.ctiKind.skill",
+    "adminWorkspace.enum.ctiKind.vdn",
+    "adminWorkspace.enum.ctiPlatform.amazon-connect",
+    "adminWorkspace.enum.ctiPlatform.avaya-aacc",
+    "adminWorkspace.enum.ctiPlatform.avaya-aes",
+    "adminWorkspace.enum.ctiPlatform.avaya-axp",
+    "adminWorkspace.enum.ctiPlatform.cisco",
+    "adminWorkspace.enum.ctiPlatform.five9",
+    "adminWorkspace.enum.ctiPlatform.generic",
+    "adminWorkspace.enum.ctiPlatform.genesys-cloud",
+    "adminWorkspace.enum.ctiPlatform.genesys-engage",
+    "adminWorkspace.enum.ctiPlatform.nice-cxone",
+    "adminWorkspace.enum.outcome.denied",
+    "adminWorkspace.enum.outcome.failure",
+    "adminWorkspace.enum.outcome.success",
+    "adminWorkspace.enum.privacyKind.anonymize",
+    "adminWorkspace.enum.privacyKind.export",
+    "adminWorkspace.enum.privacyKind.search",
+    "adminWorkspace.enum.privacyState.blocked",
+    "adminWorkspace.enum.privacyState.completed",
+    "adminWorkspace.enum.privacyState.pending",
+    "adminWorkspace.enum.protocol.local",
+    "adminWorkspace.enum.protocol.oidc",
+    "adminWorkspace.enum.protocol.saml",
+    "adminWorkspace.enum.resource.audit",
+    "adminWorkspace.enum.resource.campaign",
+    "adminWorkspace.enum.resource.connector",
+    "adminWorkspace.enum.resource.idp",
+    "adminWorkspace.enum.resource.integration",
+    "adminWorkspace.enum.resource.report",
+    "adminWorkspace.enum.resource.role",
+    "adminWorkspace.enum.resource.screen",
+    "adminWorkspace.enum.resource.script",
+    "adminWorkspace.enum.resource.secret",
+    "adminWorkspace.enum.resource.session",
+    "adminWorkspace.enum.resource.user",
+    "adminWorkspace.enum.roleSource.asc",
+    "adminWorkspace.enum.roleSource.jit",
+    "adminWorkspace.enum.roleSource.manual",
+    "adminWorkspace.enum.roleSource.scim",
+    "adminWorkspace.enum.roleSource.sso",
+    "adminWorkspace.enum.scope.all",
+    "adminWorkspace.enum.scope.campaign",
+    "adminWorkspace.enum.scope.own",
+    "adminWorkspace.enum.scope.site",
+    "adminWorkspace.enum.scope.team",
+    "adminWorkspace.enum.secretKind.api_key",
+    "adminWorkspace.enum.secretKind.certificate",
+    "adminWorkspace.enum.secretKind.generic",
+    "adminWorkspace.enum.secretKind.oauth_client",
+    "adminWorkspace.enum.secretKind.password",
+    "adminWorkspace.enum.sessionLimit.deny",
+    "adminWorkspace.enum.sessionLimit.evict_oldest",
+    "adminWorkspace.enum.siemFormat.cef",
+    "adminWorkspace.enum.siemFormat.json",
+    "adminWorkspace.enum.siemFormat.rfc5424",
+    "adminWorkspace.enum.siemKind.kafka",
+    "adminWorkspace.enum.siemKind.syslog",
+    "adminWorkspace.enum.siemKind.webhook",
+    "adminWorkspace.enum.status.active",
+    "adminWorkspace.enum.status.deleting",
+    "adminWorkspace.enum.status.deprovisioned",
+    "adminWorkspace.enum.status.disabled",
+    "adminWorkspace.enum.status.draft",
+    "adminWorkspace.enum.status.error",
+    "adminWorkspace.enum.status.invited",
+    "adminWorkspace.enum.status.pending_mfa",
+    "adminWorkspace.enum.status.provisioning",
+    "adminWorkspace.enum.status.suspended",
     "adminWorkspace.equals",
     "adminWorkspace.errorRate",
+    "adminWorkspace.errors.conflict",
+    "adminWorkspace.errors.forbidden",
+    "adminWorkspace.errors.generic",
+    "adminWorkspace.errors.notFound",
+    "adminWorkspace.errors.rateLimited",
+    "adminWorkspace.errors.reference",
+    "adminWorkspace.errors.unauthenticated",
+    "adminWorkspace.errors.unavailable",
+    "adminWorkspace.errors.unexpectedResponse",
+    "adminWorkspace.errors.validation",
     "adminWorkspace.eventDetails",
     "adminWorkspace.expiresAt",
     "adminWorkspace.expiresInDays",
@@ -231,6 +341,19 @@
     "adminWorkspace.idpDraftHint",
     "adminWorkspace.idpWizard",
     "adminWorkspace.intro",
+    "adminWorkspace.intros.ai",
+    "adminWorkspace.intros.analytics",
+    "adminWorkspace.intros.audit",
+    "adminWorkspace.intros.branding",
+    "adminWorkspace.intros.connectors",
+    "adminWorkspace.intros.data",
+    "adminWorkspace.intros.identity",
+    "adminWorkspace.intros.secrets",
+    "adminWorkspace.intros.security",
+    "adminWorkspace.intros.simulator",
+    "adminWorkspace.intros.systemHealth",
+    "adminWorkspace.intros.tenants",
+    "adminWorkspace.intros.users",
     "adminWorkspace.invalid",
     "adminWorkspace.ip",
     "adminWorkspace.ips",
@@ -260,6 +383,7 @@
     "adminWorkspace.navigation",
     "adminWorkspace.next",
     "adminWorkspace.noSamples",
+    "adminWorkspace.noScopeOptions",
     "adminWorkspace.occurredAt",
     "adminWorkspace.oldestPendingAt",
     "adminWorkspace.onLimit",
@@ -552,6 +676,15 @@
     "analytics.campaignId",
     "analytics.campaignPlaceholder",
     "analytics.channel",
+    "analytics.channels.callback",
+    "analytics.channels.chat",
+    "analytics.channels.email",
+    "analytics.channels.messaging",
+    "analytics.channels.sms",
+    "analytics.channels.social",
+    "analytics.channels.video",
+    "analytics.channels.voice",
+    "analytics.channels.whatsapp",
     "analytics.clearFilters",
     "analytics.cohort",
     "analytics.completed",
@@ -593,9 +726,12 @@
     "analytics.pValue",
     "analytics.pages",
     "analytics.paths",
+    "analytics.recipientSearch",
     "analytics.recipients",
     "analytics.recipientsHint",
     "analytics.recipientsPlaceholder",
+    "analytics.recipientsRequired",
+    "analytics.recipientsSelected",
     "analytics.remove",
     "analytics.retry",
     "analytics.save",
@@ -619,6 +755,17 @@
     "analytics.to",
     "analytics.weekly",
     "analytics.yes",
+    "authz.roleDescriptions.agent",
+    "authz.roleDescriptions.api_client",
+    "authz.roleDescriptions.campaign_manager",
+    "authz.roleDescriptions.integration_engineer",
+    "authz.roleDescriptions.report_viewer",
+    "authz.roleDescriptions.script_approver",
+    "authz.roleDescriptions.script_designer",
+    "authz.roleDescriptions.security_auditor",
+    "authz.roleDescriptions.super_admin",
+    "authz.roleDescriptions.supervisor",
+    "authz.roleDescriptions.tenant_admin",
     "authz.roles.agent",
     "authz.roles.api_client",
     "authz.roles.campaign_manager",
@@ -810,16 +957,19 @@
     "designer.editor.addAction",
     "designer.editor.addConditional",
     "designer.editor.addPage",
+    "designer.editor.addSource",
     "designer.editor.advancedProperties",
     "designer.editor.affectedVersion",
     "designer.editor.apply",
     "designer.editor.applyExpression",
+    "designer.editor.assignmentPermission",
     "designer.editor.attach",
     "designer.editor.auto",
     "designer.editor.binding",
     "designer.editor.breadcrumb",
     "designer.editor.breakpoint",
     "designer.editor.by",
+    "designer.editor.cancel",
     "designer.editor.canvas",
     "designer.editor.columns",
     "designer.editor.componentGroups.action",
@@ -903,9 +1053,20 @@
     "designer.editor.componentNames.webService",
     "designer.editor.componentNames.wizard",
     "designer.editor.components",
+    "designer.editor.conditionSource",
     "designer.editor.conflict",
+    "designer.editor.conflictRecovered",
     "designer.editor.copy",
+    "designer.editor.createRecoveryDraft",
+    "designer.editor.customCondition",
     "designer.editor.delete",
+    "designer.editor.dnd.cancelled",
+    "designer.editor.dnd.dropped",
+    "designer.editor.dnd.instructions",
+    "designer.editor.dnd.item",
+    "designer.editor.dnd.outside",
+    "designer.editor.dnd.over",
+    "designer.editor.dnd.picked",
     "designer.editor.dropTarget",
     "designer.editor.duplicate",
     "designer.editor.enabledWhen",
@@ -919,15 +1080,22 @@
     "designer.editor.group",
     "designer.editor.impactUnavailable",
     "designer.editor.inherit",
+    "designer.editor.insertionTarget",
     "designer.editor.invalid",
     "designer.editor.invalidExpression",
     "designer.editor.invalidProps",
     "designer.editor.issues",
+    "designer.editor.jsonInvalid",
+    "designer.editor.jsonRejected",
+    "designer.editor.jumpCanvas",
+    "designer.editor.jumpPalette",
     "designer.editor.layers",
     "designer.editor.leave",
     "designer.editor.linked",
     "designer.editor.linkedReadonly",
     "designer.editor.loading",
+    "designer.editor.manageSources",
+    "designer.editor.moveComponent",
     "designer.editor.moveDown",
     "designer.editor.moveUp",
     "designer.editor.newPage",
@@ -937,17 +1105,30 @@
     "designer.editor.nodeResults",
     "designer.editor.none",
     "designer.editor.operationFailed",
+    "designer.editor.options.add",
+    "designer.editor.options.duplicate",
+    "designer.editor.options.empty",
+    "designer.editor.options.hint",
+    "designer.editor.options.label",
+    "designer.editor.options.moveDown",
+    "designer.editor.options.moveUp",
+    "designer.editor.options.remove",
+    "designer.editor.options.title",
+    "designer.editor.options.value",
     "designer.editor.outdated",
     "designer.editor.override",
     "designer.editor.pageName",
     "designer.editor.pages",
     "designer.editor.paste",
     "designer.editor.pending",
+    "designer.editor.preservedEdits",
     "designer.editor.previewInvalid",
     "designer.editor.previousResults",
     "designer.editor.properties",
     "designer.editor.property",
+    "designer.editor.recoverConflict",
     "designer.editor.redo",
+    "designer.editor.referencedCondition",
     "designer.editor.reorder",
     "designer.editor.requiredWhen",
     "designer.editor.resize",
@@ -964,6 +1145,14 @@
     "designer.editor.shortcutDetail",
     "designer.editor.shortcuts",
     "designer.editor.shortcutsList",
+    "designer.editor.sourceBindingSummary",
+    "designer.editor.sourceInUse",
+    "designer.editor.sourceInputs",
+    "designer.editor.sourceInvalid",
+    "designer.editor.sourceLoadFailed",
+    "designer.editor.sourceMappingHint",
+    "designer.editor.sourceOutputs",
+    "designer.editor.sourceTimeout",
     "designer.editor.stay",
     "designer.editor.style",
     "designer.editor.styleLabels.align",
@@ -974,6 +1163,7 @@
     "designer.editor.styleLabels.padding",
     "designer.editor.styleLabels.tone",
     "designer.editor.styleLabels.width",
+    "designer.editor.tenantIntegration",
     "designer.editor.title",
     "designer.editor.twoWay",
     "designer.editor.undo",
@@ -1428,6 +1618,10 @@
     "designer.rules.value",
     "designer.rules.visual",
     "designer.variables.add",
+    "designer.variables.classifications.internal",
+    "designer.variables.classifications.pci",
+    "designer.variables.classifications.pii",
+    "designer.variables.classifications.public",
     "designer.variables.default",
     "designer.variables.edit",
     "designer.variables.enum",
@@ -1435,7 +1629,19 @@
     "designer.variables.pii",
     "designer.variables.renameDescription",
     "designer.variables.renameFailed",
+    "designer.variables.scopes.campaign",
+    "designer.variables.scopes.global",
+    "designer.variables.scopes.interaction",
+    "designer.variables.scopes.page",
+    "designer.variables.scopes.session",
     "designer.variables.title",
+    "designer.variables.types.array",
+    "designer.variables.types.boolean",
+    "designer.variables.types.date",
+    "designer.variables.types.enum",
+    "designer.variables.types.number",
+    "designer.variables.types.object",
+    "designer.variables.types.string",
     "designer.variables.usageCount",
     "designer.variables.uses",
     "designer.workspace.ab",
@@ -1919,6 +2125,8 @@
     "adminWorkspace.after",
     "adminWorkspace.agentTitle",
     "adminWorkspace.ai",
+    "adminWorkspace.allCampaigns",
+    "adminWorkspace.allTeams",
     "adminWorkspace.analytics",
     "adminWorkspace.analyticsDays",
     "adminWorkspace.audit",
@@ -1970,8 +2178,116 @@
     "adminWorkspace.empty",
     "adminWorkspace.en",
     "adminWorkspace.entityId",
+    "adminWorkspace.enum.action.approve",
+    "adminWorkspace.enum.action.create",
+    "adminWorkspace.enum.action.delete",
+    "adminWorkspace.enum.action.execute",
+    "adminWorkspace.enum.action.export",
+    "adminWorkspace.enum.action.manage",
+    "adminWorkspace.enum.action.publish",
+    "adminWorkspace.enum.action.read",
+    "adminWorkspace.enum.action.reveal",
+    "adminWorkspace.enum.action.update",
+    "adminWorkspace.enum.adapterType.amazon_connect",
+    "adminWorkspace.enum.adapterType.avaya_aacc",
+    "adminWorkspace.enum.adapterType.avaya_aes",
+    "adminWorkspace.enum.adapterType.avaya_axp",
+    "adminWorkspace.enum.adapterType.cisco",
+    "adminWorkspace.enum.adapterType.five9",
+    "adminWorkspace.enum.adapterType.generic",
+    "adminWorkspace.enum.adapterType.genesys_cloud",
+    "adminWorkspace.enum.adapterType.genesys_engage",
+    "adminWorkspace.enum.adapterType.nice_cxone",
+    "adminWorkspace.enum.classification.internal",
+    "adminWorkspace.enum.classification.pci",
+    "adminWorkspace.enum.classification.pii",
+    "adminWorkspace.enum.classification.public",
+    "adminWorkspace.enum.ctiKind.campaign",
+    "adminWorkspace.enum.ctiKind.dnis",
+    "adminWorkspace.enum.ctiKind.flow",
+    "adminWorkspace.enum.ctiKind.queue",
+    "adminWorkspace.enum.ctiKind.routingPoint",
+    "adminWorkspace.enum.ctiKind.skill",
+    "adminWorkspace.enum.ctiKind.vdn",
+    "adminWorkspace.enum.ctiPlatform.amazon-connect",
+    "adminWorkspace.enum.ctiPlatform.avaya-aacc",
+    "adminWorkspace.enum.ctiPlatform.avaya-aes",
+    "adminWorkspace.enum.ctiPlatform.avaya-axp",
+    "adminWorkspace.enum.ctiPlatform.cisco",
+    "adminWorkspace.enum.ctiPlatform.five9",
+    "adminWorkspace.enum.ctiPlatform.generic",
+    "adminWorkspace.enum.ctiPlatform.genesys-cloud",
+    "adminWorkspace.enum.ctiPlatform.genesys-engage",
+    "adminWorkspace.enum.ctiPlatform.nice-cxone",
+    "adminWorkspace.enum.outcome.denied",
+    "adminWorkspace.enum.outcome.failure",
+    "adminWorkspace.enum.outcome.success",
+    "adminWorkspace.enum.privacyKind.anonymize",
+    "adminWorkspace.enum.privacyKind.export",
+    "adminWorkspace.enum.privacyKind.search",
+    "adminWorkspace.enum.privacyState.blocked",
+    "adminWorkspace.enum.privacyState.completed",
+    "adminWorkspace.enum.privacyState.pending",
+    "adminWorkspace.enum.protocol.local",
+    "adminWorkspace.enum.protocol.oidc",
+    "adminWorkspace.enum.protocol.saml",
+    "adminWorkspace.enum.resource.audit",
+    "adminWorkspace.enum.resource.campaign",
+    "adminWorkspace.enum.resource.connector",
+    "adminWorkspace.enum.resource.idp",
+    "adminWorkspace.enum.resource.integration",
+    "adminWorkspace.enum.resource.report",
+    "adminWorkspace.enum.resource.role",
+    "adminWorkspace.enum.resource.screen",
+    "adminWorkspace.enum.resource.script",
+    "adminWorkspace.enum.resource.secret",
+    "adminWorkspace.enum.resource.session",
+    "adminWorkspace.enum.resource.user",
+    "adminWorkspace.enum.roleSource.asc",
+    "adminWorkspace.enum.roleSource.jit",
+    "adminWorkspace.enum.roleSource.manual",
+    "adminWorkspace.enum.roleSource.scim",
+    "adminWorkspace.enum.roleSource.sso",
+    "adminWorkspace.enum.scope.all",
+    "adminWorkspace.enum.scope.campaign",
+    "adminWorkspace.enum.scope.own",
+    "adminWorkspace.enum.scope.site",
+    "adminWorkspace.enum.scope.team",
+    "adminWorkspace.enum.secretKind.api_key",
+    "adminWorkspace.enum.secretKind.certificate",
+    "adminWorkspace.enum.secretKind.generic",
+    "adminWorkspace.enum.secretKind.oauth_client",
+    "adminWorkspace.enum.secretKind.password",
+    "adminWorkspace.enum.sessionLimit.deny",
+    "adminWorkspace.enum.sessionLimit.evict_oldest",
+    "adminWorkspace.enum.siemFormat.cef",
+    "adminWorkspace.enum.siemFormat.json",
+    "adminWorkspace.enum.siemFormat.rfc5424",
+    "adminWorkspace.enum.siemKind.kafka",
+    "adminWorkspace.enum.siemKind.syslog",
+    "adminWorkspace.enum.siemKind.webhook",
+    "adminWorkspace.enum.status.active",
+    "adminWorkspace.enum.status.deleting",
+    "adminWorkspace.enum.status.deprovisioned",
+    "adminWorkspace.enum.status.disabled",
+    "adminWorkspace.enum.status.draft",
+    "adminWorkspace.enum.status.error",
+    "adminWorkspace.enum.status.invited",
+    "adminWorkspace.enum.status.pending_mfa",
+    "adminWorkspace.enum.status.provisioning",
+    "adminWorkspace.enum.status.suspended",
     "adminWorkspace.equals",
     "adminWorkspace.errorRate",
+    "adminWorkspace.errors.conflict",
+    "adminWorkspace.errors.forbidden",
+    "adminWorkspace.errors.generic",
+    "adminWorkspace.errors.notFound",
+    "adminWorkspace.errors.rateLimited",
+    "adminWorkspace.errors.reference",
+    "adminWorkspace.errors.unauthenticated",
+    "adminWorkspace.errors.unavailable",
+    "adminWorkspace.errors.unexpectedResponse",
+    "adminWorkspace.errors.validation",
     "adminWorkspace.eventDetails",
     "adminWorkspace.expiresAt",
     "adminWorkspace.expiresInDays",
@@ -1994,6 +2310,19 @@
     "adminWorkspace.idpDraftHint",
     "adminWorkspace.idpWizard",
     "adminWorkspace.intro",
+    "adminWorkspace.intros.ai",
+    "adminWorkspace.intros.analytics",
+    "adminWorkspace.intros.audit",
+    "adminWorkspace.intros.branding",
+    "adminWorkspace.intros.connectors",
+    "adminWorkspace.intros.data",
+    "adminWorkspace.intros.identity",
+    "adminWorkspace.intros.secrets",
+    "adminWorkspace.intros.security",
+    "adminWorkspace.intros.simulator",
+    "adminWorkspace.intros.systemHealth",
+    "adminWorkspace.intros.tenants",
+    "adminWorkspace.intros.users",
     "adminWorkspace.invalid",
     "adminWorkspace.ip",
     "adminWorkspace.ips",
@@ -2023,6 +2352,7 @@
     "adminWorkspace.navigation",
     "adminWorkspace.next",
     "adminWorkspace.noSamples",
+    "adminWorkspace.noScopeOptions",
     "adminWorkspace.occurredAt",
     "adminWorkspace.oldestPendingAt",
     "adminWorkspace.onLimit",
@@ -2315,6 +2645,15 @@
     "analytics.campaignId",
     "analytics.campaignPlaceholder",
     "analytics.channel",
+    "analytics.channels.callback",
+    "analytics.channels.chat",
+    "analytics.channels.email",
+    "analytics.channels.messaging",
+    "analytics.channels.sms",
+    "analytics.channels.social",
+    "analytics.channels.video",
+    "analytics.channels.voice",
+    "analytics.channels.whatsapp",
     "analytics.clearFilters",
     "analytics.cohort",
     "analytics.completed",
@@ -2356,9 +2695,12 @@
     "analytics.pValue",
     "analytics.pages",
     "analytics.paths",
+    "analytics.recipientSearch",
     "analytics.recipients",
     "analytics.recipientsHint",
     "analytics.recipientsPlaceholder",
+    "analytics.recipientsRequired",
+    "analytics.recipientsSelected",
     "analytics.remove",
     "analytics.retry",
     "analytics.save",
@@ -2382,6 +2724,17 @@
     "analytics.to",
     "analytics.weekly",
     "analytics.yes",
+    "authz.roleDescriptions.agent",
+    "authz.roleDescriptions.api_client",
+    "authz.roleDescriptions.campaign_manager",
+    "authz.roleDescriptions.integration_engineer",
+    "authz.roleDescriptions.report_viewer",
+    "authz.roleDescriptions.script_approver",
+    "authz.roleDescriptions.script_designer",
+    "authz.roleDescriptions.security_auditor",
+    "authz.roleDescriptions.super_admin",
+    "authz.roleDescriptions.supervisor",
+    "authz.roleDescriptions.tenant_admin",
     "authz.roles.agent",
     "authz.roles.api_client",
     "authz.roles.campaign_manager",
@@ -2573,16 +2926,19 @@
     "designer.editor.addAction",
     "designer.editor.addConditional",
     "designer.editor.addPage",
+    "designer.editor.addSource",
     "designer.editor.advancedProperties",
     "designer.editor.affectedVersion",
     "designer.editor.apply",
     "designer.editor.applyExpression",
+    "designer.editor.assignmentPermission",
     "designer.editor.attach",
     "designer.editor.auto",
     "designer.editor.binding",
     "designer.editor.breadcrumb",
     "designer.editor.breakpoint",
     "designer.editor.by",
+    "designer.editor.cancel",
     "designer.editor.canvas",
     "designer.editor.columns",
     "designer.editor.componentGroups.action",
@@ -2666,9 +3022,20 @@
     "designer.editor.componentNames.webService",
     "designer.editor.componentNames.wizard",
     "designer.editor.components",
+    "designer.editor.conditionSource",
     "designer.editor.conflict",
+    "designer.editor.conflictRecovered",
     "designer.editor.copy",
+    "designer.editor.createRecoveryDraft",
+    "designer.editor.customCondition",
     "designer.editor.delete",
+    "designer.editor.dnd.cancelled",
+    "designer.editor.dnd.dropped",
+    "designer.editor.dnd.instructions",
+    "designer.editor.dnd.item",
+    "designer.editor.dnd.outside",
+    "designer.editor.dnd.over",
+    "designer.editor.dnd.picked",
     "designer.editor.dropTarget",
     "designer.editor.duplicate",
     "designer.editor.enabledWhen",
@@ -2682,15 +3049,22 @@
     "designer.editor.group",
     "designer.editor.impactUnavailable",
     "designer.editor.inherit",
+    "designer.editor.insertionTarget",
     "designer.editor.invalid",
     "designer.editor.invalidExpression",
     "designer.editor.invalidProps",
     "designer.editor.issues",
+    "designer.editor.jsonInvalid",
+    "designer.editor.jsonRejected",
+    "designer.editor.jumpCanvas",
+    "designer.editor.jumpPalette",
     "designer.editor.layers",
     "designer.editor.leave",
     "designer.editor.linked",
     "designer.editor.linkedReadonly",
     "designer.editor.loading",
+    "designer.editor.manageSources",
+    "designer.editor.moveComponent",
     "designer.editor.moveDown",
     "designer.editor.moveUp",
     "designer.editor.newPage",
@@ -2700,17 +3074,30 @@
     "designer.editor.nodeResults",
     "designer.editor.none",
     "designer.editor.operationFailed",
+    "designer.editor.options.add",
+    "designer.editor.options.duplicate",
+    "designer.editor.options.empty",
+    "designer.editor.options.hint",
+    "designer.editor.options.label",
+    "designer.editor.options.moveDown",
+    "designer.editor.options.moveUp",
+    "designer.editor.options.remove",
+    "designer.editor.options.title",
+    "designer.editor.options.value",
     "designer.editor.outdated",
     "designer.editor.override",
     "designer.editor.pageName",
     "designer.editor.pages",
     "designer.editor.paste",
     "designer.editor.pending",
+    "designer.editor.preservedEdits",
     "designer.editor.previewInvalid",
     "designer.editor.previousResults",
     "designer.editor.properties",
     "designer.editor.property",
+    "designer.editor.recoverConflict",
     "designer.editor.redo",
+    "designer.editor.referencedCondition",
     "designer.editor.reorder",
     "designer.editor.requiredWhen",
     "designer.editor.resize",
@@ -2727,6 +3114,14 @@
     "designer.editor.shortcutDetail",
     "designer.editor.shortcuts",
     "designer.editor.shortcutsList",
+    "designer.editor.sourceBindingSummary",
+    "designer.editor.sourceInUse",
+    "designer.editor.sourceInputs",
+    "designer.editor.sourceInvalid",
+    "designer.editor.sourceLoadFailed",
+    "designer.editor.sourceMappingHint",
+    "designer.editor.sourceOutputs",
+    "designer.editor.sourceTimeout",
     "designer.editor.stay",
     "designer.editor.style",
     "designer.editor.styleLabels.align",
@@ -2737,6 +3132,7 @@
     "designer.editor.styleLabels.padding",
     "designer.editor.styleLabels.tone",
     "designer.editor.styleLabels.width",
+    "designer.editor.tenantIntegration",
     "designer.editor.title",
     "designer.editor.twoWay",
     "designer.editor.undo",
@@ -3191,6 +3587,10 @@
     "designer.rules.value",
     "designer.rules.visual",
     "designer.variables.add",
+    "designer.variables.classifications.internal",
+    "designer.variables.classifications.pci",
+    "designer.variables.classifications.pii",
+    "designer.variables.classifications.public",
     "designer.variables.default",
     "designer.variables.edit",
     "designer.variables.enum",
@@ -3198,7 +3598,19 @@
     "designer.variables.pii",
     "designer.variables.renameDescription",
     "designer.variables.renameFailed",
+    "designer.variables.scopes.campaign",
+    "designer.variables.scopes.global",
+    "designer.variables.scopes.interaction",
+    "designer.variables.scopes.page",
+    "designer.variables.scopes.session",
     "designer.variables.title",
+    "designer.variables.types.array",
+    "designer.variables.types.boolean",
+    "designer.variables.types.date",
+    "designer.variables.types.enum",
+    "designer.variables.types.number",
+    "designer.variables.types.object",
+    "designer.variables.types.string",
     "designer.variables.usageCount",
     "designer.variables.uses",
     "designer.workspace.ab",
@@ -3528,7 +3940,7 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 796,
+  "literalKeyCount": 835,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
@@ -3643,48 +4055,52 @@
       "line": 162
     },
     {
-      "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 145
+      "file": "apps/admin-web/src/workspace/analytics-page.tsx",
+      "line": 21
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 167
+      "line": 149
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 172
+      "line": 171
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 173
+      "line": 176
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 209
+      "line": 177
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 217
+      "line": 213
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 527
+      "line": 221
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 528
+      "line": 534
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 532
+      "line": 535
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 533
+      "line": 539
     },
     {
-      "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 101
+      "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+      "line": 540
+    },
+    {
+      "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+      "line": 635
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
@@ -3696,23 +4112,27 @@
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 245
+      "line": 104
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 246
+      "line": 249
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 298
+      "line": 250
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 385
+      "line": 303
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 571
+      "line": 390
+    },
+    {
+      "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+      "line": 578
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
@@ -3744,10 +4164,6 @@
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 151
-    },
-    {
-      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
       "line": 152
     },
     {
@@ -3760,27 +4176,15 @@
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 227
+      "line": 155
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 228
+      "line": 229
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 278
-    },
-    {
-      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 279
-    },
-    {
-      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 280
-    },
-    {
-      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 281
+      "line": 230
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
@@ -3788,35 +4192,79 @@
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 350
+      "line": 283
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 351
+      "line": 284
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 352
+      "line": 285
+    },
+    {
+      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+      "line": 286
+    },
+    {
+      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+      "line": 355
+    },
+    {
+      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+      "line": 356
+    },
+    {
+      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+      "line": 357
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 10
+      "line": 11
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 274
+      "line": 18
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 348
+      "line": 25
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 348
+      "line": 27
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 348
+      "line": 28
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 30
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 295
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 295
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 401
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 401
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 401
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 444
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
@@ -3916,63 +4364,79 @@
     },
     {
       "file": "apps/designer-web/src/editor/canvas.tsx",
-      "line": 226
+      "line": 290
+    },
+    {
+      "file": "apps/designer-web/src/editor/data-sources.tsx",
+      "line": 212
+    },
+    {
+      "file": "apps/designer-web/src/editor/drag-a11y.ts",
+      "line": 13
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 382
+      "line": 390
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 387
+      "line": 395
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 397
+      "line": 408
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 398
+      "line": 409
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 500
+      "line": 511
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 515
+      "line": 526
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 534
-    },
-    {
-      "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 627
+      "line": 545
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
       "line": 644
     },
     {
-      "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 262
+      "file": "apps/designer-web/src/editor/editor.tsx",
+      "line": 661
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 388
+      "line": 108
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 398
+      "line": 190
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 432
+      "line": 416
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 597
+      "line": 567
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 577
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 611
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 745
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
@@ -3980,23 +4444,23 @@
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 99
+      "line": 112
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 135
+      "line": 148
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 162
+      "line": 180
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 179
+      "line": 199
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 189
+      "line": 209
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
@@ -4012,31 +4476,55 @@
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 327
+      "line": 323
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 435
+      "line": 431
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 577
+      "line": 573
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 628
+      "line": 624
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 743
+      "line": 739
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 855
+      "line": 851
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 48
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 65
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 76
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 227
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 232
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 237
     },
     {
       "file": "apps/designer-web/src/integrations/auth.tsx",
-      "line": 167
+      "line": 180
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
@@ -4048,23 +4536,23 @@
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 412
+      "line": 413
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 563
+      "line": 564
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 640
+      "line": 638
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 789
+      "line": 787
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 953
+      "line": 951
     },
     {
       "file": "apps/designer-web/src/integrations/list.tsx",
@@ -4072,11 +4560,11 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/assignments.tsx",
-      "line": 311
+      "line": 312
     },
     {
       "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
-      "line": 343
+      "line": 416
     },
     {
       "file": "apps/designer-web/src/lifecycle/comments.tsx",
@@ -4312,19 +4800,19 @@
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 31
+      "line": 61
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 90
+      "line": 120
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 168
+      "line": 198
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 329
+      "line": 359
     },
     {
       "file": "apps/designer-web/src/rules/manager.tsx",
@@ -4424,55 +4912,55 @@
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 63
+      "line": 64
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 74
+      "line": 75
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 90
+      "line": 91
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 94
+      "line": 95
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 108
+      "line": 109
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 134
+      "line": 135
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 161
+      "line": 162
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 185
+      "line": 186
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 192
+      "line": 193
     },
     {
       "file": "packages/components/src/inputs.tsx",
-      "line": 58
+      "line": 59
     },
     {
       "file": "packages/components/src/inputs.tsx",
-      "line": 279
+      "line": 280
     },
     {
       "file": "packages/components/src/inputs.tsx",
-      "line": 326
+      "line": 327
     },
     {
       "file": "packages/components/src/inputs.tsx",
-      "line": 443
+      "line": 446
     },
     {
       "file": "packages/components/src/layout.tsx",
@@ -4516,27 +5004,19 @@
     },
     {
       "file": "packages/components/src/media.tsx",
-      "line": 48
+      "line": 49
     },
     {
       "file": "packages/components/src/media.tsx",
-      "line": 63
+      "line": 70
     },
     {
       "file": "packages/components/src/media.tsx",
-      "line": 71
+      "line": 93
     },
     {
       "file": "packages/components/src/media.tsx",
-      "line": 82
-    },
-    {
-      "file": "packages/components/src/media.tsx",
-      "line": 98
-    },
-    {
-      "file": "packages/components/src/media.tsx",
-      "line": 101
+      "line": 111
     },
     {
       "file": "packages/components/src/media.tsx",
@@ -4544,11 +5024,15 @@
     },
     {
       "file": "packages/components/src/media.tsx",
-      "line": 119
+      "line": 127
     },
     {
       "file": "packages/components/src/media.tsx",
-      "line": 127
+      "line": 132
+    },
+    {
+      "file": "packages/components/src/media.tsx",
+      "line": 140
     },
     {
       "file": "packages/components/src/privacy.tsx",
@@ -4568,55 +5052,55 @@
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 50
+      "line": 53
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 68
+      "line": 71
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 75
+      "line": 78
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 84
+      "line": 87
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 88
+      "line": 91
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 107
+      "line": 110
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 124
+      "line": 127
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 125
+      "line": 128
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 140
+      "line": 143
     },
     {
       "file": "packages/components/src/shared.tsx",
-      "line": 20
+      "line": 21
     },
     {
       "file": "packages/components/src/shared.tsx",
-      "line": 139
+      "line": 138
     },
     {
       "file": "packages/components/src/shared.tsx",
-      "line": 142
+      "line": 141
     },
     {
       "file": "packages/components/src/shared.tsx",
-      "line": 144
+      "line": 143
     },
     {
       "file": "packages/core-runtime/src/core-components.tsx",
@@ -5304,23 +5788,27 @@
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 306
+      "line": 388
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 393
+      "line": 475
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 456
+      "line": 486
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 460
+      "line": 542
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 600
+      "line": 546
+    },
+    {
+      "file": "packages/ui/src/components/analytics-dashboard.tsx",
+      "line": 686
     },
     {
       "file": "packages/ui/src/components/data-table.tsx",

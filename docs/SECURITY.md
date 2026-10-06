@@ -263,3 +263,19 @@ Secure fields artık raw PCI değeri yerine hosted capture receipt kabul eder;
 konfigürasyon yoksa giriş kapalıdır. Geçmiş bellekte raw PCI yakalama tasarımı
 production capture için kullanılmaz. ASVS uygunluk iddiası tüm uygulanabilir satırlar
 ve dağıtım/IdP/KMS/PSP/bağımsız pentest kanıtları tamamlanmadan yapılamaz.
+
+### Forwarded mTLS proof and private data access (2026-10-06)
+
+A forwarded client certificate is public data, not authentication. When `MTLS_CLIENT_CERT_HEADER`
+is configured, the API requires `x-verbis-mtls-proxy-secret` matching `MTLS_PROXY_SECRET`
+(at least 32 random characters, constant-time comparison). The verified TLS edge overwrites both
+headers; public routes remove them. The proof stays between edge and API. Native authorized TLS
+sockets remain the certificate source when forwarding is disabled. See
+[private gateway setup](integrations/PRIVATE_EGRESS.md) for edge provisioning and rotation.
+
+Private egress is an explicit outbound-only worker with tenant/client/certificate-bound pulls,
+one-use leases, encrypted transient Redis payloads and worker-local origin/CIDR/query catalogs.
+Core public SSRF checks remain in force. SQL uses an operator catalog, separate local credentials,
+read-only transactions, positional parameters and bounded results. The
+[verification record](verification/DATA_ACCESS_2026-10-06.md) lists the PCI canary's actual store coverage
+and the remaining production/vendor acceptance.

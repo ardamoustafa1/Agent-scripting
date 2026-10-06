@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAbility } from '@verbis/authz/react';
@@ -9,7 +9,8 @@ import { Button, Alert, defaultAnalyticsFilter } from '@verbis/ui';
 import { request } from '../api/client.js';
 import { useWorkspace } from '../workspace/context.js';
 
-export const HeatmapContext = createContext<AnalyticsDashboard['heatmap']>([]);
+const NO_HEAT: AnalyticsDashboard['heatmap'] = [];
+export const HeatmapContext = createContext<AnalyticsDashboard['heatmap']>(NO_HEAT);
 export function useNodeHeat(nodeId: string) {
   return useContext(HeatmapContext).find((h) => h.nodeId === nodeId);
 }
@@ -43,10 +44,17 @@ export function useHeatmap(scriptId: string, versionId: string, pageId: string) 
     refetchInterval: 30000,
     retry: false,
   });
+  // P-16: rows feed a context read by every canvas node; keep the reference stable.
+  const heatmap = query.data?.heatmap;
+  const rows = useMemo(
+    () =>
+      enabled && heatmap
+        ? heatmap.filter((h) => h.versionId === versionId && h.pageId === pageId)
+        : NO_HEAT,
+    [enabled, heatmap, versionId, pageId],
+  );
   return {
-    rows: enabled
-      ? (query.data?.heatmap.filter((h) => h.versionId === versionId && h.pageId === pageId) ?? [])
-      : [],
+    rows,
     control: canRead ? (
       <>
         <Button

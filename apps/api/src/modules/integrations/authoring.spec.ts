@@ -23,7 +23,7 @@ function fixture() {
     definition: DefinitionSchema.parse({
       baseUrl: 'https://api.example.com',
       endpoint: '/',
-      profiles: { test: { baseUrl: 'https://test.example.com', auth: { type: 'none' } } },
+      profiles: { test: { baseUrl: 'https://test.customer.example.io', auth: { type: 'none' } } },
     }),
     policy: PolicySchema.parse({}),
     secretRefs: [],
@@ -36,7 +36,10 @@ function fixture() {
     row.version++;
     return Promise.resolve(row);
   });
-  const tx = { dataSource: { findFirst: vi.fn(() => Promise.resolve(row)), update } };
+  const tx = {
+    dataSourceVersion: { findFirst: vi.fn().mockResolvedValue(null) },
+    dataSource: { findFirst: vi.fn(() => Promise.resolve(row)), update },
+  };
   const audit = vi.fn(() => Promise.resolve({})),
     authorize = vi.fn();
   const service = new IntegrationEngineService(
@@ -68,12 +71,14 @@ describe('integration authoring approval and concurrency', () => {
     await f.run('author', () =>
       f.service.promote(id, 1, { from: 'test', reason: 'Synthetic release' }),
     );
-    expect(f.row.definition.pendingPromotion?.profile.baseUrl).toBe('https://test.example.com');
+    expect(f.row.definition.pendingPromotion?.profile.baseUrl).toBe(
+      'https://test.customer.example.io',
+    );
     expect(f.row.definition.profiles.prod).toBeUndefined();
     await expect(f.run('author', () => f.service.promote(id, 2))).rejects.toThrow();
     await f.run('reviewer', () => f.service.promote(id, 2));
     expect(f.authorize).toHaveBeenCalledWith('approve', expect.any(Object));
-    expect(f.row.definition.profiles.prod?.baseUrl).toBe('https://test.example.com');
+    expect(f.row.definition.profiles.prod?.baseUrl).toBe('https://test.customer.example.io');
     expect(f.row.definition.pendingPromotion).toBeUndefined();
     expect(f.audit).toHaveBeenCalledWith(
       expect.any(Object),

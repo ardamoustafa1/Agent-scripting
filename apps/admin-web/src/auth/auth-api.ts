@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { retryAfterSeconds } from '@verbis/ui';
+
 /**
  * BFF auth endpoints through the same-origin /api proxy. The browser never handles tokens: the
  * session is an httpOnly cookie, and the CSRF token from /auth/session goes in X-CSRF-Token.
@@ -27,10 +29,15 @@ export const DiscoverySchema = z.object({
 });
 export type Discovery = z.infer<typeof DiscoverySchema>;
 
+const SignedOutSchema = z.object({ authenticated: z.literal(false) });
+
 const ProblemSchema = z.object({ code: z.string() });
 
 export class AuthApiError extends Error {
-  constructor(readonly code: string) {
+  constructor(
+    readonly code: string,
+    readonly retryAfter?: number,
+  ) {
     super(code);
   }
 }
@@ -41,13 +48,20 @@ async function problemCode(response: Response): Promise<string> {
 }
 
 export async function fetchSession(): Promise<AuthSession | null> {
-  const response = await fetch('/api/auth/session', {
+  // The status probe answers 200 {authenticated:false} when signed out (no console-noisy 401).
+  const response = await fetch('/api/auth/session/status', {
     credentials: 'same-origin',
     headers: { accept: 'application/json' },
   });
   if (response.status === 401) return null;
-  if (!response.ok) throw new AuthApiError(await problemCode(response));
-  const parsed = AuthSessionSchema.safeParse(await response.json().catch(() => null));
+  if (!response.ok)
+    throw new AuthApiError(
+      await problemCode(response),
+      response.status === 429 ? retryAfterSeconds(response.headers.get('retry-after')) : undefined,
+    );
+  const body: unknown = await response.json().catch(() => null);
+  if (SignedOutSchema.safeParse(body).success) return null;
+  const parsed = AuthSessionSchema.safeParse(body);
   if (!parsed.success) throw new AuthApiError('VERBIS_HTTP_UNAVAILABLE');
   return parsed.data;
 }
@@ -63,7 +77,11 @@ async function postJson(url: string, body: unknown, csrfToken?: string): Promise
     },
     body: JSON.stringify(body),
   });
-  if (!response.ok) throw new AuthApiError(await problemCode(response));
+  if (!response.ok)
+    throw new AuthApiError(
+      await problemCode(response),
+      response.status === 429 ? retryAfterSeconds(response.headers.get('retry-after')) : undefined,
+    );
   return response.json().catch(() => ({}));
 }
 

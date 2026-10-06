@@ -57,7 +57,6 @@ const EXPECTED: Record<SystemRoleKey, Partial<Record<(typeof RESOURCES)[number],
     script: ['read'],
     screen: ['read'],
     session: ['read', 'create', 'update', 'reveal'],
-    user: ['read'],
   },
   report_viewer: { report: ['read', 'export'] },
   api_client: {
@@ -159,7 +158,8 @@ describe('ABAC scope of system roles', () => {
     const ability = abilityOf('agent', scoped);
     expect(ability.can('update', asSubject('Session', { agentId: ME }))).toBe(true);
     expect(ability.can('update', asSubject('Session', { agentId: 'someone' }))).toBe(false);
-    expect(ability.can('read', asSubject('User', { id: ME }))).toBe(true);
+    expect(ability.can('read', asSubject('User', { id: ME }))).toBe(false);
+    expect(ability.can('read', 'User')).toBe(false);
     expect(ability.can('read', asSubject('User', { id: 'someone' }))).toBe(false);
   });
 

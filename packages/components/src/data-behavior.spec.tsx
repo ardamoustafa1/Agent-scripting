@@ -156,3 +156,18 @@ it.each(['loading', 'error', 'idle'])('does not show empty results during %s', (
   });
   expect(screen.queryByText(i18n.t('components.empty'))).toBeNull();
 });
+
+it('honors a per-column currency instead of coercing all amounts to TRY', () => {
+  const f = mount('table', {
+    rows: [{ id: 'eur', amount: 1234.5 }],
+    columns: [
+      { field: 'amount', labelKey: 'components.value', format: 'currency', currency: 'EUR' },
+    ],
+  });
+  fireEvent.click(screen.getByRole('button', { name: i18n.t('ui.showAllRows') }));
+  expect(f.view.container.textContent).toContain(
+    new Intl.NumberFormat(f.runtime.store.locale, { style: 'currency', currency: 'EUR' }).format(
+      1234.5,
+    ),
+  );
+});

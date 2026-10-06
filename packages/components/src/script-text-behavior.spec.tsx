@@ -154,6 +154,23 @@ it('supports structured list blocks and escapes interpolated scalars and nested 
   f.runtime.store.setVariable('name', 'pci', 'pci');
   expect(() => interpolateText('{{name}}', f.component)).toThrow('VERBIS_SENSITIVE_DISPLAY');
 });
+// M-Z6/D-10: "Hoş geldiniz {{name}}." rendered "Hoş geldiniz ." — keep the gap visible and named.
+it('marks empty, missing and whitespace template values instead of collapsing the sentence', () => {
+  const f = mount('scriptText', { mustRead: false });
+  f.runtime.store.setVariable('name', '');
+  expect(interpolateText('Hoş geldiniz {{name}}. Devam.', f.component)).toBe(
+    'Hoş geldiniz [name]. Devam.',
+  );
+  f.runtime.store.setVariable('name', '   ');
+  expect(interpolateText('Hoş geldiniz {{vars.name}}.', f.component)).toBe(
+    'Hoş geldiniz [vars.name].',
+  );
+  expect(interpolateText('{{item.customer.name}}', f.component, { customer: {} })).toBe(
+    '[item.customer.name]',
+  );
+  f.runtime.store.setVariable('name', 'Ayşe');
+  expect(interpolateText('Hoş geldiniz {{name}}.', f.component)).toBe('Hoş geldiniz Ayşe.');
+});
 it('keeps failed component events from producing unhandled rejections', async () => {
   const f = mount('checklist');
   f.emit.mockRejectedValue(new Error('synthetic downstream error'));

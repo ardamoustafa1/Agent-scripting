@@ -6,7 +6,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 
 import { useAbility } from '@verbis/authz/react';
-import { Alert, Badge, Button, Input, Textarea, Select } from '@verbis/ui';
+import { Alert, Badge, Button, Input, Textarea, Select, Dialog } from '@verbis/ui';
 
 import { request, VersionsSchema, ResourceSchema, ApiError } from '../api/client.js';
 import { EditorDocumentSchema, EditorStore } from '../editor/store.js';
@@ -66,7 +66,8 @@ export default function ReleasePage() {
     [at, setAt] = useState(''),
     [busy, setBusy] = useState(false),
     [error, setError] = useState<string | null>(null),
-    [success, setSuccess] = useState(false);
+    [success, setSuccess] = useState(false),
+    [rollbackOpen, setRollbackOpen] = useState(false);
   const from =
     baseline ||
     String(
@@ -132,6 +133,7 @@ export default function ReleasePage() {
         ...(body === undefined ? {} : { body }),
       });
       setSuccess(true);
+      setRollbackOpen(false);
       await client.invalidateQueries({ queryKey: ['workspace'] });
     } catch (failure) {
       setError(
@@ -143,7 +145,8 @@ export default function ReleasePage() {
       setBusy(false);
     }
   };
-  if (current.isError) return <Failure retry={() => void current.refetch()} />;
+  if (current.isError)
+    return <Failure error={current.error} retry={() => void current.refetch()} />;
   if (!current.data) return <Loading />;
   const version = current.data,
     lint = previewLint(version.document, new EditorStore(version.document).issues());
@@ -172,6 +175,9 @@ export default function ReleasePage() {
           </div>
         </div>
         <div className="lc-release-header-actions">
+          {head?.number === Number(number) && (
+            <Badge tone="success">{t('designer.lifecycle.activeVersion')}</Badge>
+          )}
           <Badge tone={version.state === 'published' ? 'success' : 'info'}>
             {t(`designer.workspace.status.${version.state}`)}
           </Badge>
@@ -191,6 +197,42 @@ export default function ReleasePage() {
         <Alert tone="warning" title={t('designer.preview.scenariosRequired')} />
       )}
       {success && <Alert tone="success" title={t('designer.lifecycle.done')} />}
+      <Dialog
+        open={rollbackOpen}
+        onOpenChange={(open) => {
+          if (!busy) setRollbackOpen(open);
+        }}
+        title={t('designer.lifecycle.confirmRollback')}
+        description={t('designer.lifecycle.rollbackImpact')}
+      >
+        <Button
+          variant="secondary"
+          disabled={busy}
+          onClick={() => {
+            setRollbackOpen(false);
+          }}
+        >
+          {t('designer.lifecycle.cancelRollback')}
+        </Button>
+        <Button
+          variant="danger"
+          loading={busy}
+          disabled={!rollback || !script.data?.currentVersionId}
+          onClick={() => {
+            if (rollback && script.data?.currentVersionId)
+              void command(
+                'rollback',
+                {
+                  targetNumber: rollback.number,
+                  expectedCurrentVersionId: script.data.currentVersionId,
+                },
+                `/v1/scripts/${id}/rollback`,
+              );
+          }}
+        >
+          {t('designer.lifecycle.confirmRollback')}
+        </Button>
+      </Dialog>
       <div className="lc-release-grid">
         <article className="lc-card">
           <h2>{t('designer.lifecycle.actions')}</h2>
@@ -288,16 +330,9 @@ export default function ReleasePage() {
               <Button
                 variant="secondary"
                 loading={busy}
-                onClick={() =>
-                  void command(
-                    'rollback',
-                    {
-                      targetNumber: rollback.number,
-                      expectedCurrentVersionId: script.data.currentVersionId,
-                    },
-                    `/v1/scripts/${id}/rollback`,
-                  )
-                }
+                onClick={() => {
+                  setRollbackOpen(true);
+                }}
               >
                 {t('designer.lifecycle.rollback', { number: rollback.number })}
               </Button>
@@ -367,7 +402,7 @@ export default function ReleasePage() {
             patch={patch.data?.patch ?? []}
           />
         ) : previous.isError ? (
-          <Failure retry={() => void previous.refetch()} />
+          <Failure error={previous.error} retry={() => void previous.refetch()} />
         ) : (
           <Loading />
         )}

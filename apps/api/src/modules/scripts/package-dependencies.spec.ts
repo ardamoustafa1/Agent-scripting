@@ -112,6 +112,7 @@ function fixture() {
     $queryRaw: vi.fn().mockResolvedValue([]),
     script: { findFirst: vi.fn(async () => null) },
     scriptVersion: { findMany: vi.fn(async () => []) },
+    dataSourceVersion: { findFirst: vi.fn().mockResolvedValue(null) },
     dataSource: {
       findFirst: vi
         .fn<

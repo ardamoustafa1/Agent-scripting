@@ -196,3 +196,23 @@ export function toAuditEventDto(row: StoredAuditRow): AuditEventDto {
     hashVersion: row.hashVersion,
   };
 }
+
+export const AuditCertificateSchema = z
+  .object({
+    body: z.object({
+      v: z.literal(1),
+      tenantId: z.uuid(),
+      fromSeq: z.string(),
+      toSeq: z.string(),
+      eventCount: z.int().nonnegative(),
+      anchor: z.object({ seq: z.string(), source: z.enum(['genesis', 'event', 'checkpoint']) }),
+      lastHash: z.string(),
+      chainValid: z.boolean(),
+      breakCount: z.int().nonnegative(),
+      checkpoints: z.array(z.object({ id: z.uuid(), seq: z.string(), hash: z.string() })),
+      issuedAt: IsoDateTime,
+    }),
+    keyId: z.string(),
+    signature: z.string(),
+  })
+  .meta({ id: 'AuditCertificate' });

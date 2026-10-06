@@ -29,7 +29,12 @@ const json = { 'content-type': 'application/json' };
 beforeAll(async () => {
   kit = await createTokenKit();
   owner = ownerPrisma();
-  app = await startApp(integrationEnv(kit.jwks, { MTLS_CLIENT_CERT_HEADER: 'x-client-cert' }));
+  app = await startApp(
+    integrationEnv(kit.jwks, {
+      MTLS_PROXY_SECRET: 'integration-edge-secret-32-characters',
+      MTLS_CLIENT_CERT_HEADER: 'x-client-cert',
+    }),
+  );
   t = await createTenant(owner, kit, uniqueSlug('hub'));
   other = await createTenant(owner, kit, uniqueSlug('hub-other'));
   const credential = await generateSpCredential('connector-hub');
@@ -81,7 +86,12 @@ async function hub(tenant = t, withCert = true) {
   return {
     ...json,
     authorization: `Bearer ${token}`,
-    ...(withCert ? { 'x-client-cert': encodeURIComponent(cert) } : {}),
+    ...(withCert
+      ? {
+          'x-verbis-mtls-proxy-secret': 'integration-edge-secret-32-characters',
+          'x-client-cert': encodeURIComponent(cert),
+        }
+      : {}),
   };
 }
 

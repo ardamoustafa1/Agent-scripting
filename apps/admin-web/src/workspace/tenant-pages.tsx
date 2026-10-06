@@ -9,8 +9,9 @@ import {
   AdminPublicJwksSchema,
   AdminClassificationSchema,
 } from '@verbis/shared-types';
-import { Button, Dialog, UiProvider } from '@verbis/ui';
+import { Button, Dialog, UiProvider, useTheme } from '@verbis/ui';
 
+import { useCan } from './access.js';
 import {
   useResource,
   useWrite,
@@ -118,6 +119,7 @@ export function Tenants() {
             label={l('status')}
             value={status}
             onChange={setStatus}
+            enumName="status"
             options={['provisioning', 'active', 'suspended']}
           />
           <Field label={l('maxUsers')} type="number" value={users} onChange={setUsers} />
@@ -136,11 +138,93 @@ export function Tenants() {
   );
 }
 export function Security() {
+  const can = useCan(),
+    { t } = useTranslation(),
+    write = useWrite(),
+    [name, setName] = useState('');
   const tenant = useResource('/v1/tenant', TenantSchema);
   return tenant.data ? (
-    <SecurityForm key={tenant.data.version} tenant={tenant.data} />
+    <>
+      {can('manage', 'Tenant') &&
+        can('create', 'Campaign') &&
+        can('create', 'Script') &&
+        can('create', 'Connector') && (
+          <Card title={t('admin.onboarding.title')}>
+            <p>{t('admin.onboarding.help')}</p>
+            <SaveForm onSave={() => write('/v1/tenant/onboarding', { name })}>
+              <Field label={t('admin.onboarding.name')} value={name} onChange={setName} required />
+            </SaveForm>
+          </Card>
+        )}
+      <Locations />
+      <SecurityForm key={tenant.data.version} tenant={tenant.data} />
+    </>
   ) : (
     <Feedback error={tenant.error} />
+  );
+}
+export function Locations() {
+  const { t } = useTranslation(),
+    can = useCan(),
+    write = useWrite();
+  const [selected, setSelected] = useState<Row | null>(null),
+    [code, setCode] = useState(''),
+    [name, setName] = useState('');
+  if (!can('read', 'User')) return null;
+  return (
+    <Card title={t('admin.locations.title')}>
+      <ResourceList
+        path="/v1/locations"
+        title={t('admin.locations.title')}
+        columns={['code', 'name']}
+        onSelect={(row) => {
+          setSelected(row);
+          setCode(text(row, 'code'));
+          setName(text(row, 'name'));
+        }}
+      />
+      {can('manage', 'Tenant') && (
+        <>
+          <Button
+            onClick={() => {
+              setSelected(null);
+              setCode('');
+              setName('');
+            }}
+          >
+            {t('admin.locations.create')}
+          </Button>
+          <SaveForm
+            onSave={() =>
+              write(
+                selected ? `/v1/locations/${selected.id}` : '/v1/locations',
+                selected ? { name } : { code, name },
+                selected ? 'PATCH' : 'POST',
+                selected?.version,
+              )
+            }
+          >
+            <Field
+              label={t('admin.locations.code')}
+              value={code}
+              onChange={setCode}
+              required
+              disabled={selected !== null}
+            />
+            <Field label={t('admin.locations.name')} value={name} onChange={setName} required />
+          </SaveForm>
+          {selected && (
+            <Action
+              label={t('admin.locations.remove')}
+              danger
+              run={() =>
+                write(`/v1/locations/${selected.id}`, undefined, 'DELETE', selected.version)
+              }
+            />
+          )}
+        </>
+      )}
+    </Card>
   );
 }
 function SecurityForm({ tenant }: { tenant: z.infer<typeof TenantSchema> }) {
@@ -198,6 +282,7 @@ function SecurityForm({ tenant }: { tenant: z.infer<typeof TenantSchema> }) {
             label={l('onLimit')}
             value={onLimit}
             onChange={setLimit}
+            enumName="sessionLimit"
             options={['evict_oldest', 'deny']}
           />
           <Field label={l('ips')} type="textarea" value={ips} onChange={setIps} />
@@ -255,6 +340,7 @@ function LaunchKeys() {
           label={l('status')}
           value={status}
           onChange={setStatus}
+          enumName="status"
           options={['active', 'disabled']}
         />
         <Field label={l('publicKeys')} type="textarea" value={keys} onChange={setKeys} />
@@ -273,6 +359,7 @@ export function Branding() {
 function BrandForm({ tenant }: { tenant: z.infer<typeof TenantSchema> }) {
   const l = useLabels(),
     { i18n } = useTranslation(),
+    [theme] = useTheme(),
     write = useWrite(),
     brand = record(tenant.settings['brand']),
     [name, setName] = useState(text(brand, 'name') || tenant.name),
@@ -306,7 +393,8 @@ function BrandForm({ tenant }: { tenant: z.infer<typeof TenantSchema> }) {
         <Field label={l('agentTitle')} value={title} onChange={setTitle} />
         <Field label={l('waitingText')} value={waiting} onChange={setWaiting} />
       </SaveForm>
-      <UiProvider i18n={i18n} brand={{ name, primaryColor: color }}>
+      {/* V-02: the preview inherits the viewer's theme instead of the light default. */}
+      <UiProvider i18n={i18n} theme={theme} brand={{ name, primaryColor: color }}>
         <div className="aw-brand-preview">
           <strong>{name}</strong>
           <p>{title || l('agentTitle')}</p>
@@ -407,6 +495,7 @@ function Privacy() {
           label={l('kind')}
           value={kind}
           onChange={setKind}
+          enumName="privacyKind"
           options={['search', 'export', 'anonymize']}
         />
         <Field label={l('subject')} value={subject} onChange={setSubject} required />
@@ -417,6 +506,7 @@ function Privacy() {
         path="/v1/admin/privacy-requests"
         title={l('privacy')}
         columns={['kind', 'state', 'createdAt', 'count']}
+        enums={{ kind: 'privacyKind', state: 'privacyState' }}
         onSelect={setSelected}
       />
       {selected ? (
@@ -486,6 +576,7 @@ function Classifications({ tenant }: { tenant: z.infer<typeof TenantSchema> }) {
             <Field
               label={l('classification')}
               value={item.classification}
+              enumName="classification"
               options={['public', 'internal', 'pii', 'pci']}
               onChange={(value) => {
                 setItems((old) =>

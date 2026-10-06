@@ -1,0 +1,14 @@
+{
+  "connector-avaya-aes-sidecar": {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "connector-genesys-engage-sidecar": {
+    "tests": 13,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

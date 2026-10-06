@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record SidecarProperties(
     String connectorId,
     String source,
+    boolean allowReplay,
     String agentIdentity,
     Nats nats,
     Replay replay,

@@ -1,5 +1,8 @@
 import { Reflector } from '@nestjs/core';
+import fc from 'fast-check';
 import { describe, expect, it, vi } from 'vitest';
+
+import { securityPropertyOptions } from '@verbis/test-utils';
 
 import { requestContext, type RequestContext } from '../../common/context/request-context.js';
 import { DomainError, ForbiddenError } from '../../common/errors/domain-errors.js';
@@ -184,4 +187,19 @@ it('fails closed visibly when a denied request cannot be audited', async () => {
     code: 'VERBIS_AUDIT_UNAVAILABLE',
     detail: 'Security audit is unavailable',
   });
+});
+
+it('property: arbitrary scope and user identifiers cannot make an undeclared route public', async () => {
+  await fc.assert(
+    fc.asyncProperty(
+      fc.string({ maxLength: 64 }),
+      fc.array(fc.string({ minLength: 1, maxLength: 64 }), { maxLength: 10 }),
+      async (id, campaignIds) => {
+        await expect(
+          run(guard([role('script_designer', { campaignIds })]), 'undeclared', { ...user, id }),
+        ).rejects.toBeInstanceOf(ForbiddenError);
+      },
+    ),
+    securityPropertyOptions(20261006),
+  );
 });

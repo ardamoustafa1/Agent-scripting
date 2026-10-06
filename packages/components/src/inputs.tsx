@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { z } from 'zod';
 
+import { EmbedFrame, subscribeFrameMessages } from '@verbis/core-runtime';
 import type { RendererProps } from '@verbis/core-runtime';
 import { isEmail, isPhoneTR, isTCKN, isVKN, isIBAN, luhn } from '@verbis/expr';
 import { type JsonValue, JsonValueSchema } from '@verbis/script-schema';
@@ -411,10 +412,10 @@ export function SecureInput(component: RendererProps) {
           if (!controller.signal.aborted) setStatus('failed');
         });
     };
-    window.addEventListener('message', receive);
+    const unsubscribe = subscribeFrameMessages(frame, provider.origin, receive);
     return () => {
       controller.abort();
-      window.removeEventListener('message', receive);
+      unsubscribe();
     };
   }, [provider, variable, challenge, f.disabled]);
   if (!provider || !variable || f.disabled)
@@ -431,13 +432,15 @@ export function SecureInput(component: RendererProps) {
   url.searchParams.set('challenge', challenge);
   return (
     <Frame component={component}>
-      <iframe
+      <EmbedFrame
         ref={frame}
-        title={f.label}
+        label={f.label}
         src={url.href}
-        sandbox="allow-scripts allow-forms allow-same-origin"
-        referrerPolicy="no-referrer"
-        allow="camera 'none'; microphone 'none'; geolocation 'none'"
+        origins={[provider.origin]}
+        hostedCapture
+        failed={() => {
+          component.runtime.event('component', 'failed', 'VERBIS_EMBED_FAILED', component.node.id);
+        }}
       />
       <span role="status">
         {t(

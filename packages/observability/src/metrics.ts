@@ -22,6 +22,7 @@ const definitions = {
   breakerOpen: () => meter().createObservableGauge('verbis.integration.breaker.open'),
   connectorLag: () => meter().createHistogram('verbis.connector.event.lag', { unit: 's' }),
   connectorQueue: () => meter().createObservableGauge('verbis.connector.queue.depth'),
+  connectorDeadLetters: () => meter().createCounter('verbis.connector.event.deadlettered'),
   writebackQueue: () => meter().createObservableGauge('verbis.writeback.queue.depth'),
   writebackFailed: () => meter().createObservableGauge('verbis.writeback.queue.failed'),
   activeSessions: () => meter().createObservableGauge('verbis.runtime.sessions.active'),

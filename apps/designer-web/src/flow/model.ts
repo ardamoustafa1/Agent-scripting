@@ -139,3 +139,59 @@ export function createScreenSubflow(store: EditorStore, pageId: string, id: stri
     });
   });
 }
+
+/** The page title is the recognizable identity of a page node. */
+export function flowNodeLabel(document: ScriptDocument, node: FlowNode): string {
+  if (node.labelKey) {
+    const label = document.i18n.messages[document.i18n.defaultLocale]?.[node.labelKey];
+    if (label) return label;
+  }
+  return node.type === 'page'
+    ? (document.pages.find((page) => page.id === node.page)?.name ?? node.id)
+    : node.id;
+}
+
+/** Delete graph elements and only their unreferenced generated edge rules in one undo step. */
+export function removeFlowElements(
+  store: EditorStore,
+  flowId: string,
+  selection: readonly string[],
+  edgeId: string | null,
+) {
+  store.edit((doc) => {
+    const flow = doc.flow.id === flowId ? doc.flow : doc.subflows.find((f) => f.id === flowId);
+    if (!flow) throw new Error('VERBIS_FLOW');
+    if (selection.includes(flow.start)) throw new Error('VERBIS_FLOW_START_IMMUTABLE');
+    const removed = flow.edges.filter(
+      (edge) => selection.includes(edge.from) || selection.includes(edge.to) || edge.id === edgeId,
+    );
+    const candidates = new Set(
+      removed.flatMap((edge) =>
+        edge.when && '$rule' in edge.when && edge.when.$rule === `rule-${edge.id}`
+          ? [edge.when.$rule]
+          : [],
+      ),
+    );
+    flow.nodes = flow.nodes.filter((node) => !selection.includes(node.id));
+    flow.edges = flow.edges.filter((edge) => !removed.includes(edge));
+    if (flow.designer) {
+      flow.designer.groups = flow.designer.groups.filter((group) => !selection.includes(group.id));
+      flow.designer.notes = flow.designer.notes.filter((note) => !selection.includes(note.id));
+      for (const group of flow.designer.groups)
+        group.nodes = group.nodes.filter((id) => !selection.includes(id));
+    }
+    const referenced = new Set<string>();
+    const visit = (value: unknown): void => {
+      if (!value || typeof value !== 'object') return;
+      if (Array.isArray(value)) {
+        value.forEach(visit);
+        return;
+      }
+      const object = value as Record<string, unknown>;
+      if (typeof object['$rule'] === 'string') referenced.add(object['$rule']);
+      Object.values(object).forEach(visit);
+    };
+    visit(doc);
+    doc.rules = doc.rules.filter((rule) => !candidates.has(rule.id) || referenced.has(rule.id));
+  });
+}

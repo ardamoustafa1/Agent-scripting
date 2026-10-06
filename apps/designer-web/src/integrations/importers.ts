@@ -1,16 +1,24 @@
-import { IntegrationSaveSchema, type IntegrationDefinition } from '@verbis/shared-types';
+import { z } from 'zod';
+
+import {
+  IntegrationDefinitionSchema,
+  IntegrationPolicySchema,
+  IntegrationSaveSchema,
+  type IntegrationDefinition,
+} from '@verbis/shared-types';
 
 export function defaults() {
-  return IntegrationSaveSchema.parse({
-    key: 'new-integration',
-    protocol: 'rest',
+  return {
+    key: '',
+    protocol: 'rest' as const,
     definition: {
-      baseUrl: 'https://api.example.com',
-      endpoint: '/',
-      mock: { enabled: false, response: {} },
+      ...z
+        .strictObject({ ...IntegrationSaveSchema.shape.definition.shape, baseUrl: z.string() })
+        .parse({ baseUrl: '', endpoint: '/', mock: { enabled: false, response: {} } }),
+      baseUrl: '',
     },
-    policy: {},
-  });
+    policy: IntegrationPolicySchema.parse({}),
+  };
 }
 function endpoint(value: string) {
   const url = new URL(value);
@@ -55,21 +63,16 @@ export function importCurl(source: string): Partial<IntegrationDefinition> {
     else if (token?.startsWith('http')) url = token;
     else if (token !== '\\') throw new Error('IMPORT_OPTION');
   }
-  const parsed = IntegrationSaveSchema.parse({
-    ...defaults(),
-    definition: {
-      ...defaults().definition,
-      ...endpoint(url),
-      method,
-      headers,
-      ...(body === undefined ? {} : { body }),
-    },
+  const parsed = IntegrationDefinitionSchema.parse({
+    ...defaults().definition,
+    ...endpoint(url),
+    method,
+    headers,
+    ...(body === undefined ? {} : { body }),
   });
-  if (
-    Object.keys(parsed.definition.query).some((key) => /token|secret|api.?key|password/i.test(key))
-  )
+  if (Object.keys(parsed.query).some((key) => /token|secret|api.?key|password/i.test(key)))
     throw new Error('IMPORT_CREDENTIAL');
-  return parsed.definition;
+  return parsed;
 }
 function record(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('IMPORT_OBJECT');

@@ -47,6 +47,7 @@ import {
   type SecureFieldSchema,
   type TransferSchema,
 } from './domain/runtime.js';
+import { readEvidenceChecksum } from './read-evidence.js';
 import { RuntimeCipher } from './runtime-cipher.js';
 import { RuntimePorts } from './runtime-ports.js';
 import { RuntimeStateStore } from './runtime-state.store.js';
@@ -133,7 +134,14 @@ export class RuntimeEngineService {
   }
   interaction(row: EngineSession): Record<string, JsonValue> {
     if (!row.interaction) return {};
-    const attributes = z.object({ sealed: z.string() }).safeParse(row.interaction.attributes);
+    const context = this.interactionLabelContext(row.tenantId, row.interaction);
+    return Object.keys(context).length ? { ...context, status: row.interaction.status } : context;
+  }
+  interactionLabelContext(
+    tenantId: string,
+    interaction: { id: string; attributes: unknown; queue: string | null; channelType: string },
+  ): Record<string, JsonValue> {
+    const attributes = z.object({ sealed: z.string() }).safeParse(interaction.attributes);
     if (!attributes.success) return {};
     const data = z
       .record(z.string(), JsonValueSchema)
@@ -141,7 +149,7 @@ export class RuntimeEngineService {
         JSON.parse(
           this.keys.openString(
             attributes.data.sealed,
-            `runtime:interaction:${row.tenantId}:${row.interaction.id}`,
+            `runtime:interaction:${tenantId}:${interaction.id}`,
           ),
         ),
       );
@@ -149,9 +157,8 @@ export class RuntimeEngineService {
     return {
       ...data,
       ...(attached && typeof attached === 'object' && !Array.isArray(attached) ? attached : {}),
-      queue: row.interaction.queue,
-      channel: row.interaction.channelType,
-      status: row.interaction.status,
+      queue: interaction.queue,
+      channel: interaction.channelType,
     };
   }
   routingInput(interaction: { id: string; attributes: unknown }, tenantId: string) {
@@ -545,6 +552,7 @@ export class RuntimeEngineService {
       !this.document(row).dataSources.some((source) => source.id === activity.name)
     )
       throw new ForbiddenError();
+    let textChecksum: string | undefined;
     if (activity.type === 'field.observed' || activity.type === 'text.acknowledged') {
       const permitted: string[] = [];
       const snapshot = await this.snapshot(row);
@@ -555,8 +563,10 @@ export class RuntimeEngineService {
           (activity.type === 'text.acknowledged'
             ? node.props['mustRead'] === true
             : node.bindings.length > 0)
-        )
+        ) {
           permitted.push(node.id);
+          textChecksum = readEvidenceChecksum({ pageId, nodeId: node.id, props: node.props });
+        }
         return true;
       });
       if (!permitted.includes(activity.name)) throw new ForbiddenError();
@@ -565,6 +575,9 @@ export class RuntimeEngineService {
       name: activity.name,
       status: activity.status,
       durationMs: activity.durationMs,
+      ...(activity.type === 'text.acknowledged' && textChecksum !== undefined
+        ? { textChecksum, scriptChecksum: row.checksum, scriptVersionId: row.scriptVersionId }
+        : {}),
     });
   }
 

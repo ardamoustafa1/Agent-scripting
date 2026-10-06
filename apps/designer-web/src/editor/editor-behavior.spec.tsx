@@ -241,11 +241,11 @@ it('inserts a component through keyboard drag and drop into the live canvas', as
   fireEvent.change(within(palette).getByLabelText(f.label('editor.search')), {
     target: { value: 'text' },
   });
-  const handle = within(palette)
-    .getAllByRole('button', { name: f.label('editor.componentNames.text') })
-    .find((button) => button.classList.contains('ed-grip'))!;
+  const handle = within(palette).getByRole('button', {
+    name: f.label('editor.componentNames.text'),
+  });
   handle.focus();
-  fireEvent.keyDown(handle, { key: ' ', code: 'Space' });
+  fireEvent.keyDown(handle, { key: ' ', code: 'Space', shiftKey: true });
   await waitFor(() => {
     expect(document.querySelector('.ed-drag-ghost')).toBeTruthy();
   });
@@ -263,6 +263,58 @@ it('inserts a component through keyboard drag and drop into the live canvas', as
   });
 });
 
+// D-04: a keyboard drop lands right after the selected sibling and the position is announced.
+it('inserts a keyboard-dropped component after the selected sibling and announces its position', async () => {
+  vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
+    this: HTMLElement,
+  ) {
+    if (this.closest('.ed-canvas-area')) return new DOMRect(150, 0, 375, 600);
+    return new DOMRect(0, 0, 100, 40);
+  });
+  const f = await setup({ [path]: editorFixture(2) });
+  const canvas = screen.getByRole('group', { name: f.label('editor.canvas') });
+  fireEvent.keyDown(canvas, { key: 'ArrowDown' });
+  fireEvent.keyDown(canvas, { key: 'ArrowDown' });
+  const palette = screen.getByRole('complementary', { name: f.label('editor.components') });
+  fireEvent.change(within(palette).getByLabelText(f.label('editor.search')), {
+    target: { value: 'text' },
+  });
+  const handle = within(palette).getByRole('button', {
+    name: f.label('editor.componentNames.text'),
+  });
+  handle.focus();
+  fireEvent.keyDown(handle, { key: ' ', code: 'Space', shiftKey: true });
+  await waitFor(() => {
+    expect(document.querySelector('.ed-drag-ghost')).toBeTruthy();
+  });
+  for (let i = 0; i < 7; i++) {
+    fireEvent.keyDown(handle, { key: 'ArrowRight', code: 'ArrowRight' });
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => {
+        resolve();
+      }),
+    );
+  }
+  fireEvent.keyDown(handle, { key: ' ', code: 'Space' });
+  await waitFor(() => {
+    expect(document.querySelectorAll('.ed-runtime [data-editor-node]')).toHaveLength(4);
+  });
+  const order = [...document.querySelectorAll('.ed-runtime [data-editor-node]')].map((el) =>
+    el.getAttribute('data-editor-node'),
+  );
+  expect(order[1]).toBe('btn-next');
+  expect(order[2]).not.toBe('fixture-0');
+  expect(
+    screen.getByText(
+      f
+        .label('editor.dnd.placed')
+        .replace('{{name}}', f.label('editor.componentNames.text'))
+        .replace('{{position}}', '2')
+        .replace('{{count}}', '3')
+        .replace('{{target}}', f.label('editor.componentNames.box')),
+    ),
+  ).toBeTruthy();
+});
 it.each([200, 503])(
   'attaches a pinned shared screen with version protection, handling HTTP %s',
   async (status) => {
@@ -295,3 +347,12 @@ it.each([200, 503])(
       });
   },
 );
+// D-07: dnd-kit's default English instructions were read in the Turkish editor.
+it('describes keyboard dragging with localized instructions that mention the add buttons', async () => {
+  const f = await setup();
+  const instructions = [...document.querySelectorAll('[id^="DndDescribedBy"]')].map(
+    (element) => element.textContent,
+  );
+  expect(instructions).toContain(f.label('editor.dnd.instructions'));
+  expect(instructions.join(' ')).not.toMatch(/To pick up a draggable item/);
+});

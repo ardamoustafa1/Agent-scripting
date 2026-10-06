@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.verbis.avaya.sidecar.AvayaSidecarUnitTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-06T17:50:21.514Z" hostname="cef18aef4def" time="0.105">
+  <properties/>
+  <testcase name="rejectsBadIdsAndDropsMalformedUcids()" classname="io.verbis.avaya.sidecar.AvayaSidecarUnitTest" time="0.034"/>
+  <testcase name="framesProactiveContactAgentApiMessages()" classname="io.verbis.avaya.sidecar.AvayaSidecarUnitTest" time="0.005"/>
+  <testcase name="detectsPomRecordsFromUui()" classname="io.verbis.avaya.sidecar.AvayaSidecarUnitTest" time="0.002"/>
+  <testcase name="refusesXxe()" classname="io.verbis.avaya.sidecar.AvayaSidecarUnitTest" time="0.012"/>
+  <testcase name="registryFollowsTransfersAndAfterCallWork()" classname="io.verbis.avaya.sidecar.AvayaSidecarUnitTest" time="0.001"/>
+  <testcase name="mapsCctNotificationsWithIntrinsicsAllowList()" classname="io.verbis.avaya.sidecar.AvayaSidecarUnitTest" time="0.007"/>
+  <testcase name="encodesUuiAsAsciiOrHex()" classname="io.verbis.avaya.sidecar.AvayaSidecarUnitTest" time="0.002"/>
+  <testcase name="readsHubCommands()" classname="io.verbis.avaya.sidecar.AvayaSidecarUnitTest" time="0.04"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[[Fatal Error] :1:31: DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.
+]]></system-err>
+</testsuite>

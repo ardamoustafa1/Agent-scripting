@@ -124,6 +124,10 @@ it('schedules approved releases and rolls back using the expected current head',
     expect(rollback.hasAttribute('disabled')).toBe(false);
   });
   fireEvent.click(rollback);
+  expect(f.requests.some((r) => r.path.endsWith('/rollback'))).toBe(false);
+  const dialog = await screen.findByRole('dialog');
+  expect(dialog.textContent).toContain(f.label('lifecycle.rollbackImpact'));
+  fireEvent.click(screen.getByRole('button', { name: f.label('lifecycle.confirmRollback') }));
   await waitFor(() => {
     expect(f.requests.some((r) => r.path === `/v1/scripts/${scriptId}/rollback`)).toBe(true);
   });
@@ -180,4 +184,15 @@ it('hides review and publish actions from readers', async () => {
   expect(screen.queryByRole('button', { name: f.label('lifecycle.reject') })).toBeNull();
   expect(screen.queryByRole('button', { name: f.label('lifecycle.withdraw') })).toBeNull();
   expect(screen.queryByRole('button', { name: f.label('preview.approve') })).toBeNull();
+});
+
+it('marks the current production head and cancels rollback without posting', async () => {
+  const f = await setup('published');
+  expect(await screen.findByText(f.label('lifecycle.activeVersion'))).toBeTruthy();
+  fireEvent.click(
+    screen.getByRole('button', { name: f.i18n.t('designer.lifecycle.rollback', { number: 1 }) }),
+  );
+  fireEvent.click(screen.getByRole('button', { name: f.label('lifecycle.cancelRollback') }));
+  expect(screen.queryByRole('dialog')).toBeNull();
+  expect(f.requests.some((r) => r.path.endsWith('/rollback'))).toBe(false);
 });

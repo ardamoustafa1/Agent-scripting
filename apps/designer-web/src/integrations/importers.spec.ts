@@ -68,3 +68,8 @@ describe('integration authoring imports', () => {
     expect(defaults().policy.containsPii).toBe(true);
   });
 });
+
+it('starts with empty endpoint and key instead of saved example values', () => {
+  expect(defaults().key).toBe('');
+  expect(defaults().definition.baseUrl).toBe('');
+});

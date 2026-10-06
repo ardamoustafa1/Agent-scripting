@@ -26,6 +26,7 @@ import {
   type EngageEnvelope,
 } from './envelope.js';
 import { agentKey, createEngageMapper, recordHandleOf } from './mapper.js';
+import { ocsUserData } from './ocs.js';
 import { WorkspaceTranslator } from './workspace/workspace-events.js';
 import { WorkspaceSessionPool, type WorkspacePool } from './workspace/workspace-pool.js';
 
@@ -382,18 +383,7 @@ export class GenesysEngageConnector implements Connector {
     // OCS desktop protocol over a T-Server UserEvent (GSW_AGENT_REQ_TYPE).
     await pool.request(known.agentRef, 'POST', '/workspace/v3/voice/send-user-event', {
       data: {
-        userData: kv({
-          GSW_AGENT_REQ_TYPE: command.final ? 'RecordProcessed' : 'UpdateCallCompletionStats',
-          GSW_RECORD_HANDLE: command.recordHandle,
-          ...(command.callResult === undefined ? {} : { GSW_CALL_RESULT: command.callResult }),
-          ...(command.applicationId === undefined
-            ? {}
-            : { GSW_APPLICATION_ID: command.applicationId }),
-          ...(command.campaignName === undefined
-            ? {}
-            : { GSW_CAMPAIGN_NAME: command.campaignName }),
-          ...command.fields,
-        }),
+        userData: kv(ocsUserData(command)),
         connId: command.interactionId,
       },
     });

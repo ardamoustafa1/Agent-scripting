@@ -1,5 +1,8 @@
+import fc from 'fast-check';
 import nock from 'nock';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import { securityPropertyOptions } from '@verbis/test-utils';
 
 import { PolicySchema } from './contracts.js';
 import { createSecureTransport, resolveTarget } from './transport.js';
@@ -136,4 +139,26 @@ it('rejects declared oversized bodies before reading and classifies connection e
   await expect(transport(wire, policy, origins, aborted.signal)).rejects.toMatchObject({
     name: 'AbortError',
   });
+});
+
+it('property: every RFC1918 DNS target is rejected, including mixed public/private answers', async () => {
+  await fc.assert(
+    fc.asyncProperty(
+      fc.constantFrom('10', '192.168', '172.16'),
+      fc.integer({ min: 0, max: 255 }),
+      fc.integer({ min: 1, max: 254 }),
+      async (prefix, middle, last) => {
+        const address = prefix === '10' ? `10.${middle}.0.${last}` : `${prefix}.${middle}.${last}`;
+        await expect(
+          resolveTarget(new URL('https://service.test'), policy, origins, () =>
+            Promise.resolve([
+              { address: '93.184.215.14', family: 4 },
+              { address, family: 4 },
+            ]),
+          ),
+        ).rejects.toThrow('EGRESS_DENIED');
+      },
+    ),
+    securityPropertyOptions(20261006),
+  );
 });

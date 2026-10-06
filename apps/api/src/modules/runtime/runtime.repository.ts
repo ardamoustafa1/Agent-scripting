@@ -11,6 +11,7 @@ const SESSION_SELECT = {
   teamId: true,
   sequence: true,
   interactionId: true,
+  interaction: { select: { id: true, channelType: true, queue: true, attributes: true } },
   userId: true,
   scriptVersionId: true,
   assignmentId: true,

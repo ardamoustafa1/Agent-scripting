@@ -45,10 +45,15 @@ describe('ConnectorSupervisor', () => {
     await supervisor.sync();
     const states = Object.fromEntries(supervisor.list().map((i) => [i.connectorId, i.state]));
     expect(states).toEqual({ [WEBHOOK]: 'running', [SIM]: 'running', [OTHER]: 'unsupported' });
-    expect(api.health.map((h) => [h.connectorId, h.report.status])).toEqual([
-      [WEBHOOK, 'up'],
-      [SIM, 'up'],
-    ]);
+    // An unsupported adapter is reported down with a reason instead of staying silently unknown.
+    expect(Object.fromEntries(api.health.map((h) => [h.connectorId, h.report.status]))).toEqual({
+      [OTHER]: 'down',
+      [WEBHOOK]: 'up',
+      [SIM]: 'up',
+    });
+    expect(api.health.find((h) => h.connectorId === OTHER)?.report.detail).toBe(
+      'unsupported adapter on this hub',
+    );
     expect(supervisor.get(TENANT_ID, WEBHOOK)).toBeDefined();
     expect(supervisor.get('another-tenant', WEBHOOK)).toBeUndefined();
     await supervisor.shutdown();

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.verbis.engage.sidecar.OcsUserEventRequestTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-06T17:50:17.627Z" hostname="2aacbebd82db" time="0.011">
+  <properties/>
+  <testcase name="requiresADn()" classname="io.verbis.engage.sidecar.OcsUserEventRequestTest" time="0.002"/>
+  <testcase name="buildsADistributeUserEventFromTheRecordedFixture()" classname="io.verbis.engage.sidecar.OcsUserEventRequestTest" time="0.009"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import { RecordingHookConfigSchema } from '../../shared/recording-hook.js';
 
+import { AXP_DEFAULT_TOKEN_PATH, renderAxpPath } from './endpoints.js';
+
 /**
  * Avaya Experience Platform (AXP, formerly OneCloud CCaaS). Hosts are restricted to
  * `*.api.avayacloud.com` (new) or `*.cc.avayacloud.com` (legacy) — no tenant-chosen hosts (SSRF).
@@ -31,7 +33,10 @@ export const AxpConfigSchema = z.strictObject({
 });
 export type AxpConfig = z.infer<typeof AxpConfigSchema>;
 
-export const axpUrls = (config: Pick<AxpConfig, 'host' | 'accountId'>) => ({
-  token: `https://${config.host}/auth/realms/${config.accountId}/protocol/openid-connect/token`,
+export const axpUrls = (
+  config: Pick<AxpConfig, 'host' | 'accountId'>,
+  tokenPath: string = AXP_DEFAULT_TOKEN_PATH,
+) => ({
+  token: `https://${config.host}${renderAxpPath(tokenPath, { accountId: config.accountId })}`,
   api: `https://${config.host}`,
 });

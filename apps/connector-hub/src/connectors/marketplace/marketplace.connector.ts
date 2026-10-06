@@ -32,6 +32,8 @@ import {
   type SidecarTransport,
 } from '../shared/nats-sidecar-transport.js';
 
+import { assertFinesseAttributes } from './finesse-limits.js';
+
 export const MarketplaceConfigSchema = z.strictObject({
   kind: z.string().min(1).max(32),
   nats: z.strictObject({
@@ -275,6 +277,8 @@ export class MarketplaceConnector implements Connector {
         )
       )
         throw new ConnectorError('Attribute is not writable', 'attribute_not_allowed', false);
+      if (this.platform === 'cisco-finesse' && command.attributes !== undefined)
+        assertFinesseAttributes(command.attributes);
       const key = `${type}:${target.commandId}`;
       const fingerprint = JSON.stringify(command);
       const previous = this.#sent.get(key);
@@ -301,4 +305,13 @@ export class MarketplaceConnector implements Connector {
       throw new ConnectorError('Connector is not running', 'not_running', true);
     return this.#ctx;
   }
+}
+
+/** Platform wrappers share one constructor; behavior is defined by the SDK profile. */
+export function marketplaceAdapter(platform: MarketplacePlatform) {
+  return class extends MarketplaceConnector {
+    constructor(deps: MarketplaceDeps = {}) {
+      super(platform, deps);
+    }
+  };
 }

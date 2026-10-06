@@ -32,6 +32,7 @@ const VerifySchema = z.strictObject({
   platformUserIds: z.array(z.string().min(1).max(256)).min(1).max(20),
   platformInteractionId: z.string().min(1).max(256),
 });
+const ReplaySchema = z.strictObject({ limit: z.number().int().min(1).max(1_000).default(100) });
 const CommandSchema = z.strictObject({
   platformInteractionId: z.string().min(1).max(256),
   commandId: z
@@ -66,7 +67,24 @@ export class InternalController {
           health: i.health ?? null,
           attempts: i.attempts,
         })),
+      deadLetters: this.pipeline.deadLetterStats(),
     };
+  }
+
+  /** Re-offers this tenant's dead-lettered events (the API audits the operator action). */
+  @Post('dead-letters/replay')
+  @HttpCode(200)
+  async replayDeadLetters(@Req() request: FastifyRequest, @Body() body: unknown) {
+    const input = ReplaySchema.safeParse(body ?? {});
+    if (!input.success) throw new BadRequestException('Invalid replay request');
+    if (request.hubTenantId === undefined) throw new NotFoundException();
+    try {
+      return {
+        replayed: await this.pipeline.replayDeadLetters(request.hubTenantId, input.data.limit),
+      };
+    } catch (error) {
+      throw toHttpError(error);
+    }
   }
 
   @Post('connectors/:id/verify-participant')

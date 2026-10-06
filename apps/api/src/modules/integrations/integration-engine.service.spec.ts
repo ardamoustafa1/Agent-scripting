@@ -1,6 +1,7 @@
 import { exportJWK, generateKeyPair, SignJWT } from 'jose';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
+import { testEnv } from '../../../test/support/env.js';
 import { requestContext } from '../../common/context/request-context.js';
 import { type TenantDb } from '../../infra/database/tenant-db.js';
 import { type RedisService } from '../../infra/redis/redis.service.js';
@@ -29,10 +30,11 @@ beforeAll(async () => {
 afterEach(() => {
   vi.unstubAllEnvs();
 });
-function fixture(state = 'active', declaredVersion = 1) {
+function fixture(state = 'active', declaredVersion = 1, environment = 'prod') {
   const audits = vi.fn(() => Promise.resolve({})),
     emitted = vi.fn().mockResolvedValue(undefined);
   const tx = {
+    dataSourceVersion: { findFirst: vi.fn().mockResolvedValue(null) },
     dataSource: {
       findFirst: vi.fn(() =>
         Promise.resolve({
@@ -99,6 +101,8 @@ function fixture(state = 'active', declaredVersion = 1) {
       client: { get: () => Promise.resolve(null), set: () => Promise.resolve('OK') },
     } as unknown as RedisService,
     new EnvelopeVault(new EnvKeyAdapter(Buffer.alloc(32, 7))),
+    undefined,
+    testEnv(jwks, { VERBIS_ENVIRONMENT: environment }),
   );
   const execute = vi.spyOn(service.executor, 'execute').mockResolvedValue({
     value: { ok: true },
@@ -192,8 +196,7 @@ describe('integration API service boundaries', () => {
   });
   it('executes only the authorized session and derives profile from the server', async () => {
     vi.stubEnv('INTEGRATION_RUNTIME_JWKS', jwks);
-    vi.stubEnv('VERBIS_ENVIRONMENT', 'test');
-    const f = fixture();
+    const f = fixture('active', 1, 'test');
     const signed = await token();
     await expect(
       f.run(() => f.service.execute(id, sessionId, signed, { input: {}, environment: 'prod' })),
@@ -213,6 +216,39 @@ describe('integration API service boundaries', () => {
       state: 'active',
     });
   });
+});
+
+it('executes the immutable pinned revision, not the edited live row (ADR-0042)', async () => {
+  const f = fixture('active', 1);
+  const live = await f.tx.dataSource.findFirst();
+  f.tx.dataSource.findFirst.mockResolvedValue({
+    ...live,
+    version: 2,
+    definition: DefinitionSchema.parse({ baseUrl: 'https://changed.test', endpoint: '/new' }),
+    secretRefs: ['00000000-0000-4000-8000-0000000000aa'],
+  } as typeof live);
+  f.tx.dataSourceVersion.findFirst.mockResolvedValue({
+    ...live,
+    dataSourceId: id,
+    version: 1,
+  });
+  await f.run(() => f.service.executeAuthorized(id, sessionId, { input: {}, environment: 'prod' }));
+  const used = f.execute.mock.calls[0]?.[1];
+  expect(used?.version).toBe(1);
+  expect(used?.definition.baseUrl).toBe('https://service.test');
+  expect(f.tx.dataSourceVersion.findFirst).toHaveBeenCalledWith({
+    where: { tenantId, dataSourceId: id, version: 1 },
+  });
+});
+
+it('refuses a pin with no snapshot once the live row moved on', async () => {
+  const f = fixture('active', 1);
+  const live = await f.tx.dataSource.findFirst();
+  f.tx.dataSource.findFirst.mockResolvedValue({ ...live, version: 2 });
+  await expect(
+    f.run(() => f.service.executeAuthorized(id, sessionId, { input: {}, environment: 'prod' })),
+  ).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+  expect(f.execute).not.toHaveBeenCalled();
 });
 
 it('failed real executions emit safe latency metadata before surfacing the upstream failure', async () => {

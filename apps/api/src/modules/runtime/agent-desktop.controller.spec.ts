@@ -7,6 +7,7 @@ import { requestContext } from '../../common/context/request-context.js';
 import { DomainError } from '../../common/errors/domain-errors.js';
 
 import { AgentDesktopController } from './agent-desktop.controller.js';
+import { RuntimeDataService } from './runtime-data.service.js';
 
 import type { RuntimeEngineService } from './runtime-engine.service.js';
 import type { SecureCaptureService } from './secure-capture.service.js';
@@ -48,6 +49,11 @@ function fixture(state = 'active') {
   };
   const tx = {
     campaign: { findFirst: vi.fn().mockResolvedValue(null) },
+    user: {
+      findFirst: vi
+        .fn()
+        .mockResolvedValue({ displayName: 'Ayşe Yılmaz', email: 'ayse@example.test' }),
+    },
     auditEvent: { findFirst: vi.fn().mockResolvedValue(null) },
     dataSource: { findFirst: vi.fn().mockResolvedValue({ id: 'source-id' }) },
   };
@@ -70,7 +76,11 @@ function fixture(state = 'active') {
   const controller = new AgentDesktopController(
     db as unknown as TenantDb,
     runtime as unknown as RuntimeEngineService,
-    integration as unknown as IntegrationEngineService,
+    new RuntimeDataService(
+      db as unknown as TenantDb,
+      runtime as unknown as RuntimeEngineService,
+      integration as unknown as IntegrationEngineService,
+    ),
     audit as unknown as AuditService,
     { publicProfile: () => undefined } as unknown as SecureCaptureService,
   );
@@ -167,7 +177,7 @@ it('resolves the exact pinned source version and records the successful session 
     }),
   );
   expect(f.tx.dataSource.findFirst).toHaveBeenCalledWith({
-    where: { tenantId: tenant, key: 'customer', version: 3, deletedAt: null },
+    where: { tenantId: tenant, key: 'customer', deletedAt: null },
     select: { id: true },
   });
   expect(f.integration.prepareAuthorized).toHaveBeenCalledWith('source-id', id, {
@@ -365,4 +375,23 @@ it('commits failed datasource activity before returning a sanitized timeout prob
     expect.objectContaining({ status: 'failure' }),
   );
   expect(f.runtime.view).toHaveBeenCalled();
+});
+// M-Z6: the agent's own name was never sent, so `{agent}` rendered empty in live scripts.
+it('provides the owning agent display and first name for script personalization', async () => {
+  const f = fixture();
+  const result = await asUser(owner, () => f.controller.desktop(id));
+  expect(result.agent).toEqual({ id: owner, displayName: 'Ayşe Yılmaz', firstName: 'Ayşe' });
+  expect(f.tx.user.findFirst).toHaveBeenCalledWith({
+    where: { id: owner, tenantId: tenant, deletedAt: null },
+    select: { displayName: true, email: true },
+  });
+});
+it('does not present an e-mail fallback display name as the agent name', async () => {
+  const f = fixture();
+  f.tx.user.findFirst.mockResolvedValue({
+    displayName: 'ayse@example.test',
+    email: 'ayse@example.test',
+  });
+  const result = await asUser(owner, () => f.controller.desktop(id));
+  expect(result.agent).toEqual({ id: owner, displayName: null, firstName: null });
 });

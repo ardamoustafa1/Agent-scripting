@@ -21,21 +21,18 @@ export async function projectDocument(
     return start?.type === 'page' ? start.page : undefined;
   })();
 
-  const screenIds = new Map<string, string>();
-  for (const page of document.pages) {
-    const screen = await tx.screen.create({
-      data: {
-        ...audit,
-        scriptVersionId: scope.scriptVersionId,
-        key: page.id,
-        title: page.titleKey ?? page.name,
-        layoutRoot: toJson(page.layout),
-        entry: page.id === entryPage,
-      },
-      select: { id: true },
-    });
-    screenIds.set(page.id, screen.id);
-  }
+  const screens = await tx.screen.createManyAndReturn({
+    data: document.pages.map((page) => ({
+      ...audit,
+      scriptVersionId: scope.scriptVersionId,
+      key: page.id,
+      title: page.titleKey ?? page.name,
+      layoutRoot: toJson(page.layout),
+      entry: page.id === entryPage,
+    })),
+    select: { id: true, key: true },
+  });
+  const screenIds = new Map(screens.map((screen) => [screen.key, screen.id]));
 
   const components: Prisma.ComponentCreateManyInput[] = [];
   walkNodes(document, ({ node, pageId }) => {

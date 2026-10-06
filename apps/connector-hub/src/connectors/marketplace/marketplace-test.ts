@@ -32,6 +32,7 @@ export const transports = new WeakMap<Connector, FakeMarketplaceTransport>();
 export function marketplaceSubject(
   platform: MarketplacePlatform,
   create = (deps: MarketplaceDeps) => new MarketplaceConnector(platform, deps),
+  attributeAllowList = ['verbisOutcome', 'customerTier'],
 ): ContractSubject {
   return {
     name: platform,
@@ -44,7 +45,7 @@ export function marketplaceSubject(
     config: {
       kind: MARKETPLACE_PROFILES[platform].kind,
       nats: { servers: ['tls://nats.example.test:4222'] },
-      attributeAllowList: ['verbisOutcome', 'customerTier'],
+      attributeAllowList,
       routing: { 'route-1': 'campaign-1' },
     },
     secrets: { natsCreds: 'fixture-only-credentials' },

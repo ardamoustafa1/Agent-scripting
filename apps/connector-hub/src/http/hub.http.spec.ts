@@ -184,6 +184,24 @@ describe('internal API (API → hub)', () => {
     expect(res.json<{ connectors: unknown[] }>().connectors).toHaveLength(2);
   });
 
+  it('reports dead-letter state and replays only the token tenant', async () => {
+    const status = await internal('GET', '/internal/v1/connectors');
+    expect(status.json<{ deadLetters: unknown }>().deadLetters).toEqual({
+      durable: false,
+      persisted: 0,
+      persistFailures: 0,
+    });
+    const replay = await internal('POST', '/internal/v1/dead-letters/replay', { limit: 5 });
+    expect(replay.statusCode).toBe(200);
+    expect(replay.json()).toEqual({ replayed: 0 });
+    const invalid = await internal('POST', '/internal/v1/dead-letters/replay', { limit: 0 });
+    expect(invalid.statusCode).toBe(400);
+    expect(invalid.headers['content-type']).toContain('application/problem+json');
+    expect(
+      (await app.inject({ method: 'POST', url: '/internal/v1/dead-letters/replay' })).statusCode,
+    ).toBe(401);
+  });
+
   it('scopes connectors to the token tenant', async () => {
     const foreign = await token({ tnt: '0190f000-0000-7000-8000-0000000000bb' });
     expect(

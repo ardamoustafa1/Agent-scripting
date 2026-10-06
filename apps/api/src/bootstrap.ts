@@ -47,7 +47,7 @@ export async function createApp(
   options: CreateAppOptions = {},
 ): Promise<NestFastifyApplication> {
   const logger = options.logger ?? createLogger(env.LOG_LEVEL);
-  const adapter = new FastifyAdapter(createFastifyAdapterOptions(logger));
+  const adapter = new FastifyAdapter(createFastifyAdapterOptions(logger, env.TRUSTED_PROXIES));
   const fastify = adapter.getInstance();
   registerHttpMetrics(fastify);
   // Session cookies and SCIM tokens are resolved by the identity module once the app exists.
@@ -159,6 +159,13 @@ export async function createApp(
   await registerRateLimit(fastify, {
     max: env.RATE_LIMIT_MAX,
     windowMs: env.RATE_LIMIT_WINDOW_MS,
+    sessionCookieName: `${env.SESSION_COOKIE_SECURE ? '__Host-' : ''}${env.SESSION_COOKIE_NAME}`,
+    authSession: {
+      ipMax: env.AUTH_SESSION_RATE_LIMIT_IP_MAX,
+      sessionMax: env.AUTH_SESSION_RATE_LIMIT_SESSION_MAX,
+      anonymousMax: env.AUTH_SESSION_RATE_LIMIT_ANONYMOUS_MAX,
+      windowMs: env.RATE_LIMIT_WINDOW_MS,
+    },
     ...(options.inMemoryRateLimit === true ? {} : { redis: app.get(RedisService).client }),
   });
   await registerApiDocs(app, env);

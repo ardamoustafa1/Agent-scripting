@@ -26,6 +26,37 @@ describe('catalogs', () => {
     );
   });
 
+  // T-03: key parity alone missed ~20 Turkish values left in English. Identical tr/en values are
+  // allowed only for product/vendor names, acronyms, symbols and words that are the same in Turkish.
+  it('translates every Turkish value that is not a name, acronym or symbol', () => {
+    const allowed = new Set([
+      ...[
+        'Verbis',
+        'Verbis Studio',
+        'VERBIS STUDIO',
+        'VERBIS / INSIGHTS',
+        'V',
+        'English',
+        'Türkçe',
+      ],
+      ...['Amazon Connect', 'Avaya AACC', 'Avaya AES', 'Avaya Aura (AES)', 'Cisco', 'Five9'],
+      ...['Avaya Aura Contact Center', 'Avaya Experience Platform', 'Genesys Cloud'],
+      ...['Genesys Engage', 'NICE CXone', 'Kafka', 'Syslog', 'Syslog (RFC 5424)', 'Webhook'],
+      ...['WhatsApp', 'SMS', 'Video', 'OIDC', 'SAML', 'CEF', 'JSON', 'PII', 'VDN', 'Platform API'],
+      ...['Connector', 'Script', 'Platform', 'Port', 'Test', 'Tablet · 768', '01 — 03'],
+      ...['Alt + ←', 'Ctrl + /', 'Enter', 'K', 'ms', 'p', 's', '×', '→', '⇧', '⌘', '⌘K'],
+      ...['⌘ / Ctrl K', 'v{{number}}', '{{current}} / {{total}}', '{{key}}@{{version}}'],
+      ...['{{name}}', '{{name}} · v{{version}}', '{{value}} ms ·'],
+    ]);
+    const read = (tree: unknown, key: string) =>
+      key.split('.').reduce<unknown>((node, part) => (node as Record<string, unknown>)[part], tree);
+    const untranslated = flattenKeys(resources.tr.translation).filter((key) => {
+      const value = read(resources.tr.translation, key);
+      return value === read(resources.en.translation, key) && !allowed.has(String(value));
+    });
+    expect(untranslated).toEqual([]);
+  });
+
   it('has no empty translations', () => {
     for (const { translation } of Object.values(resources)) {
       const values = JSON.stringify(translation);

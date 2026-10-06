@@ -362,3 +362,109 @@ it('expands the UTC date window without discarding report dimensions', () => {
   expect(last.to).toBe(defaultAnalyticsFilter().to);
   expect((new Date(last.to).getTime() - new Date(last.from).getTime()) / 86400000).toBe(29);
 });
+// U-05: filters and recipients required typing UUIDs; pick them by name when the host supplies options.
+it('picks campaign, team and recipients by name and submits their ids', async () => {
+  const onFilter = vi.fn(),
+    schedule = vi.fn().mockResolvedValue(undefined),
+    filter = defaultAnalyticsFilter();
+  render(
+    <AnalyticsDashboard
+      data={populated}
+      filter={filter}
+      onFilter={onFilter}
+      loading={false}
+      onRetry={vi.fn()}
+      onSchedule={schedule}
+      campaignOptions={[{ value: 'campaign-id-1', label: 'Kredi kartı satış' }]}
+      teamOptions={[{ value: 'team-id-1', label: 'Ekip Kuzey' }]}
+      recipientOptions={[
+        { value: 'user-id-1', label: 'Ayşe Yılmaz' },
+        { value: 'user-id-2', label: 'Mehmet Demir' },
+      ]}
+    />,
+  );
+  const campaign = screen.getByRole<HTMLSelectElement>('combobox', {
+    name: 'analytics.campaignId',
+  });
+  expect(screen.getByRole('option', { name: 'Kredi kartı satış' })).toBeTruthy();
+  fireEvent.change(campaign, { target: { value: 'campaign-id-1' } });
+  expect(onFilter).toHaveBeenLastCalledWith({ ...filter, campaignId: 'campaign-id-1' });
+  fireEvent.change(screen.getByRole('combobox', { name: 'analytics.teamId' }), {
+    target: { value: 'team-id-1' },
+  });
+  expect(onFilter).toHaveBeenLastCalledWith({ ...filter, teamId: 'team-id-1' });
+  expect(screen.queryByPlaceholderText('analytics.campaignPlaceholder')).toBeNull();
+  const recipients = screen.getByRole('group', { name: 'analytics.recipients' });
+  fireEvent.change(screen.getByRole('searchbox', { name: 'analytics.recipientSearch' }), {
+    target: { value: 'meh' },
+  });
+  expect(screen.queryByRole('checkbox', { name: 'Ayşe Yılmaz' })).toBeNull();
+  fireEvent.click(screen.getByRole('checkbox', { name: 'Mehmet Demir' }));
+  expect(recipients).toBeTruthy();
+  fireEvent.submit(screen.getByRole('button', { name: 'analytics.save' }).closest('form')!);
+  await waitFor(() => {
+    expect(schedule).toHaveBeenCalledWith(
+      expect.objectContaining({ recipientUserIds: ['user-id-2'] }),
+    );
+  });
+});
+it('does not submit a schedule without at least one picked recipient', async () => {
+  const schedule = vi.fn().mockResolvedValue(undefined);
+  render(
+    <AnalyticsDashboard
+      data={populated}
+      filter={defaultAnalyticsFilter()}
+      onFilter={vi.fn()}
+      loading={false}
+      onRetry={vi.fn()}
+      onSchedule={schedule}
+      recipientOptions={[{ value: 'user-id-1', label: 'Ayşe Yılmaz' }]}
+    />,
+  );
+  fireEvent.submit(screen.getByRole('button', { name: 'analytics.save' }).closest('form')!);
+  expect(await screen.findByText('analytics.recipientsRequired')).toBeTruthy();
+  expect(schedule).not.toHaveBeenCalled();
+});
+it('labels channel filter options instead of showing raw channel codes', () => {
+  render(
+    <AnalyticsDashboard
+      filter={defaultAnalyticsFilter()}
+      onFilter={vi.fn()}
+      loading={false}
+      onRetry={vi.fn()}
+    />,
+  );
+  expect(screen.getByRole('option', { name: 'analytics.channels.voice' })).toBeTruthy();
+  expect(screen.queryByRole('option', { name: 'voice' })).toBeNull();
+});
+// D-17: option search is delegated to the host (server-side) when it supplies onOptionSearch.
+it('asks the host to search campaigns, teams and recipients on the server', () => {
+  const onOptionSearch = vi.fn();
+  render(
+    <AnalyticsDashboard
+      data={populated}
+      filter={defaultAnalyticsFilter()}
+      onFilter={vi.fn()}
+      loading={false}
+      onRetry={vi.fn()}
+      onSchedule={vi.fn()}
+      campaignOptions={[]}
+      teamOptions={[]}
+      recipientOptions={[]}
+      onOptionSearch={onOptionSearch}
+    />,
+  );
+  fireEvent.change(screen.getByRole('searchbox', { name: 'analytics.campaignSearch' }), {
+    target: { value: 'cust' },
+  });
+  expect(onOptionSearch).toHaveBeenLastCalledWith('campaign', 'cust');
+  fireEvent.change(screen.getByRole('searchbox', { name: 'analytics.teamSearch' }), {
+    target: { value: 'nor' },
+  });
+  expect(onOptionSearch).toHaveBeenLastCalledWith('team', 'nor');
+  fireEvent.change(screen.getByRole('searchbox', { name: 'analytics.recipientSearch' }), {
+    target: { value: 'ay' },
+  });
+  expect(onOptionSearch).toHaveBeenLastCalledWith('recipient', 'ay');
+  expect(screen.getByRole('combobox', { name: 'analytics.campaignId' })).toBeTruthy();
+});

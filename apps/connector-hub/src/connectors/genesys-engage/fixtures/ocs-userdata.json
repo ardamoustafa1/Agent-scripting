@@ -1,0 +1,45 @@
+{
+  "description": "OCS desktop-protocol user data for RecordProcessed / UpdateCallCompletionStats (recorded contract; unverified against a live OCS)",
+  "requestKind": "DistributeUserEvent",
+  "cases": [
+    {
+      "name": "final record with call result",
+      "dn": "5001",
+      "command": {
+        "type": "ocsRecordProcessed",
+        "commandId": "cmd-1",
+        "interactionId": "006d02a8b1c3f002",
+        "recordHandle": 77,
+        "callResult": 33,
+        "campaignName": "Renewal_Q4",
+        "applicationId": 118,
+        "fields": { "CustomNote": "Yenilendi" },
+        "final": true
+      },
+      "expectedUserData": {
+        "GSW_AGENT_REQ_TYPE": "RecordProcessed",
+        "GSW_RECORD_HANDLE": 77,
+        "GSW_CALL_RESULT": 33,
+        "GSW_APPLICATION_ID": 118,
+        "GSW_CAMPAIGN_NAME": "Renewal_Q4",
+        "CustomNote": "Yenilendi"
+      }
+    },
+    {
+      "name": "interim stats update, minimal",
+      "dn": "5001",
+      "command": {
+        "type": "ocsRecordProcessed",
+        "commandId": "cmd-2",
+        "interactionId": "006d02a8b1c3f002",
+        "recordHandle": 5,
+        "fields": {},
+        "final": false
+      },
+      "expectedUserData": {
+        "GSW_AGENT_REQ_TYPE": "UpdateCallCompletionStats",
+        "GSW_RECORD_HANDLE": 5
+      }
+    }
+  ]
+}

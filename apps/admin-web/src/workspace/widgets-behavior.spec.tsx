@@ -1,9 +1,20 @@
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { useState } from 'react';
 import { expect, it, vi } from 'vitest';
+import { z } from 'zod';
 
+import { AdminApiError } from './api.js';
 import { mountAdmin } from './fixtures.spec.helpers.js';
-import { Action, DiffView, Field, Check, Picker, ResourceList, SaveForm } from './widgets.js';
+import {
+  Action,
+  DiffView,
+  Feedback,
+  Field,
+  Check,
+  Picker,
+  ResourceList,
+  SaveForm,
+} from './widgets.js';
 
 it('requires explicit confirmation for dangerous operations, supports cancellation, and reports completion', async () => {
   const run = vi.fn().mockResolvedValue(undefined),
@@ -25,7 +36,8 @@ it('reports failed actions and clears their error on a successful retry', async 
       .mockResolvedValue(undefined),
     f = await mountAdmin(<Action label="Synthetic action" run={run} />);
   fireEvent.click(screen.getByRole('button', { name: 'Synthetic action' }));
-  expect((await screen.findByRole('alert')).textContent).toContain('VERBIS_CONFLICT');
+  expect((await screen.findByRole('alert')).textContent).toContain(f.label('errors.generic'));
+  expect(screen.getByRole('alert').textContent).not.toContain('VERBIS_CONFLICT');
   fireEvent.click(screen.getByRole('button', { name: 'Synthetic action' }));
   await screen.findByText(f.label('saved'));
   expect(screen.queryByRole('alert')).toBeNull();
@@ -247,4 +259,63 @@ it('blocks a dangerous confirmation when its action becomes disabled', async () 
   fireEvent.click(screen.getByRole('button', { name: f.label('confirm') }));
   await Promise.resolve();
   expect(run).not.toHaveBeenCalled();
+});
+// T-04: problem codes, HTTP_5xx and ZodError JSON were shown verbatim to administrators.
+it.each([
+  [new AdminApiError('VERBIS_AUTHZ_FORBIDDEN', 'corr-synthetic-1', 403), 'errors.forbidden'],
+  [new AdminApiError('VERBIS_CONFLICT', 'corr-synthetic-2', 409), 'errors.conflict'],
+  [new AdminApiError('VERBIS_PRECONDITION_FAILED', 'corr-synthetic-3', 412), 'errors.conflict'],
+  [new AdminApiError('VERBIS_VALIDATION_FAILED', 'corr-synthetic-4', 422), 'errors.validation'],
+  [new AdminApiError('VERBIS_NOT_FOUND', 'corr-synthetic-5', 404), 'errors.notFound'],
+  [new AdminApiError('VERBIS_HTTP_RATE_LIMITED', 'corr-synthetic-6', 429), 'errors.rateLimited'],
+  [new AdminApiError('HTTP_502', undefined, 502), 'errors.unavailable'],
+  [new TypeError('Failed to fetch'), 'errors.unavailable'],
+])('shows a localized message for %s', async (error, key) => {
+  const f = await mountAdmin(<Feedback error={error} />);
+  const alert = screen.getByRole('alert');
+  expect(alert.textContent).toContain(f.label(key));
+  expect(alert.textContent).not.toMatch(/VERBIS_|HTTP_\d|Failed to fetch/);
+  if (error instanceof AdminApiError && error.correlationId)
+    expect(alert.textContent).toContain(error.correlationId);
+});
+it('never shows schema validation internals from an unexpected API response', async () => {
+  const parsed = z.object({ id: z.string() }).safeParse({ id: 1 });
+  const f = await mountAdmin(<Feedback error={parsed.error} />);
+  const alert = screen.getByRole('alert');
+  expect(alert.textContent).toContain(f.label('errors.unexpectedResponse'));
+  expect(alert.textContent).not.toContain('invalid_type');
+  expect(alert.textContent).not.toContain('[');
+});
+it('maps a failed request to its HTTP status and problem correlation id', async () => {
+  const f = await mountAdmin(<span />, {
+    '/v1/synthetic': new Response(
+      JSON.stringify({ code: 'VERBIS_AUTHZ_FORBIDDEN', correlationId: 'corr-synthetic-7' }),
+      { status: 403, headers: { 'content-type': 'application/problem+json' } },
+    ),
+  });
+  const { request } = await import('./api.js');
+  const failure = await request('/v1/synthetic', z.unknown()).catch((error: unknown) => error);
+  expect(failure).toBeInstanceOf(AdminApiError);
+  expect(failure).toMatchObject({ status: 403, correlationId: 'corr-synthetic-7' });
+  expect(f.requests).toHaveLength(1);
+});
+// U-04: a single-record table must not offer a next page.
+it.each([
+  [
+    'a page without a next cursor',
+    { data: [{ id: 'only', name: 'Only' }], page: { nextCursor: null } },
+  ],
+  ['a plain array response', [{ id: 'only', name: 'Only' }]],
+])('disables the next page button for %s', async (_case, response) => {
+  const f = await mountAdmin(
+    <ResourceList path="/v1/single" title="Synthetic list" columns={['name']} />,
+    { '/v1/single': response },
+  );
+  await screen.findByRole('table');
+  expect(screen.getByRole<HTMLButtonElement>('button', { name: f.label('next') }).disabled).toBe(
+    true,
+  );
+  expect(screen.getByRole<HTMLButtonElement>('button', { name: f.label('first') }).disabled).toBe(
+    true,
+  );
 });

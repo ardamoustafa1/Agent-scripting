@@ -1,0 +1,151 @@
+{
+  "recordedAt": "2026-10-06T18:19:34.819561+00:00",
+  "scope": {
+    "userExcludes": "commit/push/remote/branch protection/remote CI",
+    "remoteCiExecuted": false,
+    "licensedSdkAcceptance": false,
+    "pspVendorRecordingAcceptance": false,
+    "customerNetworkAcceptance": false,
+    "twoSsoBrowserLiveCollaborationExecuted": false
+  },
+  "rootChecks": {
+    "lint": {
+      "successfulTasks": 33,
+      "totalTasks": 33,
+      "log": "reports/b-completion/lint-accepted.log"
+    },
+    "typecheck": {
+      "successfulTasks": 32,
+      "totalTasks": 32,
+      "log": "reports/b-completion/typecheck-accepted.log"
+    },
+    "build": {
+      "successfulTasks": 19,
+      "totalTasks": 19,
+      "log": "reports/b-completion/build-accepted.log"
+    },
+    "test": {
+      "successfulTasks": 32,
+      "totalTasks": 32,
+      "log": "reports/b-completion/test-current.log"
+    },
+    "chromium": {
+      "successfulTasks": 23,
+      "totalTasks": 23,
+      "log": "reports/b-completion/e2e-final.log"
+    }
+  },
+  "coverage": {
+    "workspaces": 18,
+    "errors": [],
+    "securityFloors": {
+      "lines": 95,
+      "branches": 90
+    }
+  },
+  "vitestPassedByWorkspace": {
+    "authz": 590,
+    "test-utils": 4,
+    "collaboration": 21,
+    "i18n": 9,
+    "expr": 370,
+    "shared-types": 48,
+    "observability": 15,
+    "script-schema": 313,
+    "ui": 119,
+    "sdk-connector": 59,
+    "core-runtime": 136,
+    "admin-web": 128,
+    "connector-hub": 684,
+    "sdk-component": 50,
+    "components": 369,
+    "designer-web": 427,
+    "agent-web": 156,
+    "api": 2067
+  },
+  "hubLiveSandboxSkipped": 4,
+  "chromium": {
+    "designer-web": {
+      "startTime": "2026-10-06T18:09:41.844Z",
+      "duration": 323241.741,
+      "expected": 261,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "admin-web": {
+      "startTime": "2026-10-06T18:09:04.130Z",
+      "duration": 47849.863999999994,
+      "expected": 50,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "agent-web": {
+      "startTime": "2026-10-06T18:09:22.492Z",
+      "duration": 29296.557,
+      "expected": 38,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "docs-site": {
+      "startTime": "2026-10-06T18:09:04.136Z",
+      "duration": 15056.758,
+      "expected": 12,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "java": {
+    "connector-avaya-aes-sidecar": {
+      "tests": 28,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "connector-genesys-engage-sidecar": {
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "stubCompile": {
+    "avaya": "passed",
+    "genesysEngage": "passed",
+    "realSdkCompatibilityProven": false
+  },
+  "postRootTargeted": {
+    "packages": 26,
+    "publicationScope": 14
+  },
+  "policyTestsPassed": 54,
+  "certificateCliTestsPassed": 2,
+  "format": "passed",
+  "testHarnessTypecheck": "passed",
+  "testHarnessLint": "passed",
+  "agent25SessionFixture": {
+    "source": "Chromium recovery.spec.ts, mocked API, 25 sessions",
+    "measurement": {
+      "sessions": 25,
+      "firstPanelMs": 510,
+      "desktopRequests": 1,
+      "attaches": 1
+    }
+  },
+  "manifest": {
+    "path": "manifest.json",
+    "sha256": "61b3ffcf5d8ec62c208e6c5ef7dfe7f0d3e0cd898f36f3149d3ab061c5e23316",
+    "sourceFiles": 1929,
+    "artifactFiles": 54
+  },
+  "remaining": [
+    "Eight licensed vendor SDKs and live vendor/sandbox acceptance",
+    "PSP capture flow integration and real recording pause/resume ACK acceptance",
+    "Two distinct SSO browser users: live collaboration/reconnect/comments acceptance",
+    "Customer network private gateway TLS/DNS/restart/load acceptance",
+    "Staging 2000-session load acceptance"
+  ]
+}

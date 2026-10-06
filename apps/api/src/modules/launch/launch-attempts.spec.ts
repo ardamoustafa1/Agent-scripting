@@ -1,4 +1,7 @@
+import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
+
+import { securityPropertyOptions } from '@verbis/test-utils';
 
 import { ANOMALY_THRESHOLD, BLOCK_THRESHOLD, LaunchAttempts } from './launch-attempts.js';
 
@@ -62,4 +65,17 @@ describe('LaunchAttempts', () => {
     expect(await attempts.blocked(key)).toBe(false);
     expect(await attempts.fail(key)).toEqual({ anomaly: false, count: 0 });
   });
+});
+
+it('property: launch abuse counters isolate users/IPs and block at the configured boundary', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.integer({ min: 0, max: BLOCK_THRESHOLD + 5 }), async (count) => {
+      const attempts = new LaunchAttempts(fakeRedis());
+      const target = { tenantId: 'tenant', userId: 'user', ip: '203.0.113.1' };
+      for (let n = 0; n < count; n++) await attempts.fail(target);
+      expect(await attempts.blocked(target)).toBe(count >= BLOCK_THRESHOLD);
+      expect(await attempts.blocked({ ...target, userId: 'other', ip: '203.0.113.2' })).toBe(false);
+    }),
+    securityPropertyOptions(20261006),
+  );
 });

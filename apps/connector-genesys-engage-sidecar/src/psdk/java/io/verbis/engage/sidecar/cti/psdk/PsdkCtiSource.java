@@ -11,16 +11,15 @@ import com.genesyslab.platform.openmedia.protocol.interactionserver.requests.int
 import com.genesyslab.platform.voice.protocol.ConnectionId;
 import com.genesyslab.platform.voice.protocol.TServerProtocol;
 import com.genesyslab.platform.voice.protocol.tserver.AddressType;
-import com.genesyslab.platform.voice.protocol.tserver.CommonProperties;
 import com.genesyslab.platform.voice.protocol.tserver.ControlMode;
 import com.genesyslab.platform.voice.protocol.tserver.RegisterMode;
-import com.genesyslab.platform.voice.protocol.tserver.events.EventUserEvent;
 import com.genesyslab.platform.voice.protocol.tserver.requests.dn.RequestRegisterAddress;
-import com.genesyslab.platform.voice.protocol.tserver.requests.special.RequestSendEvent;
+import com.genesyslab.platform.voice.protocol.tserver.requests.special.RequestDistributeUserEvent;
 import com.genesyslab.platform.voice.protocol.tserver.requests.userdata.RequestUpdateUserData;
 import io.verbis.engage.sidecar.config.SidecarProperties;
 import io.verbis.engage.sidecar.cti.CtiCommandException;
 import io.verbis.engage.sidecar.cti.CtiSource;
+import io.verbis.engage.sidecar.cti.OcsUserEventRequest;
 import io.verbis.engage.sidecar.cti.ParticipantRegistry;
 import io.verbis.engage.sidecar.envelope.EngageCommand;
 import io.verbis.engage.sidecar.envelope.EngageEnvelope;
@@ -36,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * - Interaction Server: connects as `ReportingEngine` for chat/email lifecycle, and as `Proxy` for
  *   `RequestChangeProperties` (attached data write-back).
  * - Config Server: DN / agent login → person (employeeId, userName) via {@link ConfigDirectory}.
- * - OCS: RecordProcessed / UpdateCallCompletionStats as a T-Server UserEvent (desktop protocol).
+ * - OCS: RecordProcessed / UpdateCallCompletionStats as a T-Server RequestDistributeUserEvent (desktop protocol, M-27).
  */
 public final class PsdkCtiSource implements CtiSource {
   private static final Logger log = LoggerFactory.getLogger(PsdkCtiSource.class);
@@ -112,12 +111,12 @@ public final class PsdkCtiSource implements CtiSource {
           ixnProxy.send(RequestChangeProperties.create(update.interactionId(), kv(update.userData()), null, null));
         }
         case EngageCommand.OcsRecordProcessed ocs -> {
-          CommonProperties event = CommonProperties.create();
-          event.setUserEvent(EventUserEvent.ID);
-          event.setThisDN(dnOf(command));
-          event.setConnID(new ConnectionId(ocs.interactionId()));
-          event.setUserData(kv(EngageCommand.ocsUserEvent(ocs)));
-          tserver.send(RequestSendEvent.create(event));
+          var request = OcsUserEventRequest.from(ocs, dnOf(command));
+          RequestDistributeUserEvent distribute = RequestDistributeUserEvent.create();
+          distribute.setThisDN(request.thisDn());
+          distribute.setConnID(new ConnectionId(request.connId()));
+          distribute.setUserData(kv(request.userData()));
+          tserver.send(distribute);
         }
       }
     } catch (CtiCommandException e) {

@@ -142,7 +142,16 @@
   flex-wrap: wrap;
   gap: var(--vb-space-2);
 }
-.react-flow {
+/* V-01: doubled class outranks @xyflow/react/dist/style.css, which loads later with the same
+   specificity and otherwise restores its light-only defaults in dark/high-contrast themes. */
+.react-flow.react-flow {
+  --xy-attribution-background-color-default: var(--vb-color-surface-raised);
+  --xy-minimap-mask-background-color-default: color-mix(
+    in srgb,
+    var(--vb-color-bg) 60%,
+    transparent
+  );
+  --xy-minimap-mask-stroke-color-default: var(--vb-color-border-strong);
   --xy-node-color-default: var(--vb-color-text);
   --xy-node-background-color-default: var(--vb-color-surface-raised);
   --xy-edge-stroke-default: var(--vb-color-text-muted);
@@ -155,6 +164,15 @@
   --xy-minimap-background-color-default: var(--vb-color-surface);
   --xy-handle-background-color-default: var(--vb-color-primary);
   --xy-handle-border-color-default: var(--vb-color-surface-raised);
+}
+.react-flow.react-flow .react-flow__controls-button svg {
+  fill: currentColor;
+}
+.react-flow.react-flow .react-flow__attribution {
+  color: var(--vb-color-text-muted);
+}
+.react-flow.react-flow .react-flow__attribution a {
+  color: inherit;
 }
 .react-flow__node.selected .fd-node {
   outline: 2px solid var(--vb-color-focus);

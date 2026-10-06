@@ -24,9 +24,41 @@ export class AdminApiError extends Error {
   constructor(
     readonly code: string,
     readonly correlationId?: string,
+    readonly status?: number,
   ) {
     super(code);
   }
+}
+export type ProblemCategory =
+  | 'validation'
+  | 'unauthenticated'
+  | 'forbidden'
+  | 'notFound'
+  | 'conflict'
+  | 'rateLimited'
+  | 'unavailable'
+  | 'unexpectedResponse'
+  | 'generic';
+/** Maps any thrown value to a user-facing category; machine codes are never shown (T-04). */
+export function problemCategory(error: unknown): ProblemCategory {
+  if (error instanceof z.ZodError) return 'unexpectedResponse';
+  if (error instanceof TypeError) return 'unavailable';
+  const code =
+      error instanceof Error && 'code' in error && typeof error.code === 'string' ? error.code : '',
+    status = error instanceof AdminApiError ? error.status : undefined;
+  if (code === 'VERBIS_HTTP_RATE_LIMITED') return 'rateLimited';
+  if (code === 'VERBIS_HTTP_UNAVAILABLE') return 'unavailable';
+  if (code === 'VERBIS_UNAUTHENTICATED') return 'unauthenticated';
+  if (code.endsWith('_NOT_FOUND')) return 'notFound';
+  if (code === 'VERBIS_CONFLICT' || code === 'VERBIS_PRECONDITION_FAILED') return 'conflict';
+  if (code === 'VERBIS_VALIDATION_FAILED' || status === 400 || status === 422) return 'validation';
+  if (status === 401) return 'unauthenticated';
+  if (status === 403 || code.startsWith('VERBIS_AUTHZ_')) return 'forbidden';
+  if (status === 404) return 'notFound';
+  if (status === 409 || status === 412) return 'conflict';
+  if (status === 429) return 'rateLimited';
+  if (status !== undefined && status >= 500) return 'unavailable';
+  return 'generic';
 }
 export async function request<T>(
   path: string,
@@ -61,6 +93,7 @@ export async function request<T>(
     throw new AdminApiError(
       problem.success ? problem.data.code : `HTTP_${response.status}`,
       problem.success ? problem.data.correlationId : undefined,
+      response.status,
     );
   }
   const value: unknown = response.status === 204 ? null : await response.json();
@@ -116,7 +149,7 @@ export function json(value: string): unknown {
 }
 export async function download(path: string, filename: string) {
   const response = await fetch(`/api${path}`, { credentials: 'same-origin', cache: 'no-store' });
-  if (!response.ok) throw new AdminApiError(`HTTP_${response.status}`);
+  if (!response.ok) throw new AdminApiError(`HTTP_${response.status}`, undefined, response.status);
   const url = URL.createObjectURL(await response.blob());
   const link = document.createElement('a');
   link.href = url;

@@ -4,6 +4,7 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}-internal-api
   annotations:
+    nginx.ingress.kubernetes.io/proxy-set-headers: "{{ .Release.Namespace }}/{{ required "internalIngress.proxyHeadersConfigMap is required for shared mTLS edge proof" .Values.internalIngress.proxyHeadersConfigMap }}"
     nginx.ingress.kubernetes.io/auth-tls-secret: "{{ .Release.Namespace }}/{{ .Values.internalIngress.clientCASecret }}"
     nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"

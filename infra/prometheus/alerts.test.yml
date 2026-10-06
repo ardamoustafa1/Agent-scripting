@@ -15,7 +15,23 @@ tests:
         values: '0+1x12'
       - series: 'verbis_audit_verification_failures_total'
         values: '0+1x12'
+      - series: 'verbis_connector_event_deadlettered_total{reason="exhausted",outcome="persisted"}'
+        values: '0+1x12'
+      - series: 'verbis_connector_event_deadlettered_total{reason="exhausted",outcome="lost"}'
+        values: '0+1x12'
     alert_rule_test:
+      - eval_time: 10m
+        alertname: ConnectorEventDeadLettered
+        exp_alerts:
+          - exp_labels: { severity: warning }
+            exp_annotations:
+              { summary: 'CTI events dead-lettered by the connector hub; inspect, then replay' }
+      - eval_time: 10m
+        alertname: ConnectorDeadLetterLost
+        exp_alerts:
+          - exp_labels: { severity: critical }
+            exp_annotations:
+              { summary: 'Dead-lettered CTI events could not be persisted (DLQ unavailable)' }
       - eval_time: 10m
         alertname: HighErrorRate
         exp_alerts:

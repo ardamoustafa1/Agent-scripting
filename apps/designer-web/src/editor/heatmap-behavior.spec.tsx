@@ -1,4 +1,5 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { useState } from 'react';
 import { expect, it } from 'vitest';
 
 import { createAbility } from '@verbis/authz';
@@ -93,4 +94,27 @@ it('hides heatmaps and makes no request when report access is denied', async () 
   const f = await mountDesigner(<Harness />, {}, { ability: createAbility([]) });
   expect(screen.queryByRole('button')).toBeNull();
   expect(f.requests).toHaveLength(0);
+});
+// P-16: a fresh `[]` per render changed the context for every canvas node on each keystroke.
+it('keeps heatmap rows referentially stable across unrelated re-renders', async () => {
+  const seen: unknown[] = [];
+  function Probe() {
+    const heat = useHeatmap(scriptId, 'synthetic-version', 'home'),
+      [tick, setTick] = useState(0);
+    seen.push(heat.rows);
+    return (
+      <button
+        onClick={() => {
+          setTick(tick + 1);
+        }}
+      >
+        tick {tick}
+      </button>
+    );
+  }
+  await mountDesigner(<Probe />);
+  fireEvent.click(await screen.findByRole('button', { name: 'tick 0' }));
+  await screen.findByRole('button', { name: 'tick 1' });
+  expect(seen.length).toBeGreaterThanOrEqual(2);
+  expect(new Set(seen).size).toBe(1);
 });

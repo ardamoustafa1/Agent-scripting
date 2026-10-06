@@ -19,6 +19,7 @@ import { AuthzService } from '../authz/authz.service.js';
 import { AnalyticsRepository } from './analytics.repository.js';
 import { csvReport, xlsxReport } from './export.js';
 import { aggregate } from './metrics.js';
+import { recommendVariant } from './recommendations.js';
 import { nextRun } from './reports.js';
 import { AnalyticsStore } from './storage.js';
 
@@ -54,6 +55,49 @@ export class AnalyticsService {
       row.agent = sensitive.active.find((a) => a.sessionId === row.sessionId)?.agent ?? null;
     return AnalyticsDashboardSchema.parse(result);
   }
+  async recommendations(query: AnalyticsFilter) {
+    const all = await this.storage.read(this.db.current(), this.db.tenantId(), query);
+    const allowed = all.filter((fact) =>
+      this.authz.can(
+        'read',
+        asSubject('Report', {
+          campaignId: fact.campaignId,
+          teamId: fact.teamId,
+          scriptId: fact.scriptId,
+        }),
+      ),
+    );
+    const result = aggregate(allowed),
+      terminal = new Set(['completed', 'abandoned', 'expired']);
+    const sessions = new Map<string, typeof allowed>();
+    for (const fact of allowed) {
+      const rows = sessions.get(fact.sessionId) ?? [];
+      rows.push(fact);
+      sessions.set(fact.sessionId, rows);
+    }
+    const experiments = [...new Set(result.variants.map((row) => row.experimentId))];
+    return {
+      data: experiments.map((experimentId) => {
+        const cohorts = result.variants
+          .filter((row) => row.experimentId === experimentId)
+          .map((row) => ({
+            key: row.key,
+            sessions: row.sessions,
+            completed: row.completed,
+            unresolved: [...sessions.values()].filter(
+              (facts) =>
+                facts.some(
+                  (fact) => fact.experimentId === experimentId && fact.variant === row.key,
+                ) &&
+                (!facts.some((fact) => terminal.has(fact.state)) ||
+                  !facts.some((fact) => fact.type === 'start')),
+            ).length,
+          }));
+        return { experimentId, ...recommendVariant(cohorts) };
+      }),
+    };
+  }
+
   async export(query: AnalyticsFilter, format: 'csv' | 'xlsx') {
     const data = await this.dashboard(query, 'export');
     await this.audit.record(this.db.current(), {

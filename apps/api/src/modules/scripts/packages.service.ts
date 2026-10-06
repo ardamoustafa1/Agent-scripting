@@ -112,13 +112,25 @@ export class PackagesService {
       for (const ref of loaded.document.dataSources) {
         const key = ref.ref.slice('tenant-datasource:'.length),
           source = await tx.dataSource.findFirst({ where: { tenantId, key, deletedAt: null } });
-        if (source?.version !== ref.version)
+        const existing = dependencies.get(key);
+        if (existing && existing.version !== ref.version)
+          throw new DomainError(
+            'VERBIS_PACKAGE_INVALID',
+            `Conflicting integration pins for ${key}; export versions in separate packages`,
+          );
+        const snapshot = source
+          ? await tx.dataSourceVersion.findFirst({
+              where: { tenantId, dataSourceId: source.id, version: ref.version },
+            })
+          : null;
+        const revision = snapshot ?? source;
+        if (!source || revision?.version !== ref.version)
           throw new DomainError(
             'VERBIS_PACKAGE_INVALID',
             `Integration dependency ${key}@${ref.version} is unavailable`,
           );
         this.authz.authorize('read', asSubject('Integration', source));
-        const definition = IntegrationDefinitionSchema.parse(source.definition);
+        const definition = IntegrationDefinitionSchema.parse(revision.definition);
         delete definition.pendingPromotion;
         delete definition.profiles.prod;
         const secretRefs = [
@@ -131,10 +143,10 @@ export class PackagesService {
         ];
         dependencies.set(key, {
           key,
-          version: source.version,
-          protocol: source.protocol,
+          version: revision.version,
+          protocol: revision.protocol,
           definition,
-          policy: IntegrationPolicySchema.parse(source.policy),
+          policy: IntegrationPolicySchema.parse(revision.policy),
           secretRefs,
         });
       }

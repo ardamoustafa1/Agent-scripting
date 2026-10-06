@@ -13,7 +13,9 @@ for (const width of [320, 768, 1440]) {
     page.on('request', (request) => {
       if (new URL(request.url()).pathname.startsWith('/api/v1/')) privileged.push(request.url());
     });
-    await page.route('**/api/auth/session', (route) => route.fulfill({ status: 401, json: {} }));
+    await page.route('**/api/auth/session/status', (route) =>
+      route.fulfill({ json: { authenticated: false } }),
+    );
     await page.goto('/');
     const input = page.getByLabel('İş e-postası', { exact: true });
     await input.fill('user@verbis.test');

@@ -202,10 +202,10 @@ it('writes numeric limits and text input properties through their typed fields',
 it('creates and updates a typed visibility rule through the visual builder', async () => {
   const f = await setup();
   f.tab('rules');
-  fireEvent.click(screen.getAllByRole('button', { name: f.label('rules.visual') })[0]!);
+  fireEvent.click(screen.getAllByRole('button', { name: f.label('rules.addCondition') })[0]!);
   const node = f.store.node('btn-next')!;
   expect(node.visibleWhen).toEqual({ $rule: 'rule-btn-next-visible-when' });
-  fireEvent.click(screen.getByRole('button', { name: f.label('rules.addCondition') }));
+  fireEvent.click(screen.getAllByRole('button', { name: f.label('rules.addCondition') })[0]!);
   expect(
     f.store.getSnapshot().document.rules.find((rule) => rule.id === 'rule-btn-next-visible-when')!
       .when,
@@ -213,4 +213,156 @@ it('creates and updates a typed visibility rule through the visual builder', asy
   expect(
     f.store.getSnapshot().document.rules.filter((rule) => rule.id === 'rule-btn-next-visible-when'),
   ).toHaveLength(1);
+});
+// D-09: select options required hand-written JSON and failed with a message-less red box.
+async function selectSetup() {
+  const store = new EditorStore(minimalScript());
+  store.insert('select', 'home-root');
+  const id = store.getSnapshot().selection[0]!;
+  const f = await mountDesigner(<Inspector store={store} />);
+  const options = within(screen.getByRole('group', { name: f.label('editor.options.title') }));
+  return { ...f, store, id, options };
+}
+it('edits select options as rows with localized labels instead of raw JSON', async () => {
+  const f = await selectSetup();
+  const before = ((f.store.node(f.id)!.props['options'] as unknown[] | undefined) ?? []).length;
+  fireEvent.click(f.options.getByRole('button', { name: f.label('editor.options.add') }));
+  const rows = f.options.getAllByRole('group', { name: /^#\d+$/ });
+  expect(rows).toHaveLength(before + 1);
+  const row = within(rows.at(-1)!);
+  fireEvent.change(row.getByRole('textbox', { name: f.label('editor.options.value') }), {
+    target: { value: 'gold' },
+  });
+  fireEvent.change(row.getByRole('textbox', { name: `${f.label('editor.options.label')} · TR` }), {
+    target: { value: 'Altın' },
+  });
+  fireEvent.change(row.getByRole('textbox', { name: `${f.label('editor.options.label')} · EN` }), {
+    target: { value: 'Gold' },
+  });
+  const doc = f.store.getSnapshot().document;
+  const option = (f.store.node(f.id)!.props['options'] as { value: string; labelKey: string }[]).at(
+    -1,
+  )!;
+  expect(option.value).toBe('gold');
+  expect(doc.i18n.messages['tr']?.[option.labelKey]).toBe('Altın');
+  expect(doc.i18n.messages['en']?.[option.labelKey]).toBe('Gold');
+  fireEvent.click(f.options.getByRole('button', { name: f.label('editor.options.add') }));
+  const last = within(f.options.getAllByRole('group', { name: /^#\d+$/ }).at(-1)!);
+  fireEvent.click(last.getByRole('button', { name: f.label('editor.options.moveUp') }));
+  expect((f.store.node(f.id)!.props['options'] as { value: string }[]).at(-1)?.value).toBe('gold');
+  fireEvent.click(
+    within(f.options.getAllByRole('group', { name: /^#\d+$/ }).at(-1)!).getByRole('button', {
+      name: f.label('editor.options.remove'),
+    }),
+  );
+  expect(
+    (f.store.node(f.id)!.props['options'] as { value: string }[]).some((o) => o.value === 'gold'),
+  ).toBe(false);
+});
+it('rejects a duplicate or empty option value with an explanation and keeps the document', async () => {
+  const f = await selectSetup();
+  fireEvent.click(f.options.getByRole('button', { name: f.label('editor.options.add') }));
+  fireEvent.click(f.options.getByRole('button', { name: f.label('editor.options.add') }));
+  const rows = f.options.getAllByRole('group', { name: /^#\d+$/ });
+  const first = (f.store.node(f.id)!.props['options'] as { value: string }[])[0]!.value;
+  fireEvent.change(
+    within(rows.at(-1)!).getByRole('textbox', { name: f.label('editor.options.value') }),
+    { target: { value: first } },
+  );
+  expect(await f.options.findByText(f.label('editor.options.duplicate'))).toBeTruthy();
+  expect(
+    (f.store.node(f.id)!.props['options'] as { value: string }[]).filter((o) => o.value === first),
+  ).toHaveLength(1);
+});
+it('explains invalid JSON in JSON properties instead of a message-less error box', async () => {
+  const store = new EditorStore(minimalScript());
+  store.insert('heading', 'home-root');
+  const f = await mountDesigner(<Inspector store={store} />);
+  const params = screen.getByRole('textbox', { name: f.i18n.t('components.properties.params') });
+  fireEvent.change(params, { target: { value: '{ not json' } });
+  fireEvent.blur(params);
+  const alert = await screen.findByRole('alert');
+  expect(alert.textContent).toContain(f.i18n.t('designer.editor.jsonInvalid', { example: '{}' }));
+});
+it('names all conditional groups and keeps a single condition source per group', async () => {
+  const f = await setup();
+  f.tab('rules');
+  for (const key of ['visibleWhen', 'enabledWhen', 'requiredWhen']) {
+    expect(screen.getByRole('group', { name: f.label(`editor.${key}`) })).toBeTruthy();
+  }
+  expect(screen.queryByText(f.label('rules.advancedLeaf'))).toBeNull();
+});
+// D-08: the inspector shows only the properties that apply to the selected component type.
+it('shows only text-input relevant fields and hides raw translation keys', async () => {
+  const store = new EditorStore(minimalScript());
+  store.insert('textInput', 'home-root');
+  const f = await mountDesigner(<Inspector store={store} />);
+  const p = (key: string) => f.i18n.t(`components.properties.${key}`);
+  expect(screen.getByLabelText(`${p('labelKey')} · TR`)).toBeTruthy();
+  expect(screen.getByLabelText(`${p('labelKey')} · EN`)).toBeTruthy();
+  for (const irrelevant of [
+    'min',
+    'max',
+    'step',
+    'currency',
+    'mask',
+    'checked',
+    'options',
+    'value',
+  ])
+    expect(screen.queryByLabelText(p(irrelevant)), irrelevant).toBeNull();
+  // The raw i18n key input (same name as the group) is not offered; only TR/EN text is.
+  expect(screen.queryByRole('textbox', { name: p('labelKey') })).toBeNull();
+  const advanced = screen.getByText(f.label('editor.advancedProperties')).closest('details');
+  expect(advanced?.querySelectorAll('input,textarea,select,[role=combobox]')).toHaveLength(1);
+  expect(within(advanced!).getByLabelText(p('maxLength'))).toBeTruthy();
+});
+it('shows numeric bounds for number inputs', async () => {
+  const store = new EditorStore(minimalScript());
+  store.insert('numberInput', 'home-root');
+  const f = await mountDesigner(<Inspector store={store} />);
+  const p = (key: string) => f.i18n.t(`components.properties.${key}`);
+  for (const key of ['min', 'max', 'step']) expect(screen.getByLabelText(p(key))).toBeTruthy();
+  expect(screen.queryByLabelText(p('mask'))).toBeNull();
+});
+// D-09: field-level problems count as validation errors and clear when fixed or unmounted.
+it('counts an invalid JSON property in the validation counter until it is fixed', async () => {
+  const store = new EditorStore(minimalScript());
+  store.insert('heading', 'home-root');
+  const f = await mountDesigner(<Inspector store={store} />);
+  const params = screen.getByRole('textbox', { name: f.i18n.t('components.properties.params') });
+  expect(store.getSnapshot().fieldProblems).toBe(0);
+  fireEvent.change(params, { target: { value: '{ not json' } });
+  fireEvent.blur(params);
+  expect(store.getSnapshot().fieldProblems).toBe(1);
+  fireEvent.change(params, { target: { value: '{}' } });
+  fireEvent.blur(params);
+  expect(store.getSnapshot().fieldProblems).toBe(0);
+});
+it('counts a duplicate option value and removes the removed option label messages', async () => {
+  const f = await selectSetup();
+  fireEvent.click(f.options.getByRole('button', { name: f.label('editor.options.add') }));
+  fireEvent.click(f.options.getByRole('button', { name: f.label('editor.options.add') }));
+  const rows = f.options.getAllByRole('group', { name: /^#\d+$/ });
+  const list = () => f.store.node(f.id)!.props['options'] as { value: string; labelKey: string }[];
+  const first = list()[0]!.value;
+  fireEvent.change(
+    within(rows.at(-1)!).getByRole('textbox', { name: f.label('editor.options.value') }),
+    { target: { value: first } },
+  );
+  expect(f.store.getSnapshot().fieldProblems).toBe(1);
+  const removed = list()[1]!.labelKey;
+  fireEvent.change(
+    within(rows.at(-1)!).getAllByRole('textbox', {
+      name: new RegExp(f.label('editor.options.label')),
+    })[0]!,
+    { target: { value: 'Temp' } },
+  );
+  expect(f.store.getSnapshot().document.i18n.messages['tr']?.[removed]).toBe('Temp');
+  fireEvent.click(
+    within(rows.at(-1)!).getByRole('button', { name: f.label('editor.options.remove') }),
+  );
+  expect(f.store.getSnapshot().fieldProblems).toBe(0);
+  expect(f.store.getSnapshot().document.i18n.messages['tr']?.[removed]).toBeUndefined();
+  expect(f.store.getSnapshot().document.i18n.messages['en']?.[removed]).toBeUndefined();
 });

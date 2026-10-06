@@ -25,6 +25,16 @@ groups:
         for: 1m
         labels: { severity: critical }
         annotations: { summary: 'Write-back exhausted retries; inspect before replay' }
+      - alert: ConnectorEventDeadLettered
+        expr: sum(increase(verbis_connector_event_deadlettered_total[5m])) > 0
+        labels: { severity: warning }
+        annotations:
+          { summary: 'CTI events dead-lettered by the connector hub; inspect, then replay' }
+      - alert: ConnectorDeadLetterLost
+        expr: sum(increase(verbis_connector_event_deadlettered_total{outcome="lost"}[5m])) > 0
+        labels: { severity: critical }
+        annotations:
+          { summary: 'Dead-lettered CTI events could not be persisted (DLQ unavailable)' }
       - alert: LaunchDenialAnomaly
         expr: sum(increase(verbis_launch_anomalies_total[5m])) > 0
         labels: { severity: warning }

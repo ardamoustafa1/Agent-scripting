@@ -57,11 +57,12 @@ export default function IntegrationList() {
       session.session.id,
       'integrations',
       protocol,
+      search.trim(),
     ],
     initialPageParam: '',
     queryFn: ({ signal, pageParam }) =>
       request(
-        `/v1/data-sources?limit=50${protocol === 'all' ? '' : `&protocol=${protocol}`}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
+        `/v1/data-sources?limit=50${protocol === 'all' ? '' : `&protocol=${protocol}`}${search.trim() ? `&q=${encodeURIComponent(search.trim())}` : ''}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
         z.object({
           data: z.array(IntegrationRecordSchema),
           page: z.object({ nextCursor: z.string().nullable() }),
@@ -73,13 +74,14 @@ export default function IntegrationList() {
   if (query.isError)
     return (
       <Failure
+        error={query.error}
         retry={() => {
           void query.refetch();
         }}
       />
     );
   if (!query.data) return <Loading />;
-  const rows = query.data.pages.flatMap((p) => p.data).filter((r) => r.key.includes(search));
+  const rows = query.data.pages.flatMap((p) => p.data);
   return (
     <section className="ig-stack">
       <div className="dw-page-heading">
@@ -104,7 +106,7 @@ export default function IntegrationList() {
         <Select
           label={t('designer.integrations.protocol')}
           value={protocol}
-          options={['all', 'rest', 'soap', 'graphql'].map((value) => ({
+          options={['all', 'rest', 'soap', 'graphql', 'sql'].map((value) => ({
             value,
             label: value === 'all' ? t('designer.integrations.all') : value.toUpperCase(),
           }))}

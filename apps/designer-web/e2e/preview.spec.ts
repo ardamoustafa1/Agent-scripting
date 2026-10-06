@@ -138,7 +138,7 @@ for (const theme of ['light', 'dark', 'high-contrast'])
     // The frame CSP forbids scripts. Audit its rendered DOM separately so Axe
     // can run its own timers without changing the production security policy.
     const frame = page.locator('iframe[title="Agent runtime device preview"]');
-    await expect(frame).toHaveAttribute('sandbox', 'allow-same-origin allow-scripts');
+    await expect(frame).toHaveAttribute('sandbox', 'allow-same-origin');
     await expect(
       frame.contentFrame().locator('meta[http-equiv="Content-Security-Policy"]'),
     ).toHaveAttribute('content', /script-src 'none'/);

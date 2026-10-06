@@ -8,7 +8,11 @@ import io.verbis.avaya.sidecar.aacc.AaccCtiSource;
 import io.verbis.avaya.sidecar.aacc.AaccMapper;
 import io.verbis.avaya.sidecar.aacc.CcmmClient;
 import io.verbis.avaya.sidecar.aacc.CctNotificationController;
+import io.verbis.avaya.sidecar.aacc.CctSubscriptionManager;
+import io.verbis.avaya.sidecar.aacc.HttpSoapTransport;
+import io.verbis.avaya.sidecar.aacc.NotifyTokenSigner;
 import io.verbis.avaya.sidecar.config.SidecarProperties;
+import io.verbis.avaya.sidecar.config.SourcePolicy;
 import io.verbis.avaya.sidecar.cti.CtiSource;
 import io.verbis.avaya.sidecar.cti.ParticipantRegistry;
 import io.verbis.avaya.sidecar.cti.replay.ReplayCtiSource;
@@ -36,7 +40,10 @@ public class SidecarRunner implements ApplicationRunner, HealthIndicator, CctNot
   private Connection connection;
   private CtiSource source;
   private NatsBridge bridge;
-  private String notifyToken;
+  private NotifyTokenSigner signer;
+  private CctSubscriptionManager subscriptions;
+  private java.util.concurrent.ScheduledExecutorService renewals;
+  private String sourceName;
 
   public SidecarRunner(SidecarProperties props, ObjectMapper mapper) {
     this.props = props;
@@ -45,18 +52,34 @@ public class SidecarRunner implements ApplicationRunner, HealthIndicator, CctNot
 
   @Override
   public void run(ApplicationArguments args) throws Exception {
+    sourceName = SourcePolicy.resolve(props.source(), props.allowReplay());
     var options = Options.builder().servers(props.nats().servers().toArray(String[]::new)).connectionName("verbis-avaya-sidecar-" + props.connectorId()).maxReconnects(-1).reconnectWait(Duration.ofSeconds(2));
     if (props.nats().credsFile() != null && !props.nats().credsFile().isBlank()) options.authHandler(Nats.credentials(props.nats().credsFile()));
     connection = Nats.connect(options.build());
     if (props.nats().createStream()) NatsBridge.ensureStream(connection, props.nats().stream());
-    String identity = "aacc".equals(props.source()) ? "handle" : "loginId";
+    String identity = "aacc".equals(sourceName) ? "handle" : "loginId";
     var registry = new ParticipantRegistry(System.getenv().getOrDefault("SIDECAR_AGENT_IDENTITY", identity));
     OutboundClient outbound = outbound();
     var detector = new OutboundDetector(props.outbound() == null ? "none" : props.outbound().system());
-    source = switch (props.source()) {
+    source = switch (sourceName) {
       case "aacc" -> {
         var aacc = props.aacc();
-        notifyToken = Files.readString(Path.of(aacc.notifyTokenFile())).trim();
+        // Fail closed: no signing secret / CCT / callback URL => the sidecar refuses to start.
+        signer = new NotifyTokenSigner(Files.readString(Path.of(aacc.notifySecretFile())).trim().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        renewals = java.util.concurrent.Executors.newSingleThreadScheduledExecutor(r -> {
+          var t = new Thread(r, "cct-subscription");
+          t.setDaemon(true);
+          return t;
+        });
+        subscriptions = new CctSubscriptionManager(
+            new HttpSoapTransport(aacc.cctUser(), aacc.cctPasswordFile() == null || aacc.cctPasswordFile().isBlank() ? null : Files.readString(Path.of(aacc.cctPasswordFile())).trim()),
+            java.net.URI.create(aacc.cctUrl()), java.net.URI.create(aacc.callbackBaseUrl()), signer,
+            java.time.Duration.ofSeconds(aacc.subscriptionTtlSeconds() == null ? 3600 : aacc.subscriptionTtlSeconds()),
+            (period, task) -> {
+              var handle = renewals.scheduleWithFixedDelay(task, period.toSeconds(), period.toSeconds(), java.util.concurrent.TimeUnit.SECONDS);
+              return () -> handle.cancel(false);
+            },
+            () -> java.util.UUID.randomUUID().toString());
         yield new AaccCtiSource(new AaccMapper(aacc.intrinsicsAllowList() == null ? List.of() : aacc.intrinsicsAllowList()),
             new CcmmClient(aacc.ccmmUrl(), aacc.ccmmUser(), Files.readString(Path.of(aacc.ccmmPasswordFile())).trim()), registry, detector, outbound);
       }
@@ -65,12 +88,14 @@ public class SidecarRunner implements ApplicationRunner, HealthIndicator, CctNot
         Class<?> type = Class.forName("io.verbis.avaya.sidecar.aes.AesJtapiSource");
         yield (CtiSource) type.getConstructor(SidecarProperties.Aes.class, ParticipantRegistry.class, OutboundDetector.class, OutboundClient.class).newInstance(props.aes(), registry, detector, outbound);
       }
-      default -> new ReplayCtiSource(
+      case SourcePolicy.REPLAY -> new ReplayCtiSource(
           props.replay().file() == null || props.replay().file().isBlank() ? List.of() : ReplayCtiSource.read(new FileInputStream(props.replay().file()), mapper), registry, outbound);
+      default -> throw new IllegalStateException("unsupported source");
     };
     bridge = new NatsBridge(connection, mapper, source, props.connectorId());
     bridge.start();
     source.start(bridge::publish);
+    if (subscriptions != null) subscriptions.start();
   }
 
   private OutboundClient outbound() throws Exception {
@@ -89,8 +114,8 @@ public class SidecarRunner implements ApplicationRunner, HealthIndicator, CctNot
   }
 
   @Override
-  public String token() {
-    return notifyToken == null ? "" : notifyToken;
+  public boolean authentic(String token) {
+    return signer != null && subscriptions != null && signer.verify(token).filter(subscriptions::isActive).isPresent();
   }
 
   @Override
@@ -101,12 +126,14 @@ public class SidecarRunner implements ApplicationRunner, HealthIndicator, CctNot
   @Override
   public Health health() {
     boolean nats = connection != null && connection.getStatus() == Connection.Status.CONNECTED;
-    boolean cti = source != null && source.connected();
-    return (nats && cti ? Health.up() : Health.down()).withDetail("nats", nats).withDetail("cti", cti).build();
+    boolean cti = source != null && source.connected() && (subscriptions == null || subscriptions.active());
+    return (nats && cti ? Health.up() : Health.down()).withDetail("nats", nats).withDetail("cti", cti).withDetail("source", sourceName == null ? "unset" : sourceName).build();
   }
 
   @Override
   public void close() throws Exception {
+    if (subscriptions != null) subscriptions.close();
+    if (renewals != null) renewals.shutdownNow();
     if (source != null) source.close();
     if (bridge != null) bridge.close();
     if (connection != null) connection.close();

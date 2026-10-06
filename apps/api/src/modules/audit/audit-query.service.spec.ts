@@ -6,6 +6,7 @@ import { requestContext, systemContext } from '../../common/context/request-cont
 
 import { AuditQueryService } from './audit-query.service.js';
 import { checkpointPayload } from './checkpoints.js';
+import { verifyCertificate } from './core/audit-certificate.js';
 import { GENESIS_HASH, recomputeHash } from './core/audit-event.js';
 import { CheckpointSigner } from './core/checkpoint-signer.js';
 
@@ -46,12 +47,11 @@ function fixture(options: { signed?: boolean; empty?: boolean; maxRows?: number 
     rows.push({ ...row, hash: recomputeHash(row) });
   }
   const checkpoints: CheckpointRow[] = [];
-  const signer = CheckpointSigner.fromJwk(
-    JSON.stringify({
-      ...generateKeyPairSync('ed25519').privateKey.export({ format: 'jwk' }),
-      kid: 'synthetic',
-    }),
-  );
+  const privateJwk = JSON.stringify({
+    ...generateKeyPairSync('ed25519').privateKey.export({ format: 'jwk' }),
+    kid: 'synthetic',
+  });
+  const signer = CheckpointSigner.fromJwk(privateJwk);
   const tx = {
     $queryRaw: vi
       .fn()
@@ -80,6 +80,7 @@ function fixture(options: { signed?: boolean; empty?: boolean; maxRows?: number 
     repository,
     audit as unknown as AuditService,
     {
+      AUDIT_CHECKPOINT_SIGNING_JWK: options.signed ? privateJwk : undefined,
       AUDIT_EXPORT_MAX_ROWS: options.maxRows ?? 100,
       AUDIT_VERIFY_MAX_ROWS: options.maxRows ?? 100,
     } as ApiEnv,
@@ -100,7 +101,7 @@ function fixture(options: { signed?: boolean; empty?: boolean; maxRows?: number 
     };
     return { ...payload, keyId: signer.keyId, signature: signer.sign(checkpointPayload(payload)) };
   };
-  return { service, rows, repository, audit, checkpoints, checkpoint, run };
+  return { service, rows, repository, audit, checkpoints, checkpoint, run, signer };
 }
 async function collect(stream: AsyncGenerator<string>) {
   let text = '';
@@ -211,4 +212,25 @@ describe('audit query and cryptographic verification', () => {
     f.repository.range.mockResolvedValue([]);
     expect((await f.run(() => f.service.verify({}))).valid).toBe(false);
   });
+});
+
+it('issues an audited, tenant-bound certificate and rejects tampering or incomplete ranges', async () => {
+  const f = fixture({ signed: true });
+  f.checkpoints.push(f.checkpoint(f.rows[2]!));
+  const certificate = await f.run(() => f.service.certificate({}));
+  expect(verifyCertificate(certificate, f.signer.jwks())).toBe(true);
+  expect(
+    verifyCertificate(
+      { ...certificate, body: { ...certificate.body, tenantId: randomUUID() } },
+      f.signer.jwks(),
+    ),
+  ).toBe(false);
+  expect(f.audit.record).toHaveBeenCalledWith(
+    expect.anything(),
+    expect.objectContaining({ action: 'audit.certificate.created' }),
+  );
+  const unsigned = fixture();
+  await expect(unsigned.run(() => unsigned.service.certificate({}))).rejects.toThrow('signing');
+  const empty = fixture({ signed: true, empty: true });
+  await expect(empty.run(() => empty.service.certificate({}))).rejects.toThrow('verified');
 });

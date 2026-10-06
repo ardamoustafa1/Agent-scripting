@@ -190,7 +190,7 @@ export function configureDevEnvironment(root) {
   setDefault('BREAK_GLASS_ALLOWED_ORIGINS', local(env.ADMIN_WEB_PORT));
   setDefault('HUB_TRUSTED_JWKS', env.INTERNAL_JWT_JWKS);
   setDefault('INTEGRATION_RUNTIME_JWKS', env.INTERNAL_JWT_JWKS);
-  for (const key of ['INTEGRATION_MASTER_KEY', 'ANALYTICS_PSEUDONYM_KEY'])
+  for (const key of ['INTEGRATION_MASTER_KEY', 'ANALYTICS_PSEUDONYM_KEY', 'MTLS_PROXY_SECRET'])
     if (!env[key]) updates[key] = randomBytes(32).toString('base64');
   setDefault('ANALYTICS_ENABLED', 'true');
   setDefault('SIMULATOR_ENABLED', 'true');

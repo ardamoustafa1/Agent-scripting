@@ -11,11 +11,14 @@ import {
 import { IntegrationsController } from './integrations.controller.js';
 import { IntegrationsRepository } from './integrations.repository.js';
 import { IntegrationsService } from './integrations.service.js';
+import { PrivateEgressController } from './private-egress.controller.js';
+import { PrivateEgressService } from './private-egress.service.js';
 
 @Module({
   imports: [AuditModule],
-  controllers: [IntegrationsController],
+  controllers: [IntegrationsController, PrivateEgressController],
   providers: [
+    PrivateEgressService,
     IntegrationsService,
     IntegrationsRepository,
     IntegrationEngineService,

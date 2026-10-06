@@ -1,13 +1,26 @@
+import { createHash } from 'node:crypto';
+
 import { Logger } from '@nestjs/common';
 import { context, type Context } from '@opentelemetry/api';
 
 import { instruments, inSpan } from '@verbis/observability';
-import type { ChannelType, InteractionEvent } from '@verbis/sdk-connector';
+import { ConnectorError, type ChannelType, type InteractionEvent } from '@verbis/sdk-connector';
 
 import { AgentWorkload } from './agent-workload.js';
+import {
+  MemoryDeadLetterStore,
+  type DeadLetterReason,
+  type DeadLetterStore,
+} from './dead-letter-store.js';
 import { DeliveryQueue, type QueueStats } from './delivery-queue.js';
 
 import type { VerbisApi } from '../api/verbis-api.js';
+
+export interface DeadLetterStats {
+  readonly durable: boolean;
+  readonly persisted: number;
+  readonly persistFailures: number;
+}
 
 export interface PipelineItem {
   readonly slug: string;
@@ -33,11 +46,25 @@ export class EventPipeline {
   readonly #launched = new Map<string, { agents: Set<string>; expiresAt: number }>();
   #nextSweep = 0;
   readonly workload = new AgentWorkload();
+  readonly #deadLetters: DeadLetterStore;
+  readonly #now: () => Date;
+  #persisted = 0;
+  #persistFailures = 0;
+  readonly #pendingWrites = new Set<Promise<void>>();
 
   constructor(
     private readonly api: VerbisApi,
-    options: { capacity: number; concurrency: number; sleep?: (ms: number) => Promise<void> },
+    options: {
+      capacity: number;
+      concurrency: number;
+      sleep?: (ms: number) => Promise<void>;
+      /** Durable store in production (JetStream); defaults to a non-durable in-memory store. */
+      deadLetters?: DeadLetterStore;
+      now?: () => Date;
+    },
   ) {
+    this.#deadLetters = options.deadLetters ?? new MemoryDeadLetterStore();
+    this.#now = options.now ?? (() => new Date());
     instruments.connectorQueue.addCallback(this.sampleDepth);
     this.#queue = new DeliveryQueue<PipelineItem>({
       capacity: options.capacity,
@@ -45,11 +72,8 @@ export class EventPipeline {
       key: (item) => `${item.connectorId}:${item.event.platformInteractionId}`,
       handle: (item) =>
         context.with(this.#contexts.get(item) ?? context.active(), () => this.#deliver(item)),
-      onDeadLetter: (item, error) => {
-        // Event ids only — payloads may contain PII.
-        this.#logger.error(
-          `Dead-lettered ${item.event.type} event ${item.event.eventId} (connector ${item.connectorId}): ${error instanceof Error ? error.name : 'error'}`,
-        );
+      onDeadLetter: (item, error, reason) => {
+        this.#deadLetter(item, reason, error);
       },
       ...(options.sleep === undefined ? {} : { sleep: options.sleep }),
     });
@@ -65,6 +89,14 @@ export class EventPipeline {
     return this.#queue.stats();
   }
 
+  deadLetterStats(): DeadLetterStats {
+    return {
+      durable: this.#deadLetters.durable,
+      persisted: this.#persisted,
+      persistFailures: this.#persistFailures,
+    };
+  }
+
   drain(): Promise<void> {
     return this.#queue.drain();
   }
@@ -72,6 +104,52 @@ export class EventPipeline {
   close(): void {
     instruments.connectorQueue.removeCallback(this.sampleDepth);
     this.#queue.close();
+  }
+
+  /** Re-offers a tenant's dead letters (bounded by `limit` and by queue backpressure). */
+  replayDeadLetters(tenantId: string, limit: number): Promise<number> {
+    return this.#deadLetters.replay(tenantId, limit, (item) => {
+      this.offer(item);
+    });
+  }
+
+  /**
+   * Shutdown after `close` + bounded `drain`: events that never started delivery are written to
+   * the dead-letter store instead of being lost with the process, then the store is closed.
+   */
+  async persistPendingAndClose(): Promise<void> {
+    for (const item of this.#queue.takePending()) this.#deadLetter(item, 'shutdown', undefined);
+    await Promise.allSettled([...this.#pendingWrites]);
+    await this.#deadLetters.close();
+  }
+
+  #deadLetter(item: PipelineItem, reason: DeadLetterReason, error: unknown): void {
+    const errorName =
+      error instanceof ConnectorError ? error.code : error instanceof Error ? error.name : 'none';
+    const deadLetteredAt = this.#now().toISOString();
+    const id = createHash('sha256')
+      .update(`${item.connectorId}\n${item.event.eventId}\n${deadLetteredAt}\n${reason}`)
+      .digest('hex');
+    // Ids only in logs and metrics — payloads may contain PII.
+    const summary = `${item.event.type} event ${item.event.eventId} (connector ${item.connectorId}, ${reason}: ${errorName})`;
+    const write = this.#deadLetters
+      .put({ id, reason, error: errorName.slice(0, 128), deadLetteredAt, item })
+      .then(
+        () => {
+          this.#persisted += 1;
+          instruments.connectorDeadLetters.add(1, { reason, outcome: 'persisted' });
+          this.#logger.error(`Dead-lettered ${summary}`);
+        },
+        (persistError: unknown) => {
+          this.#persistFailures += 1;
+          instruments.connectorDeadLetters.add(1, { reason, outcome: 'lost' });
+          this.#logger.error(
+            `Dead letter NOT persisted for ${summary}: ${persistError instanceof Error ? persistError.name : 'error'}`,
+          );
+        },
+      )
+      .finally(() => this.#pendingWrites.delete(write));
+    this.#pendingWrites.add(write);
   }
 
   async #deliver(item: PipelineItem): Promise<void> {

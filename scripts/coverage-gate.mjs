@@ -20,22 +20,38 @@ export const criticalApiScopes = [
   'modules/integrations/engine/transport.ts',
   'modules/identity/egress/idp-fetch.ts',
 ];
+export const criticalBranchScopes = [
+  'modules/launch/',
+  'modules/authz/',
+  'modules/audit/core/',
+  'modules/audit/audit.repository.ts',
+  'modules/integrations/engine/transport.ts',
+  'modules/integrations/engine/vault.ts',
+  'modules/integrations/engine/vault-transit-client.ts',
+  'modules/identity/egress/idp-fetch.ts',
+];
 export function checkCriticalApiCoverage(summary) {
-  return criticalApiScopes.flatMap((scope) => {
+  const check = (scope, dimension, floor) => {
     const rows = Object.entries(summary).filter(([file]) =>
       file.replaceAll('\\', '/').includes(`/src/${scope}`),
     );
     const valid =
       rows.length > 0 &&
       rows.every(
-        ([, row]) => Number.isFinite(row.lines?.total) && Number.isFinite(row.lines?.covered),
+        ([, row]) =>
+          Number.isFinite(row[dimension]?.total) && Number.isFinite(row[dimension]?.covered),
       );
-    const total = rows.reduce((sum, [, row]) => sum + (row.lines?.total ?? 0), 0);
-    const covered = rows.reduce((sum, [, row]) => sum + (row.lines?.covered ?? 0), 0);
-    const percent = total > 0 ? (100 * covered) / total : 0;
-    if (!valid || total <= 0) return [`api/${scope}: missing security-critical line coverage`];
-    return percent < 95 ? [`api/${scope}: lines ${percent.toFixed(2)}% < 95%`] : [];
-  });
+    const total = rows.reduce((sum, [, row]) => sum + (row[dimension]?.total ?? 0), 0);
+    const covered = rows.reduce((sum, [, row]) => sum + (row[dimension]?.covered ?? 0), 0);
+    if (!valid || total <= 0)
+      return [`api/${scope}: missing security-critical ${dimension} coverage`];
+    const percent = (100 * covered) / total;
+    return percent < floor ? [`api/${scope}: ${dimension} ${percent.toFixed(2)}% < ${floor}%`] : [];
+  };
+  return [
+    ...criticalApiScopes.flatMap((scope) => check(scope, 'lines', 95)),
+    ...criticalBranchScopes.flatMap((scope) => check(scope, 'branches', 90)),
+  ];
 }
 export async function checkCoverage(directory = root) {
   const errors = [],

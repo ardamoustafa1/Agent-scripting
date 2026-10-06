@@ -30,6 +30,36 @@ export class AnalyticsController {
   dashboard(@ZQuery(AnalyticsFilterSchema) query: AnalyticsFilter) {
     return this.analytics.dashboard(query);
   }
+  @Get('recommendations')
+  @Can('read', 'Report')
+  @ApiOperation({
+    summary:
+      'Scoped A/B outcome recommendations; insufficient or incomplete cohorts yield no winner',
+  })
+  @ApiResponse(
+    200,
+    'Recommendations with sample and evidence reasons',
+    z.object({
+      data: z.array(
+        z.object({
+          experimentId: z.string(),
+          recommended: z.string().nullable(),
+          reason: z.enum([
+            'ok',
+            'needs-two-cohorts',
+            'insufficient-sample',
+            'data-loss',
+            'not-significant',
+          ]),
+          difference: z.number().nullable(),
+          pValue: z.number().nullable(),
+        }),
+      ),
+    }),
+  )
+  recommendations(@ZQuery(AnalyticsFilterSchema) query: AnalyticsFilter) {
+    return this.analytics.recommendations(query);
+  }
   @Get('export/:format')
   @Can('export', 'Report')
   @Header('Cache-Control', 'no-store')

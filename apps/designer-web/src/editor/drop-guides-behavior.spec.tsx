@@ -94,3 +94,24 @@ it('marks a self-descendant move invalid and cancels the drag', async () => {
   });
   expect(f.store.getSnapshot().history).toBe(0);
 });
+// D-04: while dragging over a sibling the insertion line shows where the component will land.
+it('shows an insertion line at the sibling boundary and hides it with the other guides', async () => {
+  const f = await setup();
+  const line = document.querySelector<HTMLDivElement>('.ed-insertion-line')!;
+  fireEvent.mouseDown(screen.getByRole('button', { name: 'Synthetic drag' }), {
+    button: 0,
+    clientX: 0,
+    clientY: 0,
+  });
+  // Lower half of the button child (20..60) → insert after it, at its bottom edge.
+  fireEvent.mouseMove(document, { clientX: 25, clientY: 50 });
+  await waitFor(() => {
+    expect(line.hidden).toBe(false);
+  });
+  expect(line.dataset['axis']).toBe('horizontal');
+  expect(line.style.top).toBe('60px');
+  expect(line.style.width).toBe('100px');
+  expect(f.store.getSnapshot().history).toBe(0);
+  fireEvent.mouseUp(document);
+  expect(line.hidden).toBe(true);
+});

@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
 import { mountAdmin, syntheticId } from './fixtures.spec.helpers.js';
-import { Branding, DataManagement, Security, Tenants } from './tenant-pages.js';
+import { Branding, DataManagement, Security, Tenants, Locations } from './tenant-pages.js';
 
 const tenant = { id: syntheticId, name: 'Synthetic tenant', version: 3, settings: {} };
 async function showRows(tableName: string) {
@@ -313,4 +313,38 @@ it('opens and closes an interactive preview of unsaved branding without writing 
   expect(screen.getByLabelText<HTMLInputElement>(f.label('name')).value).toBe(
     'Unsaved synthetic brand',
   );
+});
+
+it('creates a named location and sends optimistic concurrency when renaming it', async () => {
+  const row = { id: syntheticId, code: 'istanbul', name: 'Istanbul', version: 3 };
+  const f = await mountAdmin(<Locations />, {
+    '/v1/locations?limit=50': { data: [row], page: { nextCursor: null } },
+  });
+  const keyLabel = f.i18n.t('admin.locations.code'),
+    nameLabel = f.i18n.t('admin.locations.name');
+  fireEvent.change(screen.getByLabelText(keyLabel), { target: { value: 'ankara' } });
+  fireEvent.change(screen.getByLabelText(nameLabel), { target: { value: 'Ankara' } });
+  fireEvent.submit(screen.getByLabelText(keyLabel).closest('form')!);
+  await waitFor(() => {
+    expect(f.requests.some((r) => r.method === 'POST' && r.path === '/v1/locations')).toBe(true);
+  });
+  expect(f.requests.find((r) => r.method === 'POST')?.body).toEqual({
+    code: 'ankara',
+    name: 'Ankara',
+  });
+});
+it('onboarding sends only the chosen name with CSRF and exposes no publication control', async () => {
+  const f = await mountAdmin(<Security />, { '/v1/tenant': tenant });
+  const name = await screen.findByLabelText(f.i18n.t('admin.onboarding.name'));
+  fireEvent.change(name, { target: { value: 'Synthetic starter' } });
+  fireEvent.submit(name.closest('form')!);
+  await waitFor(() => {
+    expect(f.requests.some((r) => r.path === '/v1/tenant/onboarding' && r.method === 'POST')).toBe(
+      true,
+    );
+  });
+  expect(f.requests.find((r) => r.path === '/v1/tenant/onboarding')).toMatchObject({
+    body: { name: 'Synthetic starter' },
+    init: { headers: { 'x-csrf-token': 'synthetic-csrf' } },
+  });
 });

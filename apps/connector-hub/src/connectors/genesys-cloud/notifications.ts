@@ -25,7 +25,7 @@ export interface Scheduler {
   clearTimeout(handle: unknown): void;
 }
 
-const ChannelSchema = z.object({
+export const ChannelSchema = z.object({
   id: z.string().min(1).max(128),
   connectUri: z.string().max(2_048),
   expires: z.string().optional(),

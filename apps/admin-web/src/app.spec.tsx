@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { serializeRules } from '@verbis/authz';
@@ -23,10 +23,8 @@ async function mount(authenticated = true, roles = ['tenant_admin']) {
   vi.stubGlobal(
     'fetch',
     vi.fn((input: string) => {
-      if (input.endsWith('/auth/session'))
-        return new Response(JSON.stringify(authenticated ? session : {}), {
-          status: authenticated ? 200 : 401,
-        });
+      if (input.endsWith('/auth/session/status'))
+        return new Response(JSON.stringify(authenticated ? session : { authenticated: false }));
       if (input.endsWith('/me/permissions'))
         return new Response(
           JSON.stringify({
@@ -73,6 +71,14 @@ async function mount(authenticated = true, roles = ['tenant_admin']) {
   );
   return i18n;
 }
+function cleanupAndRender(i18n: Awaited<ReturnType<typeof createI18n>>) {
+  cleanup();
+  render(
+    <AppProviders i18n={i18n}>
+      <App />
+    </AppProviders>,
+  );
+}
 afterEach(() => {
   vi.unstubAllGlobals();
   window.location.hash = '';
@@ -95,6 +101,47 @@ describe('admin workspace', () => {
     await screen.findByRole('navigation');
     expect(screen.queryByRole('link', { name: 'Tenant yönetimi' })).toBeNull();
     expect(await screen.findByRole('link', { name: 'Kimlik ve SSO' })).toBeTruthy();
+  });
+  // U-04: every page showed the same generic subtitle.
+  it('describes each admin page with its own subtitle', async () => {
+    const i18n = await mount(true, ['super_admin']);
+    const pages = ['analytics', 'tenants', 'identity', 'users', 'connectors', 'secrets', 'ai'];
+    const all = [...pages, 'audit', 'security', 'data', 'branding', 'simulator', 'systemHealth'];
+    expect(new Set(all.map((page) => i18n.t(`adminWorkspace.intros.${page}`))).size).toBe(
+      all.length,
+    );
+    await screen.findByRole('heading', { level: 1, name: i18n.t('adminWorkspace.systemHealth') });
+    expect(screen.getByText(i18n.t('adminWorkspace.intros.systemHealth'))).toBeTruthy();
+    fireEvent.click(screen.getByRole('link', { name: i18n.t('adminWorkspace.branding') }));
+    window.location.hash = 'branding';
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    expect(await screen.findByText(i18n.t('adminWorkspace.intros.branding'))).toBeTruthy();
+    expect(screen.queryByText(i18n.t('adminWorkspace.intro'))).toBeNull();
+  });
+  // P-19: a rate-limited session check looked like a signed-out user.
+  it('keeps the signed-in user out of the login screen when the session check is rate limited', async () => {
+    const i18n = await mount();
+    vi.mocked(fetch).mockImplementation((input) =>
+      Promise.resolve(
+        (typeof input === 'string'
+          ? input
+          : input instanceof URL
+            ? input.href
+            : input.url
+        ).endsWith('/auth/session/status')
+          ? new Response(JSON.stringify({ code: 'VERBIS_HTTP_RATE_LIMITED' }), {
+              status: 429,
+              headers: { 'retry-after': '60' },
+            })
+          : new Response('{}'),
+      ),
+    );
+    cleanupAndRender(i18n);
+    expect((await screen.findByRole('alert')).textContent).toContain(
+      i18n.t('adminWorkspace.errors.rateLimited'),
+    );
+    expect(screen.getByRole('button', { name: i18n.t('adminWorkspace.retry') })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /SSO/i })).toBeNull();
   });
   it('supports locale and theme preferences', async () => {
     await mount(true, ['super_admin']);

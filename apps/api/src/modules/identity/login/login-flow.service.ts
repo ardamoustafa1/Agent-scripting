@@ -237,7 +237,14 @@ export class LoginFlowService {
       ? verifiedRaw === true || verifiedRaw === 'true'
       : verifiedRaw === true;
     const email = first(names.email);
-    const displayName = first(names.displayName);
+    const named = (path: string | undefined) => {
+      const value = first(path)?.trim();
+      return value === undefined || value === '' ? undefined : value;
+    };
+    // OIDC Core standard claims back up a missing/blank mapped name (M-Z6).
+    const given = [named('given_name'), named('family_name')].filter(Boolean).join(' ');
+    const displayName =
+      named(names.displayName) ?? (given === '' ? undefined : given) ?? named('preferred_username');
     const locale = first(names.locale);
     return this.finish(transaction, idp, browser, {
       identity: {

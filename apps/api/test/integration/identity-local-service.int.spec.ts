@@ -53,6 +53,7 @@ beforeAll(async () => {
         kid: 'issuer-1',
         alg: 'EdDSA',
       }),
+      MTLS_PROXY_SECRET: 'integration-edge-secret-32-characters',
       MTLS_CLIENT_CERT_HEADER: 'x-client-cert',
       BREAK_GLASS_MAX_ATTEMPTS: '3',
     }),
@@ -297,7 +298,10 @@ describe('service clients (OAuth 2.0 client credentials, mTLS)', () => {
       clientSecret: string | null;
     }>();
     expect(clientSecret).toBeNull();
-    const header = (pem: string) => ({ 'x-client-cert': encodeURIComponent(pem) });
+    const header = (pem: string) => ({
+      'x-verbis-mtls-proxy-secret': 'integration-edge-secret-32-characters',
+      'x-client-cert': encodeURIComponent(pem),
+    });
 
     expect(
       (
@@ -307,6 +311,11 @@ describe('service clients (OAuth 2.0 client credentials, mTLS)', () => {
         )
       ).statusCode,
     ).toBe(401);
+    const spoofed = await token(
+      { grant_type: 'client_credentials', client_id: clientId },
+      { 'x-client-cert': encodeURIComponent(cert.certificate) },
+    );
+    expect(spoofed.statusCode).toBe(401);
     const res = await token(
       { grant_type: 'client_credentials', client_id: clientId },
       header(cert.certificate),

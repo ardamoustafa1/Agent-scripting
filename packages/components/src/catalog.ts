@@ -23,11 +23,14 @@ import {
   MediaSchema,
 } from './schemas.js';
 import { ScriptContent, templateDependencies } from './script-text.js';
+import { isSecureInput } from './secure-input-types.js';
 
 import type { z } from 'zod';
 
 export interface LibraryDefinition extends CoreDefinition {
   builtOn: readonly CorePrimitiveType[];
+  /** Primitives rendered on every path. Conditional controls are listed separately. */
+  conditionalBuiltOn: readonly CorePrimitiveType[];
   displayName: string;
 }
 const categories = {
@@ -114,7 +117,6 @@ const categories = {
   ],
 } as const;
 export const COMPONENT_CATEGORIES = categories;
-const secureTypes = ['tcknInput', 'vknInput', 'ibanInput', 'creditCardInput'];
 const inputChecks: Record<string, (value: string) => boolean> = {
   emailInput: isEmail,
   phoneInput: isPhoneTR,
@@ -181,7 +183,7 @@ function properties(schema: z.ZodObject, bindable: readonly string[]): DesignerP
 export const LIBRARY_DEFINITIONS: readonly LibraryDefinition[] = Object.entries(categories).flatMap(
   ([category, types]) =>
     types.map((type) => {
-      const secure = secureTypes.includes(type),
+      const secure = isSecureInput(type),
         container = category === 'structure' && !['divider', 'spacer'].includes(type);
       const schema = ['privacyNotice', 'explicitConsent'].includes(type)
         ? PrivacySchema
@@ -233,16 +235,21 @@ export const LIBRARY_DEFINITIONS: readonly LibraryDefinition[] = Object.entries(
                       ? InputComponent
                       : MediaComponent;
       const builtOn: readonly CorePrimitiveType[] =
-        category === 'data'
-          ? ['box', 'webService', 'button']
-          : category === 'action'
-            ? ['box', 'button']
-            : [
-                'box',
-                ...(category === 'script' && ['objectionHandler', 'knowledgeLink'].includes(type)
-                  ? ['button' as const]
-                  : []),
-              ];
+        category === 'data' ? ['box', 'webService'] : ['box'];
+      const conditionalBuiltOn: readonly CorePrimitiveType[] =
+        category === 'data' ||
+        (category === 'action' && type !== 'dispositionPicker') ||
+        [
+          'objectionHandler',
+          'wizard',
+          'stepper',
+          'modal',
+          'timer',
+          'countdown',
+          'signature',
+        ].includes(type)
+          ? ['button']
+          : [];
       const definition: LibraryDefinition = {
         type,
         displayName: type.charAt(0).toUpperCase() + type.slice(1),
@@ -251,6 +258,7 @@ export const LIBRARY_DEFINITIONS: readonly LibraryDefinition[] = Object.entries(
         defaults:
           type === 'explicitConsent' ? { labelKey: 'components.consentLabel', value: false } : {},
         builtOn,
+        conditionalBuiltOn,
         designerMeta: {
           icon:
             category === 'input'

@@ -7,7 +7,7 @@ import {
   creditCardSalesScript,
   surveyScript,
   telecomTariffChangeScript,
-} from '@verbis/script-schema/fixtures';
+} from '@verbis/script-schema/templates';
 
 import { currentActor } from '../../common/actor.js';
 import { canonicalJson, sha256Hex } from '../../common/crypto/canonical-json.js';

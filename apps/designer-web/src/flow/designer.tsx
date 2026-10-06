@@ -25,9 +25,16 @@ import { RuleBuilder } from '../rules/builder.js';
 import { ruleFields } from '../rules/fields.js';
 
 import { SubflowImport } from './import-dialog.js';
-import { addFlowNode, connectFlow, mutateFlow, flowProblems } from './model.js';
+import { layoutEngine } from './layout-engine.js';
+import {
+  addFlowNode,
+  connectFlow,
+  mutateFlow,
+  flowProblems,
+  flowNodeLabel,
+  removeFlowElements,
+} from './model.js';
 
-import type { ELK } from 'elkjs/lib/elk-api.js';
 import '@xyflow/react/dist/style.css';
 import './styles.css';
 
@@ -98,11 +105,7 @@ function Group({ data }: NodeProps<GraphNode>) {
   return <div className="fd-group-label">{data.label}</div>;
 }
 const nodeTypes = { verbis: FlowCard, note: Annotation, group: Group };
-let layoutEngine: Promise<ELK> | undefined;
-function loadLayout() {
-  layoutEngine ??= import('elkjs/lib/elk.bundled.js').then(({ default: ELK }) => new ELK());
-  return layoutEngine;
-}
+
 export function FlowDesigner({
   store,
   readOnly = false,
@@ -200,10 +203,7 @@ function FlowCanvas({
             node.position ?? { x: (index % 3) * 260, y: Math.floor(index / 3) * 160 },
           className: traceNodes?.has(node.id) ? 'fd-visited' : '',
           data: {
-            label: node.labelKey
-              ? (state.document.i18n.messages[state.document.i18n.defaultLocale]?.[node.labelKey] ??
-                node.id)
-              : node.id,
+            label: flowNodeLabel(state.document, node),
             kind: node.type,
             problems: problems.get(node.id) ?? [],
             visited: traceNodes?.has(node.id) ?? false,
@@ -260,19 +260,7 @@ function FlowCanvas({
         : { $expr: 'true' };
   const remove = () => {
     store.execute(() => {
-      mutateFlow(store, flow.id, (f) => {
-        if (selection.includes(f.start)) throw new Error('VERBIS_FLOW_START_IMMUTABLE');
-        f.nodes = f.nodes.filter((n) => !selection.includes(n.id));
-        f.edges = f.edges.filter(
-          (e) => !selection.includes(e.from) && !selection.includes(e.to) && e.id !== selectedEdge,
-        );
-        if (f.designer) {
-          f.designer.groups = f.designer.groups.filter((g) => !selection.includes(g.id));
-          f.designer.notes = f.designer.notes.filter((n) => !selection.includes(n.id));
-          for (const group of f.designer.groups)
-            group.nodes = group.nodes.filter((id) => !selection.includes(id));
-        }
-      });
+      removeFlowElements(store, flow.id, selection, selectedEdge);
       setSelection([]);
       setEdge(null);
     });
@@ -334,14 +322,17 @@ function FlowCanvas({
             const snapshot = store.getSnapshot().document,
               revision = ++layoutVersion.current;
             setLayingOut(true);
-            void loadLayout()
+            void layoutEngine()
               .then((elk) =>
                 elk.layout({
                   id: flow.id,
                   layoutOptions: {
                     'elk.algorithm': 'layered',
                     'elk.direction': 'DOWN',
-                    'elk.spacing.nodeNode': '50',
+                    'elk.spacing.nodeNode': '90',
+                    'elk.layered.spacing.nodeNodeBetweenLayers': '140',
+                    'elk.spacing.edgeNode': '40',
+                    'elk.spacing.edgeEdge': '30',
                   },
                   children: flow.nodes.map((n) => ({ id: n.id, width: 220, height: 100 })),
                   edges: flow.edges.map((e) => ({ id: e.id, sources: [e.from], targets: [e.to] })),
@@ -567,7 +558,9 @@ function FlowCanvas({
           aria-label={t('designer.flow.canvas')}
         >
           <Background color="var(--vb-color-border)" />
-          <MiniMap nodeColor="var(--vb-color-surface-raised)" maskColor="var(--vb-color-bg)" />
+          {flow.nodes.length > 1 && (
+            <MiniMap nodeColor="var(--vb-color-primary)" maskColor="var(--vb-color-bg)" />
+          )}
           <Controls />
         </ReactFlow>
         <aside className="fd-properties">

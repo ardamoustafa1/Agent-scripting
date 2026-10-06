@@ -26,7 +26,11 @@ describe('every registered connector has the shared contract', () => {
   });
   for (const [type, kind, file] of inventory)
     it(`${type}/${kind} has a valid factory and contract entry point`, () => {
-      const connector = createConnector(type, { kind }, { simulatorEnabled: true });
+      const connector = createConnector(
+        type,
+        { kind },
+        { simulatorEnabled: true, marketplaceBridgeEnabled: true },
+      );
       expect(connector).toBeDefined();
       expect(connector?.kind).toBe(kind);
       expect(validateCapabilities(connector!.capabilities)).toEqual([]);
@@ -36,6 +40,12 @@ describe('every registered connector has the shared contract', () => {
       expect(
         createConnector(type, { kind: 'unregistered-kind' }, { simulatorEnabled: true }),
       ).toBeUndefined();
+    });
+  // These adapters only accept envelopes from an external vendor bridge that is not shipped in
+  // this repository (docs/connectors/MATRIX.md); they must stay off unless explicitly enabled.
+  for (const [type, kind] of marketplace)
+    it(`${type}/${kind} is not activated without the marketplace bridge flag`, () => {
+      expect(createConnector(type, { kind }, { simulatorEnabled: true })).toBeUndefined();
     });
   it('does not activate a simulator when disabled', () => {
     expect(

@@ -35,3 +35,14 @@ describe('CSS and TypeScript token contract', () => {
     expect(css).toContain('inset-inline-end');
   });
 });
+
+describe('stacking order', () => {
+  const z = (name: string) => Number(baseTokens[name as keyof typeof baseTokens]);
+  it('renders portalled popovers (select, combobox, menu) above a modal dialog and its overlay', () => {
+    // D-11/D-28: a Select inside a Dialog was painted behind the overlay and ate mouse clicks.
+    expect(z('z-popover')).toBeGreaterThan(z('z-overlay'));
+    expect(z('z-popover')).toBeGreaterThan(z('z-dialog'));
+    expect(z('z-popover')).toBeLessThan(z('z-toast'));
+    expect(z('z-tooltip')).toBeGreaterThan(z('z-popover'));
+  });
+});

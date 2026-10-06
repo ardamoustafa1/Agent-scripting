@@ -7,10 +7,13 @@ import { AuditService } from '../audit/audit.service.js';
 
 import {
   type IdentityProviderDto,
+  type GroupDto,
+  type GroupListQuery,
   type IdpListQuery,
   type RoleDto,
   type RoleListQuery,
   toIdpDto,
+  toGroupDto,
   toRoleDto,
   toUserDto,
   type UserDto,
@@ -34,7 +37,11 @@ export class IdentityService {
     await this.audit.record(tx, {
       action: 'identity.user.listed',
       target: { type: 'User', id: '*' },
-      after: { filters: query.filters, count: Math.min(rows.length, query.limit) },
+      // The search term may be a name or e-mail fragment (PII): record only that one was used.
+      after: {
+        filters: { ...query.filters, q: undefined, searched: query.filters.q !== undefined },
+        count: Math.min(rows.length, query.limit),
+      },
     });
     return toPage(rows, query, toUserDto, (row, field) => row[field]);
   }
@@ -50,6 +57,11 @@ export class IdentityService {
   async listRoles(query: RoleListQuery): Promise<Page<RoleDto>> {
     const rows = await this.repository.listRoles(this.db.current(), this.db.tenantId(), query);
     return toPage(rows, query, toRoleDto, (row, field) => row[field]);
+  }
+
+  async listGroups(query: GroupListQuery): Promise<Page<GroupDto>> {
+    const rows = await this.repository.listGroups(this.db.current(), this.db.tenantId(), query);
+    return toPage(rows, query, toGroupDto, (row, field) => row[field]);
   }
 
   async listIdps(query: IdpListQuery): Promise<Page<IdentityProviderDto>> {

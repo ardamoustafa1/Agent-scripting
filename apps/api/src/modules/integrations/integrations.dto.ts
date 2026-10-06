@@ -9,7 +9,7 @@ export const DataSourceSchema = z
   .object({
     ...ResourceMetaShape,
     key: z.string(),
-    protocol: z.enum(['rest', 'soap', 'graphql']),
+    protocol: z.enum(['rest', 'soap', 'graphql', 'sql']),
     definition: z.unknown(),
     secretRefs: z.array(UuidSchema),
     policy: z.unknown(),
@@ -31,7 +31,8 @@ export const SecretMetadataSchema = z
 export type SecretMetadataDto = z.infer<typeof SecretMetadataSchema>;
 
 export const DataSourceListQuerySchema = listQuerySchema(['createdAt', 'key'], {
-  protocol: z.enum(['rest', 'soap', 'graphql']).optional(),
+  protocol: z.enum(['rest', 'soap', 'graphql', 'sql']).optional(),
+  q: z.string().trim().max(120).optional(),
 });
 export type DataSourceListQuery = z.output<typeof DataSourceListQuerySchema>;
 export const SecretListQuerySchema = listQuerySchema(['createdAt', 'name'], {});

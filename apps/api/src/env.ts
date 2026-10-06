@@ -1,3 +1,5 @@
+import { isIP } from 'node:net';
+
 import { z } from 'zod';
 
 import { envSchemas, parseEnv } from '@verbis/shared-types';
@@ -15,6 +17,16 @@ const csv = z
       .map((item) => item.trim())
       .filter((item) => item.length > 0),
   );
+
+function isProxyEntry(entry: string): boolean {
+  const [address, prefix, ...rest] = entry.split('/');
+  if (address === undefined || rest.length > 0) return false;
+  const family = isIP(address);
+  if (family === 0) return false;
+  if (prefix === undefined) return true;
+  const max = family === 4 ? 32 : 128;
+  return /^\d{1,3}$/.test(prefix) && Number(prefix) <= max;
+}
 
 /** `kid:base64(32 bytes)` entries; the first is the active sealing key. */
 const keyringSpec = z
@@ -47,6 +59,9 @@ const appOrigins = z
     }
     return out;
   });
+
+/** Passwords shipped in `.env.example` (`*_dev_only_change_me`); never valid in production. */
+const PLACEHOLDER = 'dev_only_change_me';
 
 export const ApiEnvSchema = z
   .object({
@@ -99,6 +114,18 @@ export const ApiEnvSchema = z
     CORS_ALLOWED_ORIGINS: csv,
     RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(600),
     RATE_LIMIT_WINDOW_MS: z.coerce.number().int().min(1000).default(60_000),
+    /** `GET /auth/session` budgets per window (audit P-18): per session, per shared IP, cookie-less per IP. */
+    AUTH_SESSION_RATE_LIMIT_SESSION_MAX: z.coerce.number().int().min(1).default(60),
+    AUTH_SESSION_RATE_LIMIT_IP_MAX: z.coerce.number().int().min(1).default(600),
+    AUTH_SESSION_RATE_LIMIT_ANONYMOUS_MAX: z.coerce.number().int().min(1).default(30),
+    /**
+     * Reverse proxies / BFF whose X-Forwarded-For is trusted (IPs or CIDRs). Empty = trust none, so
+     * the socket peer is the client IP and the header can never be used to dodge limits.
+     */
+    TRUSTED_PROXIES: csv.refine(
+      (entries) => entries.every(isProxyEntry),
+      'every entry must be an IP address or CIDR (e.g. 10.0.0.0/8)',
+    ),
     /** `public` (dev only), `admin` (requires read:ApiDocs) or `off`. */
     API_DOCS: z.enum(['public', 'admin', 'off']).optional(),
     OUTBOX_RELAY_ENABLED: envSchemas.boolean.default(true),
@@ -242,6 +269,10 @@ export const ApiEnvSchema = z
       .string()
       .regex(/^[a-z0-9-]*$/)
       .default(''),
+    /** Shared only with the verified mTLS edge; never a hub/client credential. */
+    MTLS_PROXY_SECRET: z.string().max(256).default(''),
+    /** Explicit opt-in for customer-network outbound workers. */
+    PRIVATE_EGRESS_ENABLED: envSchemas.boolean.default(false),
 
     // ─── Connector hub (step 18, ADR-0018) ─────────────────────────────────────
     /** Base URL of apps/connector-hub for internal calls (participant verification, simulator). */
@@ -265,6 +296,10 @@ export const ApiEnvSchema = z
           ? []
           : [env.AUTH_APP_ORIGINS['admin']],
   }))
+  .refine((env) => env.MTLS_CLIENT_CERT_HEADER === '' || env.MTLS_PROXY_SECRET.length >= 32, {
+    message: 'Certificate header forwarding requires MTLS_PROXY_SECRET of at least 32 characters',
+    path: ['MTLS_PROXY_SECRET'],
+  })
   .refine((env) => !(env.NODE_ENV === 'production' && env.API_DOCS === 'public'), {
     message: 'API_DOCS=public is not allowed in production',
     path: ['API_DOCS'],
@@ -300,6 +335,12 @@ export const ApiEnvSchema = z
         'Vault Transit requires a safe origin, absolute token file and explicit legacy key when migrating',
       path: ['INTEGRATION_VAULT_ADDRESS'],
     },
+  )
+  .refine(
+    (env) =>
+      env.NODE_ENV !== 'production' ||
+      !Object.values(env).some((value) => typeof value === 'string' && value.includes(PLACEHOLDER)),
+    { message: 'placeholder secrets from .env.example are not allowed in production' },
   )
   .refine(
     (env) => !(env.NODE_ENV === 'production' && env.IDENTITY_EGRESS_ALLOW_HTTP_HOSTS.length > 0),

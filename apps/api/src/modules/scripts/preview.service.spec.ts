@@ -36,6 +36,7 @@ function fixture(passing = true) {
     $queryRaw: vi.fn().mockResolvedValue([]),
     scriptVersion: { findFirst: vi.fn(() => Promise.resolve(row)) },
     assignment: { findMany: vi.fn(() => Promise.resolve([])) },
+    dataSourceVersion: { findFirst: vi.fn().mockResolvedValue(null) },
     dataSource: { findFirst: vi.fn().mockResolvedValue(null) },
   };
   const authorize = vi.fn(),

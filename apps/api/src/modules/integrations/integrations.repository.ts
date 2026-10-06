@@ -42,6 +42,9 @@ export class IntegrationsRepository {
     const where: Prisma.DataSourceWhereInput = {
       tenantId,
       deletedAt: null,
+      ...(query.filters.q
+        ? { key: { contains: query.filters.q, mode: 'insensitive' as const } }
+        : {}),
       ...(query.filters.protocol === undefined ? {} : { protocol: query.filters.protocol }),
     };
     const after = keysetWhere(query) as Prisma.DataSourceWhereInput | undefined;

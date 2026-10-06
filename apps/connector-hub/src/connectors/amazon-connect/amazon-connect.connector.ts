@@ -1,10 +1,3 @@
-import {
-  MarketplaceConnector,
-  type MarketplaceDeps,
-} from '../marketplace/marketplace.connector.js';
+import { marketplaceAdapter } from '../marketplace/marketplace.connector.js';
 
-export class AmazonConnectConnector extends MarketplaceConnector {
-  constructor(deps: MarketplaceDeps = {}) {
-    super('amazon-connect', deps);
-  }
-}
+export const AmazonConnectConnector = marketplaceAdapter('amazon-connect');

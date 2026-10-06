@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { MePermissionsSchema } from '@verbis/authz';
+import { retryAfterSeconds } from '@verbis/ui';
 
 import type { components, paths } from './generated.js';
 
@@ -24,6 +25,7 @@ export class ApiError extends Error {
   constructor(
     readonly status: number,
     readonly code: string,
+    readonly retryAfter?: number,
   ) {
     super(code);
   }
@@ -67,6 +69,7 @@ export async function request<T>(
     throw new ApiError(
       response.status,
       problem.success ? problem.data.code : 'VERBIS_HTTP_UNAVAILABLE',
+      response.status === 429 ? retryAfterSeconds(response.headers.get('retry-after')) : undefined,
     );
   }
   const parsed = schema.safeParse(body);

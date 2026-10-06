@@ -4,6 +4,7 @@ import {
   checkSummary,
   dimensions,
   criticalApiScopes,
+  criticalBranchScopes,
   checkCriticalApiCoverage,
 } from './coverage-gate.mjs';
 const report = (pct) => ({
@@ -27,15 +28,30 @@ test('missing, empty, nonnumeric and malformed reports cannot pass', () => {
 
 test('security scopes require weighted 95 percent line coverage and cannot disappear', () => {
   const summary = Object.fromEntries(
-    criticalApiScopes.map((scope) => [
+    [...new Set([...criticalApiScopes, ...criticalBranchScopes])].map((scope) => [
       `/repo/apps/api/src/${scope}file.ts`,
-      { lines: { total: 100, covered: 95 } },
+      { lines: { total: 100, covered: 95 }, branches: { total: 100, covered: 90 } },
     ]),
   );
   assert.deepEqual(checkCriticalApiCoverage(summary), []);
   const missing = { ...summary };
   delete missing[Object.keys(missing)[0]];
-  assert.equal(checkCriticalApiCoverage(missing).length, 1);
-  summary['/repo/apps/api/src/modules/launch/large.ts'] = { lines: { total: 1000, covered: 900 } };
+  assert.ok(checkCriticalApiCoverage(missing).length >= 1);
+  summary['/repo/apps/api/src/modules/launch/large.ts'] = {
+    lines: { total: 1000, covered: 900 },
+    branches: { total: 100, covered: 90 },
+  };
   assert.equal(checkCriticalApiCoverage(summary).length, 1);
+});
+
+test('critical branch coverage cannot be hidden by adequate line coverage', () => {
+  const summary = Object.fromEntries(
+    [...new Set([...criticalApiScopes, ...criticalBranchScopes])].map((scope) => [
+      `/repo/apps/api/src/${scope}file.ts`,
+      { lines: { total: 100, covered: 100 }, branches: { total: 100, covered: 100 } },
+    ]),
+  );
+  summary['/repo/apps/api/src/modules/integrations/engine/transport.tsfile.ts'].branches.covered =
+    89;
+  assert.match(checkCriticalApiCoverage(summary).join(' '), /branches 89.00% < 90%/);
 });

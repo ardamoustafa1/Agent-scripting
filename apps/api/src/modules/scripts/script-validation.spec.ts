@@ -85,7 +85,11 @@ it.each(['missing', 'stale', 'invalid', 'unpromoted', 'draft', 'production'] as 
         .fn<(query: { where: { key: string } }) => Promise<typeof row>>()
         .mockResolvedValue(row),
       lock = vi.fn().mockResolvedValue([]);
-    const tx = { $queryRaw: lock, dataSource: { findFirst } } as unknown as TransactionClient;
+    const tx = {
+      $queryRaw: lock,
+      dataSourceVersion: { findFirst: vi.fn().mockResolvedValue(null) },
+      dataSource: { findFirst },
+    } as unknown as TransactionClient;
     const document = {
       dataSources: [
         DataSourceRefSchema.parse({ id: 'z', ref: 'tenant-datasource:z', version: 1 }),
@@ -149,4 +153,28 @@ it('turns a scenario exception into a failed server result and never approves an
       errors: [{ path: '/testScenarios/failed', message: 'assertion failed' }],
     }),
   );
+});
+
+it('releases historical pinned definitions after a live edit, retaining production approval of the pin', async () => {
+  const snapshot = {
+    version: 1,
+    definition: IntegrationDefinitionSchema.parse({
+      baseUrl: 'https://old.test',
+      endpoint: '/x',
+      profiles: { prod: { baseUrl: 'https://old.test', auth: { type: 'none' } } },
+    }),
+  };
+  const tx = {
+    $queryRaw: vi.fn(),
+    dataSource: {
+      findFirst: vi.fn().mockResolvedValue({ id: 'source', version: 2, definition: {} }),
+    },
+    dataSourceVersion: { findFirst: vi.fn().mockResolvedValue(snapshot) },
+  } as unknown as TransactionClient;
+  const doc = {
+    dataSources: [
+      DataSourceRefSchema.parse({ id: 'customer', ref: 'tenant-datasource:customer', version: 1 }),
+    ],
+  };
+  await expect(validateDataSourceReferences(tx, 'tenant', doc, true)).resolves.toBeUndefined();
 });

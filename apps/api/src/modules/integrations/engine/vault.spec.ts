@@ -78,3 +78,7 @@ describe('tenant-bound envelope vault', () => {
     ]);
   });
 });
+
+it('rejects invalid master key lengths before any encryption', () => {
+  expect(() => new EnvKeyAdapter(Buffer.alloc(31))).toThrow('Master key must be 32 bytes');
+});

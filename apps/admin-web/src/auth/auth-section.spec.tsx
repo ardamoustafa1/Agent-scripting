@@ -186,6 +186,19 @@ it.each([503, 403])(
   },
 );
 
+it('probes /auth/session/status and treats {authenticated:false} as signed out (U-01)', async () => {
+  const calls: string[] = [];
+  vi.stubGlobal(
+    'fetch',
+    vi.fn((input: string) => {
+      calls.push(input);
+      return Promise.resolve(Response.json({ authenticated: false }));
+    }),
+  );
+  await expect(fetchSession()).resolves.toBeNull();
+  expect(calls).toEqual(['/api/auth/session/status']);
+});
+
 it('rejects a malformed successful session rather than showing sign-in', async () => {
   stubFetch(() => ({ status: 200, body: {} }));
   await expect(fetchSession()).rejects.toThrow('VERBIS_HTTP_UNAVAILABLE');

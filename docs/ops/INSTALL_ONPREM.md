@@ -163,3 +163,14 @@ cell databases retain RLS. Shared schema has no built-in arbitrary per-tenant da
 tenant migration requires an explicit audited export/import plan. Cross-region replication is
 opt-in after legal approval; cold/warm DR within allowed geography is preferable to unsupported
 active-active writes. See [DR.md](DR.md) and [ROLLOUT.md](ROLLOUT.md).
+
+### Shared proof for forwarded mTLS
+
+Provision a random `MTLS_PROXY_SECRET` of at least 32 characters in the API environment Secret
+and the verified private TLS edge. If using ingress-nginx, set
+`internalIngress.proxyHeadersConfigMap` to the operator-managed map injecting
+`x-verbis-mtls-proxy-secret`; restrict access to its value and never commit it.
+The edge must overwrite incoming proof/certificate headers after successful certificate validation.
+Without this proof, token grants and certificate-bound bearer requests fail closed.
+Public nginx routes strip the proof and certificate. Development bootstrap provisions its own proof.
+For opt-in customer-network SQL/HTTP access, follow [private egress setup](../integrations/PRIVATE_EGRESS.md).

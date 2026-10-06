@@ -5,6 +5,7 @@ import io.nats.client.Connection;
 import io.nats.client.Nats;
 import io.nats.client.Options;
 import io.verbis.engage.sidecar.config.SidecarProperties;
+import io.verbis.engage.sidecar.config.SourcePolicy;
 import io.verbis.engage.sidecar.cti.CtiSource;
 import io.verbis.engage.sidecar.cti.ParticipantRegistry;
 import io.verbis.engage.sidecar.cti.replay.ReplayCtiSource;
@@ -26,6 +27,7 @@ public class SidecarRunner implements ApplicationRunner, HealthIndicator, AutoCl
   private Connection connection;
   private CtiSource source;
   private NatsBridge bridge;
+  private String sourceName;
 
   public SidecarRunner(SidecarProperties props, ObjectMapper mapper) {
     this.props = props;
@@ -34,6 +36,7 @@ public class SidecarRunner implements ApplicationRunner, HealthIndicator, AutoCl
 
   @Override
   public void run(ApplicationArguments args) throws Exception {
+    sourceName = SourcePolicy.resolve(props.source(), props.allowReplay());
     var options = Options.builder()
         .servers(props.nats().servers().toArray(String[]::new))
         .connectionName("verbis-engage-sidecar-" + props.connectorId())
@@ -51,7 +54,7 @@ public class SidecarRunner implements ApplicationRunner, HealthIndicator, AutoCl
   }
 
   private CtiSource createSource(ParticipantRegistry registry) throws Exception {
-    if ("replay".equals(props.source())) {
+    if (SourcePolicy.REPLAY.equals(sourceName)) {
       String file = props.replay().file();
       List<io.verbis.engage.sidecar.envelope.EngageEnvelope> envelopes =
           file == null || file.isBlank() ? List.of() : ReplayCtiSource.read(new FileInputStream(file), mapper);
@@ -66,7 +69,7 @@ public class SidecarRunner implements ApplicationRunner, HealthIndicator, AutoCl
   public Health health() {
     boolean nats = connection != null && connection.getStatus() == Connection.Status.CONNECTED;
     boolean cti = source != null && source.connected();
-    return (nats && cti ? Health.up() : Health.down()).withDetail("nats", nats).withDetail("cti", cti).build();
+    return (nats && cti ? Health.up() : Health.down()).withDetail("nats", nats).withDetail("cti", cti).withDetail("source", sourceName == null ? "unset" : sourceName).build();
   }
 
   @Override

@@ -195,7 +195,7 @@
 .ed-palette {
   overflow: auto;
 }
-.ed-palette h3 {
+.ed-palette h2 {
   color: var(--vb-color-text-muted);
   text-transform: uppercase;
   font-size: var(--vb-font-size-xs);
@@ -404,6 +404,21 @@ button:focus-visible {
   color: var(--vb-color-primary-contrast);
   padding: var(--vb-space-1);
   font-size: var(--vb-font-size-xs);
+}
+.ed-insertion-line {
+  position: fixed;
+  pointer-events: none;
+  z-index: var(--vb-z-popover);
+  background: var(--vb-color-primary);
+  border-radius: var(--vb-radius-sm);
+}
+.ed-insertion-line[data-axis='horizontal'] {
+  height: 3px;
+  margin-block-start: -1px;
+}
+.ed-insertion-line[data-axis='vertical'] {
+  width: 3px;
+  margin-inline-start: -1px;
 }
 .ed-guide-vertical,
 .ed-guide-horizontal {
@@ -696,4 +711,25 @@ button:focus-visible {
 .ed-canvas:focus-visible {
   outline: 2px solid var(--vb-color-focus);
   outline-offset: -2px;
+}
+/* D-09: option row editor */
+.ed-options {
+  display: grid;
+  gap: var(--vb-space-3);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  padding: var(--vb-space-3);
+}
+.ed-option-row {
+  display: grid;
+  gap: var(--vb-space-2);
+  border: 0;
+  border-block-end: 1px solid var(--vb-color-border);
+  padding: 0 0 var(--vb-space-3);
+  margin: 0;
+}
+.ed-option-actions {
+  display: flex;
+  gap: var(--vb-space-1);
+  justify-content: flex-end;
 }

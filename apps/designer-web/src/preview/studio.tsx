@@ -491,7 +491,7 @@ export function PreviewStudio({
                       .map((type) => (
                         <Checkbox
                           key={type}
-                          label={type}
+                          label={t(`designer.preview.actions.${type}`)}
                           checked={
                             runtime?.executor.debugger.breakpoints.has(`action:${type}`) ?? false
                           }
@@ -512,7 +512,7 @@ export function PreviewStudio({
                       {previewLint(state.document, store.issues()).map((issue, index) => (
                         <li key={index}>
                           <Badge tone={issue.severity === 'error' ? 'danger' : 'warning'}>
-                            {issue.code}
+                            {t(`designer.preview.severity.${issue.severity}`)}
                           </Badge>
                           <p>{t(issue.messageKey, issue.params ?? {})}</p>
                           <code>{issue.path}</code>
@@ -572,8 +572,10 @@ export function PreviewStudio({
             />
           )}
           <p role="status">
-            {t('designer.preview.page')}: {textValue(runtime?.store.get('runtime.page'))} ·{' '}
-            {t('designer.preview.outcome')}: {controller?.outcome ?? '—'}
+            {t('designer.preview.page')}:{' '}
+            {state.document.pages.find((page) => page.id === runtime?.store.get('runtime.page'))
+              ?.name ?? '—'}{' '}
+            · {t('designer.preview.outcome')}: {controller?.outcome ?? '—'}
           </p>
         </div>
       </div>

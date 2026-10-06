@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.verbis.avaya.sidecar.nats.TelemetryPrivacyTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-06T17:50:26.384Z" hostname="cef18aef4def" time="0.066">
+  <properties/>
+  <testcase name="stripsSensitiveAttributesBeforeExport()" classname="io.verbis.avaya.sidecar.nats.TelemetryPrivacyTest" time="0.066"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

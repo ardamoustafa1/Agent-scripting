@@ -70,7 +70,7 @@
   --vb-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --vb-z-base: 0;
   --vb-z-sticky: 10;
-  --vb-z-popover: 40;
+  --vb-z-popover: 70;
   --vb-z-overlay: 50;
   --vb-z-dialog: 60;
   --vb-z-toast: 80;
@@ -1359,6 +1359,35 @@ body {
   }
 }
 @media (forced-colors: active) {
+  :root[data-theme],
+  :root,
+  .vb-theme[data-theme] {
+    --vb-color-brand-bg: Canvas;
+    --vb-color-brand-text: CanvasText;
+    --vb-color-brand-muted: CanvasText;
+    --vb-color-brand-border: CanvasText;
+    --vb-color-brand-accent: LinkText;
+    --vb-color-bg: Canvas;
+    --vb-color-surface: Canvas;
+    --vb-color-surface-raised: Canvas;
+    --vb-color-text: CanvasText;
+    --vb-color-text-muted: CanvasText;
+    --vb-color-text-subtle: CanvasText;
+    --vb-color-primary: LinkText;
+    --vb-color-primary-hover: LinkText;
+    --vb-color-primary-contrast: Canvas;
+    --vb-color-primary-soft: Canvas;
+    --vb-color-success: CanvasText;
+    --vb-color-warning: CanvasText;
+    --vb-color-danger: CanvasText;
+    --vb-color-info: CanvasText;
+    --vb-color-success-soft: Canvas;
+    --vb-color-warning-soft: Canvas;
+    --vb-color-danger-soft: Canvas;
+    --vb-color-info-soft: Canvas;
+    --vb-color-border: CanvasText;
+    --vb-color-border-strong: CanvasText;
+  }
   .vb-button,
   .vb-input,
   .vb-checkbox,

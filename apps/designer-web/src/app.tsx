@@ -19,6 +19,8 @@ function SessionApp() {
     queryKey: ['auth', 'session'],
     queryFn: ({ signal }) => session(signal),
     retry: false,
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
     refetchInterval: 60000,
   });
   const access = useQuery({
@@ -50,6 +52,7 @@ function SessionApp() {
           <Loading />
         ) : auth.isError ? (
           <Failure
+            error={auth.error}
             retry={() => {
               void auth.refetch();
             }}
@@ -58,6 +61,7 @@ function SessionApp() {
           <Login />
         ) : access.isError ? (
           <Failure
+            error={access.error}
             retry={() => {
               void access.refetch();
             }}
@@ -65,6 +69,7 @@ function SessionApp() {
         ) : !ability ? (
           access.data ? (
             <Failure
+              error={access.error}
               retry={() => {
                 void access.refetch();
               }}
@@ -75,6 +80,7 @@ function SessionApp() {
         ) : access.data?.principal.tenantId !== auth.data.user.tenantId ||
           access.data.principal.id !== auth.data.user.id ? (
           <Failure
+            error={auth.error}
             retry={() => {
               void auth.refetch();
             }}

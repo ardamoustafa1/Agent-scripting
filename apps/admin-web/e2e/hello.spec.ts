@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
   await page.route('**/api/**', async (route) => {
     const url = new URL(route.request().url());
     let body: unknown = { data: [], page: { nextCursor: null } };
-    if (url.pathname === '/api/auth/session')
+    if (url.pathname === '/api/auth/session/status')
       body = {
         user: { id: tenantId, tenantId, authMethod: 'sso' },
         session: { id: tenantId, protocol: 'oidc', expiresAt: '2030-01-01T00:00:00Z' },
@@ -31,6 +31,8 @@ test.beforeEach(async ({ page }) => {
         service: 'verbis-api',
         checks: { database: { status: 'up' }, redis: { status: 'up' }, nats: { status: 'up' } },
       };
+    else if (url.pathname === '/api/v1/connector-dead-letters')
+      body = { durable: true, persisted: 0, persistFailures: 0 };
     else if (url.pathname === '/api/v1/admin/outbox')
       body = { pending: 0, published: 7, dead: 0, oldestPendingAt: null, deadEvents: [] };
     else if (url.pathname === '/api/v1/admin/operations')
@@ -61,8 +63,14 @@ test('version conflict does not overwrite policy or claim success', async ({ pag
     }),
   );
   await page.goto('/#security');
-  await page.getByRole('button', { name: 'Kaydet', exact: true }).first().click();
-  await expect(page.getByRole('alert')).toContainText('VERBIS_VERSION_MISMATCH');
+  await page
+    .locator('.aw-card')
+    .filter({ has: page.getByRole('heading', { name: 'Güvenlik politikaları', exact: true }) })
+    .getByRole('button', { name: 'Kaydet', exact: true })
+    .click();
+  await expect(page.getByRole('alert')).toContainText('Kayıt başka biri tarafından değiştirildi');
+  await expect(page.getByRole('alert')).toContainText('Destek kodu: fixture-correlation');
+  await expect(page.getByRole('alert')).not.toContainText('VERBIS_');
   await expect(page.getByText('İşlem tamamlandı', { exact: true })).toHaveCount(0);
 });
 test('secret values are cleared after rotation and never rendered in metadata', async ({
@@ -104,6 +112,9 @@ for (const theme of ['light', 'dark']) {
     }, theme);
     await page.goto('/#systemHealth');
     await expect(page.getByRole('heading', { level: 1, name: 'Sistem sağlığı' })).toBeVisible();
+    await expect(page.locator('.aw-json').first()).toHaveValue(/"status": "ok"/);
+    await expect(page.locator('.aw-stats strong').filter({ hasText: /^7$/ })).toBeVisible();
+    await expect(page.getByText(/25\.0%/)).toBeVisible();
     await page.evaluate('document.fonts.ready.then(() => undefined)');
     await expect(page).toHaveScreenshot(`admin-web-${theme}.png`, { fullPage: true });
   });
@@ -162,7 +173,9 @@ test('audit explorer displays event sequence, action and correlation without raw
 });
 
 test('changing sign-in email discards completed and late SSO discovery', async ({ page }) => {
-  await page.route('**/api/auth/session', (route) => route.fulfill({ status: 401, json: {} }));
+  await page.route('**/api/auth/session/status', (route) =>
+    route.fulfill({ json: { authenticated: false } }),
+  );
   let release!: () => void;
   let started!: () => void;
   const arrived = new Promise<void>((resolve) => {
@@ -209,15 +222,16 @@ test('a session service outage shows retry and recovers without a false sign-in 
   page,
 }) => {
   let failed = true;
-  await page.route('**/api/auth/session', (route) =>
+  await page.route('**/api/auth/session/status', (route) =>
     route.fulfill(
       failed
         ? { status: 503, json: { code: 'VERBIS_HTTP_UNAVAILABLE' } }
-        : { status: 401, json: {} },
+        : { json: { authenticated: false } },
     ),
   );
   await page.goto('/');
-  await expect(page.getByRole('alert')).toContainText('VERBIS_HTTP_UNAVAILABLE');
+  await expect(page.getByRole('alert')).toContainText('Sunucuya ulaşılamıyor');
+  await expect(page.getByRole('alert')).not.toContainText('VERBIS_');
   await expect(page.getByLabel('İş e-postası')).toHaveCount(0);
   failed = false;
   await page.getByRole('button', { name: 'Yeniden dene', exact: true }).click();

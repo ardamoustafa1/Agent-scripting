@@ -79,7 +79,7 @@ function fixture() {
     listActive: vi.fn().mockResolvedValue([idp]),
   };
   const secrets = { reveal: vi.fn().mockResolvedValue('synthetic-client-secret') };
-  const tokens = {
+  const tokens: { subject: string; claims: Record<string, unknown> } = {
     subject: 'synthetic-subject',
     claims: {
       email: 'synthetic@example.invalid',
@@ -284,6 +284,26 @@ it('completes a valid OIDC callback and applies the persisted safe destination/s
     displayName: 'Synthetic',
     locale: 'en',
   });
+});
+
+// M-Z6: without a `name` claim JIT stored the e-mail as the greeting name; use the standard
+// given/family name, then preferred_username, before giving up.
+it.each([
+  [{ given_name: 'Ayşe', family_name: 'Yılmaz' }, 'Ayşe Yılmaz'],
+  [{ given_name: 'Ayşe' }, 'Ayşe'],
+  [{ preferred_username: 'ayse.yilmaz' }, 'ayse.yilmaz'],
+  [{ name: '  ', given_name: 'Ayşe' }, 'Ayşe'],
+])('derives an OIDC display name from standard claims %j', async (claims, expected) => {
+  const f = fixture();
+  f.tokens.claims = { email: 'synthetic@example.invalid', email_verified: true, ...claims };
+  await f.callback();
+  expect(f.login.completeSsoLogin.mock.calls[0]![1]).toMatchObject({ displayName: expected });
+});
+it('omits the display name when no name claim exists so JIT keeps its own fallback', async () => {
+  const f = fixture();
+  f.tokens.claims = { email: 'synthetic@example.invalid', email_verified: true };
+  await f.callback();
+  expect(f.login.completeSsoLogin.mock.calls[0]![1]).not.toHaveProperty('displayName');
 });
 
 it.each(['cookie', 'binding', 'age', 'idp'] as const)(

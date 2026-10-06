@@ -23,7 +23,7 @@ export interface WireRequest {
   method: string;
   headers: Record<string, string>;
   body?: string;
-  tls?: { cert: string; key: string; ca?: string | undefined };
+  tls?: { cert?: string; key?: string; ca?: string | undefined };
 }
 export interface WireResponse {
   status: number;
@@ -33,7 +33,7 @@ export interface WireResponse {
 export interface DataSource {
   id: string;
   version: number;
-  protocol: 'rest' | 'soap' | 'graphql';
+  protocol: 'rest' | 'soap' | 'graphql' | 'sql';
   definition: Definition;
   policy: Policy;
 }

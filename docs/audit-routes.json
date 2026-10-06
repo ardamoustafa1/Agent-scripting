@@ -1055,6 +1055,32 @@
     },
     {
       "method": "POST",
+      "path": "/v1/private-egress/jobs/:id/complete",
+      "controller": "PrivateEgressController",
+      "handler": "complete",
+      "file": "apps/api/src/modules/integrations/private-egress.controller.ts",
+      "line": 35,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/v1/private-egress/jobs/claim",
+      "controller": "PrivateEgressController",
+      "handler": "claim",
+      "file": "apps/api/src/modules/integrations/private-egress.controller.ts",
+      "line": 22,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": []
+    },
+    {
+      "method": "POST",
       "path": "/v1/script-packages/export",
       "controller": "PackagesController",
       "handler": "export",
@@ -1137,7 +1163,7 @@
       "controller": "CollaborationController",
       "handler": "flush",
       "file": "apps/api/src/modules/scripts/collaboration.controller.ts",
-      "line": 36,
+      "line": 66,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1150,7 +1176,7 @@
       "controller": "CollaborationController",
       "handler": "ticket",
       "file": "apps/api/src/modules/scripts/collaboration.controller.ts",
-      "line": 21,
+      "line": 22,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1399,7 +1425,7 @@
       "controller": "AgentDesktopController",
       "handler": "call",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 244,
+      "line": 256,
       "decorators": [
         "OwnTenantTransactions"
       ],
@@ -1414,7 +1440,7 @@
       "controller": "AgentDesktopController",
       "handler": "recovery",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 196,
+      "line": 208,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1427,7 +1453,7 @@
       "controller": "AgentDesktopController",
       "handler": "failure",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 170,
+      "line": 182,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1440,7 +1466,7 @@
       "controller": "AgentDesktopController",
       "handler": "telemetry",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 133,
+      "line": 145,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [

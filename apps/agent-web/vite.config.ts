@@ -8,6 +8,8 @@ import { z } from 'zod';
 
 import { envSchemas, parseEnv } from '@verbis/shared-types';
 
+import { browserChunks } from '../../scripts/browser-chunks.mjs';
+
 const repoRoot = path.resolve(import.meta.dirname, '../..');
 
 // Build/dev-time env. Only VITE_* variables are ever exposed to the browser (no secrets there).
@@ -71,6 +73,18 @@ export default defineConfig(() => {
     resolve: { alias: { '@': path.resolve(import.meta.dirname, 'src') } },
     server: { host: '127.0.0.1', port: env.AGENT_WEB_PORT, strictPort: true, proxy },
     preview: { host: '127.0.0.1', port: env.AGENT_WEB_PORT, strictPort: true, proxy },
-    build: { sourcemap: false },
+    build: {
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              { name: browserChunks, includeDependenciesRecursively: false, maxSize: 350000 },
+            ],
+          },
+          strictExecutionOrder: true,
+        },
+      },
+      sourcemap: false,
+    },
   };
 });

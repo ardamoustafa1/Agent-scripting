@@ -47,7 +47,7 @@ public sealed interface EngageCommand {
   }
 
   /** OCS desktop protocol attributes for a RecordProcessed / UpdateCallCompletionStats UserEvent. */
-  static Map<String, Object> ocsUserEvent(OcsRecordProcessed c) {
+  public static Map<String, Object> ocsUserEvent(OcsRecordProcessed c) {
     var map = new java.util.LinkedHashMap<String, Object>();
     map.put("GSW_AGENT_REQ_TYPE", c.finalResult() ? "RecordProcessed" : "UpdateCallCompletionStats");
     map.put("GSW_RECORD_HANDLE", c.recordHandle());

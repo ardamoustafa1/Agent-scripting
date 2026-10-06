@@ -20,6 +20,7 @@ export const SessionSchema = z
   .object({
     ...ResourceMetaShape,
     interactionId: UuidSchema.nullable(),
+    desktopLabel: z.object({ channel: z.string(), customerName: z.string().nullable() }).optional(),
     userId: UuidSchema,
     scriptVersionId: UuidSchema,
     assignmentId: UuidSchema.nullable(),

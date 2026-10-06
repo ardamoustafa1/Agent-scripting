@@ -8,7 +8,9 @@ spring:
 verbis:
   sidecar:
     connector-id: '${VERBIS_CONNECTOR_ID}'
-    source: '${SIDECAR_SOURCE:replay}' # psdk | replay
+    # psdk (required). replay (recorded events) is dev/test only and needs SIDECAR_ALLOW_REPLAY=true.
+    source: '${SIDECAR_SOURCE:}'
+    allow-replay: '${SIDECAR_ALLOW_REPLAY:false}'
     agent-identity: '${SIDECAR_AGENT_IDENTITY:employeeId}'
     nats:
       servers: '${NATS_SERVERS:nats://127.0.0.1:4222}'

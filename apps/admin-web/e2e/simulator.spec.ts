@@ -27,7 +27,7 @@ async function mockApi(page: Page) {
     const url = new URL(request.url());
     if (url.pathname === '/api/health/ready')
       return route.fulfill({ status: 503, body: '{"status":"error"}' });
-    if (url.pathname === '/api/auth/session')
+    if (url.pathname === '/api/auth/session/status')
       return route.fulfill({
         status: 200,
         contentType: 'application/json',

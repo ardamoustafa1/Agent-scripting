@@ -11,6 +11,8 @@ import { ConnectorHubService } from './connector-hub.service.js';
 import { ConnectorsController } from './connectors.controller.js';
 import { ConnectorsRepository } from './connectors.repository.js';
 import { ConnectorsService } from './connectors.service.js';
+import { DeadLettersController } from './dead-letters.controller.js';
+import { DeadLettersService } from './dead-letters.service.js';
 import { GenesysCloudOAuthController } from './genesys-cloud/genesys-cloud-oauth.controller.js';
 import { GenesysUserLinkService } from './genesys-cloud/genesys-user-link.service.js';
 import { AttachedDataMapService } from './genesys-engage/attached-data-map.service.js';
@@ -29,6 +31,7 @@ import { SimulatorController } from './simulator.controller.js';
   imports: [AuditModule, IdentityModule, IntegrationsModule, LaunchModule, RuntimeModule],
   controllers: [
     ConnectorsController,
+    DeadLettersController,
     ConnectorHubController,
     SimulatorController,
     GenesysCloudOAuthController,
@@ -40,6 +43,7 @@ import { SimulatorController } from './simulator.controller.js';
     ConnectorsService,
     ConnectorsRepository,
     ConnectorHubService,
+    DeadLettersService,
     HubClient,
     HubPlatformVerifier,
     HubRuntimeBridge,

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { type RendererProps } from '@verbis/core-runtime';
+import { EmbedImage, EmbedVideo, EmbedFrame, type RendererProps } from '@verbis/core-runtime';
 import { Alert, Badge, Progress, Input } from '@verbis/ui';
 
-import { safeAssetUrl, useComponentEnvironment } from './environment.js';
+import { useComponentEnvironment } from './environment.js';
 import { MediaSchema } from './schemas.js';
 import { Frame, CoreAction, useField, useLabels } from './shared.js';
 
@@ -42,12 +42,19 @@ export function MediaComponent(component: RendererProps) {
   switch (component.node.type) {
     case 'image':
       content = p.url ? (
-        <img
+        <EmbedImage
           className="vc-image"
-          src={safeAssetUrl(p.url, environment.mediaOrigins)}
-          alt={text(p.altKey)}
-          loading="lazy"
-          referrerPolicy="no-referrer"
+          src={p.url}
+          origins={environment.mediaOrigins}
+          label={text(p.altKey)}
+          failed={() => {
+            component.runtime.event(
+              'component',
+              'failed',
+              'VERBIS_EMBED_FAILED',
+              component.node.id,
+            );
+          }}
         />
       ) : (
         <Alert title={t('components.unconfigured')} />
@@ -56,36 +63,42 @@ export function MediaComponent(component: RendererProps) {
     case 'video':
       content =
         p.url && p.captionsUrl ? (
-          <video
+          <EmbedVideo
             className="vc-video"
-            controls
-            preload="metadata"
-            aria-label={text(p.labelKey)}
-            {...(p.poster ? { poster: safeAssetUrl(p.poster, environment.mediaOrigins) } : {})}
-          >
-            <source src={safeAssetUrl(p.url, environment.mediaOrigins)} />
-            <track
-              kind="captions"
-              src={safeAssetUrl(p.captionsUrl, environment.mediaOrigins)}
-              srcLang={component.runtime.store.locale}
-              label={text(p.labelKey)}
-              default
-            />
-          </video>
+            src={p.url}
+            origins={environment.mediaOrigins}
+            label={text(p.labelKey)}
+            captions={p.captionsUrl}
+            language={component.runtime.store.locale}
+            poster={p.poster}
+            failed={() => {
+              component.runtime.event(
+                'component',
+                'failed',
+                'VERBIS_EMBED_FAILED',
+                component.node.id,
+              );
+            }}
+          />
         ) : (
           <Alert title={t('components.unconfigured')} />
         );
       break;
     case 'iframe':
       content = p.url ? (
-        <iframe
-          title={text(p.labelKey)}
-          src={safeAssetUrl(p.url, environment.frameOrigins)}
-          sandbox=""
-          allow="camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'"
-          referrerPolicy="no-referrer"
-          loading="lazy"
+        <EmbedFrame
           className="vc-frame"
+          src={p.url}
+          origins={environment.frameOrigins}
+          label={text(p.labelKey)}
+          failed={() => {
+            component.runtime.event(
+              'component',
+              'failed',
+              'VERBIS_EMBED_FAILED',
+              component.node.id,
+            );
+          }}
         />
       ) : (
         <Alert title={t('components.unconfigured')} />

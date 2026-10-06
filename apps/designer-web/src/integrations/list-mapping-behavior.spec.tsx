@@ -12,7 +12,13 @@ import { defaults } from './importers.js';
 import IntegrationList from './list.js';
 import { MappingEditor } from './mapping.js';
 
-const row = IntegrationRecordSchema.parse({ ...defaults(), id: scriptId, version: 2 });
+const row = IntegrationRecordSchema.parse({
+  ...defaults(),
+  key: 'synthetic-existing',
+  definition: { ...defaults().definition, baseUrl: 'https://customer.example.io' },
+  id: scriptId,
+  version: 2,
+});
 async function allRows() {
   await screen.findByRole('table');
   const toggle = screen.queryByRole('button', { name: /show all rows/i });
@@ -65,6 +71,7 @@ it('filters by protocol and key, shows empty results and hides forbidden creatio
     <IntegrationList />,
     {
       '/v1/data-sources?limit=50': { data: [row], page: { nextCursor: null } },
+      '/v1/data-sources?limit=50&q=absent': { data: [], page: { nextCursor: null } },
       '/v1/data-sources?limit=50&protocol=soap': { data: [], page: { nextCursor: null } },
     },
     { ability: createAbility([{ action: 'read', subject: 'Integration' }]) },
@@ -165,4 +172,25 @@ it('does not overwrite a manual expression with the visual mapper', async () => 
   expect(
     screen.getByRole('button', { name: f.label('integrations.mapField') }).hasAttribute('disabled'),
   ).toBe(true);
+});
+
+it('searches the entire tenant catalog on the server and starts a new cursor sequence', async () => {
+  const f = await mountDesigner(<IntegrationList />, {
+    '/v1/data-sources?limit=50': { data: [row], page: { nextCursor: 'old-page' } },
+    '/v1/data-sources?limit=50&q=customer': {
+      data: [{ ...row, key: 'customer-profile' }],
+      page: { nextCursor: null },
+    },
+  });
+  await allRows();
+  fireEvent.change(screen.getByLabelText(f.label('integrations.search')), {
+    target: { value: 'customer' },
+  });
+  await waitFor(() => {
+    expect(f.requests.some((r) => r.path.endsWith('q=customer'))).toBe(true);
+  });
+  await allRows();
+  expect(await screen.findByRole('link', { name: 'customer-profile' })).toBeTruthy();
+  expect(f.requests.some((r) => r.path === '/v1/data-sources?limit=50&q=customer')).toBe(true);
+  expect(screen.queryByRole('button', { name: f.label('integrations.more') })).toBeNull();
 });

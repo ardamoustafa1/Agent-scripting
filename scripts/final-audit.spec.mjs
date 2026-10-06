@@ -6,6 +6,12 @@ import { catalogInventory } from './i18n-inventory.mjs';
 
 // Deliberately narrow: home-realm discovery reads providers and never changes domain state.
 const readOnly = new Set(['POST /auth/discover']);
+// Transient gateway wire packets are not domain writes. Their result is audited by the engine;
+// persisting transport bodies in the generic request audit would duplicate sensitive payloads.
+const transportOnly = new Set([
+  'POST /v1/private-egress/jobs/claim',
+  'POST /v1/private-egress/jobs/:id/complete',
+]);
 test('every mutation-shaped controller route maps to a transaction audit or explicit audit call', () => {
   const routes = inventoryRoutes(createApiProgram());
   assert.ok(routes.length > 100, 'Controller discovery unexpectedly shrank');
@@ -27,6 +33,12 @@ test('every mutation-shaped controller route maps to a transaction audit or expl
     if (readOnly.has(key)) {
       assert.equal(route.handler, 'discover');
       assert.deepEqual(route.decorators, ['Public']);
+      continue;
+    }
+    if (transportOnly.has(key)) {
+      assert.equal(route.controller, 'PrivateEgressController');
+      assert.deepEqual(route.decorators, ['SkipAudit']);
+      assert.equal(route.strategy, 'explicit');
       continue;
     }
     assert.ok(route.auditEvidence.length > 0, `${key} has no reachable AuditService call`);
@@ -54,4 +66,28 @@ test('TR/EN catalogs contain every literal production translation key and identi
   assert.deepEqual(result.trKeys, result.enKeys);
   assert.deepEqual(result.empty, []);
   assert.deepEqual(result.missing, []);
+});
+
+test('transient gateway audit exceptions retain certificate authorization and audited execution', () => {
+  const controller = readFileSync(
+    repository + 'apps/api/src/modules/integrations/private-egress.controller.ts',
+    'utf8',
+  );
+  assert.equal(controller.match(/@Can\('execute', 'Integration'\)/g)?.length, 2);
+  assert.equal(controller.match(/@NoResponseReplay\(\)/g)?.length, 2);
+  const gateway = readFileSync(
+    repository + 'apps/api/src/modules/integrations/private-egress.service.ts',
+    'utf8',
+  );
+  assert.match(gateway, /p\?\.type !== 'service'/);
+  assert.match(gateway, /!p\.certificateThumbprint/);
+  assert.match(gateway, /!p\.scopes\.includes\('execute:Integration'\)/);
+  const engine = readFileSync(
+    repository + 'apps/api/src/modules/integrations/integration-engine.service.ts',
+    'utf8',
+  );
+  assert.match(
+    engine,
+    /await this\.audit\.record\(tx, \{\s*action: 'integration\.datasource\.executed'/,
+  );
 });

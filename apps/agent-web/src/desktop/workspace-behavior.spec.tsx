@@ -43,7 +43,7 @@ afterEach(async () => {
   window.history.replaceState(null, '', '/');
   await i18n.changeLanguage('en');
 });
-function mount(signedIn = true, supervisor = false, emptySessions = false) {
+function mount(signedIn = true, supervisor = false, emptySessions = false, rateLimited = false) {
   vi.stubGlobal('indexedDB', new IDBFactory());
   vi.stubGlobal('matchMedia', () => ({
     matches: false,
@@ -62,6 +62,13 @@ function mount(signedIn = true, supervisor = false, emptySessions = false) {
     });
   const fetcher = vi.fn<typeof fetch>().mockImplementation((url) => {
     const path = typeof url === 'string' ? url : url instanceof URL ? url.href : url.url;
+    if (path.endsWith('/auth/session') && rateLimited)
+      return Promise.resolve(
+        Response.json(
+          { code: 'VERBIS_HTTP_RATE_LIMITED' },
+          { status: 429, headers: { 'retry-after': '42' } },
+        ),
+      );
     if (path.endsWith('/auth/session'))
       return Promise.resolve(
         signedIn ? Response.json(session) : new Response(null, { status: 401 }),
@@ -108,6 +115,21 @@ function mount(signedIn = true, supervisor = false, emptySessions = false) {
   );
   return { ui, fetcher };
 }
+it('never shows the sign-in form when the session probe is rate limited (P-18/P-19)', async () => {
+  const { fetcher } = mount(true, false, false, true);
+  const alert = await screen.findByRole('alert');
+  expect(alert.textContent).toContain('42');
+  expect(screen.queryByRole('heading', { name: i18n.t('agent.desktop.signIn') })).toBeNull();
+  fetcher.mockClear();
+  fireEvent.click(screen.getByRole('button', { name: i18n.t('agent.desktop.retry') }));
+  await waitFor(() => {
+    expect(fetcher).toHaveBeenCalled();
+  });
+});
+it('shows the sign-in form only for an unauthenticated (401) session', async () => {
+  mount(false);
+  await screen.findByRole('heading', { name: i18n.t('agent.desktop.signIn') });
+});
 it('explains an empty supervisor session list and disables its selector', async () => {
   mount(true, true, true);
   fireEvent.click(await screen.findByRole('button', { name: i18n.t('agent.desktop.supervisor') }));

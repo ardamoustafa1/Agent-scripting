@@ -19,7 +19,10 @@ gradle bootJar -Ppsdk.repo=<url> -Ppsdk.version=<v>   # with the licensed Platfo
 docker build --build-arg PSDK_REPO=<url> -t verbis/engage-sidecar .
 ```
 
-Configuration is in `application.yml` (environment variables). Secrets are mounted files:
+Configuration is in `application.yml` (environment variables). `SIDECAR_SOURCE` is required
+(`psdk`); an empty or unknown value stops startup. The `replay` source (recorded envelopes) is
+dev/test only and is refused unless `SIDECAR_ALLOW_REPLAY=true` is also set. `/actuator/health`
+reports the active `source`. Secrets are mounted files:
 
 - `NATS_CREDS_FILE`: NATS user credentials scoped to `verbis.connector.engage.<connectorId>.>`;
 - `CONFSERV_PASSWORD_FILE`: the Config Server password.

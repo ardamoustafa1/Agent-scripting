@@ -170,8 +170,16 @@
   gap: var(--vb-space-2);
   font-size: var(--vb-font-size-sm);
 }
+.aw-check {
+  min-block-size: 24px;
+}
+/* A-01 (WCAG 2.2 2.5.8): native checkboxes are 13px; keep every target at least 24×24. */
 .aw-check input {
   accent-color: var(--vb-color-primary);
+  flex: none;
+  inline-size: 24px;
+  block-size: 24px;
+  margin: 0;
 }
 .aw-inline {
   display: flex;
@@ -262,7 +270,6 @@
   grid-template-columns: 80px minmax(0, 1fr);
 }
 .aw-layout[data-compact='true'] .aw-rail nav span,
-.aw-layout[data-compact='true'] .aw-wordmark > span:last-child,
 .aw-layout[data-compact='true'] .aw-rail-footer span,
 .aw-layout[data-compact='true'] .aw-rail > .aw-caption {
   display: none;
@@ -272,7 +279,6 @@
     grid-template-columns: 80px minmax(0, 1fr);
   }
   .aw-rail nav span,
-  .aw-wordmark > span:last-child,
   .aw-rail-footer span,
   .aw-rail > .aw-caption {
     display: none;
@@ -422,4 +428,34 @@
 .aw-layout :is(input, textarea)::placeholder {
   color: var(--vb-color-text-muted);
   opacity: 1;
+}
+
+/* A-02: the wordmark text names the link; hide it visually only, never from assistive tech. */
+.aw-layout[data-compact='true'] .aw-wordmark > span:last-child {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .aw-wordmark > span:last-child {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+.aw-picker {
+  display: grid;
+  gap: var(--vb-space-2);
+  align-content: start;
+}
+.aw-picker-search {
+  min-block-size: 24px;
 }

@@ -597,14 +597,27 @@ it('restores history after a rejected back transition and retries it without rep
   await runtime.back();
   expect(runtime.store.get('runtime.page')).toBe('home');
 });
-it('handles booleans, null and structured ICU values and returns stable keys for missing parameters', () => {
+// M-Z6: "İyi günler, ben . Size özel…" — an empty or missing value must stay visible as a
+// named gap, never collapse silently or replace the whole sentence with its key.
+it('handles booleans and structured ICU values and marks empty or missing parameters visibly', () => {
   const document = runtimeFixture();
   document.i18n.messages['tr']!['synthetic.params'] = '{bool}|{nil}|{structured}';
+  document.i18n.messages['tr']!['synthetic.greeting'] =
+    'İyi günler, ben {agent}. Size özel teklif.';
   const { runtime } = engine(document);
   expect(
     runtime.message('synthetic.params', { bool: true, nil: null, structured: { key: 'value' } }),
-  ).toBe('true||{"key":"value"}');
-  expect(runtime.message('synthetic.params')).toBe('synthetic.params');
+  ).toBe('true|[nil]|{"key":"value"}');
+  expect(runtime.message('synthetic.params')).toBe('[bool]|[nil]|[structured]');
+  expect(runtime.message('synthetic.greeting', { agent: '' })).toBe(
+    'İyi günler, ben [agent]. Size özel teklif.',
+  );
+  expect(runtime.message('synthetic.greeting', { agent: '  ' })).toBe(
+    'İyi günler, ben [agent]. Size özel teklif.',
+  );
+  expect(runtime.message('synthetic.greeting', { agent: 'Ayşe' })).toBe(
+    'İyi günler, ben Ayşe. Size özel teklif.',
+  );
   expect(runtime.message('missing.key')).toBe('missing.key');
 });
 it('isolates a failed telemetry transport and suppresses simulation timers when configured', async () => {

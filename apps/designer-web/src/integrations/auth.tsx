@@ -54,8 +54,20 @@ export function AuthEditor({
   const secretRef = 'secretRef' in value ? value.secretRef : '';
   const selected = rows.find((s) => s.id === secretRef);
   const patch = (data: Record<string, unknown>) => {
-    const parsed = IntegrationAuthSchema.safeParse({ ...value, ...data });
-    if (parsed.success) change(parsed.data);
+    const candidate = { ...value, ...data };
+    // A URL is incomplete while typing. The parent Save gate validates the actual endpoint.
+    const parsed = IntegrationAuthSchema.safeParse(
+      'tokenUrl' in value ? { ...candidate, tokenUrl: 'https://placeholder.invalid' } : candidate,
+    );
+    if (parsed.success) {
+      if (
+        'tokenUrl' in parsed.data &&
+        'tokenUrl' in candidate &&
+        typeof candidate.tokenUrl === 'string'
+      )
+        change({ ...parsed.data, tokenUrl: candidate.tokenUrl });
+      else change(parsed.data);
+    }
   };
   return (
     <section className="ig-stack">
@@ -72,10 +84,10 @@ export function AuthEditor({
             type,
             ...(type === 'none' ? {} : { secretRef: ref }),
             ...(type === 'apiKey' ? { placement: 'header', name: 'X-API-Key' } : {}),
-            ...(type.startsWith('oauth2') ? { tokenUrl: 'https://auth.example.com/token' } : {}),
+            ...(type.startsWith('oauth2') ? { tokenUrl: 'https://placeholder.invalid' } : {}),
           });
           if (parsed.success) {
-            change(parsed.data);
+            change('tokenUrl' in parsed.data ? { ...parsed.data, tokenUrl: '' } : parsed.data);
             setError(false);
           } else setError(true);
         }}
@@ -116,6 +128,7 @@ export function AuthEditor({
         <>
           <Input
             label={t('designer.integrations.tokenUrl')}
+            placeholder="https://auth.example.com/token"
             value={value.tokenUrl}
             onChange={(e) => {
               patch({ tokenUrl: e.target.value });

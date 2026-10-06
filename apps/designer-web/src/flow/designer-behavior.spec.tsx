@@ -235,7 +235,7 @@ it('edits edge iteration guards, attaches a rule and deletes the selected edge',
   expect(f.store.getSnapshot().document.flow.edges[0]!.maxIterations).toBe(3);
   fireEvent.change(iterations, { target: { value: '' } });
   expect(f.store.getSnapshot().document.flow.edges[0]!.maxIterations).toBeUndefined();
-  fireEvent.click(screen.getAllByRole('button', { name: f.label('rules.visual') }).at(-1)!);
+  fireEvent.click(screen.getAllByRole('button', { name: f.label('rules.addCondition') }).at(-1)!);
   fireEvent.click(screen.getByRole('button', { name: f.label('rules.addCondition') }));
   expect(f.store.getSnapshot().document.flow.edges[0]!.when).toEqual({ $rule: 'rule-e1' });
   expect(f.store.getSnapshot().document.rules.find((rule) => rule.id === 'rule-e1')).toBeTruthy();
@@ -290,3 +290,10 @@ it('moves annotations with the keyboard and commits node positions after draggin
     ).not.toEqual(before);
   });
 });
+
+vi.mock('./layout-engine.js', () => ({
+  layoutEngine: async () => {
+    const { default: ELK } = await import('elkjs/lib/elk.bundled.js');
+    return new ELK();
+  },
+}));

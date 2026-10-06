@@ -11,9 +11,11 @@ import { list, type ResourceKind, type Resource } from '../api/client.js';
 import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
 
+import SharedScreens from './shared-screens.js';
+
 import type { Destination } from '../workspace/navigation.js';
 
-export default function Library({
+function LibraryBody({
   kind,
   onCreate,
 }: {
@@ -206,6 +208,7 @@ export default function Library({
         <Loading />
       ) : query.isError && !query.data ? (
         <Failure
+          error={query.error}
           retry={() => {
             void query.refetch();
           }}
@@ -393,4 +396,8 @@ export default function Library({
       )}
     </section>
   );
+}
+
+export default function Library(props: Parameters<typeof LibraryBody>[0]) {
+  return props.kind === 'screens' ? <SharedScreens /> : <LibraryBody {...props} />;
 }

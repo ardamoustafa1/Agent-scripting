@@ -3,6 +3,7 @@ import { Inject, Injectable, Optional } from '@nestjs/common';
 import { instruments } from '@verbis/observability';
 
 import { requestContext } from '../../common/context/request-context.js';
+import { ConflictError } from '../../common/errors/domain-errors.js';
 import { type ApiEnv, API_ENV } from '../../env.js';
 import { TenantDb } from '../../infra/database/tenant-db.js';
 
@@ -14,6 +15,7 @@ import {
   checkpointsInRange,
   type CheckpointRow,
 } from './checkpoints.js';
+import { certificateBody, signCertificate, verifyCertificate } from './core/audit-certificate.js';
 import { recomputeHash, type StoredAuditRow } from './core/audit-event.js';
 import {
   ChainVerifier,
@@ -21,7 +23,7 @@ import {
   type ChainAnchor,
   type VerifyResult,
 } from './core/chain-verifier.js';
-import { CheckpointVerifier } from './core/checkpoint-signer.js';
+import { CheckpointSigner, CheckpointVerifier } from './core/checkpoint-signer.js';
 import { csvHeader, csvRow, toWireEvent } from './core/formats.js';
 
 import type { TransactionClient } from '../../infra/database/prisma.service.js';
@@ -50,6 +52,34 @@ export class AuditQueryService {
     @Inject(CHECKPOINT_VERIFIER)
     private readonly checkpointVerifier?: CheckpointVerifier,
   ) {}
+
+  /** Signed offline-verifiable proof, bounded to the verified tenant range. */
+  async certificate(request: VerifyRequest) {
+    if (!this.env.AUDIT_CHECKPOINT_SIGNING_JWK)
+      throw new ConflictError('Audit signing is not configured');
+    const report = await this.verify(request);
+    if (!report.valid || !report.signaturesVerified || !report.fromSeq || !report.toSeq)
+      throw new ConflictError('A complete verified audit range is required');
+    const signer = CheckpointSigner.fromJwk(this.env.AUDIT_CHECKPOINT_SIGNING_JWK);
+    const tenantId = this.db.tenantId(),
+      tx = this.db.current();
+    const checkpoints = await checkpointsInRange(
+      tx,
+      tenantId,
+      BigInt(report.fromSeq),
+      BigInt(report.toSeq),
+    );
+    const body = certificateBody(tenantId, report, checkpoints, new Date());
+    const certificate = signCertificate(body, signer.keyId, this.env.AUDIT_CHECKPOINT_SIGNING_JWK);
+    if (!this.checkpointVerifier || !verifyCertificate(certificate, this.checkpointVerifier.jwks()))
+      throw new ConflictError('The signing key must be present in the published audit keys');
+    await this.audit.record(tx, {
+      action: 'audit.certificate.created',
+      target: { type: 'AuditCertificate', id: tenantId },
+      metadata: { fromSeq: body.fromSeq, toSeq: body.toSeq, lastHash: body.lastHash },
+    });
+    return certificate;
+  }
 
   /** Reading the audit trail is itself audited (CLAUDE.md §6). */
   async search(

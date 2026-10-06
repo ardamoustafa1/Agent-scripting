@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.verbis.avaya.sidecar.SourcePolicyTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-06T17:50:25.823Z" hostname="cef18aef4def" time="0.004">
+  <properties/>
+  <testcase name="refusesReplayUnlessExplicitlyAllowed()" classname="io.verbis.avaya.sidecar.SourcePolicyTest" time="0.002"/>
+  <testcase name="rejectsUnknownSourcesInsteadOfFallingBackToReplay()" classname="io.verbis.avaya.sidecar.SourcePolicyTest" time="0.001"/>
+  <testcase name="acceptsPlatformSources()" classname="io.verbis.avaya.sidecar.SourcePolicyTest" time="0.0"/>
+  <testcase name="requiresAnExplicitSource()" classname="io.verbis.avaya.sidecar.SourcePolicyTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

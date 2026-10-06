@@ -1,10 +1,12 @@
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
+import { securityPropertyOptions } from '@verbis/test-utils';
+
 import { evaluate, exprToRule, parseExpression, ruleToExpr, tryEvaluate } from './index.js';
 
 const options = { budgetClock: () => 0, now: () => 0 };
-const config = { seed: 20261001, numRuns: 1000 };
+const config = securityPropertyOptions(20261001);
 describe('seeded property/fuzz conformance', () => {
   it('arbitrary input produces only a bounded AST or safe structured error', () => {
     fc.assert(

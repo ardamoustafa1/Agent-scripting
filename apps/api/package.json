@@ -20,6 +20,7 @@
     "dev:token": "tsx scripts/dev-token.ts",
     "clean": "rm -rf dist coverage src/generated",
     "start:audit-worker": "node dist/audit-worker.js",
+    "start:private-egress": "tsx scripts/private-egress-worker.ts",
     "test:perf": "prisma generate && vitest run --project perf",
     "test:integrations": "prisma generate && vitest run --project unit src/modules/integrations",
     "test:runtime": "prisma generate && vitest run --project unit src/modules/runtime",

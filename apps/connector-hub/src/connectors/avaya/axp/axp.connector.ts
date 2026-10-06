@@ -8,6 +8,7 @@ import {
   UnknownInteractionError,
   type CommandTarget,
   type Connector,
+  type ConnectorCapabilities,
   type ConnectorContext,
   type ConnectorHealth,
   type InteractionEvent,
@@ -20,6 +21,7 @@ import { RecordingHook } from '../../shared/recording-hook.js';
 import { AxpClient, type AxpCredentials } from './axp-client.js';
 import { AxpNotificationStream } from './axp-notifications.js';
 import { AxpConfigSchema, type AxpConfig } from './config.js';
+import { AxpEndpointsSchema, renderAxpPath, type AxpEndpoints } from './endpoints.js';
 import { createAxpMapper } from './mapper.js';
 
 import type { Scheduler, SocketFactory } from '../../genesys-cloud/notifications.js';
@@ -28,6 +30,8 @@ export interface AxpDeps {
   readonly fetch?: typeof fetch;
   readonly sleep?: (ms: number) => Promise<void>;
   readonly random?: () => number;
+  /** Token path and REST wrap-up (explicit config; wrap-up is off by default). */
+  readonly endpoints?: AxpEndpoints;
   /** `null` disables the notification stream (fixture tests drive `ingest`). */
   readonly socket?: SocketFactory | null;
   readonly scheduler?: Scheduler;
@@ -64,11 +68,7 @@ const LIVE = new Set(['ACTIVE', 'CONNECTED', 'HELD', 'ACW', 'AFTER_CONTACT_WORK'
 export class AxpConnector implements Connector {
   readonly type = 'avaya-axp' as const;
   readonly kind = 'workspaces';
-  readonly capabilities = {
-    channels: ['voice', 'chat', 'email', 'sms', 'whatsapp', 'social'] as const,
-    features: ['wrapUpCodes', 'recordingControl'] as const,
-    maxConcurrent: { chat: 4, email: 3, sms: 4, whatsapp: 4, social: 4 },
-  };
+  readonly capabilities: ConnectorCapabilities;
   readonly configSchema = AxpConfigSchema;
 
   readonly #state = new InteractionState();
@@ -89,7 +89,19 @@ export class AxpConnector implements Connector {
   );
   #lastEventAt: Date | undefined;
 
-  constructor(private readonly deps: AxpDeps = {}) {}
+  readonly #endpoints: AxpEndpoints;
+
+  constructor(private readonly deps: AxpDeps = {}) {
+    this.#endpoints = deps.endpoints ?? AxpEndpointsSchema.parse({});
+    this.capabilities = {
+      channels: ['voice', 'chat', 'email', 'sms', 'whatsapp', 'social'],
+      features:
+        this.#endpoints.wrapUpMode === 'rest'
+          ? ['wrapUpCodes', 'recordingControl']
+          : ['recordingControl'],
+      maxConcurrent: { chat: 4, email: 3, sms: 4, whatsapp: 4, social: 4 },
+    };
+  }
 
   async init(ctx: ConnectorContext): Promise<void> {
     const config = AxpConfigSchema.parse(ctx.config);
@@ -101,12 +113,17 @@ export class AxpConnector implements Connector {
     await credentials(); // fail fast
     this.#config = config;
     this.#ctx = ctx;
-    this.#client = new AxpClient(config, credentials, {
-      ...(this.deps.fetch === undefined ? {} : { fetch: this.deps.fetch }),
-      now: ctx.now,
-      ...(this.deps.sleep === undefined ? {} : { sleep: this.deps.sleep }),
-      ...(this.deps.random === undefined ? {} : { random: this.deps.random }),
-    });
+    this.#client = new AxpClient(
+      config,
+      credentials,
+      {
+        ...(this.deps.fetch === undefined ? {} : { fetch: this.deps.fetch }),
+        now: ctx.now,
+        ...(this.deps.sleep === undefined ? {} : { sleep: this.deps.sleep }),
+        ...(this.deps.random === undefined ? {} : { random: this.deps.random }),
+      },
+      { tokenPath: this.#endpoints.tokenPath },
+    );
     if (config.recording !== undefined)
       this.#recording = new RecordingHook(
         config.recording,
@@ -199,6 +216,9 @@ export class AxpConnector implements Connector {
 
   /** Disposition + notes on the interaction (AXP requires it to be out of Connected state). */
   async setWrapUp(target: CommandTarget, wrapUp: WrapUp): Promise<void> {
+    const wrapUpPath = this.#endpoints.wrapUpPath;
+    if (this.#endpoints.wrapUpMode !== 'rest' || wrapUpPath === undefined)
+      throw new CommandNotSupportedError('setWrapUp');
     if (this.#sent.has(target.commandId)) return;
     const config = this.#configOrThrow();
     if (!this.#channels.has(target.platformInteractionId)) throw new UnknownInteractionError();
@@ -210,7 +230,10 @@ export class AxpConnector implements Connector {
       .join(' ');
     await this.#api().request(
       'POST',
-      `/api/interactions/v1/accounts/${encodeURIComponent(config.accountId)}/interactions/${encodeURIComponent(target.platformInteractionId)}/wrapup`,
+      renderAxpPath(wrapUpPath, {
+        accountId: config.accountId,
+        interactionId: target.platformInteractionId,
+      }),
       z.unknown(),
       {
         dispositionCode: config.dispositionCodes[wrapUp.code] ?? wrapUp.code,

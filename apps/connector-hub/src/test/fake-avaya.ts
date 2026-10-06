@@ -154,7 +154,10 @@ export class FakeAxp {
         }),
       );
     }
-    if (method === 'POST' && /\/interactions\/[^/]+\/wrapup$/.test(url.pathname))
+    if (
+      method === 'POST' &&
+      /(\/interactions\/[^/]+\/wrapup|\/api\/custom\/[^/]+\/[^/]+\/done)$/.test(url.pathname)
+    )
       return Promise.resolve(new Response(null, { status: 204 }));
     return Promise.resolve(new Response(null, { status: 404 }));
   }) as typeof fetch;

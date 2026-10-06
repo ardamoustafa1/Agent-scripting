@@ -191,6 +191,9 @@
 .vb-analytics-metric {
   border-block-start: 3px solid color-mix(in srgb, var(--vb-color-info) 35%, var(--vb-color-border));
   box-shadow: var(--vb-shadow-sm);
+  /* A-03: KPI tiles wrap instead of becoming keyboard-unreachable scroll regions. */
+  overflow: visible;
+  overflow-wrap: anywhere;
 }
 .vb-analytics-metric svg {
   flex-shrink: 0;
@@ -210,7 +213,7 @@
 }
 .vb-analytics-metric strong {
   display: block;
-  font-size: 32px;
+  font-size: clamp(24px, 7vw, 32px);
   font-weight: 500;
   letter-spacing: -0.045em;
   line-height: 1.2;

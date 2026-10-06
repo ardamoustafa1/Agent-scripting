@@ -21,7 +21,11 @@ test('dev mTLS rejects absent certs and replaces forged cert headers before forw
   const upstream = createServer((req, res) => {
     res.setHeader('content-type', 'application/json');
     res.end(
-      JSON.stringify({ url: req.url, certificate: req.headers[env.MTLS_CLIENT_CERT_HEADER] }),
+      JSON.stringify({
+        url: req.url,
+        certificate: req.headers[env.MTLS_CLIENT_CERT_HEADER],
+        proof: req.headers['x-verbis-mtls-proxy-secret'],
+      }),
     );
   });
   const upstreamPort = await listen(upstream);
@@ -41,7 +45,10 @@ test('dev mTLS rejects absent certs and replaces forged cert headers before forw
                 key: readFileSync(env.HUB_CLIENT_KEY_FILE),
               }
             : {}),
-          headers: { [env.MTLS_CLIENT_CERT_HEADER]: 'forged' },
+          headers: {
+            [env.MTLS_CLIENT_CERT_HEADER]: 'forged',
+            'x-verbis-mtls-proxy-secret': 'forged',
+          },
           agent: false,
         },
         (res) => {
@@ -57,6 +64,7 @@ test('dev mTLS rejects absent certs and replaces forged cert headers before forw
   await assert.rejects(call(false));
   const result = await call(true);
   assert.equal(result.status, 200);
+  assert.equal(result.body.proof, env.MTLS_PROXY_SECRET);
   assert.equal(result.body.url, '/oauth2/verbis-dev/token');
   const forwarded = new X509Certificate(decodeURIComponent(result.body.certificate));
   const expected = new X509Certificate(readFileSync(env.HUB_CLIENT_CERT_FILE));

@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from 'react';
 
-import { RuntimeProblem } from '@verbis/core-runtime';
+import { safeEmbedUrl } from '@verbis/core-runtime';
 
 export interface ComponentEnvironment {
   /** Origins are trusted tenant policy from the BFF, never script props. HTTPS only. */
@@ -41,17 +41,7 @@ export function ComponentProvider({
 export function useComponentEnvironment(): ComponentEnvironment {
   return useContext(context);
 }
-export function safeAssetUrl(input: string, origins: readonly string[]): string {
-  let url: URL;
-  try {
-    url = new URL(input);
-  } catch {
-    throw new RuntimeProblem('VERBIS_COMPONENT_URL');
-  }
-  if (url.protocol !== 'https:' || url.username || url.password || !origins.includes(url.origin))
-    throw new RuntimeProblem('VERBIS_COMPONENT_URL');
-  return url.href;
-}
+export const safeAssetUrl = safeEmbedUrl;
 export function readPath(value: unknown, path: string): unknown {
   let current: unknown = value;
   for (const key of path.split('.')) {

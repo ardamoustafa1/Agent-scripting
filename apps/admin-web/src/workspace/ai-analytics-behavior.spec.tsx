@@ -164,14 +164,21 @@ it('creates and removes analytics schedules with authorized session CSRF and ref
     ],
     'POST /v1/analytics/schedules': { id: syntheticId, nextRunAt: '2026-10-04T10:00:00Z' },
     ['DELETE /v1/analytics/schedules/' + syntheticId]: { deleted: true },
+    '/v1/users?limit=100': {
+      data: [{ id: syntheticId, displayName: 'Synthetic Recipient', email: 'r@example.test' }],
+    },
+    '/v1/campaigns?limit=100': { data: [{ id: syntheticId, name: 'Synthetic Campaign' }] },
+    '/v1/groups?limit=100&sort=displayName': {
+      data: [{ id: syntheticId, displayName: 'Synthetic Team' }],
+    },
   });
   const t = (key: string) => f.i18n.t('analytics.' + key);
-  await screen.findByLabelText(t('recipients'));
+  // U-05: recipients, campaign and team are picked by name; ids never have to be typed.
+  fireEvent.click(await screen.findByRole('checkbox', { name: 'Synthetic Recipient' }));
+  expect(await screen.findByRole('option', { name: 'Synthetic Campaign' })).toBeTruthy();
+  expect(screen.getByRole('option', { name: 'Synthetic Team' })).toBeTruthy();
   fireEvent.change(screen.getByLabelText(t('frequency')), { target: { value: 'weekly' } });
   fireEvent.change(screen.getByLabelText(t('hour')), { target: { value: '10' } });
-  fireEvent.change(screen.getByLabelText(t('recipients')), {
-    target: { value: ' ' + syntheticId + ' ' },
-  });
   fireEvent.submit(screen.getByRole('button', { name: t('save') }).closest('form')!);
   await waitFor(() => {
     expect(f.requests.some((request) => request.method === 'POST')).toBe(true);

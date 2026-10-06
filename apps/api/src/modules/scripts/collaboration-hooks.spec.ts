@@ -3,7 +3,13 @@ import { randomUUID } from 'node:crypto';
 import { Document, Server } from '@hocuspocus/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { initializeDocument, readDocument, Y } from '@verbis/collaboration';
+import {
+  MAX_FRAME_BYTES,
+  MAX_UPDATE_BYTES,
+  initializeDocument,
+  readDocument,
+  Y,
+} from '@verbis/collaboration';
 import { minimalScript } from '@verbis/script-schema/fixtures';
 
 import { requestContext, systemContext } from '../../common/context/request-context.js';
@@ -94,6 +100,7 @@ function fixture(enabled = true, failListen = false) {
     release: vi.fn().mockResolvedValue(undefined),
     key: vi.fn().mockReturnValue('synthetic-lease'),
   };
+  const audit = { record: vi.fn().mockResolvedValue(undefined) };
   const service = new CollaborationService(
     { COLLABORATION_PORT: enabled ? 12345 : 0, COLLABORATION_ADDRESS: '127.0.0.1' } as ApiEnv,
     {
@@ -106,7 +113,7 @@ function fixture(enabled = true, failListen = false) {
     abilities as unknown as AbilityFactory,
     { authorize } as unknown as TeamService,
     scripts as unknown as ScriptsService,
-    { record: vi.fn().mockResolvedValue(undefined) } as unknown as AuditService,
+    audit as unknown as AuditService,
     leases as unknown as DraftLeaseService,
   );
   service.onApplicationBootstrap();
@@ -147,6 +154,7 @@ function fixture(enabled = true, failListen = false) {
     abilities,
     scripts,
     leases,
+    audit,
     document,
     hook,
     payload,
@@ -271,6 +279,59 @@ describe('collaboration authenticated document lifecycle', () => {
     await expect(f.service.persist(f.grant.documentName, f.document)).rejects.toThrow(
       'Linked content',
     );
+  });
+  describe('per-update size limit (M-15)', () => {
+    it('accepts an update of exactly 2 MiB and rejects 2 MiB + 1 with close code 1009 and an audit', async () => {
+      const f = fixture();
+      await f.load();
+      // Boundary: exactly at the limit passes the size gate.
+      const atLimit = f.hook('beforeSync', {
+        ...f.payload,
+        type: 2,
+        payload: new Uint8Array(MAX_UPDATE_BYTES),
+      });
+      await expect(atLimit).resolves.toBeUndefined();
+      expect(f.audit.record).not.toHaveBeenCalled();
+      const over = f.hook('beforeSync', {
+        ...f.payload,
+        type: 2,
+        payload: new Uint8Array(MAX_UPDATE_BYTES + 1),
+      });
+      await expect(over).rejects.toMatchObject({ code: 1009, reason: 'Message Too Big' });
+      expect(f.audit.record).toHaveBeenCalledWith(
+        f.tx,
+        expect.objectContaining({
+          action: 'script.collaboration.updateRejected',
+          outcome: 'denied',
+          metadata: { scriptVersion: 1, size: MAX_UPDATE_BYTES + 1 },
+        }),
+      );
+      expect(readDocument(f.document)).toEqual(minimalScript());
+    });
+    it('still closes with 1009 when the audit write fails (no crash)', async () => {
+      const f = fixture();
+      await f.load();
+      f.audit.record.mockRejectedValue(new Error('db down'));
+      await expect(
+        f.hook('beforeSync', {
+          ...f.payload,
+          type: 1,
+          payload: new Uint8Array(MAX_UPDATE_BYTES + 5),
+        }),
+      ).rejects.toMatchObject({ code: 1009 });
+    });
+    it('does not size-gate SyncStep1 and sets the transport frame limit above the update limit', async () => {
+      const f = fixture();
+      await f.load();
+      await expect(
+        f.hook('beforeSync', {
+          ...f.payload,
+          type: 0,
+          payload: new Uint8Array(MAX_UPDATE_BYTES + 1),
+        }),
+      ).resolves.toBeUndefined();
+      expect(f.server.configuration.websocketOptions?.['maxPayload']).toBe(MAX_FRAME_BYTES);
+    });
   });
   it('flushes and snapshots before releasing the lease, and survives repeated closure', async () => {
     const f = fixture();

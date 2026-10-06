@@ -1,7 +1,9 @@
 import { Component, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Alert, Button, EmptyState, Skeleton } from '@verbis/ui';
+import { Alert, Button, EmptyState, Skeleton, RetryAfterNotice } from '@verbis/ui';
+
+import { ApiError } from '../api/client.js';
 
 export function Loading() {
   const { t } = useTranslation();
@@ -20,13 +22,17 @@ export function Loading() {
     </div>
   );
 }
-export function Failure({ retry }: { retry: () => void }) {
+export function Failure({ retry, error }: { retry: () => void; error?: unknown }) {
   const { t } = useTranslation();
+  if (error instanceof ApiError && error.status === 403) return <Forbidden />;
   return (
     <div className="dw-state">
       <Alert title={t('designer.workspace.error')} tone="danger">
         {t('designer.workspace.errorDetail')}
       </Alert>
+      {error instanceof ApiError && error.retryAfter !== undefined && (
+        <RetryAfterNotice seconds={error.retryAfter} trigger={error} retry={retry} />
+      )}
       <Button onClick={retry}>{t('designer.workspace.retry')}</Button>
     </div>
   );

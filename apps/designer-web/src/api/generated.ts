@@ -1023,6 +1023,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/analytics/recommendations': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Scoped A/B outcome recommendations; insufficient or incomplete cohorts yield no winner
+     * @description Requires: read:Report
+     */
+    get: operations['Analytics.recommendations'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/analytics/schedules': {
     parameters: {
       query?: never;
@@ -1193,6 +1213,26 @@ export interface paths {
     get: operations['Audit.list'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/audit-events/certificate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Create an Ed25519 audit certificate for offline verification
+     * @description Requires: export:Audit
+     */
+    post: operations['Audit.certificate'];
     delete?: never;
     options?: never;
     head?: never;
@@ -1510,6 +1550,46 @@ export interface paths {
     get: operations['Connectors.listChannels'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/connector-dead-letters': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Connector hub dead-letter queue statistics
+     * @description Requires: read:Connector
+     */
+    get: operations['DeadLetters.stats'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/connector-dead-letters/replay': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Re-offer this tenant dead-lettered connector events
+     * @description Requires: manage:Connector
+     */
+    post: operations['DeadLetters.replay'];
     delete?: never;
     options?: never;
     head?: never;
@@ -2045,6 +2125,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/groups': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * List team groups (names only) for scope and report pickers
+     * @description Requires: read:User
+     */
+    get: operations['Identity.listGroups'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/identity-providers': {
     parameters: {
       query?: never;
@@ -2341,6 +2441,54 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/locations': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * List tenant locations (sites) with server-side search
+     * @description Requires: read:User
+     */
+    get: operations['Locations.list'];
+    put?: never;
+    /**
+     * Create a location
+     * @description Requires: manage:Tenant
+     */
+    post: operations['Locations.create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/locations/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * Delete a location (soft delete)
+     * @description Requires: manage:Tenant
+     */
+    delete: operations['Locations.remove'];
+    options?: never;
+    head?: never;
+    /**
+     * Rename a location (optimistic locking; code is immutable)
+     * @description Requires: manage:Tenant
+     */
+    patch: operations['Locations.update'];
+    trace?: never;
+  };
   '/v1/me/permissions': {
     parameters: {
       query?: never;
@@ -2388,6 +2536,46 @@ export interface paths {
     post?: never;
     /** End one of my sessions */
     delete: operations['IdentityAdmin.endMySession'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/private-egress/jobs/{id}/complete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Gateway: complete one claimed job with its single-use lease
+     * @description Requires: execute:Integration
+     */
+    post: operations['PrivateEgress.complete'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/private-egress/jobs/claim': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Certificate-bound gateway: claim a transient job for this service client
+     * @description Requires: execute:Integration
+     */
+    post: operations['PrivateEgress.claim'];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -2641,6 +2829,46 @@ export interface paths {
      * @description Requires: read:ScriptVersion
      */
     get: operations['Scripts.getVersion'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/scripts/{id}/versions/{number}/collaboration/conflicts': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * List preserved collaborative conflicts for this version
+     * @description Requires: update:Script
+     */
+    get: operations['Collaboration.conflicts'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/scripts/{id}/versions/{number}/collaboration/conflicts/{conflictId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Read a tenant-scoped recovery document without overwriting the draft
+     * @description Requires: update:Script
+     */
+    get: operations['Collaboration.conflict'];
     put?: never;
     post?: never;
     delete?: never;
@@ -3803,6 +4031,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/tenant/onboarding': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Idempotently create a draft onboarding campaign/script and disabled simulator; never approve or publish
+     * @description Requires: manage:Tenant, create:Campaign, create:Script, create:Connector
+     */
+    post: operations['Tenancy.bootstrap'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/tenant/settings': {
     parameters: {
       query?: never;
@@ -3941,6 +4189,149 @@ export interface components {
       /** Format: uuid */
       pinnedVersionId?: string;
     }[];
+    Action:
+      | {
+          /** @constant */
+          type: 'setVariable';
+          variable: string;
+          value: components['schemas']['Value'];
+        }
+      | {
+          /** @constant */
+          type: 'callDataSource';
+          dataSource: string;
+          inputs?: {
+            [key: string]: components['schemas']['Value'];
+          };
+          onSuccess?: components['schemas']['Action'][];
+          onError?: components['schemas']['Action'][];
+        }
+      | {
+          /** @constant */
+          type: 'navigate';
+          page: string;
+        }
+      | {
+          /** @constant */
+          type: 'next';
+        }
+      | {
+          /** @constant */
+          type: 'back';
+        }
+      | {
+          /** @constant */
+          type: 'showToast';
+          messageKey: string;
+          /**
+           * @default info
+           * @enum {string}
+           */
+          tone: 'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info';
+          params?: {
+            [key: string]: components['schemas']['Value'];
+          };
+        }
+      | {
+          /** @constant */
+          type: 'openModal';
+          page: string;
+        }
+      | {
+          /** @constant */
+          type: 'closeModal';
+        }
+      | {
+          /** @constant */
+          type: 'validatePage';
+          page?: string;
+          onInvalid?: components['schemas']['Action'][];
+        }
+      | {
+          /** @constant */
+          type: 'submitOutcome';
+          outcome: string;
+          notes?: components['schemas']['Value'];
+        }
+      | {
+          /** @constant */
+          type: 'setDisposition';
+          code: string;
+          subCode?: string;
+        }
+      | {
+          /** @constant */
+          type: 'writeBackToPlatform';
+          attributes: {
+            [key: string]: components['schemas']['Value'];
+          };
+        }
+      | {
+          /** @constant */
+          type: 'transferHint';
+          target: string;
+          reasonKey?: string;
+        }
+      | {
+          /** @constant */
+          type: 'runSubflow';
+          flow: string;
+        }
+      | {
+          /** @constant */
+          type: 'conditional';
+          if: components['schemas']['Condition'];
+          then: components['schemas']['Action'][];
+          else?: components['schemas']['Action'][];
+        }
+      | {
+          /** @constant */
+          type: 'sequence';
+          actions: components['schemas']['Action'][];
+        }
+      | {
+          /** @constant */
+          type: 'parallel';
+          actions: components['schemas']['Action'][];
+        }
+      | {
+          /** @constant */
+          type: 'emitEvent';
+          name: string;
+          payload?: {
+            [key: string]: components['schemas']['Value'];
+          };
+        }
+      | {
+          /** @constant */
+          type: 'startTimer';
+          timer: string;
+        }
+      | {
+          /** @constant */
+          type: 'stopTimer';
+          timer: string;
+        }
+      | {
+          /** @constant */
+          type: 'maskField';
+          node: string;
+          /** @default true */
+          masked: boolean;
+        }
+      | {
+          /** @constant */
+          type: 'logEvent';
+          /**
+           * @default info
+           * @enum {string}
+           */
+          level: 'debug' | 'info' | 'warn' | 'error';
+          event: string;
+          data?: {
+            [key: string]: components['schemas']['Value'];
+          };
+        };
     AnalyticsDashboard: {
       /** Format: date-time */
       generatedAt: string;
@@ -4136,6 +4527,35 @@ export interface components {
         sort: string;
       };
     };
+    AuditCertificate: {
+      body: {
+        /** @constant */
+        v: 1;
+        /** Format: uuid */
+        tenantId: string;
+        fromSeq: string;
+        toSeq: string;
+        eventCount: number;
+        anchor: {
+          seq: string;
+          /** @enum {string} */
+          source: 'genesis' | 'event' | 'checkpoint';
+        };
+        lastHash: string;
+        chainValid: boolean;
+        breakCount: number;
+        checkpoints: {
+          /** Format: uuid */
+          id: string;
+          seq: string;
+          hash: string;
+        }[];
+        /** Format: date-time */
+        issuedAt: string;
+      };
+      keyId: string;
+      signature: string;
+    };
     AuditCheckpoint: {
       id: string;
       seq: string;
@@ -4287,6 +4707,16 @@ export interface components {
         patch: components['schemas']['UpdateAssignment'];
       }[];
     };
+    Binding:
+      | {
+          prop: string;
+          expression: string;
+        }
+      | {
+          /** @default value */
+          prop: string;
+          variable: string;
+        };
     BreakGlassAccount: {
       /** Format: uuid */
       userId: string;
@@ -4435,6 +4865,7 @@ export interface components {
       bindings: unknown;
       events: unknown;
     };
+    Condition: components['schemas']['ExpressionRef'] | components['schemas']['RuleRef'];
     Connector: {
       /**
        * Format: uuid
@@ -4463,6 +4894,18 @@ export interface components {
       /** @enum {string} */
       status: 'draft' | 'active' | 'disabled' | 'error';
       health: unknown;
+    };
+    ConnectorDeadLetterReplayRequest: {
+      /** @default 100 */
+      limit: number;
+    };
+    ConnectorDeadLetterReplayResult: {
+      replayed: number;
+    };
+    ConnectorDeadLetterStats: {
+      durable: boolean;
+      persisted: number;
+      persistFailures: number;
     };
     ConnectorEventIngest: {
       event: unknown;
@@ -4512,7 +4955,7 @@ export interface components {
       effectiveTo?: string | null;
       /** @default {} */
       conditions: components['schemas']['AssignmentConditions'];
-      expression?: components['schemas']['Predicate'] | null;
+      expression?: components['schemas']['RoutingPredicate'] | null;
       variants?: components['schemas']['AbVariants'] | null;
     };
     CreateCampaign: {
@@ -4736,6 +5179,11 @@ export interface components {
             };
           };
         };
+    CreateLocation: {
+      /** @description Stable kebab-case identifier; immutable after creation */
+      code: string;
+      name: string;
+    };
     CreateScimToken: {
       expiresInDays?: number;
     };
@@ -4898,7 +5346,7 @@ export interface components {
       version: number;
       key: string;
       /** @enum {string} */
-      protocol: 'rest' | 'soap' | 'graphql';
+      protocol: 'rest' | 'soap' | 'graphql' | 'sql';
       definition: unknown;
       secretRefs: string[];
       policy: unknown;
@@ -4909,6 +5357,35 @@ export interface components {
         limit: number;
         nextCursor: string | null;
         sort: string;
+      };
+    };
+    DataSourceRef: {
+      id: string;
+      ref: string;
+      version: number;
+      /** @default {} */
+      inputs: {
+        [key: string]: components['schemas']['Value'];
+      };
+      /** @default {} */
+      outputs: {
+        [key: string]: {
+          path: string;
+          variable?: string;
+        };
+      };
+      policy: {
+        /** @enum {string} */
+        onFailure?: 'block' | 'continue' | 'manual';
+        /**
+         * @default manual
+         * @enum {string}
+         */
+        trigger: 'manual' | 'onEnter';
+        /** @default 5000 */
+        timeoutMs: number;
+        /** @default 0 */
+        cacheTtlSec: number;
       };
     };
     DiscoverRequest: {
@@ -4981,10 +5458,161 @@ export interface components {
     ExpressionRef: {
       $expr: string;
     };
+    Flow: {
+      id: string;
+      name?: string;
+      start: string;
+      nodes: components['schemas']['FlowNode'][];
+      /** @default [] */
+      edges: components['schemas']['FlowEdge'][];
+      designer?: {
+        /** @default [] */
+        groups: {
+          id: string;
+          label: string;
+          nodes: string[];
+        }[];
+        /** @default [] */
+        notes: {
+          id: string;
+          text: string;
+          position: {
+            x: number;
+            y: number;
+          };
+        }[];
+      };
+      limits: {
+        /** @default 200 */
+        maxSteps: number;
+      };
+    };
+    FlowEdge: {
+      id: string;
+      from: string;
+      to: string;
+      when?: components['schemas']['Condition'];
+      /** @enum {string} */
+      port?: 'success' | 'error';
+      default?: boolean;
+      maxIterations?: number;
+    };
+    FlowNode:
+      | {
+          id: string;
+          labelKey?: string;
+          position?: {
+            x: number;
+            y: number;
+          };
+          /** @constant */
+          type: 'start';
+        }
+      | {
+          id: string;
+          labelKey?: string;
+          position?: {
+            x: number;
+            y: number;
+          };
+          /** @constant */
+          type: 'transfer';
+          target: string;
+          reasonKey?: string;
+        }
+      | {
+          id: string;
+          labelKey?: string;
+          position?: {
+            x: number;
+            y: number;
+          };
+          /** @constant */
+          type: 'page';
+          page: string;
+        }
+      | {
+          id: string;
+          labelKey?: string;
+          position?: {
+            x: number;
+            y: number;
+          };
+          /** @constant */
+          type: 'decision';
+        }
+      | {
+          id: string;
+          labelKey?: string;
+          position?: {
+            x: number;
+            y: number;
+          };
+          /** @constant */
+          type: 'dataSource';
+          dataSource: string;
+        }
+      | {
+          id: string;
+          labelKey?: string;
+          position?: {
+            x: number;
+            y: number;
+          };
+          /** @constant */
+          type: 'setVariable';
+          variable: string;
+          value: components['schemas']['Value'];
+        }
+      | {
+          id: string;
+          labelKey?: string;
+          position?: {
+            x: number;
+            y: number;
+          };
+          /** @constant */
+          type: 'subflow';
+          flow: string;
+        }
+      | {
+          id: string;
+          labelKey?: string;
+          position?: {
+            x: number;
+            y: number;
+          };
+          /** @constant */
+          type: 'end';
+          outcome?: string;
+          disposition?: string;
+        };
     FramePolicy: {
       'content-security-policy': string;
       /** @constant */
       'x-frame-options'?: 'DENY';
+    };
+    Group: {
+      /**
+       * Format: uuid
+       * @description UUIDv7 identifier
+       */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** @description Optimistic-lock version; send as If-Match: "<version>" */
+      version: number;
+      displayName: string;
+    };
+    GroupPage: {
+      data: components['schemas']['Group'][];
+      page: {
+        limit: number;
+        nextCursor: string | null;
+        sort: string;
+      };
     };
     Health: {
       /** @enum {string} */
@@ -5176,6 +5804,30 @@ export interface components {
       /** @constant */
       namespace: '/launch';
     };
+    Location: {
+      /**
+       * Format: uuid
+       * @description UUIDv7 identifier
+       */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** @description Optimistic-lock version; send as If-Match: "<version>" */
+      version: number;
+      /** @description Stable kebab-case identifier; immutable after creation */
+      code: string;
+      name: string;
+    };
+    LocationPage: {
+      data: components['schemas']['Location'][];
+      page: {
+        limit: number;
+        nextCursor: string | null;
+        sort: string;
+      };
+    };
     LogoutResponse: {
       redirectUrl: string;
     };
@@ -5200,6 +5852,30 @@ export interface components {
       roles: string[];
       rules: unknown[][];
       separationOfDuties: boolean;
+    };
+    Node: {
+      id: string;
+      type: string;
+      /** @default {} */
+      props: {
+        [key: string]: components['schemas']['JsonValue'];
+      };
+      style?: components['schemas']['ResponsiveStyle'];
+      /** @default [] */
+      bindings: components['schemas']['Binding'][];
+      /** @default {} */
+      events: {
+        [key: string]: components['schemas']['Action'][];
+      };
+      visibleWhen?: components['schemas']['Condition'];
+      enabledWhen?: components['schemas']['Condition'];
+      requiredWhen?: components['schemas']['Condition'];
+      a11y?: {
+        labelKey?: string;
+        descriptionKey?: string;
+        shortcut?: string;
+      };
+      children?: components['schemas']['Node'][];
     };
     NodeCommentInput: {
       nodeId: string;
@@ -5262,6 +5938,20 @@ export interface components {
       secretMappings: {
         [key: string]: string;
       };
+    };
+    Page: {
+      id: string;
+      name: string;
+      titleKey?: string;
+      layout: components['schemas']['Node'];
+      /** @default [] */
+      onEnter: components['schemas']['Action'][];
+      /** @default [] */
+      onLeave: components['schemas']['Action'][];
+      /** @default false */
+      mandatory: boolean;
+      /** @default [] */
+      timers: components['schemas']['Timer'][];
     };
     PermissionVocabulary: {
       resources: string[];
@@ -5341,6 +6031,13 @@ export interface components {
       resolved: boolean;
       version: number;
     };
+    ResponsiveStyle: {
+      base?: components['schemas']['StyleProps'];
+      sm?: components['schemas']['StyleProps'];
+      md?: components['schemas']['StyleProps'];
+      lg?: components['schemas']['StyleProps'];
+      xl?: components['schemas']['StyleProps'];
+    };
     ReviewScriptVersion:
       | {
           /** @constant */
@@ -5399,6 +6096,48 @@ export interface components {
     RotateSpCredential: {
       /** @enum {string} */
       use: 'signing' | 'encryption';
+    };
+    RoutingPredicate:
+      | {
+          all: components['schemas']['RoutingPredicate'][];
+        }
+      | {
+          any: components['schemas']['RoutingPredicate'][];
+        }
+      | {
+          not: components['schemas']['RoutingPredicate'];
+        }
+      | {
+          fact: string;
+          /** @enum {string} */
+          op:
+            | 'eq'
+            | 'neq'
+            | 'gt'
+            | 'gte'
+            | 'lt'
+            | 'lte'
+            | 'in'
+            | 'notIn'
+            | 'contains'
+            | 'startsWith'
+            | 'matches'
+            | 'exists'
+            | 'between'
+            | 'before'
+            | 'after';
+          value?: components['schemas']['JsonValue'];
+        };
+    Rule: {
+      id: string;
+      description?: string;
+      when: components['schemas']['Predicate'];
+      /** @default [] */
+      then: components['schemas']['Action'][];
+      else?: components['schemas']['Action'][];
+    };
+    RuleRef: {
+      $rule: string;
     };
     ScimBulkRequest: {
       schemas: ['urn:ietf:params:scim:api:messages:2.0:BulkRequest'];
@@ -5515,6 +6254,153 @@ export interface components {
       tags: string[];
       currentVersionId: string | null;
     };
+    /**
+     * Verbis script document
+     * @description Pure-data script version document (docs/SCRIPT_MODEL.md, ADR-0006, ADR-0010).
+     */
+    ScriptDocument: {
+      /** @constant */
+      schemaVersion: '1.1.0';
+      /** Format: uuid */
+      id: string;
+      meta: {
+        name: string;
+        description?: string;
+        /** @default [] */
+        tags: string[];
+        /** @default [] */
+        channels: (
+          'voice' | 'chat' | 'email' | 'sms' | 'whatsapp' | 'social' | 'video' | 'callback'
+        )[];
+        /** @default [] */
+        capabilities: string[];
+      };
+      /** @default [] */
+      variables: components['schemas']['Variable'][];
+      /** @default [] */
+      dataSources: components['schemas']['DataSourceRef'][];
+      pages: components['schemas']['Page'][];
+      flow: components['schemas']['Flow'];
+      /** @default [] */
+      subflows: components['schemas']['Flow'][];
+      /** @default [] */
+      rules: components['schemas']['Rule'][];
+      theme?: {
+        /**
+         * @default inherit
+         * @enum {string}
+         */
+        mode: 'inherit' | 'light' | 'dark';
+        /** @default {} */
+        tokens: {
+          /** @enum {string} */
+          density?: 'compact' | 'comfortable';
+          /** @enum {string} */
+          radius?: 'none' | 'sm' | 'md' | 'lg';
+          /** @enum {string} */
+          accent?: 'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info';
+        };
+      };
+      i18n: components['schemas']['ScriptI18n'];
+      /** @default [] */
+      componentRegistry: {
+        type: string;
+        version: string;
+        integrity: string;
+      }[];
+      testScenarios?: {
+        id: string;
+        name: string;
+        /** @constant */
+        synthetic: true;
+        context: {
+          /** @default {} */
+          variables: {
+            [key: string]: components['schemas']['JsonValue'];
+          };
+          /** @default {} */
+          interaction: {
+            [key: string]: components['schemas']['JsonValue'];
+          };
+          /** @default {} */
+          agent: {
+            [key: string]: components['schemas']['JsonValue'];
+          };
+          /** @default {} */
+          campaign: {
+            [key: string]: components['schemas']['JsonValue'];
+          };
+          /** @default {} */
+          const: {
+            [key: string]: components['schemas']['JsonValue'];
+          };
+          /**
+           * @default tr
+           * @enum {string}
+           */
+          locale: 'tr' | 'en';
+        };
+        /** @default {} */
+        dataSources: {
+          [key: string]: {
+            /**
+             * @default success
+             * @enum {string}
+             */
+            kind: 'success' | 'empty' | 'error' | 'delay';
+            /** @default {} */
+            outputs: {
+              [key: string]: components['schemas']['JsonValue'];
+            };
+            /** @default 0 */
+            delayMs: number;
+          };
+        };
+        steps: (
+          | {
+              /** @constant */
+              type: 'variable';
+              variable: string;
+              value: components['schemas']['JsonValue'];
+            }
+          | {
+              /** @constant */
+              type: 'event';
+              node: string;
+              event: string;
+            }
+          | {
+              /** @constant */
+              type: 'read';
+              node: string;
+              acknowledged: boolean;
+            }
+          | {
+              /** @constant */
+              type: 'actions';
+              actions: components['schemas']['Action'][];
+              ignoreError?: boolean;
+            }
+        )[];
+        expected: {
+          outcome?: string;
+          page?: string;
+          ended?: boolean;
+          /** @default {} */
+          variables: {
+            [key: string]: components['schemas']['JsonValue'];
+          };
+        };
+      }[];
+    };
+    ScriptI18n: {
+      defaultLocale: string;
+      messages: {
+        [key: string]: {
+          [key: string]: string;
+        };
+      };
+    };
     ScriptPage: {
       data: components['schemas']['Script'][];
       page: {
@@ -5560,6 +6446,8 @@ export interface components {
           brokenBy: 'recency' | 'id';
         } | null;
         at: string;
+        /** @enum {string} */
+        abSkipped?: 'missing_sticky_key' | 'variant_not_published';
       };
       /** @enum {string} */
       cache: 'hit' | 'miss' | 'bypass';
@@ -5812,6 +6700,10 @@ export interface components {
       /** @description Optimistic-lock version; send as If-Match: "<version>" */
       version: number;
       interactionId: string | null;
+      desktopLabel?: {
+        channel: string;
+        customerName: string | null;
+      };
       /**
        * Format: uuid
        * @description UUIDv7 identifier
@@ -5948,6 +6840,83 @@ export interface components {
         [key: string]: unknown;
       }[];
     };
+    StyleProps: {
+      /** @enum {string} */
+      display?: 'flex' | 'grid' | 'block' | 'none';
+      /** @enum {string} */
+      direction?: 'row' | 'column';
+      wrap?: boolean;
+      /** @enum {string} */
+      gap?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+      /** @enum {string} */
+      padding?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+      /** @enum {string} */
+      paddingInline?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+      /** @enum {string} */
+      paddingBlock?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+      /** @enum {string} */
+      margin?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+      /** @enum {string} */
+      width?:
+        | 'auto'
+        | 'full'
+        | 'fit'
+        | '1/4'
+        | '1/3'
+        | '1/2'
+        | '2/3'
+        | '3/4'
+        | 'xs'
+        | 'sm'
+        | 'md'
+        | 'lg'
+        | 'xl';
+      /** @enum {string} */
+      minWidth?:
+        | 'auto'
+        | 'full'
+        | 'fit'
+        | '1/4'
+        | '1/3'
+        | '1/2'
+        | '2/3'
+        | '3/4'
+        | 'xs'
+        | 'sm'
+        | 'md'
+        | 'lg'
+        | 'xl';
+      /** @enum {string} */
+      maxWidth?:
+        | 'auto'
+        | 'full'
+        | 'fit'
+        | '1/4'
+        | '1/3'
+        | '1/2'
+        | '2/3'
+        | '3/4'
+        | 'xs'
+        | 'sm'
+        | 'md'
+        | 'lg'
+        | 'xl';
+      columns?: number;
+      colSpan?: number;
+      grow?: number;
+      shrink?: number;
+      /** @enum {string} */
+      align?: 'start' | 'center' | 'end' | 'stretch' | 'baseline';
+      /** @enum {string} */
+      justify?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
+      /** @enum {string} */
+      textAlign?: 'start' | 'center' | 'end';
+      /** @enum {string} */
+      tone?: 'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info';
+      /** @enum {string} */
+      emphasis?: 'low' | 'normal' | 'high';
+      scroll?: boolean;
+    };
     Tenant: {
       /**
        * Format: uuid
@@ -6004,6 +6973,15 @@ export interface components {
     } & {
       [key: string]: unknown;
     };
+    Timer: {
+      id: string;
+      durationMs: number;
+      /** @default false */
+      repeat: boolean;
+      /** @default false */
+      autoStart: boolean;
+      onElapsed: components['schemas']['Action'][];
+    };
     UpdateAssignment: {
       priority?: number;
       /** @enum {string} */
@@ -6012,7 +6990,7 @@ export interface components {
       effectiveFrom?: string | null;
       effectiveTo?: string | null;
       conditions?: components['schemas']['AssignmentConditions'];
-      expression?: components['schemas']['Predicate'] | null;
+      expression?: components['schemas']['RoutingPredicate'] | null;
       variants?: components['schemas']['AbVariants'] | null;
     };
     UpdateCampaign: {
@@ -6159,6 +7137,9 @@ export interface components {
             };
           };
     };
+    UpdateLocation: {
+      name: string;
+    };
     UpdateScript: {
       name?: string;
       description?: string | null;
@@ -6250,6 +7231,27 @@ export interface components {
         source: string;
       }[];
     };
+    Value: components['schemas']['ExpressionRef'] | components['schemas']['JsonValue'];
+    Variable: {
+      key: string;
+      /** @enum {string} */
+      type: 'string' | 'number' | 'boolean' | 'date' | 'object' | 'array' | 'enum';
+      /** @enum {string} */
+      scope: 'session' | 'page' | 'interaction' | 'campaign' | 'global';
+      default?: components['schemas']['JsonValue'];
+      enumValues?: string[];
+      /** @default false */
+      pii: boolean;
+      /**
+       * @default internal
+       * @enum {string}
+       */
+      classification: 'public' | 'internal' | 'pii' | 'pci';
+      /** @default false */
+      persist: boolean;
+      source?: string;
+      description?: string;
+    };
     VerbisPackage: {
       /** @constant */
       format: 'verbis-package';
@@ -6275,7 +7277,7 @@ export interface components {
           key: string;
           version: number;
           /** @enum {string} */
-          protocol: 'rest' | 'soap' | 'graphql';
+          protocol: 'rest' | 'soap' | 'graphql' | 'sql';
           definition: {
             /**
              * @default 1.1.0
@@ -6684,6 +7686,15 @@ export interface components {
               namespace: string;
               operation: string;
               action: string;
+            };
+            privateGateway?: {
+              /** Format: uuid */
+              clientId: string;
+              target: string;
+            };
+            sql?: {
+              queryKey: string;
+              parameters: string[];
             };
             graphql?: {
               query: string;
@@ -7136,6 +8147,19 @@ export interface operations {
         content: {
           'application/json': components['schemas']['AuthSession'];
         };
+      };
+      /** @description Too many session checks (RFC 7807, VERBIS_HTTP_RATE_LIMITED). Limited per session cookie plus a shared per-IP cap; clients must not treat this as a signed-out state. */
+      429: {
+        headers: {
+          /** @description Seconds until the current rate-limit window ends */
+          'Retry-After'?: string;
+          /** @description Requests allowed per window for this key */
+          'RateLimit-Limit'?: string;
+          /** @description Requests left in the current window */
+          'RateLimit-Remaining'?: string;
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Error (RFC 7807) */
       default: {
@@ -9397,6 +10421,49 @@ export interface operations {
       };
     };
   };
+  'Analytics.recommendations': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Recommendations with sample and evidence reasons */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: {
+              experimentId: string;
+              recommended: string | null;
+              /** @enum {string} */
+              reason:
+                | 'ok'
+                | 'needs-two-cohorts'
+                | 'insufficient-sample'
+                | 'data-loss'
+                | 'not-significant';
+              difference: number | null;
+              pValue: number | null;
+            }[];
+          };
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
   'Analytics.schedules': {
     parameters: {
       query?: never;
@@ -9766,6 +10833,39 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['AuditEventPage'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Audit.certificate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AuditVerifyRequest'];
+      };
+    };
+    responses: {
+      /** @description Signed audit certificate */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuditCertificate'];
         };
       };
       /** @description Error (RFC 7807) */
@@ -10454,6 +11554,68 @@ export interface operations {
       };
     };
   };
+  'DeadLetters.stats': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Dead-letter counters */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ConnectorDeadLetterStats'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'DeadLetters.replay': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ConnectorDeadLetterReplayRequest'];
+      };
+    };
+    responses: {
+      /** @description Number of events re-offered */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ConnectorDeadLetterReplayResult'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
   'ConnectorHub.list': {
     parameters: {
       query?: never;
@@ -10823,7 +11985,8 @@ export interface operations {
         limit?: number;
         cursor?: string;
         sort?: 'createdAt' | '-createdAt' | 'key' | '-key';
-        protocol?: 'rest' | 'soap' | 'graphql';
+        protocol?: 'rest' | 'soap' | 'graphql' | 'sql';
+        q?: string;
       };
       header?: never;
       path?: never;
@@ -10863,7 +12026,7 @@ export interface operations {
         'application/json': {
           key: string;
           /** @enum {string} */
-          protocol: 'rest' | 'soap' | 'graphql';
+          protocol: 'rest' | 'soap' | 'graphql' | 'sql';
           definition: {
             /**
              * @default 1.1.0
@@ -11198,6 +12361,15 @@ export interface operations {
               operation: string;
               action: string;
             };
+            privateGateway?: {
+              /** Format: uuid */
+              clientId: string;
+              target: string;
+            };
+            sql?: {
+              queryKey: string;
+              parameters: string[];
+            };
             graphql?: {
               query: string;
               operationName?: string;
@@ -11247,7 +12419,7 @@ export interface operations {
             id: string;
             key: string;
             /** @enum {string} */
-            protocol: 'rest' | 'soap' | 'graphql';
+            protocol: 'rest' | 'soap' | 'graphql' | 'sql';
             version: number;
             definition: {
               /**
@@ -11657,6 +12829,15 @@ export interface operations {
                 namespace: string;
                 operation: string;
                 action: string;
+              };
+              privateGateway?: {
+                /** Format: uuid */
+                clientId: string;
+                target: string;
+              };
+              sql?: {
+                queryKey: string;
+                parameters: string[];
               };
               graphql?: {
                 query: string;
@@ -11728,7 +12909,7 @@ export interface operations {
             id: string;
             key: string;
             /** @enum {string} */
-            protocol: 'rest' | 'soap' | 'graphql';
+            protocol: 'rest' | 'soap' | 'graphql' | 'sql';
             version: number;
             definition: {
               /**
@@ -12139,6 +13320,15 @@ export interface operations {
                 operation: string;
                 action: string;
               };
+              privateGateway?: {
+                /** Format: uuid */
+                clientId: string;
+                target: string;
+              };
+              sql?: {
+                queryKey: string;
+                parameters: string[];
+              };
               graphql?: {
                 query: string;
                 operationName?: string;
@@ -12204,7 +13394,7 @@ export interface operations {
         'application/json': {
           key: string;
           /** @enum {string} */
-          protocol: 'rest' | 'soap' | 'graphql';
+          protocol: 'rest' | 'soap' | 'graphql' | 'sql';
           definition: {
             /**
              * @default 1.1.0
@@ -12539,6 +13729,15 @@ export interface operations {
               operation: string;
               action: string;
             };
+            privateGateway?: {
+              /** Format: uuid */
+              clientId: string;
+              target: string;
+            };
+            sql?: {
+              queryKey: string;
+              parameters: string[];
+            };
             graphql?: {
               query: string;
               operationName?: string;
@@ -12588,7 +13787,7 @@ export interface operations {
             id: string;
             key: string;
             /** @enum {string} */
-            protocol: 'rest' | 'soap' | 'graphql';
+            protocol: 'rest' | 'soap' | 'graphql' | 'sql';
             version: number;
             definition: {
               /**
@@ -12998,6 +14197,15 @@ export interface operations {
                 namespace: string;
                 operation: string;
                 action: string;
+              };
+              privateGateway?: {
+                /** Format: uuid */
+                clientId: string;
+                target: string;
+              };
+              sql?: {
+                queryKey: string;
+                parameters: string[];
               };
               graphql?: {
                 query: string;
@@ -13207,7 +14415,7 @@ export interface operations {
             id: string;
             key: string;
             /** @enum {string} */
-            protocol: 'rest' | 'soap' | 'graphql';
+            protocol: 'rest' | 'soap' | 'graphql' | 'sql';
             version: number;
             definition: {
               /**
@@ -13617,6 +14825,15 @@ export interface operations {
                 namespace: string;
                 operation: string;
                 action: string;
+              };
+              privateGateway?: {
+                /** Format: uuid */
+                clientId: string;
+                target: string;
+              };
+              sql?: {
+                queryKey: string;
+                parameters: string[];
               };
               graphql?: {
                 query: string;
@@ -13691,7 +14908,7 @@ export interface operations {
             id: string;
             key: string;
             /** @enum {string} */
-            protocol: 'rest' | 'soap' | 'graphql';
+            protocol: 'rest' | 'soap' | 'graphql' | 'sql';
             version: number;
             definition: {
               /**
@@ -14101,6 +15318,15 @@ export interface operations {
                 namespace: string;
                 operation: string;
                 action: string;
+              };
+              privateGateway?: {
+                /** Format: uuid */
+                clientId: string;
+                target: string;
+              };
+              sql?: {
+                queryKey: string;
+                parameters: string[];
               };
               graphql?: {
                 query: string;
@@ -14297,7 +15523,7 @@ export interface operations {
           source: {
             key: string;
             /** @enum {string} */
-            protocol: 'rest' | 'soap' | 'graphql';
+            protocol: 'rest' | 'soap' | 'graphql' | 'sql';
             definition: {
               /**
                * @default 1.1.0
@@ -14632,6 +15858,15 @@ export interface operations {
                 operation: string;
                 action: string;
               };
+              privateGateway?: {
+                /** Format: uuid */
+                clientId: string;
+                target: string;
+              };
+              sql?: {
+                queryKey: string;
+                parameters: string[];
+              };
               graphql?: {
                 query: string;
                 operationName?: string;
@@ -14905,6 +16140,41 @@ export interface operations {
         content?: never;
       };
       /** @description Browser protocol endpoint: failures redirect back to the app with ?authError=<code>, or RFC 7807 */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Identity.listGroups': {
+    parameters: {
+      query?: {
+        limit?: number;
+        cursor?: string;
+        sort?: 'createdAt' | '-createdAt' | 'displayName' | '-displayName';
+        /** @description Case-insensitive contains search (picker typeahead) */
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A page of groups */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['GroupPage'];
+        };
+      };
+      /** @description Error (RFC 7807) */
       default: {
         headers: {
           [name: string]: unknown;
@@ -15514,6 +16784,153 @@ export interface operations {
       };
     };
   };
+  'Locations.list': {
+    parameters: {
+      query?: {
+        limit?: number;
+        cursor?: string;
+        sort?: 'createdAt' | '-createdAt' | 'name' | '-name';
+        /** @description Case-insensitive name or code contains */
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A page of locations */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LocationPage'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Locations.create': {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Makes the POST safely retryable for 24 hours (same key + same body ⇒ same response). */
+        'Idempotency-Key'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateLocation'];
+      };
+    };
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          /** @description URL of the location */
+          location?: string;
+          /** @description Current version */
+          etag?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Location'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Locations.remove': {
+    parameters: {
+      query?: never;
+      header: {
+        /** @description Current ETag (optimistic locking). */
+        'If-Match': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Deleted */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Locations.update': {
+    parameters: {
+      query?: never;
+      header: {
+        /** @description Current ETag (optimistic locking). */
+        'If-Match': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateLocation'];
+      };
+    };
+    responses: {
+      /** @description Updated */
+      200: {
+        headers: {
+          /** @description New version */
+          etag?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Location'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
   'MePermissions.permissions': {
     parameters: {
       query?: never;
@@ -15618,6 +17035,104 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'PrivateEgress.complete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          lease: string;
+          response: {
+            status: number;
+            body: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Delivered */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'PrivateEgress.claim': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': Record<string, never>;
+      };
+    };
+    responses: {
+      /** @description Job or no work */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: uuid */
+            id: string;
+            lease: string;
+            target: string;
+            deadline: number;
+            maxResponseBytes: number;
+            command:
+              | {
+                  /** @constant */
+                  kind: 'http';
+                  /** Format: uri */
+                  url: string;
+                  /** @enum {string} */
+                  method: 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+                  headers: {
+                    [key: string]: string;
+                  };
+                  body?: string;
+                }
+              | {
+                  /** @constant */
+                  kind: 'sql';
+                  queryKey: string;
+                  parameters: (string | number | boolean | null)[];
+                };
+          } | null;
+        };
       };
       /** @description Error (RFC 7807) */
       default: {
@@ -16136,6 +17651,79 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['ScriptVersion'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Collaboration.conflicts': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: number;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Recovery copies */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: uuid */
+            id: string;
+            baseVersion: number;
+            currentVersion: number;
+            createdAt: string;
+          }[];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Collaboration.conflict': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        conflictId: string;
+        number: number;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Preserved document */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            document: components['schemas']['ScriptDocument'];
+          };
         };
       };
       /** @description Error (RFC 7807) */
@@ -17474,6 +19062,12 @@ export interface operations {
             campaign: {
               name: string;
               outcomes: components['schemas']['CampaignOutcome'][];
+            };
+            agent: {
+              /** Format: uuid */
+              id: string;
+              displayName: string | null;
+              firstName: string | null;
             };
             /** @enum {string} */
             writeback: 'none' | 'queued' | 'success';
@@ -18922,6 +20516,53 @@ export interface operations {
       };
     };
   };
+  'Tenancy.bootstrap': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          name: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Onboarding resource identifiers; created=false on repeat */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: uuid */
+            campaignId: string;
+            /** Format: uuid */
+            scriptId: string;
+            /** Format: uuid */
+            versionId: string;
+            /** Format: uuid */
+            connectorId: string;
+            /** Format: uuid */
+            assignmentId: string;
+            created: boolean;
+          };
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
   'Tenancy.updateSettings': {
     parameters: {
       query?: never;
@@ -18965,6 +20606,8 @@ export interface operations {
         cursor?: string;
         sort?: 'createdAt' | '-createdAt' | 'updatedAt' | '-updatedAt';
         status?: 'invited' | 'active' | 'suspended' | 'deprovisioned';
+        /** @description Case-insensitive contains search (picker typeahead) */
+        q?: string;
       };
       header?: never;
       path?: never;

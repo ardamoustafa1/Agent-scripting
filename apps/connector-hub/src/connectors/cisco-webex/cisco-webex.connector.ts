@@ -1,10 +1,3 @@
-import {
-  MarketplaceConnector,
-  type MarketplaceDeps,
-} from '../marketplace/marketplace.connector.js';
+import { marketplaceAdapter } from '../marketplace/marketplace.connector.js';
 
-export class CiscoWebexConnector extends MarketplaceConnector {
-  constructor(deps: MarketplaceDeps = {}) {
-    super('cisco-webex', deps);
-  }
-}
+export const CiscoWebexConnector = marketplaceAdapter('cisco-webex');

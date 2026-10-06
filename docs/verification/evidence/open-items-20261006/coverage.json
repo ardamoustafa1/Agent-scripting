@@ -1,0 +1,700 @@
+{
+  "errors": [],
+  "results": [
+    {
+      "workspace": "packages/authz",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 180,
+          "covered": 178,
+          "skipped": 0,
+          "pct": 98.88
+        },
+        "statements": {
+          "total": 208,
+          "covered": 206,
+          "skipped": 0,
+          "pct": 99.03
+        },
+        "functions": {
+          "total": 39,
+          "covered": 39,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 142,
+          "covered": 134,
+          "skipped": 0,
+          "pct": 94.36
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      }
+    },
+    {
+      "workspace": "packages/collaboration",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 102,
+          "covered": 102,
+          "skipped": 0,
+          "pct": 100
+        },
+        "statements": {
+          "total": 127,
+          "covered": 124,
+          "skipped": 0,
+          "pct": 97.63
+        },
+        "functions": {
+          "total": 20,
+          "covered": 20,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 119,
+          "covered": 109,
+          "skipped": 0,
+          "pct": 91.59
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      }
+    },
+    {
+      "workspace": "packages/components",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 608,
+          "covered": 592,
+          "skipped": 0,
+          "pct": 97.36
+        },
+        "statements": {
+          "total": 651,
+          "covered": 623,
+          "skipped": 0,
+          "pct": 95.69
+        },
+        "functions": {
+          "total": 234,
+          "covered": 220,
+          "skipped": 0,
+          "pct": 94.01
+        },
+        "branches": {
+          "total": 711,
+          "covered": 646,
+          "skipped": 0,
+          "pct": 90.85
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      }
+    },
+    {
+      "workspace": "packages/core-runtime",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 1110,
+          "covered": 1071,
+          "skipped": 0,
+          "pct": 96.48
+        },
+        "statements": {
+          "total": 1287,
+          "covered": 1218,
+          "skipped": 0,
+          "pct": 94.63
+        },
+        "functions": {
+          "total": 265,
+          "covered": 252,
+          "skipped": 0,
+          "pct": 95.09
+        },
+        "branches": {
+          "total": 1024,
+          "covered": 922,
+          "skipped": 0,
+          "pct": 90.03
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      }
+    },
+    {
+      "workspace": "packages/expr",
+      "floor": 95,
+      "total": {
+        "lines": {
+          "total": 817,
+          "covered": 813,
+          "skipped": 0,
+          "pct": 99.51
+        },
+        "statements": {
+          "total": 956,
+          "covered": 946,
+          "skipped": 0,
+          "pct": 98.95
+        },
+        "functions": {
+          "total": 137,
+          "covered": 137,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 943,
+          "covered": 903,
+          "skipped": 0,
+          "pct": 95.75
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      }
+    },
+    {
+      "workspace": "packages/i18n",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 16,
+          "covered": 16,
+          "skipped": 0,
+          "pct": 100
+        },
+        "statements": {
+          "total": 17,
+          "covered": 17,
+          "skipped": 0,
+          "pct": 100
+        },
+        "functions": {
+          "total": 5,
+          "covered": 5,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 12,
+          "covered": 11,
+          "skipped": 0,
+          "pct": 91.66
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      }
+    },
+    {
+      "workspace": "packages/observability",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 92,
+          "covered": 92,
+          "skipped": 0,
+          "pct": 100
+        },
+        "statements": {
+          "total": 96,
+          "covered": 95,
+          "skipped": 0,
+          "pct": 98.95
+        },
+        "functions": {
+          "total": 47,
+          "covered": 46,
+          "skipped": 0,
+          "pct": 97.87
+        },
+        "branches": {
+          "total": 29,
+          "covered": 29,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      }
+    },
+    {
+      "workspace": "packages/script-schema",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 903,
+          "covered": 893,
+          "skipped": 0,
+          "pct": 98.89
+        },
+        "statements": {
+          "total": 1011,
+          "covered": 991,
+          "skipped": 0,
+          "pct": 98.02
+        },
+        "functions": {
+          "total": 181,
+          "covered": 175,
+          "skipped": 0,
+          "pct": 96.68
+        },
+        "branches": {
+          "total": 638,
+          "covered": 596,
+          "skipped": 0,
+          "pct": 93.41
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      }
+    },
+    {
+      "workspace": "packages/sdk-component",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 262,
+          "covered": 261,
+          "skipped": 0,
+          "pct": 99.61
+        },
+        "statements": {
+          "total": 287,
+          "covered": 285,
+          "skipped": 0,
+          "pct": 99.3
+        },
+        "functions": {
+          "total": 51,
+          "covered": 50,
+          "skipped": 0,
+          "pct": 98.03
+        },
+        "branches": {
+          "total": 135,
+          "covered": 131,
+          "skipped": 0,
+          "pct": 97.03
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      }
+    },
+    {
+      "workspace": "packages/sdk-connector",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 342,
+          "covered": 336,
+          "skipped": 0,
+          "pct": 98.24
+        },
+        "statements": {
+          "total": 377,
+          "covered": 371,
+          "skipped": 0,
+          "pct": 98.4
+        },
+        "functions": {
+          "total": 98,
+          "covered": 93,
+          "skipped": 0,
+          "pct": 94.89
+        },
+        "branches": {
+          "total": 223,
+          "covered": 204,
+          "skipped": 0,
+          "pct": 91.47
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      }
+    },
+    {
+      "workspace": "packages/shared-types",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 118,
+          "covered": 118,
+          "skipped": 0,
+          "pct": 100
+        },
+        "statements": {
+          "total": 129,
+          "covered": 129,
+          "skipped": 0,
+          "pct": 100
+        },
+        "functions": {
+          "total": 25,
+          "covered": 25,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 82,
+          "covered": 79,
+          "skipped": 0,
+          "pct": 96.34
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      }
+    },
+    {
+      "workspace": "packages/test-utils",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 14,
+          "covered": 14,
+          "skipped": 0,
+          "pct": 100
+        },
+        "statements": {
+          "total": 15,
+          "covered": 15,
+          "skipped": 0,
+          "pct": 100
+        },
+        "functions": {
+          "total": 7,
+          "covered": 7,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branches": {
+          "total": 9,
+          "covered": 9,
+          "skipped": 0,
+          "pct": 100
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      }
+    },
+    {
+      "workspace": "packages/ui",
+      "floor": 90,
+      "total": {
+        "lines": {
+          "total": 544,
+          "covered": 525,
+          "skipped": 0,
+          "pct": 96.5
+        },
+        "statements": {
+          "total": 592,
+          "covered": 570,
+          "skipped": 0,
+          "pct": 96.28
+        },
+        "functions": {
+          "total": 238,
+          "covered": 229,
+          "skipped": 0,
+          "pct": 96.21
+        },
+        "branches": {
+          "total": 601,
+          "covered": 546,
+          "skipped": 0,
+          "pct": 90.84
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      }
+    },
+    {
+      "workspace": "apps/admin-web",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 1052,
+          "covered": 1009,
+          "skipped": 0,
+          "pct": 95.91
+        },
+        "statements": {
+          "total": 1155,
+          "covered": 1078,
+          "skipped": 0,
+          "pct": 93.33
+        },
+        "functions": {
+          "total": 448,
+          "covered": 398,
+          "skipped": 0,
+          "pct": 88.83
+        },
+        "branches": {
+          "total": 815,
+          "covered": 728,
+          "skipped": 0,
+          "pct": 89.32
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      }
+    },
+    {
+      "workspace": "apps/agent-web",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 1116,
+          "covered": 1033,
+          "skipped": 0,
+          "pct": 92.56
+        },
+        "statements": {
+          "total": 1281,
+          "covered": 1158,
+          "skipped": 0,
+          "pct": 90.39
+        },
+        "functions": {
+          "total": 383,
+          "covered": 329,
+          "skipped": 0,
+          "pct": 85.9
+        },
+        "branches": {
+          "total": 985,
+          "covered": 815,
+          "skipped": 0,
+          "pct": 82.74
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      }
+    },
+    {
+      "workspace": "apps/api",
+      "floor": 85,
+      "total": {
+        "lines": {
+          "total": 10553,
+          "covered": 9847,
+          "skipped": 0,
+          "pct": 93.3
+        },
+        "statements": {
+          "total": 11875,
+          "covered": 10840,
+          "skipped": 0,
+          "pct": 91.28
+        },
+        "functions": {
+          "total": 2645,
+          "covered": 2357,
+          "skipped": 0,
+          "pct": 89.11
+        },
+        "branches": {
+          "total": 7918,
+          "covered": 6847,
+          "skipped": 0,
+          "pct": 86.47
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      }
+    },
+    {
+      "workspace": "apps/connector-hub",
+      "floor": 75,
+      "total": {
+        "lines": {
+          "total": 2690,
+          "covered": 2370,
+          "skipped": 0,
+          "pct": 88.1
+        },
+        "statements": {
+          "total": 3017,
+          "covered": 2568,
+          "skipped": 0,
+          "pct": 85.11
+        },
+        "functions": {
+          "total": 625,
+          "covered": 522,
+          "skipped": 0,
+          "pct": 83.52
+        },
+        "branches": {
+          "total": 2295,
+          "covered": 1737,
+          "skipped": 0,
+          "pct": 75.68
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      }
+    },
+    {
+      "workspace": "apps/designer-web",
+      "floor": 80,
+      "total": {
+        "lines": {
+          "total": 3985,
+          "covered": 3663,
+          "skipped": 0,
+          "pct": 91.91
+        },
+        "statements": {
+          "total": 4470,
+          "covered": 4016,
+          "skipped": 0,
+          "pct": 89.84
+        },
+        "functions": {
+          "total": 1607,
+          "covered": 1412,
+          "skipped": 0,
+          "pct": 87.86
+        },
+        "branches": {
+          "total": 3526,
+          "covered": 2873,
+          "skipped": 0,
+          "pct": 81.48
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        }
+      }
+    }
+  ],
+  "security": [
+    {
+      "scope": "modules/launch/",
+      "lines": 99.46,
+      "branches": 94.14
+    },
+    {
+      "scope": "modules/authz/",
+      "lines": 99.51,
+      "branches": 90.84
+    },
+    {
+      "scope": "modules/audit/",
+      "lines": 95.66,
+      "branches": 89.02
+    },
+    {
+      "scope": "modules/integrations/engine/transport.ts",
+      "lines": 100,
+      "branches": 94.12
+    },
+    {
+      "scope": "modules/identity/egress/idp-fetch.ts",
+      "lines": 100,
+      "branches": 96.88
+    },
+    {
+      "scope": "modules/audit/core/",
+      "lines": 99.5,
+      "branches": 95.35
+    },
+    {
+      "scope": "modules/audit/audit.repository.ts",
+      "lines": 100,
+      "branches": 100
+    },
+    {
+      "scope": "modules/integrations/engine/vault.ts",
+      "lines": 100,
+      "branches": 100
+    },
+    {
+      "scope": "modules/integrations/engine/vault-transit-client.ts",
+      "lines": 100,
+      "branches": 96.3
+    }
+  ]
+}

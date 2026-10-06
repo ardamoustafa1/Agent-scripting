@@ -59,3 +59,54 @@ describe('integration authoring contract', () => {
     ).toBe(false);
   });
 });
+
+it('requires named SQL queries and gateway targets while rejecting mixed protocols', () => {
+  const gateway = { clientId: '01990000-0000-7000-8000-000000000001', target: 'crm-readonly' };
+  const sql = { queryKey: 'customer-by-id', parameters: ['customerId'] };
+  const good = {
+    ...source,
+    protocol: 'sql',
+    definition: { ...source.definition, privateGateway: gateway, sql },
+  };
+  expect(IntegrationSaveSchema.safeParse(good).success).toBe(true);
+  for (const definition of [
+    source.definition,
+    { ...source.definition, privateGateway: gateway },
+    { ...source.definition, sql },
+  ])
+    expect(IntegrationSaveSchema.safeParse({ ...good, definition }).success).toBe(false);
+  expect(IntegrationSaveSchema.safeParse({ ...good, protocol: 'rest' }).success).toBe(false);
+});
+it('keeps private gateway credentials local and prevents caching their results', () => {
+  const privateGateway = {
+    clientId: '01990000-0000-7000-8000-000000000001',
+    target: 'crm-readonly',
+  };
+  const definition = { ...source.definition, privateGateway };
+  expect(IntegrationSaveSchema.safeParse({ ...source, definition }).success).toBe(true);
+  const bearer = { type: 'bearer', secretRef: '01990000-0000-7000-8000-000000000002' };
+  for (const override of [
+    { auth: bearer },
+    { profiles: { dev: { baseUrl: 'https://customer.example.io', auth: bearer } } },
+  ])
+    expect(
+      IntegrationSaveSchema.safeParse({ ...source, definition: { ...definition, ...override } })
+        .success,
+    ).toBe(false);
+  expect(
+    IntegrationSaveSchema.safeParse({ ...source, definition, policy: { cacheTtlSeconds: 1 } })
+      .success,
+  ).toBe(false);
+  expect(
+    IntegrationSaveSchema.safeParse({
+      ...source,
+      definition: {
+        ...definition,
+        profiles: {
+          dev: { baseUrl: 'https://customer.example.io', auth: { type: 'none' } },
+          test: undefined,
+        },
+      },
+    }).success,
+  ).toBe(true);
+});

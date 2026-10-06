@@ -5,7 +5,7 @@
   "description": "Hosts CTI and channel adapters (ADR-0008).",
   "type": "module",
   "scripts": {
-    "build": "tsc -b tsconfig.build.json",
+    "build": "node scripts/build.mjs",
     "dev": "concurrently -k -n tsc,hub -c blue,green \"tsc -b tsconfig.build.json --watch --preserveWatchOutput\" \"node --watch --env-file-if-exists=../../.env dist/main.js\"",
     "start": "node dist/main.js",
     "lint": "eslint --max-warnings=0 .",

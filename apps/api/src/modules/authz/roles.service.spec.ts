@@ -44,14 +44,17 @@ function setup(granter: SystemRoleKey, existing: Record<string, unknown> | null 
       updateMany: vi.fn(() => Promise.resolve({ count: 1 })),
     },
     userRole: {
-      findFirst: vi.fn(() =>
-        Promise.resolve<{ id: string; scope: object; version: number } | null>({
-          id: 'link',
-          scope: {},
-          version: 1,
-        }),
+      findMany: vi.fn(() =>
+        Promise.resolve([
+          {
+            id: 'link',
+            scope: {},
+            version: 1,
+            source: 'claims:idp',
+          },
+        ]),
       ),
-      update: vi.fn(() => Promise.resolve({})),
+      updateMany: vi.fn(() => Promise.resolve({ count: 1 })),
     },
   };
   const db = { current: () => tx, tenantId: () => TENANT } as unknown as TenantDb;
@@ -187,7 +190,7 @@ describe('RolesService', () => {
       service.setScope('user-1', { role: 'script_designer', scope: { campaignIds: ['c-1'] } }),
     );
     expect(result.scope).toEqual({ campaignIds: ['c-1'] });
-    expect(tx.userRole.update).toHaveBeenCalledOnce();
+    expect(tx.userRole.updateMany).toHaveBeenCalledOnce();
     expect(audit.record).toHaveBeenCalledWith(
       tx,
       expect.objectContaining({ action: 'authz.roleAssignment.scopeChanged' }),
@@ -199,6 +202,24 @@ describe('RolesService', () => {
     expect(vocabulary.resources).toContain('script');
     expect(vocabulary.scopes['session']).toEqual(['all', 'campaign', 'team', 'site', 'own']);
     expect(vocabulary.systemRoles).toHaveLength(11);
+  });
+
+  it('toRoleDto fails closed on malformed stored custom rules (T-14)', () => {
+    const base = {
+      id: ROLE_ID,
+      name: 'qa',
+      description: null,
+      isSystem: false,
+      permissions: [],
+      version: 1,
+    };
+    expect(
+      toRoleDto({ ...base, rules: [{ action: 'manage', subject: 'all', evil: 1 }, 7] }).rules,
+    ).toEqual([]);
+    expect(toRoleDto({ ...base, rules: { not: 'an array' } }).rules).toEqual([]);
+    expect(
+      toRoleDto({ ...base, rules: [{ action: 'read', subject: 'Script' }] }).rules,
+    ).toHaveLength(1);
   });
 
   it('toRoleDto projects system roles from code', () => {
@@ -232,9 +253,9 @@ it('lists projected roles and refuses a concurrent version change without emitti
   );
   expect(f.audit.record).not.toHaveBeenCalled();
   expect(f.outbox.record).not.toHaveBeenCalled();
-  f.tx.userRole.findFirst.mockResolvedValueOnce(null);
+  f.tx.userRole.findMany.mockResolvedValueOnce([]);
   await expect(
     f.inCtx(() => f.service.setScope('unknown', { role: 'agent', scope: {} })),
   ).rejects.toBeInstanceOf(NotFoundError);
-  expect(f.tx.userRole.update).not.toHaveBeenCalled();
+  expect(f.tx.userRole.updateMany).not.toHaveBeenCalled();
 });

@@ -11,6 +11,9 @@ import type { LoggerService } from '@nestjs/common';
  */
 export const REDACT_PATHS = [
   'req.headers.authorization',
+  'req.headers["x-verbis-mtls-proxy-secret"]',
+  '["x-verbis-mtls-proxy-secret"]',
+  '*["x-verbis-mtls-proxy-secret"]',
   'req.headers["x-runtime-session-token"]',
   'req.headers.cookie',
   'req.headers["x-csrf-token"]',

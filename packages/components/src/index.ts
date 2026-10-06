@@ -11,3 +11,5 @@ export { MediaComponent } from './media.js';
 export * from './catalog.js';
 export * from './components.js';
 export * from './privacy.js';
+
+export * from './secure-input-types.js';

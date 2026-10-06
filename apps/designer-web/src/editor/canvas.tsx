@@ -1,6 +1,6 @@
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { GripVertical } from 'lucide-react';
-import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { memo, startTransition, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -47,6 +47,55 @@ const CanvasRuntime = memo(function CanvasRuntime({ runtime }: { runtime: Runtim
     </NodeDecorationContext.Provider>
   );
 });
+/**
+ * P-16: rebuilding the preview runtime re-renders every node. Structural edits (drop, delete,
+ * undo) reach the canvas at once; typing in a field marked `data-coalesce-edits` (the inspector)
+ * is coalesced and applied once the author pauses, as a low-priority transition.
+ */
+export const CANVAS_BURST_MS = 200;
+let hostGeneration = 0;
+const hostKeys = new WeakMap<Runtime, number>();
+/** A new inert host per rendered preview runtime (not per store revision). */
+function hostKeyOf(preview: Runtime | null): number {
+  if (!preview) return 0;
+  let key = hostKeys.get(preview);
+  if (key === undefined) {
+    key = ++hostGeneration;
+    hostKeys.set(preview, key);
+  }
+  return key;
+}
+const typingInCoalescedField = () =>
+  Boolean(document.activeElement?.closest('[data-coalesce-edits]'));
+export function useCoalesced<T>(
+  value: T,
+  windowMs: number,
+  coalesce: () => boolean = typingInCoalescedField,
+): T {
+  const [shown, setShown] = useState(value),
+    changed = useRef(Number.NEGATIVE_INFINITY);
+  useEffect(() => {
+    if (Object.is(value, shown)) return;
+    const now = performance.now(),
+      quiet = now - changed.current >= windowMs;
+    changed.current = now;
+    if (quiet || !coalesce()) {
+      setShown(() => value);
+      return;
+    }
+    const timer = setTimeout(() => {
+      startTransition(() => {
+        setShown(() => value);
+      });
+    }, windowMs);
+    return () => {
+      clearTimeout(timer);
+    };
+    // `shown` is intentionally not a dependency: applying a value must not restart the window.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, windowMs]);
+  return shown;
+}
 export function Canvas({ store, heatControl }: { store: EditorStore; heatControl?: ReactNode }) {
   const state = useEditor(store),
     { t } = useTranslation();
@@ -68,7 +117,19 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
     width: number;
     height: number;
   } | null>(null);
-  const { document: docSource, pageId, breakpoint } = state;
+  // Document, page and breakpoint move together so a coalesced document never pairs with a page
+  // it does not contain yet.
+  const {
+    document: docSource,
+    pageId,
+    breakpoint,
+  } = useCoalesced(
+    useMemo(
+      () => ({ document: state.document, pageId: state.pageId, breakpoint: state.breakpoint }),
+      [state.document, state.pageId, state.breakpoint],
+    ),
+    CANVAS_BURST_MS,
+  );
   const preview = useMemo(() => {
     try {
       const runtime = new Runtime({
@@ -104,6 +165,7 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
     },
     [preview],
   );
+  const hostKey = hostKeyOf(preview);
   useEffect(() => {
     const refresh = () => {
       const parent = host.current?.getBoundingClientRect();
@@ -143,7 +205,9 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
       observer.disconnect();
       element?.removeEventListener('scroll', refresh);
     };
-  }, [selected, state.revision, state.zoom, state.breakpoint]);
+    // Measure after the rendered (coalesced) document changes, not on every store revision:
+    // reading every node's box forces layout and costs O(nodes) per keystroke (P-16).
+  }, [selected, preview, state.zoom, state.breakpoint]);
   const width = { base: 375, sm: 640, md: 768, lg: 1024, xl: 1280 }[state.breakpoint];
   return (
     <section
@@ -233,14 +297,54 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
           {width} {t('designer.editor.by')} {t('designer.editor.auto')}
         </span>
       </div>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Focusable canvas implements node selection and ordering commands. */}
       <div
         ref={host}
+        id="editor-canvas"
         className="ed-canvas"
         // Native overflow scrolling needs a keyboard focus target even with no selected node.
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
         role="group"
         aria-label={t('designer.editor.canvas')}
+        onKeyDown={(event) => {
+          if (
+            event.target !== event.currentTarget ||
+            !['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)
+          )
+            return;
+          event.preventDefault();
+          const ids: string[] = [];
+          walkNodes(state.document, ({ node, pageId }) => {
+            if (pageId === state.pageId) ids.push(node.id);
+            return true;
+          });
+          const index = selected ? ids.indexOf(selected) : -1;
+          if (event.altKey && selected && ['ArrowDown', 'ArrowUp'].includes(event.key)) {
+            const location = store.location(selected);
+            if (location?.parent)
+              store.execute(() => {
+                store.move(
+                  selected,
+                  location.parent?.id ?? '',
+                  Math.max(0, (location.index ?? 0) + (event.key === 'ArrowDown' ? 1 : -1)),
+                );
+              });
+          } else {
+            const next =
+              event.key === 'Home'
+                ? ids[0]
+                : event.key === 'End'
+                  ? ids.at(-1)
+                  : ids[
+                      Math.max(
+                        0,
+                        Math.min(ids.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)),
+                      )
+                    ];
+            if (next) store.select(next);
+          }
+        }}
         onPointerLeave={() => {
           if (hover.current) hover.current.hidden = true;
         }}
@@ -292,8 +396,10 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
         >
           {/* Recreate the inert host on document edits: Chromium can retain zero
               layout boxes when descendants are replaced after undo or deletion.
-              Selection, zoom and pointer frames keep the same host. */}
-          <div key={state.revision} ref={inert} className="ed-runtime" {...{ inert: '' }}>
+              Selection, zoom and pointer frames keep the same host. Keyed by the rendered
+              (coalesced) document, not every store revision: remounting all nodes per
+              keystroke made inspector typing O(nodes) (P-16). */}
+          <div key={hostKey} ref={inert} className="ed-runtime" {...{ inert: '' }}>
             {preview ? (
               <CanvasRuntime runtime={preview} />
             ) : (

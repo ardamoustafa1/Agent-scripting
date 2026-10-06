@@ -95,6 +95,16 @@ export const IntegrationDefinitionSchema = z
         action: text,
       })
       .optional(),
+    /** Outbound-only worker; credentials and named SQL live in the customer network. */
+    privateGateway: z
+      .strictObject({ clientId: z.uuid(), target: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/) })
+      .optional(),
+    sql: z
+      .strictObject({
+        queryKey: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),
+        parameters: z.array(z.string().regex(/^[A-Za-z0-9_.]+$/)).max(100),
+      })
+      .optional(),
     graphql: z
       .strictObject({
         query: z.string().min(1).max(32768),
@@ -136,12 +146,46 @@ export const IntegrationPolicySchema = z.strictObject({
   piiPaths: z.array(z.string().max(256)).max(100).default([]),
   fallback: z.unknown().optional(),
 });
-export const IntegrationSaveSchema = z.strictObject({
-  key: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),
-  protocol: z.enum(['rest', 'soap', 'graphql']),
-  definition: IntegrationDefinitionSchema.safeExtend({ pendingPromotion: z.never().optional() }),
-  policy: IntegrationPolicySchema,
-});
+export const IntegrationSaveSchema = z
+  .strictObject({
+    key: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),
+    protocol: z.enum(['rest', 'soap', 'graphql', 'sql']),
+    definition: IntegrationDefinitionSchema.safeExtend({ pendingPromotion: z.never().optional() }),
+    policy: IntegrationPolicySchema,
+  })
+  .superRefine((value, ctx) => {
+    if (value.protocol === 'sql' && (!value.definition.privateGateway || !value.definition.sql))
+      ctx.addIssue({
+        code: 'custom',
+        path: ['definition', 'sql'],
+        message: 'SQL requires a private gateway and named query',
+      });
+    if (value.protocol !== 'sql' && value.definition.sql)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['definition', 'sql'],
+        message: 'SQL config requires SQL protocol',
+      });
+    if (value.definition.privateGateway) {
+      if (
+        value.definition.auth.type !== 'none' ||
+        Object.values(value.definition.profiles).some(
+          (profile) => profile !== undefined && profile.auth.type !== 'none',
+        )
+      )
+        ctx.addIssue({
+          code: 'custom',
+          path: ['definition', 'auth'],
+          message: 'Gateway credentials are configured locally; API auth must be none',
+        });
+      if (value.policy.cacheTtlSeconds > 0)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['policy', 'cacheTtlSeconds'],
+          message: 'Private results cannot be cached',
+        });
+    }
+  });
 export const IntegrationCallSchema = z.strictObject({
   input: z.unknown(),
   scenario: z.string().max(64).optional(),
@@ -173,7 +217,7 @@ export const IntegrationPromotionSchema = z.strictObject({
 export const IntegrationRecordSchema = z.object({
   id: z.uuid(),
   key: z.string(),
-  protocol: z.enum(['rest', 'soap', 'graphql']),
+  protocol: z.enum(['rest', 'soap', 'graphql', 'sql']),
   version: z.int(),
   definition: IntegrationDefinitionSchema,
   policy: IntegrationPolicySchema,

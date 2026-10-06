@@ -30,6 +30,7 @@ function fixture() {
       context: {},
     },
     campaign: { name: 'Synthetic campaign', outcomes: [] },
+    agent: { id, displayName: 'Ayşe Yılmaz', firstName: 'Ayşe' },
     writeback: 'none',
   });
   const save = vi.fn().mockResolvedValue(undefined),
@@ -123,5 +124,29 @@ describe('independent agent session writer', () => {
     expect(f.requests).toHaveLength(0);
     expect(f.save).not.toHaveBeenCalled();
     f.controller.dispose();
+  });
+});
+// M-Z6: `agent.firstName` bindings rendered empty because the runtime had no agent context.
+describe('script personalization context', () => {
+  it('exposes the signed-in agent name to agent.* bindings', () => {
+    const f = fixture();
+    expect(f.controller.runtime.store.contextRoots['agent']).toEqual({
+      id,
+      displayName: 'Ayşe Yılmaz',
+      firstName: 'Ayşe',
+    });
+    f.controller.dispose();
+  });
+  it('accepts a desktop payload without agent details and leaves the gap visible', () => {
+    const { agent: _omitted, ...legacy } = fixture().desktop;
+    const controller = new AgentController(
+      id,
+      Desktop.parse(legacy),
+      'synthetic-csrf',
+      { save: vi.fn(), load: vi.fn(), remove: vi.fn() } as unknown as DraftVault,
+      'en',
+    );
+    expect(controller.runtime.store.contextRoots['agent']).toEqual({});
+    controller.dispose();
   });
 });

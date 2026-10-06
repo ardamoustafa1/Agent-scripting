@@ -30,3 +30,6 @@ artifacts/
 npm-audit.json
 
 .dev/
+
+# Pytest creates these disposable caches during deployment checks.
+**/.pytest_cache/**

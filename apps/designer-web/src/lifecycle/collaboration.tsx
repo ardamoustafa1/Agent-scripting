@@ -3,12 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
+import { useAbility } from '@verbis/authz/react';
 import { applyDocumentChange, readDocument, LOCAL_EDIT, Y } from '@verbis/collaboration';
 import { ScriptDocumentSchema } from '@verbis/script-schema';
 import { CollaborationTicketSchema } from '@verbis/shared-types';
-import { Button, Badge, Alert, Avatar } from '@verbis/ui';
+import { Button, Badge, Alert, Avatar, Select } from '@verbis/ui';
 
 import { request } from '../api/client.js';
 import { type EditorStore } from '../editor/store.js';
@@ -53,6 +55,8 @@ export function CollaborationPanel({
   const [open, setOpen] = useState(false),
     [active, setActive] = useState(false),
     [status, setStatus] = useState('offline'),
+    [recoveryId, setRecoveryId] = useState<string | null>(null),
+    [recovering, setRecovering] = useState(false),
     [peers, setPeers] = useState<Peer[]>([]);
   const provider = useRef<HocuspocusProvider | null>(null),
     callbacks = useRef({ onSaved, onActive });
@@ -60,6 +64,33 @@ export function CollaborationPanel({
     callbacks.current = { onSaved, onActive };
   }, [onSaved, onActive]);
   const state = store.getSnapshot();
+  const navigate = useNavigate(),
+    ability = useAbility();
+  const recoveries = useQuery({
+    queryKey: [
+      'workspace',
+      session.user.tenantId,
+      session.user.id,
+      session.session.id,
+      'collaboration-conflicts',
+      scriptId,
+      number,
+    ],
+    queryFn: ({ signal }) =>
+      request(
+        `/v1/scripts/${scriptId}/versions/${number}/collaboration/conflicts`,
+        z.array(
+          z.object({
+            id: z.uuid(),
+            baseVersion: z.int(),
+            currentVersion: z.int(),
+            createdAt: z.string(),
+          }),
+        ),
+        { signal },
+      ),
+    enabled: open,
+  });
   const members = useQuery({
     queryKey: [
       'workspace',
@@ -85,6 +116,12 @@ export function CollaborationPanel({
       applying = false,
       synced = false,
       last = store.getSnapshot().document;
+    const failInitial = () => {
+      if (disposed || synced) return;
+      setStatus('failed');
+      setActive(false);
+    };
+    const connectionDeadline = window.setTimeout(failInitial, 10_000);
     const doc = new Y.Doc(),
       undo = new Y.UndoManager(doc.getMap('script'), {
         trackedOrigins: new Set([LOCAL_EDIT]),
@@ -105,6 +142,7 @@ export function CollaborationPanel({
       onSynced: () => {
         if (disposed) return;
         synced = true;
+        window.clearTimeout(connectionDeadline);
         store.setWriteSuspended(false);
         applyRemote();
         setStatus('connected');
@@ -115,6 +153,7 @@ export function CollaborationPanel({
       onAuthenticationFailed: () => {
         store.setWriteSuspended(true);
         setStatus('failed');
+        if (!synced) failInitial();
       },
       onDisconnect: () => {
         if (!disposed) {
@@ -143,7 +182,7 @@ export function CollaborationPanel({
               version: z.number().int(),
               stateVector: z.array(z.number().int().min(0).max(255)),
             }),
-            z.object({ type: z.literal('conflict') }),
+            z.object({ type: z.literal('conflict'), recoveryId: z.uuid().optional() }),
             z.object({ type: z.literal('invalid') }),
           ])
           .safeParse(
@@ -161,6 +200,7 @@ export function CollaborationPanel({
           return;
         }
         if (result.data.type === 'conflict') {
+          setRecoveryId(result.data.recoveryId ?? null);
           setStatus('conflict');
           socket.disconnect();
         } else {
@@ -228,6 +268,7 @@ export function CollaborationPanel({
     document.addEventListener('pointermove', move, { passive: true });
     return () => {
       disposed = true;
+      window.clearTimeout(connectionDeadline);
       if (animation !== undefined) cancelAnimationFrame(animation);
       document.removeEventListener('pointermove', move);
       unsubscribe();
@@ -310,6 +351,47 @@ export function CollaborationPanel({
       setStatus('conflict');
     }
   };
+  const createRecovery = async () => {
+    setRecovering(true);
+    try {
+      const created = await request(
+        `/v1/scripts/${scriptId}/versions`,
+        z.object({ number: z.int().positive(), version: z.int().positive() }),
+        {
+          method: 'POST',
+          csrf: session.csrfToken,
+          idempotencyKey: crypto.randomUUID(),
+          body: { document: store.getSnapshot().document, screens: [] },
+        },
+      );
+      flushSync(() => {
+        callbacks.current.onSaved(created.version);
+      });
+      void navigate(`/scripts/${scriptId}/versions/${created.number}/edit`);
+    } catch {
+      setStatus('recovered');
+    } finally {
+      setRecovering(false);
+    }
+  };
+  const recover = async () => {
+    if (!recoveryId) return;
+    setRecovering(true);
+    try {
+      const preserved = await request(
+        `/v1/scripts/${scriptId}/versions/${number}/collaboration/conflicts/${recoveryId}`,
+        z.object({ document: ScriptDocumentSchema }),
+      );
+      store.applyRemote(preserved.document);
+      // Keep the local copy detached and dirty. Publication still requires a normal authorized draft.
+      store.setWriteSuspended(true);
+      setStatus('recovered');
+    } catch {
+      setStatus('conflict');
+    } finally {
+      setRecovering(false);
+    }
+  };
   return (
     <>
       <div className="lc-presence">
@@ -340,7 +422,7 @@ export function CollaborationPanel({
                 : 'info'
           }
         >
-          {t(`designer.lifecycle.connection.${status}`)}
+          {t(`designer.lifecycle.connection.${status === 'recovered' ? 'conflict' : status}`)}
         </Badge>
         {!active ? (
           <Button
@@ -362,9 +444,37 @@ export function CollaborationPanel({
       {['conflict', 'failed'].includes(status) && (
         <Alert tone="danger" title={t('designer.lifecycle.failed')} />
       )}
+      {recoveryId && (
+        <Button loading={recovering} onClick={() => void recover()}>
+          {t('designer.editor.recoverConflict')}
+        </Button>
+      )}
+      {status === 'recovered' && (
+        <>
+          <Alert tone="info" title={t('designer.editor.conflictRecovered')} />
+          <Button
+            loading={recovering}
+            disabled={!ability.can('create', 'Script')}
+            onClick={() => void createRecovery()}
+          >
+            {t('designer.editor.createRecoveryDraft')}
+          </Button>
+        </>
+      )}
       {open && (
         <>
           <p>{t('designer.lifecycle.collaborationHelp')}</p>
+          {!!recoveries.data?.length && (
+            <Select
+              label={t('designer.editor.preservedEdits')}
+              value={recoveryId ?? ''}
+              options={recoveries.data.map((copy) => ({
+                value: copy.id,
+                label: `${copy.baseVersion} → ${copy.currentVersion} · ${new Date(copy.createdAt).toLocaleString()}`,
+              }))}
+              onValueChange={setRecoveryId}
+            />
+          )}
           <Comments scriptId={scriptId} number={number} nodeId={state.selection[0] ?? 'script'} />
         </>
       )}

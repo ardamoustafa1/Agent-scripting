@@ -13,6 +13,7 @@ import {
   NotFoundError,
   UnauthenticatedError,
 } from '../../common/errors/domain-errors.js';
+import { API_ENV, type ApiEnv } from '../../env.js';
 import { TenantDb } from '../../infra/database/tenant-db.js';
 import { OutboxWriter } from '../../infra/outbox/outbox.writer.js';
 import { RedisService } from '../../infra/redis/redis.service.js';
@@ -29,15 +30,16 @@ import {
   type Call,
 } from './engine/contracts.js';
 import { IntegrationExecutor } from './engine/executor.js';
+import { gatewayDispatch } from './engine/gateway-dispatch.js';
 import { scrubSecrets } from './engine/mapping.js';
 import { importWsdl, introspectionQuery } from './engine/protocols.js';
+import { assertConfiguredEndpoints, assertProductionEndpoints } from './engine/reserved-hosts.js';
 import { secureTransport } from './engine/transport.js';
 import { uuidv7 } from './engine/uuid.js';
 import { VaultTransitClient } from './engine/vault-transit-client.js';
 import { EnvKeyAdapter, EnvelopeVault } from './engine/vault.js';
 import { toDataSourceDto, toSecretDto } from './integrations.dto.js';
-
-import type { ApiEnv } from '../../env.js';
+import { PrivateEgressService } from './private-egress.service.js';
 
 export const INTEGRATION_VAULT = Symbol('INTEGRATION_VAULT');
 const OriginsSchema = z.object({ integrationAllowedOrigins: z.array(z.url()).default([]) });
@@ -78,13 +80,19 @@ export class IntegrationEngineService {
     @Inject(AuthzService) private readonly authz: AuthzService,
     @Inject(RedisService) redis: RedisService,
     @Inject(INTEGRATION_VAULT) private readonly vault: EnvelopeVault,
+    @Inject(PrivateEgressService) gateway?: PrivateEgressService,
+    @Inject(API_ENV) private readonly env?: ApiEnv,
   ) {
-    this.executor = new IntegrationExecutor({
-      get: (key) => redis.client.get(key),
-      set: async (key, value, ttl) => {
-        await redis.client.set(key, value, 'EX', ttl);
+    this.executor = new IntegrationExecutor(
+      {
+        get: (key) => redis.client.get(key),
+        set: async (key, value, ttl) => {
+          await redis.client.set(key, value, 'EX', ttl);
+        },
       },
-    });
+      secureTransport,
+      gateway ? gatewayDispatch(gateway) : undefined,
+    );
   }
   private actor() {
     const principal = requestContext.require().principal;
@@ -108,6 +116,45 @@ export class IntegrationEngineService {
       },
     };
   }
+  /**
+   * Resolves an immutable historical revision (ADR-0042). Published pins must never read the
+   * live row's definition/policy/secretRefs: those can change after publication.
+   */
+  private async pinnedSource(
+    id: string,
+    version: number,
+    action: 'read' | 'update' | 'execute' = 'execute',
+    stale: 'forbidden' | 'mismatch' = 'forbidden',
+  ) {
+    const live = await this.source(id, action);
+    const snapshot = await this.db.current().dataSourceVersion.findFirst({
+      where: { tenantId: this.db.tenantId(), dataSourceId: id, version },
+    });
+    // Rows written before ADR-0042 have no snapshot; only the unchanged live revision may stand in.
+    if (!snapshot) {
+      if (live.row.version === version) return live;
+      if (stale === 'mismatch') throw new VersionMismatchError(live.row.version);
+      throw new ForbiddenError();
+    }
+    return {
+      row: {
+        ...live.row,
+        key: snapshot.key,
+        protocol: snapshot.protocol,
+        definition: snapshot.definition,
+        policy: snapshot.policy,
+        secretRefs: snapshot.secretRefs,
+        version: snapshot.version,
+      },
+      source: {
+        id: live.row.id,
+        version: snapshot.version,
+        protocol: snapshot.protocol,
+        definition: DefinitionSchema.parse(snapshot.definition),
+        policy: PolicySchema.parse(snapshot.policy),
+      },
+    };
+  }
   private async origins() {
     const tenant = await this.db.current().tenant.findFirst({
       where: { id: this.db.tenantId(), status: 'active', deletedAt: null },
@@ -117,7 +164,13 @@ export class IntegrationEngineService {
     return OriginsSchema.parse(tenant.settings).integrationAllowedOrigins;
   }
   async save(body: z.infer<typeof SaveDataSourceSchema>, id?: string, version?: number) {
+    if (body.protocol !== 'sql') {
+      assertConfiguredEndpoints(body.definition);
+      if (this.env?.VERBIS_ENVIRONMENT === 'prod') assertProductionEndpoints(body.definition);
+    }
     const previous = id ? await this.source(id, 'update') : null;
+    if (previous && previous.row.key !== body.key)
+      throw new ForbiddenError('Data source keys are immutable; create a new source for a new key');
     if (previous && previous.row.version !== version)
       throw new VersionMismatchError(previous.row.version);
     if (
@@ -190,6 +243,7 @@ export class IntegrationEngineService {
       if (!pending || pending.requestedBy === actor.id)
         throw new ForbiddenError('Independent approval required');
       definition.profiles.prod = pending.profile;
+      if (source.protocol !== 'sql') assertProductionEndpoints(definition);
       delete definition.pendingPromotion;
     }
     const updated = await this.db.current().dataSource.update({
@@ -433,19 +487,21 @@ export class IntegrationEngineService {
     if (!session) throw new ForbiddenError();
     // Designer previews run on mock data unless the preview was started with live-data permission.
     if (!previewMayUseLiveData(session)) throw new ForbiddenError('Preview sessions use mock data');
-    const { row, source } = await this.source(id, 'execute');
+    const live = await this.source(id, 'execute');
     const document = z
-      .object({ dataSources: z.array(z.object({ ref: z.string(), version: z.number() })) })
+      .object({
+        dataSources: z.array(
+          z.object({ id: z.string().optional(), ref: z.string(), version: z.number() }),
+        ),
+      })
       .parse(await decodeDocument(session.scriptVersion));
-    if (
-      !document.dataSources.some(
-        (ref) => ref.ref === `tenant-datasource:${row.key}` && ref.version === row.version,
-      )
-    )
-      throw new ForbiddenError();
+    const pin = document.dataSources.find((ref) => ref.ref === `tenant-datasource:${live.row.key}`);
+    if (!pin) throw new ForbiddenError();
+    // The pin resolves to the immutable revision, not to the (possibly edited) live row.
+    const { row, source } = await this.pinnedSource(id, pin.version, 'execute');
     const environment = z
       .enum(['dev', 'test', 'prod'])
-      .parse(process.env['VERBIS_ENVIRONMENT'] ?? 'prod');
+      .parse(this.env?.VERBIS_ENVIRONMENT ?? 'prod');
     return {
       actor,
       source,
@@ -454,6 +510,7 @@ export class IntegrationEngineService {
       origins: await this.origins(),
       credentialVersion: await this.credentialVersion(row.secretRefs),
       session,
+      document,
       row,
       id,
       sessionId,
@@ -462,8 +519,19 @@ export class IntegrationEngineService {
   async executePrepared(
     prepared: Awaited<ReturnType<IntegrationEngineService['prepareAuthorized']>>,
   ) {
-    const { actor, source, call, refs, origins, credentialVersion, session, row, id, sessionId } =
-      prepared;
+    const {
+      actor,
+      source,
+      call,
+      refs,
+      origins,
+      credentialVersion,
+      session,
+      document,
+      row,
+      id,
+      sessionId,
+    } = prepared;
     const result = await this.executor.execute(
       actor.tenantId,
       source,
@@ -480,14 +548,7 @@ export class IntegrationEngineService {
         metadata: { sessionId, durationMs: result.trace.durationMs, error: result.trace.error },
       });
       if (session.kind === 'interaction') {
-        const pinned = z
-          .object({
-            dataSources: z.array(
-              z.object({ id: z.string(), ref: z.string(), version: z.number() }),
-            ),
-          })
-          .parse(await decodeDocument(session.scriptVersion));
-        const sourceId = pinned.dataSources.find(
+        const sourceId = document.dataSources.find(
           (s) => s.ref === `tenant-datasource:${row.key}` && s.version === row.version,
         )?.id;
         if (sourceId)
@@ -522,8 +583,7 @@ export class IntegrationEngineService {
       select: { id: true },
     });
     if (!record) throw new NotFoundError('DataSource');
-    const { row, source } = await this.source(record.id, 'execute');
-    if (row.version !== version) throw new VersionMismatchError(row.version);
+    const { row, source } = await this.pinnedSource(record.id, version, 'execute', 'mismatch');
     if (!source.definition.profiles.test)
       throw new ForbiddenError('An explicit test profile is required');
     const result = await this.executor.execute(

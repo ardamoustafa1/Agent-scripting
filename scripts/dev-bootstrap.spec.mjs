@@ -29,6 +29,7 @@ test('fresh bootstrap provisions independently keyed features and trusted mTLS',
   const root = fixture(t);
   configureDevEnvironment(root);
   const env = envAt(root);
+  assert.ok(env.MTLS_PROXY_SECRET.length >= 32);
   assert.equal(env.ANALYTICS_ENABLED, 'true');
   assert.equal(env.SIMULATOR_ENABLED, 'true');
   assert.equal(Buffer.from(env.INTEGRATION_MASTER_KEY, 'base64').length, 32);
@@ -80,6 +81,7 @@ test('repeat bootstrap preserves secrets and certificates and refreshes managed 
     'INTERNAL_JWT_DEV_PRIVATE_JWK',
     'INTEGRATION_MASTER_KEY',
     'ANALYTICS_PSEUDONYM_KEY',
+    'MTLS_PROXY_SECRET',
     'PACKAGE_SIGNING_JWK',
     'AUDIT_CHECKPOINT_SIGNING_JWK',
   ])

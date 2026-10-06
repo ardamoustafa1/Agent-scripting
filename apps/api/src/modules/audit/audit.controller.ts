@@ -20,6 +20,7 @@ import {
   JwksSchema,
   toAuditEventDto,
   VerifyReportSchema,
+  AuditCertificateSchema,
   VerifyRequestSchema,
   type AuditEventDto,
   type AuditSearchQuery,
@@ -104,6 +105,18 @@ export class AuditController {
   @Post('audit-events/verify')
   verify(@ZBody(VerifyRequestSchema) body: z.output<typeof VerifyRequestSchema>) {
     return this.audit.verify({
+      ...(body.fromSeq === undefined ? {} : { fromSeq: body.fromSeq }),
+      ...(body.toSeq === undefined ? {} : { toSeq: body.toSeq }),
+    });
+  }
+
+  @ApiOperation({ summary: 'Create an Ed25519 audit certificate for offline verification' })
+  @ApiResponse(200, 'Signed audit certificate', AuditCertificateSchema)
+  @Can('export', 'Audit')
+  @HttpCode(200)
+  @Post('audit-events/certificate')
+  certificate(@ZBody(VerifyRequestSchema) body: z.output<typeof VerifyRequestSchema>) {
+    return this.audit.certificate({
       ...(body.fromSeq === undefined ? {} : { fromSeq: body.fromSeq }),
       ...(body.toSeq === undefined ? {} : { toSeq: body.toSeq }),
     });

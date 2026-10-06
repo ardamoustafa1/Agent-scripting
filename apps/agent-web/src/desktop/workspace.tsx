@@ -25,11 +25,11 @@ import {
 import { EngageLinksCard } from '../launch/engage-links-card.js';
 import { LINKED_PATH } from '../launch/genesys-link.js';
 import { GenesysLinkedPage } from '../launch/genesys-linked-page.js';
-import { fetchAgentSession, type LaunchApiError } from '../launch/launch-api.js';
+import { fetchAgentSession, LaunchApiError } from '../launch/launch-api.js';
 import { LaunchPage } from '../launch/launch-page.js';
 import { useLaunchOffers } from '../launch/use-launch-offers.js';
 
-import { api, View, Desktop } from './api.js';
+import { api, View, type Desktop } from './api.js';
 import { FailureNotice } from './failure-notice.js';
 import { type AgentFailure } from './failure.js';
 import { DraftVault } from './vault.js';
@@ -41,7 +41,15 @@ const SessionView = lazy(() =>
 );
 const Sessions = z.object({
   data: z.array(
-    z.object({ id: z.uuid(), userId: z.uuid(), state: z.string(), startedAt: z.string() }),
+    z.object({
+      id: z.uuid(),
+      userId: z.uuid(),
+      state: z.string(),
+      startedAt: z.string(),
+      desktopLabel: z
+        .object({ channel: z.string(), customerName: z.string().nullable() })
+        .optional(),
+    }),
   ),
   page: z.object({ nextCursor: z.string().nullable() }),
 });
@@ -127,32 +135,11 @@ export function AgentWorkspace() {
   });
   const recent = useQuery({
     queryKey: [...key, 'sessions'],
-    queryFn: () => api('/v1/sessions?limit=100&sort=-startedAt', Sessions),
+    queryFn: () =>
+      api(`/v1/sessions?limit=100&sort=-startedAt&userId=${session?.user.id ?? ''}`, Sessions),
     enabled: valid,
     refetchInterval: 30000,
   });
-  useEffect(() => {
-    if (!valid || !vault) return;
-    for (const row of recent.data?.data ?? []) {
-      if (
-        row.userId !== session.user.id ||
-        !['launching', 'active', 'paused', 'wrapup'].includes(row.state)
-      )
-        continue;
-      void client
-        .query({
-          queryKey: ['agent', 'desktop', vault.partition, row.id],
-          queryFn: ({ signal }) =>
-            api(`/v1/sessions/${row.id}/desktop`, Desktop, undefined, undefined, signal),
-          staleTime: 10000,
-          gcTime: 60000,
-        })
-        .then((desktop) => {
-          onIdentity(row.id, desktop);
-        })
-        .catch(() => undefined);
-    }
-  }, [valid, vault, recent.data, session?.user.id, client, onIdentity]);
   const navigate = useCallback((next: string) => {
     const id = /^\/s\/([0-9a-f-]{36})$/.exec(next)?.[1];
     if (!id) return;
@@ -211,6 +198,21 @@ export function AgentWorkspace() {
   if (path === '/launch') return <LaunchPage navigate={navigate} />;
   if (path === LINKED_PATH) return <GenesysLinkedPage />;
   if (auth.isPending) return <Skeleton height="80vh" />;
+  if (auth.isError) {
+    const seconds = auth.error instanceof LaunchApiError ? auth.error.retryAfterSeconds : undefined;
+    return (
+      <AccessLayout appName={t('agent.hello.appName')}>
+        <div className="vb-stack">
+          <p role="alert">
+            {seconds === undefined
+              ? t('agent.desktop.sessionUnavailable')
+              : t('agent.desktop.sessionRateLimited', { seconds })}
+          </p>
+          <Button onClick={() => void auth.refetch()}>{t('agent.desktop.retry')}</Button>
+        </div>
+      </AccessLayout>
+    );
+  }
   if (!valid) return <SignIn />;
   const canWatch =
     permissions.data?.roles.some((role) =>
@@ -316,51 +318,59 @@ export function AgentWorkspace() {
         ) : ids.length && vault ? (
           <main id="agent-interactions">
             <div className="ag-tabs" role="tablist" aria-label={t('agent.desktop.interactions')}>
-              {ids.map((id, index) => (
-                <button
-                  type="button"
-                  key={id}
-                  role="tab"
-                  aria-selected={selected === id}
-                  aria-controls={`interaction-${id}`}
-                  id={`tab-${id}`}
-                  tabIndex={selected === id ? 0 : -1}
-                  onClick={() => {
-                    setActive(id);
-                    setUnread((list) => list.filter((value) => value !== id));
-                  }}
-                  onKeyDown={(event) => {
-                    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-                    event.preventDefault();
-                    const next =
-                      event.key === 'Home'
-                        ? ids[0]
-                        : event.key === 'End'
-                          ? ids.at(-1)
-                          : ids[
-                              (index + (event.key === 'ArrowRight' ? 1 : -1) + ids.length) %
-                                ids.length
-                            ];
-                    if (next) {
-                      setActive(next);
-                      setUnread((previous) => previous.filter((id) => id !== next));
-                      document.getElementById(`tab-${next}`)?.focus();
-                    }
-                  }}
-                >
-                  <span className="ag-tab-label" title={identities[id]?.customer ?? undefined}>
-                    {identities[id]
-                      ? `${t(`agent.desktop.channels.${identities[id].channel}`)} · ${identities[id].customer ?? t('agent.desktop.customer')}`
-                      : t('agent.desktop.tab', { number: index + 1 })}
-                  </span>
-                  <Badge tone={status[id] === 'wrapup' ? 'warning' : 'neutral'}>
-                    {t(`agent.desktop.states.${status[id] ?? 'active'}`)}
-                  </Badge>
-                  {unread.includes(id) && selected !== id && (
-                    <span className="ag-unread" aria-label={t('agent.desktop.unread')} />
-                  )}
-                </button>
-              ))}
+              {ids.map((id, index) => {
+                const summary = recent.data?.data.find((row) => row.id === id)?.desktopLabel;
+                const identity =
+                  identities[id] ??
+                  (summary
+                    ? { channel: summary.channel, customer: summary.customerName }
+                    : undefined);
+                return (
+                  <button
+                    type="button"
+                    key={id}
+                    role="tab"
+                    aria-selected={selected === id}
+                    aria-controls={`interaction-${id}`}
+                    id={`tab-${id}`}
+                    tabIndex={selected === id ? 0 : -1}
+                    onClick={() => {
+                      setActive(id);
+                      setUnread((list) => list.filter((value) => value !== id));
+                    }}
+                    onKeyDown={(event) => {
+                      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+                      event.preventDefault();
+                      const next =
+                        event.key === 'Home'
+                          ? ids[0]
+                          : event.key === 'End'
+                            ? ids.at(-1)
+                            : ids[
+                                (index + (event.key === 'ArrowRight' ? 1 : -1) + ids.length) %
+                                  ids.length
+                              ];
+                      if (next) {
+                        setActive(next);
+                        setUnread((previous) => previous.filter((id) => id !== next));
+                        document.getElementById(`tab-${next}`)?.focus();
+                      }
+                    }}
+                  >
+                    <span className="ag-tab-label" title={identity?.customer ?? undefined}>
+                      {identity
+                        ? `${t(`agent.desktop.channels.${identity.channel}`)} · ${identity.customer ?? t('agent.desktop.customer')}`
+                        : t('agent.desktop.tab', { number: index + 1 })}
+                    </span>
+                    <Badge tone={status[id] === 'wrapup' ? 'warning' : 'neutral'}>
+                      {t(`agent.desktop.states.${status[id] ?? 'active'}`)}
+                    </Badge>
+                    {unread.includes(id) && selected !== id && (
+                      <span className="ag-unread" aria-label={t('agent.desktop.unread')} />
+                    )}
+                  </button>
+                );
+              })}
             </div>
             <Suspense fallback={<Skeleton height="24rem" />}>
               {ids.map((id) => (

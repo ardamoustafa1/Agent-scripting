@@ -37,8 +37,9 @@ export class AxpClient {
       sleep?: (ms: number) => Promise<void>;
       random?: () => number;
     } = {},
+    endpoints: { tokenPath?: string } = {},
   ) {
-    this.#urls = axpUrls(config);
+    this.#urls = axpUrls(config, endpoints.tokenPath);
   }
 
   async token(): Promise<string> {

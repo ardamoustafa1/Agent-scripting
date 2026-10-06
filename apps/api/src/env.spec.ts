@@ -7,6 +7,35 @@ import { loadApiEnv } from './env.js';
 const JWKS = '{"keys":[{"kty":"OKP"}]}';
 
 describe('loadApiEnv', () => {
+  it('parses trusted proxies and /auth/session budgets, refusing malformed entries', () => {
+    const env = testEnv(JWKS, { TRUSTED_PROXIES: '10.0.0.0/8, 2001:db8::/32 ,192.0.2.1' });
+    expect(env.TRUSTED_PROXIES).toEqual(['10.0.0.0/8', '2001:db8::/32', '192.0.2.1']);
+    expect(testEnv(JWKS).TRUSTED_PROXIES).toEqual([]);
+    expect(testEnv(JWKS)).toMatchObject({
+      AUTH_SESSION_RATE_LIMIT_SESSION_MAX: 60,
+      AUTH_SESSION_RATE_LIMIT_IP_MAX: 600,
+      AUTH_SESSION_RATE_LIMIT_ANONYMOUS_MAX: 30,
+    });
+    for (const TRUSTED_PROXIES of [
+      '*',
+      'proxy.local',
+      '10.0.0.0/33',
+      '::1/129',
+      '10.0.0.0/8/1',
+      '10.0.0.1/x',
+    ])
+      expect(() => testEnv(JWKS, { TRUSTED_PROXIES })).toThrow(/TRUSTED_PROXIES/);
+    expect(() => testEnv(JWKS, { AUTH_SESSION_RATE_LIMIT_SESSION_MAX: '0' })).toThrow(
+      /AUTH_SESSION_RATE_LIMIT_SESSION_MAX/,
+    );
+  });
+  it('requires shared edge proof when certificate forwarding is enabled', () => {
+    for (const MTLS_PROXY_SECRET of ['', 'short'])
+      expect(() =>
+        testEnv(JWKS, { MTLS_CLIENT_CERT_HEADER: 'x-client-cert', MTLS_PROXY_SECRET }),
+      ).toThrow(/MTLS_PROXY_SECRET/);
+    expect(testEnv(JWKS).MTLS_CLIENT_CERT_HEADER).toBe('');
+  });
   it('requires complete Vault settings and refuses HTTP outside a nonproduction loopback', () => {
     const transit = {
       INTEGRATION_KEY_PROVIDER: 'vault-transit',
@@ -86,6 +115,24 @@ describe('loadApiEnv', () => {
     [{ RATE_LIMIT_MAX: '0' }, /RATE_LIMIT_MAX/],
   ])('rejects %j', (overrides, message) => {
     expect(() => testEnv(JWKS, overrides)).toThrow(message);
+  });
+
+  it('refuses copied .env.example placeholder secrets in production only (T-15)', () => {
+    const placeholder = 'postgresql://verbis_app:verbis_app_dev_only_change_me@db:5432/verbis';
+    expect(() => testEnv(JWKS, { NODE_ENV: 'production', DATABASE_APP_URL: placeholder })).toThrow(
+      /placeholder/,
+    );
+    expect(() =>
+      testEnv(JWKS, {
+        NODE_ENV: 'production',
+        REDIS_URL: 'redis://:redis_dev_only_change_me@redis:6379/0',
+      }),
+    ).toThrow(/placeholder/);
+    expect(testEnv(JWKS, { DATABASE_APP_URL: placeholder }).DATABASE_APP_URL).toBe(placeholder);
+    expect(
+      testEnv(JWKS, { NODE_ENV: 'production', DATABASE_APP_URL: 'postgresql://a:s3cr3t@db/x' })
+        .NODE_ENV,
+    ).toBe('production');
   });
 
   it('requires the database, Redis, NATS and JWKS settings', () => {

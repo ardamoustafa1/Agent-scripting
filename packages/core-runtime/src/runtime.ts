@@ -131,20 +131,34 @@ export class Runtime {
       compiled = new IntlMessageFormat(template, locale, undefined, { ignoreTag: true });
       this.messageCache.set(key, compiled);
     }
-    const params = Object.fromEntries(
-      Object.entries(values).map(([name, value]) => [
-        name,
-        typeof value === 'number' || typeof value === 'string'
-          ? value
-          : typeof value === 'boolean'
-            ? String(value)
-            : value === null
-              ? ''
-              : JSON.stringify(value),
-      ]),
+    const params: Record<string, string | number> = Object.fromEntries(
+      Object.entries(values).flatMap(([name, value]) =>
+        value === null || (typeof value === 'string' && value.trim() === '')
+          ? []
+          : [
+              [
+                name,
+                typeof value === 'number' || typeof value === 'string'
+                  ? value
+                  : typeof value === 'boolean'
+                    ? String(value)
+                    : JSON.stringify(value),
+              ],
+            ],
+      ),
     );
+    // Empty or unbound values stay visible as `[name]` (M-Z6) instead of collapsing the sentence.
+    const withGaps = new Proxy(params, {
+      has: () => true,
+      get: (target, name) =>
+        typeof name !== 'string'
+          ? undefined
+          : Object.hasOwn(target, name)
+            ? target[name]
+            : `[${name}]`,
+    });
     try {
-      return String(compiled.format(params));
+      return String(compiled.format(withGaps));
     } catch {
       return key;
     }

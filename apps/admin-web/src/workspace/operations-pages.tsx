@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { IntegrationSecretSetSchema } from '@verbis/shared-types';
@@ -23,6 +24,7 @@ import {
   useAdmin,
   type Row,
 } from './api.js';
+import { DeadLettersSection } from './dead-letters-section.js';
 import {
   Card,
   Field,
@@ -33,6 +35,7 @@ import {
   DiffView,
   Feedback,
   Picker,
+  useEnumLabel,
   useLabels,
 } from './widgets.js';
 
@@ -122,6 +125,7 @@ function ConnectorEditor({ row }: { row?: Row | undefined }) {
           label={l('adapterType')}
           value={adapter}
           onChange={setAdapter}
+          enumName="adapterType"
           options={[
             'generic',
             'genesys_cloud',
@@ -140,6 +144,7 @@ function ConnectorEditor({ row }: { row?: Row | undefined }) {
           label={l('status')}
           value={status}
           onChange={setStatus}
+          enumName="status"
           options={['draft', 'active', 'disabled']}
         />
         <Field label={l('configuration')} type="textarea" value={config} onChange={setConfig} />
@@ -221,6 +226,7 @@ export function Secrets() {
           path="/v1/secrets"
           title={l('secrets')}
           columns={['name', 'kind', 'rotatedAt', 'lastUsedAt', 'keyVersion']}
+          enums={{ kind: 'secretKind' }}
           onSelect={setSelected}
         />
         <Button
@@ -267,6 +273,7 @@ function SecretEditor({ row }: { row?: Row | undefined }) {
           label={l('kind')}
           value={kind}
           onChange={setKind}
+          enumName="secretKind"
           options={['password', 'api_key', 'oauth_client', 'certificate', 'generic']}
         />
         <Field
@@ -301,6 +308,7 @@ function Usage({ id }: { id: string }) {
   );
 }
 export function Audit() {
+  const { t } = useTranslation();
   const l = useLabels(),
     can = useCan(),
     write = useWrite(),
@@ -392,6 +400,30 @@ export function Audit() {
           </>
         ) : null}
       </Card>
+      {can('export', 'Audit') && (
+        <Card title={t('admin.auditCertificate.title')}>
+          <p>{t('admin.auditCertificate.help')}</p>
+          <Action
+            label={t('admin.auditCertificate.download')}
+            run={async () => {
+              const cert = await write('/v1/audit-events/certificate', {
+                ...(fromSeq ? { fromSeq } : {}),
+                ...(toSeq ? { toSeq } : {}),
+              });
+              const url = URL.createObjectURL(
+                new Blob([JSON.stringify(cert)], { type: 'application/json' }),
+              );
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'audit-certificate.json';
+              link.click();
+              setTimeout(() => {
+                URL.revokeObjectURL(url);
+              }, 1000);
+            }}
+          />
+        </Card>
+      )}
       <Card title={l('verifyChain')}>
         <Field label={l('fromSeq')} value={fromSeq} onChange={setFromSeq} />
         <Field label={l('toSeq')} value={toSeq} onChange={setToSeq} />
@@ -438,6 +470,7 @@ function Siem() {
         path="/v1/siem-destinations"
         title={l('siem')}
         columns={['name', 'kind', 'format']}
+        enums={{ kind: 'siemKind', format: 'siemFormat' }}
         onSelect={setSelected}
       />
       {selected ? (
@@ -494,6 +527,7 @@ function Siem() {
           label={l('kind')}
           value={kind}
           onChange={setKind}
+          enumName="siemKind"
           options={['webhook', 'syslog', 'kafka']}
         />
         <Field
@@ -534,6 +568,7 @@ export function Health() {
         />
       </Card>
       {can('read', 'Audit') ? <OperationalMetrics /> : null}
+      <DeadLettersSection />
       {can('manage', 'Outbox') ? <Outbox /> : null}
     </>
   );
@@ -633,7 +668,8 @@ function QueueMapping() {
   );
 }
 function CampaignMapping({ id, write }: { id: string; write: ReturnType<typeof useWrite> }) {
-  const l = useLabels(),
+  const enumLabel = useEnumLabel(),
+    l = useLabels(),
     query = useResource(`/v1/campaigns/${id}`, RowSchema),
     [platform, setPlatform] = useState('amazon-connect'),
     [kind, setKind] = useState('queue'),
@@ -672,6 +708,7 @@ function CampaignMapping({ id, write }: { id: string; write: ReturnType<typeof u
           label={l('platform')}
           value={platform}
           onChange={setPlatform}
+          enumName="ctiPlatform"
           options={[
             'amazon-connect',
             'cisco',
@@ -689,6 +726,7 @@ function CampaignMapping({ id, write }: { id: string; write: ReturnType<typeof u
           label={l('kind')}
           value={kind}
           onChange={setKind}
+          enumName="ctiKind"
           options={['queue', 'campaign', 'skill', 'vdn', 'routingPoint', 'flow', 'dnis']}
         />
         <Field label={l('externalId')} value={externalId} onChange={setExternalId} required />
@@ -696,7 +734,8 @@ function CampaignMapping({ id, write }: { id: string; write: ReturnType<typeof u
       {rows.map((row) => (
         <div className="aw-inline" key={`${row.platform}:${row.kind}:${row.externalId}`}>
           <span>
-            {row.platform} · {row.kind} · {row.externalId}
+            {enumLabel('ctiPlatform', row.platform)} · {enumLabel('ctiKind', row.kind)} ·{' '}
+            {row.externalId}
           </span>
           <Action
             label={l('remove')}

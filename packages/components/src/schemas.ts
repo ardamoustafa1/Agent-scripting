@@ -125,6 +125,10 @@ export const DataSchema = z.strictObject({
         field: z.string().regex(/^[a-zA-Z][a-zA-Z0-9_.]*$/),
         labelKey: I18nKeySchema,
         format: z.enum(['text', 'number', 'date', 'currency']).default('text'),
+        currency: z
+          .string()
+          .regex(/^[A-Z]{3}$/)
+          .default('TRY'),
       }),
     )
     .max(50)

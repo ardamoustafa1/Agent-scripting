@@ -134,7 +134,11 @@ it.each(['empty', 'component', 'missing source', 'stale source', 'unpromoted sou
         }),
       ).toBe(0);
     } finally {
-      await owner.dataSource.deleteMany({ where: { tenantId: tenant.tenantId, key: 'customer' } });
+      // Sources are soft-deleted: their immutable version history is append-only (ADR-0042).
+      await owner.dataSource.updateMany({
+        where: { tenantId: tenant.tenantId, key: 'customer', deletedAt: null },
+        data: { deletedAt: new Date() },
+      });
     }
   },
 );
@@ -322,6 +326,14 @@ it('creates and binds atomically inside the scoped designer’s campaign and exp
   );
   expect(created.statusCode, created.body).toBe(201);
   const scriptId = created.json<{ id: string }>().id;
+  const headers = await scoped.auth(scoped.designerId);
+  const versions = await app.inject({
+    method: 'GET',
+    url: `/v1/scripts/${scriptId}/versions`,
+    headers,
+  });
+  expect(versions.statusCode, versions.body).toBe(200);
+  expect(versions.json<{ data: unknown[] }>().data).toEqual([]);
   expect(
     await owner.assignment.findMany({ where: { tenantId: scoped.tenantId, scriptId } }),
   ).toHaveLength(1);
@@ -332,6 +344,12 @@ it('creates and binds atomically inside the scoped designer’s campaign and exp
     true,
   );
   expect(version.statusCode, version.body).toBe(201);
+  const readable = await app.inject({
+    method: 'GET',
+    url: `/v1/scripts/${scriptId}/versions/1`,
+    headers,
+  });
+  expect(readable.statusCode, readable.body).toBe(200);
   expect(
     (
       await call(

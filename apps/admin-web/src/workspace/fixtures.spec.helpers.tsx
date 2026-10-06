@@ -60,7 +60,11 @@ export async function mountAdmin(
     const value =
       responses[method + ' ' + path] ??
       responses[path] ??
-      (method === 'GET' ? [] : { id: syntheticId, version: 2 });
+      (method === 'GET'
+        ? path.startsWith('/v1/analytics/recommendations?')
+          ? { data: [] }
+          : []
+        : { id: syntheticId, version: 2 });
     return Promise.resolve(value instanceof Response ? value.clone() : Response.json(value));
   });
   vi.stubGlobal('fetch', fetcher);

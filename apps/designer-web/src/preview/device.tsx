@@ -5,9 +5,8 @@ import { ScriptRenderer, type Runtime } from '@verbis/core-runtime';
 import type { I18nInstance } from '@verbis/i18n';
 import { UiProvider, type Theme } from '@verbis/ui';
 
-// WebKit blocks parent-owned React event handlers in a frame without allow-scripts.
-// CSP keeps scripts and inline event attributes in the frame disabled while the
-// trusted parent renders the preview and handles its interactions.
+// Only the parent renders and handles the trusted runtime. Frame scripts stay disabled
+// by both the sandbox and CSP; never combine allow-scripts with allow-same-origin.
 const previewDocument = `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' https: data: blob:; media-src 'self' https: blob:; base-uri 'none'; form-action 'none'"></head><body></body></html>`;
 
 /** A same-origin frame provides a real viewport for runtime media queries. */
@@ -26,6 +25,22 @@ export function DevicePreview({
   i18n: I18nInstance;
   title: string;
 }) {
+  const host = useRef<HTMLDivElement>(null);
+  const [availableWidth, setAvailableWidth] = useState(width);
+  useEffect(() => {
+    const element = host.current;
+    if (!element) return;
+    const measure = () => {
+      if (element.clientWidth) setAvailableWidth(element.clientWidth);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+  const scale = Math.min(1, Math.max(0.1, availableWidth / width));
   const frame = useRef<HTMLIFrameElement>(null);
   const [body, setBody] = useState<HTMLElement | null>(null);
   useEffect(() => {
@@ -53,14 +68,16 @@ export function DevicePreview({
   return (
     // The bounded viewport must be focusable so keyboard users can scroll around the iframe.
     // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-    <div className="pv-device-scroll" role="region" aria-label={title} tabIndex={0}>
-      <iframe
-        ref={frame}
-        title={title}
-        srcDoc={previewDocument}
-        sandbox="allow-same-origin allow-scripts"
-        style={{ width, height }}
-      />
+    <div ref={host} className="pv-device-scroll" role="region" aria-label={title} tabIndex={0}>
+      <div style={{ width: width * scale, height: height * scale }}>
+        <iframe
+          ref={frame}
+          title={title}
+          srcDoc={previewDocument}
+          sandbox="allow-same-origin"
+          style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left' }}
+        />
+      </div>
       {body &&
         createPortal(
           <UiProvider theme={theme} i18n={i18n}>

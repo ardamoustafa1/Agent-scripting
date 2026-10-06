@@ -265,6 +265,10 @@ it('updates manual roles without replacing SSO assignments, saves explicit scope
         { name: 'supervisor', source: 'sso' },
       ],
     },
+    '/v1/campaigns?limit=100': { data: [{ id: 'synthetic-campaign', name: 'Synthetic Campaign' }] },
+    '/v1/groups?limit=100&sort=displayName': {
+      data: [{ id: syntheticId, displayName: 'Synthetic Team' }],
+    },
     [`/v1/users/${syntheticId}/sessions`]: [
       {
         id: 'synthetic-session',
@@ -276,10 +280,12 @@ it('updates manual roles without replacing SSO assignments, saves explicit scope
     ],
   });
   fireEvent.click((await rows(f.label('users'))).getByRole('button', { name: f.label('details') }));
-  await screen.findByText('supervisor · sso');
-  const agent = await screen.findByRole('checkbox', { name: 'agent' });
+  await screen.findByText(
+    `${f.i18n.t('authz.roles.supervisor')} · ${f.label('enum.roleSource.sso')}`,
+  );
+  const agent = await screen.findByRole('checkbox', { name: f.i18n.t('authz.roles.agent') });
   fireEvent.click(agent);
-  fireEvent.click(screen.getByRole('checkbox', { name: 'supervisor' }));
+  fireEvent.click(screen.getByRole('checkbox', { name: f.i18n.t('authz.roles.supervisor') }));
   fireEvent.submit(agent.closest('form')!);
   await waitFor(() => {
     expect(
@@ -290,9 +296,14 @@ it('updates manual roles without replacing SSO assignments, saves explicit scope
     f.requests.find((request) => request.path.endsWith('/roles') && request.method === 'PUT')?.body,
   ).toEqual({ roles: ['supervisor'] });
   change(f, 'role', 'agent');
-  change(f, 'campaignIds', '*');
-  change(f, 'teamIds', syntheticId);
-  change(f, 'siteIds', '*');
+  // U-05: campaigns and teams are picked by name; "all" maps to the `*` wildcard.
+  const campaigns = within(screen.getByRole('group', { name: f.label('campaignIds') }));
+  fireEvent.click(campaigns.getByRole('checkbox', { name: f.label('allCampaigns') }));
+  const teams = within(screen.getByRole('group', { name: f.label('teamIds') }));
+  fireEvent.click(await teams.findByRole('checkbox', { name: 'Synthetic Team' }));
+  expect(teams.getByRole('searchbox')).toBeTruthy();
+  const sites = within(screen.getByRole('group', { name: f.label('siteIds') }));
+  fireEvent.click(sites.getByRole('checkbox', { name: f.label('allSites') }));
   fireEvent.submit(screen.getByLabelText(f.label('role')).closest('form')!);
   await waitFor(() => {
     expect(f.requests.some((request) => request.path.endsWith('/role-scope'))).toBe(true);
@@ -322,14 +333,14 @@ it('creates a scoped custom role from the permission matrix and removes unselect
   const f = await mountAdmin(<Users />);
   change(f, 'name', 'synthetic_custom_role');
   change(f, 'description', 'Synthetic scoped role');
-  const script = within(screen.getByRole('group', { name: 'script' }));
+  const script = within(screen.getByRole('group', { name: f.label('enum.resource.script') }));
   fireEvent.change(script.getByRole('combobox'), { target: { value: 'campaign' } });
-  fireEvent.click(script.getByRole('checkbox', { name: 'read' }));
-  fireEvent.click(script.getByRole('checkbox', { name: 'update' }));
+  fireEvent.click(script.getByRole('checkbox', { name: f.label('enum.action.read') }));
+  fireEvent.click(script.getByRole('checkbox', { name: f.label('enum.action.update') }));
   fireEvent.change(script.getByRole('combobox'), { target: { value: 'campaign' } });
-  fireEvent.click(script.getByRole('checkbox', { name: 'update' }));
-  fireEvent.click(script.getByRole('checkbox', { name: 'read' }));
-  fireEvent.click(script.getByRole('checkbox', { name: 'read' }));
+  fireEvent.click(script.getByRole('checkbox', { name: f.label('enum.action.update') }));
+  fireEvent.click(script.getByRole('checkbox', { name: f.label('enum.action.read') }));
+  fireEvent.click(script.getByRole('checkbox', { name: f.label('enum.action.read') }));
   fireEvent.change(script.getByRole('combobox'), { target: { value: 'campaign' } });
   fireEvent.submit(screen.getByLabelText(f.label('name')).closest('form')!);
   await waitFor(() => {
@@ -355,7 +366,7 @@ it('blocks delegated role editing and session termination when the operator lack
     ]),
   );
   fireEvent.click((await rows(f.label('users'))).getByRole('button', { name: f.label('details') }));
-  const agent = await screen.findByRole('checkbox', { name: 'agent' });
+  const agent = await screen.findByRole('checkbox', { name: f.i18n.t('authz.roles.agent') });
   expect(
     within(agent.closest('form')!)
       .getByRole('button', { name: f.label('save') })

@@ -290,34 +290,75 @@ export class TeamService {
       createdAt: string;
       threadId?: string;
     }[] = [];
-    for (const v of rows) {
-      const campaigns = await tx.assignment.findMany({
-        where: { tenantId, scriptId: v.scriptId, deletedAt: null },
-        select: { campaignId: true },
+    const threads = await tx.authoringThread.findMany({
+      where: { tenantId, updatedAt: { gte: new Date(Date.now() - 7 * 86400000) } },
+      take: 200,
+      orderBy: { updatedAt: 'desc' },
+    });
+    const mentioned = threads.filter((thread) =>
+      ThreadSchema.parse(thread).messages.some((message) => message.mentions.includes(userId)),
+    );
+    const versions = mentioned.length
+      ? await tx.scriptVersion.findMany({
+          where: {
+            tenantId,
+            id: { in: [...new Set(mentioned.map((thread) => thread.scriptVersionId))] },
+            deletedAt: null,
+            script: { deletedAt: null },
+          },
+          select: {
+            id: true,
+            scriptId: true,
+            number: true,
+            checksum: true,
+            reviewRound: true,
+            submittedAt: true,
+            createdAt: true,
+            state: true,
+            version: true,
+            createdBy: true,
+            updatedBy: true,
+            source: true,
+            script: { select: { deletedAt: true, approvalPolicy: true } },
+          },
+        })
+      : [];
+    const campaigns = await tx.assignment.findMany({
+      where: {
+        tenantId,
+        scriptId: { in: [...new Set([...rows, ...versions].map((v) => v.scriptId))] },
+        deletedAt: null,
+      },
+      select: { scriptId: true, campaignId: true },
+    });
+    const reviews = await tx.scriptVersionReview.findMany({
+      where: { tenantId, scriptVersionId: { in: rows.map((v) => v.id) } },
+      select: { scriptVersionId: true, reviewer: true, round: true, decision: true },
+    });
+    const subjectOf = (v: (typeof rows)[number]) =>
+      asSubject('Script', {
+        id: v.scriptId,
+        campaignIds: campaigns.filter((c) => c.scriptId === v.scriptId).map((c) => c.campaignId),
+        authorIds: authorIdsOf({ ...v, contributors: this.contributors(v.source) }),
       });
+    for (const v of rows) {
       const authors = authorIdsOf({ ...v, contributors: this.contributors(v.source) }),
-        subject = asSubject('Script', {
-          id: v.scriptId,
-          campaignIds: campaigns.map((c) => c.campaignId),
-          authorIds: authors,
-        });
+        subject = subjectOf(v);
       const parsed = ApprovalPolicySchema.safeParse(
         v.script.approvalPolicy ?? settings?.authoring?.approval,
       );
-      const reviews = await tx.scriptVersionReview.findMany({
-        where: { tenantId, scriptVersionId: v.id },
-        select: { reviewer: true, round: true, decision: true },
-      });
       if (
         authz.ability.can('approve', subject) &&
         eligibility(
           parsed.success ? parsed.data : DEFAULT_APPROVAL_POLICY,
           { id: `user:${userId}`, roles: authz.roles },
           authors,
-          reviews.map((r) => ({
-            ...r,
-            decision: r.decision as 'approved' | 'rejected' | 'commented',
-          })),
+          reviews
+            .filter((r) => r.scriptVersionId === v.id)
+            .map((r) => ({
+              ...r,
+              decision: r.decision as 'approved' | 'rejected' | 'commented',
+            })),
           v.reviewRound,
           authz.separationOfDuties,
         ).length === 0
@@ -330,21 +371,13 @@ export class TeamService {
           createdAt: (v.submittedAt ?? v.createdAt).toISOString(),
         });
     }
-    const threads = await tx.authoringThread.findMany({
-      where: { tenantId, updatedAt: { gte: new Date(Date.now() - 7 * 86400000) } },
-      take: 200,
-      orderBy: { updatedAt: 'desc' },
-    });
     for (const thread of threads) {
       const parsed = ThreadSchema.parse(thread);
       if (!parsed.messages.some((m) => m.mentions.includes(userId))) continue;
-      const v = await tx.scriptVersion.findFirst({
-        where: { id: thread.scriptVersionId, tenantId, deletedAt: null },
-        select: { scriptId: true, number: true },
-      });
+      const v = versions.find((version) => version.id === thread.scriptVersionId);
       if (!v) continue;
       try {
-        await this.authorize(v.scriptId, v.number);
+        this.authz.authorize('read', subjectOf(v));
       } catch {
         continue;
       }

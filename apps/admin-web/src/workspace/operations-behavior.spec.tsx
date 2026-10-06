@@ -95,7 +95,10 @@ it('maps platform users and campaign queues while preserving unrelated mappings 
     platformUserId: 'synthetic-agent',
   });
   change(f, 'campaign', syntheticId);
-  await screen.findByText('amazon-connect · queue · synthetic-queue');
+  // U-02: platform and object kind are shown with their labels, never raw codes.
+  await screen.findByText(
+    `${f.label('enum.ctiPlatform.amazon-connect')} · ${f.label('enum.ctiKind.queue')} · synthetic-queue`,
+  );
   change(f, 'externalId', 'synthetic-queue');
   fireEvent.submit(form(f.label('externalId')));
   await waitFor(() => {

@@ -2,11 +2,14 @@ import { generateKeyPairSync } from 'node:crypto';
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import { initializeDocument, Y } from '@verbis/collaboration';
 import { ScriptDocumentSchema, TestScenarioSchema } from '@verbis/script-schema';
 import { minimalScript, surveyScript } from '@verbis/script-schema/fixtures';
 
 import { requestContext } from '../../src/common/context/request-context.js';
 import { ResolverCacheInvalidator } from '../../src/modules/routing/resolver-cache.invalidator.js';
+import { CollaborationService } from '../../src/modules/scripts/collaboration.service.js';
+import { DraftLeaseService } from '../../src/modules/scripts/draft-lease.service.js';
 import { createTokenKit, type TokenKit } from '../support/tokens.js';
 
 import {
@@ -19,6 +22,7 @@ import {
 } from './helpers.js';
 
 import type { PrismaClient } from '../../src/generated/prisma/client.js';
+import type { Document } from '@hocuspocus/server';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 
 /** Parsed .verbis package; fields are mutated by path in the tamper test. */
@@ -972,4 +976,202 @@ it('rejects a null assignment request with 400 and leaves tenant assignments unt
   });
   expect(response.statusCode, response.body).toBe(400);
   expect(await owner.assignment.count({ where: { tenantId: t.tenantId } })).toBe(before);
+});
+
+it('publishes a Designer-bound tenant data source with its pinned metadata (D-16)', async () => {
+  const source = await owner.dataSource.create({
+    data: {
+      tenantId: t.tenantId,
+      key: 'customer-profile',
+      version: 3,
+      protocol: 'rest',
+      definition: {
+        baseUrl: 'https://customer.example.io',
+        endpoint: '/profile',
+        auth: { type: 'none' },
+        profiles: { prod: { baseUrl: 'https://customer.example.io', auth: { type: 'none' } } },
+      },
+      secretRefs: [],
+      createdBy: 'fixture-approved',
+      updatedBy: 'fixture-approved',
+    },
+  });
+  const metadata = await call('GET', '/v1/data-sources?limit=100');
+  expect(metadata.statusCode).toBe(200);
+  expect(metadata.json<{ data: unknown[] }>().data).toContainEqual(
+    expect.objectContaining({ id: source.id, key: source.key, version: 3 }),
+  );
+  const document = ScriptDocumentSchema.parse(minimalScript());
+  document.dataSources = ScriptDocumentSchema.parse({
+    ...document,
+    dataSources: [
+      {
+        id: 'customerProfile',
+        ref: 'tenant-datasource:customer-profile',
+        version: 3,
+        inputs: {},
+        outputs: {},
+        policy: { timeoutMs: 5000 },
+      },
+    ],
+  }).dataSources;
+  document.pages[0]!.layout.children!.push({
+    id: 'customer-service',
+    type: 'webService',
+    props: { ds: 'customerProfile', trigger: 'manual' },
+    bindings: [],
+    events: {},
+    children: [],
+  });
+  const script = await newScript('Designer source binding');
+  const version = await newVersion(script.id, document);
+  await publish(script.id, version.number, '1.0.0');
+  const persisted = await call('GET', `/v1/scripts/${script.id}/versions/${version.number}`);
+  expect(
+    persisted.json<{ document: { dataSources: unknown[] } }>().document.dataSources,
+  ).toContainEqual(
+    expect.objectContaining({ ref: 'tenant-datasource:customer-profile', version: 3 }),
+  );
+});
+it('loads a durable Yjs recovery copy and hides it from other tenants (M-14)', async () => {
+  const script = await newScript('Durable collaboration recovery');
+  const version = await newVersion(script.id, minimalScript());
+  const document = ScriptDocumentSchema.parse(minimalScript());
+  document.meta.name = 'Recovered debounce window';
+  const newer = releaseFixture(minimalScript());
+  newer.meta.name = 'Newer REST draft';
+  const advanced = await call(
+    'PUT',
+    `/v1/scripts/${script.id}/versions/${version.number}/document`,
+    { document: newer, screens: [] },
+    'admin',
+    { 'if-match': `"${version.version}"` },
+  );
+  expect(advanced.statusCode, advanced.body).toBe(200);
+  const service = app.get(CollaborationService),
+    leases = app.get(DraftLeaseService);
+  const broadcast: string[] = [];
+  const ydoc = Object.assign(new Y.Doc(), {
+    broadcastStateless: (payload: string) => {
+      broadcast.push(payload);
+    },
+  });
+  initializeDocument(ydoc, document);
+  const room = {
+    grant: {
+      tenantId: t.tenantId,
+      userId: t.adminId,
+      bffId: t.adminId,
+      bffHash: '0'.repeat(64),
+      origin: 'http://localhost',
+      expiresAt: Date.now() + 30_000,
+      scriptId: script.id,
+      number: version.number,
+      documentName: '',
+    },
+    version: version.version,
+    lease: leases.key(t.tenantId, script.id, version.number),
+    document: ydoc as unknown as Document,
+    frozen: false,
+    recoveryId: undefined as string | undefined,
+    contributors: new Set([t.adminId]),
+    owners: new Map<number, string>(),
+  };
+  const internals = service as unknown as {
+    owner: string;
+    rooms: Map<string, typeof room>;
+    name: (tenant: string, script: string, number: number) => string;
+  };
+  const roomName = internals.name(t.tenantId, script.id, version.number);
+  room.grant.documentName = roomName;
+  await leases.claim(t.tenantId, script.id, version.number, internals.owner);
+  internals.rooms.set(roomName, room);
+  try {
+    const flush = await call(
+      'POST',
+      `/v1/scripts/${script.id}/versions/${version.number}/collaboration/flush`,
+      {},
+    );
+    expect(flush.statusCode, flush.body).toBe(409);
+    expect(room.frozen).toBe(true);
+    expect(room.recoveryId).toBeTruthy();
+    expect(broadcast.some((payload) => payload.includes(room.recoveryId!))).toBe(true);
+    await service.persist(roomName, room.document);
+    expect(
+      await owner.collaborationConflict.count({
+        where: { tenantId: t.tenantId, scriptVersionId: version.id },
+      }),
+    ).toBe(1);
+    expect(
+      await owner.auditEvent.count({
+        where: {
+          tenantId: t.tenantId,
+          action: 'script.collaboration.conflictPreserved',
+          targetId: version.id,
+        },
+      }),
+    ).toBe(1);
+  } finally {
+    internals.rooms.delete(roomName);
+    await leases.release(room.lease, internals.owner);
+    ydoc.destroy();
+  }
+  const copy = await owner.collaborationConflict.findFirstOrThrow({
+    where: { tenantId: t.tenantId, scriptVersionId: version.id },
+  });
+  const path = `/v1/scripts/${script.id}/versions/${version.number}/collaboration/conflicts`;
+  expect((await call('GET', path)).json()).toContainEqual(
+    expect.objectContaining({ id: copy.id, baseVersion: 1, currentVersion: 2 }),
+  );
+  const recovered = await call('GET', `${path}/${copy.id}`);
+  expect(recovered.statusCode, recovered.body).toBe(200);
+  expect(recovered.json<{ document: { meta: { name: string } } }>().document.meta.name).toBe(
+    'Recovered debounce window',
+  );
+  const other = await createTenant(owner, kit, uniqueSlug('recovery-other'));
+  expect([403, 404]).toContain(
+    (await call('GET', `${path}/${copy.id}`, undefined, 'admin', {}, other)).statusCode,
+  );
+  expect(
+    (await call('GET', `/v1/scripts/${script.id}/versions/${version.number}`)).json<{
+      document: { meta: { name: string } };
+    }>().document.meta.name,
+  ).toBe('Newer REST draft');
+});
+
+describe('tenant onboarding bundle', () => {
+  it('is atomic and idempotent, creates draft/disabled resources and rejects authors', async () => {
+    const denied = await call('POST', '/v1/tenant/onboarding', { name: 'Setup' }, 'designer');
+    expect(denied.statusCode).toBe(403);
+    const first = await call('POST', '/v1/tenant/onboarding', { name: 'Setup' });
+    expect(first.statusCode).toBe(201);
+    const ids = first.json<{
+      campaignId: string;
+      scriptId: string;
+      versionId: string;
+      connectorId: string;
+      assignmentId: string;
+      created: boolean;
+    }>();
+    expect(ids.created).toBe(true);
+    const again = await call('POST', '/v1/tenant/onboarding', { name: 'Different name' });
+    expect(again.json()).toEqual({ ...ids, created: false });
+    expect((await owner.campaign.findUniqueOrThrow({ where: { id: ids.campaignId } })).status).toBe(
+      'draft',
+    );
+    expect(
+      (await owner.scriptVersion.findUniqueOrThrow({ where: { id: ids.versionId } })).state,
+    ).toBe('draft');
+    expect(
+      (await owner.connector.findUniqueOrThrow({ where: { id: ids.connectorId } })).status,
+    ).toBe('disabled');
+    const audit = await owner.auditEvent.findFirst({
+      where: { tenantId: t.tenantId, action: 'tenancy.tenant.onboarded' },
+    });
+    expect(audit).not.toBeNull();
+    const outbox = await owner.outboxEvent.findFirst({
+      where: { tenantId: t.tenantId, eventType: 'verbis.tenancy.tenant.onboarded.v1' },
+    });
+    expect(outbox).not.toBeNull();
+  });
 });

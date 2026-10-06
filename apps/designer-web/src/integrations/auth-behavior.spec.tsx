@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { expect, it } from 'vitest';
 
 import { createAbility } from '@verbis/authz';
-import { type IntegrationAuth } from '@verbis/shared-types';
+import { IntegrationAuthSchema, type IntegrationAuth } from '@verbis/shared-types';
 
 import { mountDesigner } from '../fixtures.spec.helpers.js';
 import { campaignId, scriptId } from '../test-fixtures.js';
@@ -172,4 +172,22 @@ it('does not fetch secrets or allow mutation when access is absent', async () =>
       .getByRole('button', { name: f.label('integrations.newSecret') })
       .hasAttribute('disabled'),
   ).toBe(true);
+});
+
+it('allows typing an OAuth endpoint from a blank draft while save validation remains strict', async () => {
+  const f = await mountDesigner(
+    <Harness
+      initial={{ type: 'oauth2-client-credentials', secretRef: campaignId, tokenUrl: '' }}
+    />,
+    { '/v1/secrets?limit=100': page },
+  );
+  const input = screen.getByLabelText<HTMLInputElement>(f.label('integrations.tokenUrl'));
+  for (const value of ['h', 'https:', 'https://customer.example.io/token', '']) {
+    fireEvent.change(input, { target: { value } });
+    expect(input.value).toBe(value);
+    expect(auth()).toMatchObject({ tokenUrl: value });
+    expect(IntegrationAuthSchema.safeParse(auth()).success).toBe(
+      value === 'https://customer.example.io/token',
+    );
+  }
 });

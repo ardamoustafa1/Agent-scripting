@@ -11,6 +11,8 @@ import {
   mutateFlow,
   flowProblems,
   createScreenSubflow,
+  flowNodeLabel,
+  removeFlowElements,
 } from './model.js';
 
 describe('flow document transactions', () => {
@@ -152,4 +154,51 @@ it('creates and connects embedded flow nodes without changing the main flow', ()
   expect(
     flowProblems(store.getSnapshot().document, child, store.issues()).get('choice'),
   ).not.toContain('designer.flow.missingElse');
+});
+
+// D-15
+describe('flow canvas data (D-15)', () => {
+  it('labels page nodes with the page name, not the flow node id', () => {
+    const doc = minimalScript();
+    const page = doc.pages[0]!;
+    page.name = 'Teşekkürler';
+    const node = doc.flow.nodes.find((n) => n.type === 'page')!;
+    expect(flowNodeLabel(doc as never, node)).toBe('Teşekkürler');
+    const end = doc.flow.nodes.find((n) => n.type === 'end')!;
+    expect(flowNodeLabel(doc as never, end)).toBe(end.id);
+  });
+  it('deletes the orphaned condition rule with its edge, but keeps rules referenced elsewhere', () => {
+    const store = new EditorStore(minimalScript());
+    store.edit((d) => {
+      d.rules.push({ id: 'rule-e1', when: { $expr: 'true' }, then: [] });
+      d.rules.push({ id: 'shared', when: { $expr: 'true' }, then: [] });
+      d.flow.edges[0]!.when = { $rule: 'rule-e1' };
+    });
+    removeFlowElements(store, 'main', [], 'e1');
+    const doc = store.getSnapshot().document;
+    expect(doc.flow.edges).toHaveLength(0);
+    expect(doc.rules.map((r) => r.id)).toEqual(['shared']);
+    store.undo();
+    expect(store.getSnapshot().document.rules.map((r) => r.id)).toEqual(['rule-e1', 'shared']);
+  });
+  it('keeps a derived rule that another element still references', () => {
+    const store = new EditorStore(minimalScript());
+    store.edit((d) => {
+      d.rules.push({ id: 'rule-e1', when: { $expr: 'true' }, then: [] });
+      d.flow.edges[0]!.when = { $rule: 'rule-e1' };
+      d.flow.nodes.push({ id: 'n-other', type: 'end' });
+      d.pages[0]!.layout.visibleWhen = { $rule: 'rule-e1' };
+    });
+    removeFlowElements(store, 'main', [], 'e1');
+    expect(store.getSnapshot().document.rules.map((r) => r.id)).toEqual(['rule-e1']);
+  });
+  it('removes nodes with their edges and refuses to remove the start node', () => {
+    const store = new EditorStore(minimalScript());
+    expect(() => {
+      removeFlowElements(store, 'main', ['n-home'], null);
+    }).toThrow('VERBIS_FLOW_START_IMMUTABLE');
+    removeFlowElements(store, 'main', ['n-end'], null);
+    expect(store.getSnapshot().document.flow.nodes.map((n) => n.id)).toEqual(['n-home']);
+    expect(store.getSnapshot().document.flow.edges).toEqual([]);
+  });
 });

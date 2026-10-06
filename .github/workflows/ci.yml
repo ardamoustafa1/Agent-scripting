@@ -97,6 +97,8 @@ jobs:
           retention-days: 14
       - name: Build
         run: pnpm build
+      - name: Production artifact and browser size boundaries
+        run: node --test scripts/production-boundaries.spec.mjs scripts/collaboration-routing.spec.mjs && node scripts/browser-budgets.mjs
 
   e2e:
     name: E2E (Playwright + axe)
@@ -188,6 +190,8 @@ jobs:
       # Without the licensed Platform SDK: replay source + Testcontainers NATS (Docker on the runner).
       - name: Test
         run: gradle --no-daemon test
+      - name: Compile licensed adapter source against signature-only stubs
+        run: gradle --no-daemon clean compileJava -PvendorStubs=true
 
   avaya-sidecar:
     name: Avaya sidecar (Java 21)
@@ -208,6 +212,54 @@ jobs:
       # Without the Avaya JTAPI SDK: replay + AACC + outbound modules, Testcontainers NATS.
       - name: Test
         run: gradle --no-daemon test
+      - name: Compile licensed adapter source against signature-only stubs
+        run: gradle --no-daemon clean compileJava -PvendorStubs=true
+
+  # Opt-in live contract test against a synthetic Genesys Cloud sandbox org (ADR-0041). Uses GitHub
+  # secret references only; never runs for fork PRs (secrets are withheld there and the job is
+  # skipped), and skips cleanly when the secrets are not configured.
+  genesys-sandbox:
+    name: Genesys sandbox contract (secrets lane)
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      GENESYS_SANDBOX_REGION: ${{ secrets.GENESYS_SANDBOX_REGION }}
+      GENESYS_SANDBOX_CLIENT_ID: ${{ secrets.GENESYS_SANDBOX_CLIENT_ID }}
+      GENESYS_SANDBOX_CLIENT_SECRET: ${{ secrets.GENESYS_SANDBOX_CLIENT_SECRET }}
+      GENESYS_SANDBOX_USER_ID: ${{ secrets.GENESYS_SANDBOX_USER_ID }}
+      GENESYS_SANDBOX_QUEUE_ID: ${{ secrets.GENESYS_SANDBOX_QUEUE_ID }}
+      GENESYS_SANDBOX_CONVERSATION_ID: ${{ secrets.GENESYS_SANDBOX_CONVERSATION_ID }}
+    steps:
+      - name: Check sandbox secrets
+        id: gate
+        run: |
+          if [ -n "$GENESYS_SANDBOX_REGION" ] && [ -n "$GENESYS_SANDBOX_CLIENT_ID" ] && [ -n "$GENESYS_SANDBOX_CLIENT_SECRET" ] && [ -n "$GENESYS_SANDBOX_USER_ID" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Genesys sandbox secrets are not configured; skipping."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v7
+        if: steps.gate.outputs.enabled == 'true'
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+        if: steps.gate.outputs.enabled == 'true'
+      - uses: actions/setup-node@v7
+        if: steps.gate.outputs.enabled == 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+        if: steps.gate.outputs.enabled == 'true'
+      - name: Sandbox contract test
+        if: steps.gate.outputs.enabled == 'true'
+        env:
+          GENESYS_SANDBOX: '1'
+        run: pnpm --filter @verbis/connector-hub exec vitest run src/connectors/genesys-cloud/sandbox.contract.spec.ts
 
   secret-scan:
     name: Secret scan (gitleaks)

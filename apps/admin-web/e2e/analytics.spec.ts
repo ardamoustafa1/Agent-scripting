@@ -32,7 +32,7 @@ test('read-only analytics uses BFF, exposes empty state, hides export/scheduling
 }) => {
   await page.route('**/api/**', async (route) => {
     const path = new URL(route.request().url()).pathname;
-    if (path === '/api/auth/session')
+    if (path === '/api/auth/session/status')
       return route.fulfill({
         json: {
           user: { id: user, tenantId: tenant, authMethod: 'sso' },

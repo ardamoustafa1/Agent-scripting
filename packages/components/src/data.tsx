@@ -32,12 +32,13 @@ export function DataComponent(component: RendererProps) {
     row: Record<string, JsonValue>,
     field: string,
     format = 'text',
+    currency = 'TRY',
   ): string | number => {
     const input = readPath(row, field);
     if (typeof input === 'number' && format === 'currency')
       return new Intl.NumberFormat(component.runtime.store.locale, {
         style: 'currency',
-        currency: 'TRY',
+        currency,
       }).format(input);
     if (typeof input === 'number' && format === 'number')
       return new Intl.NumberFormat(component.runtime.store.locale).format(input);
@@ -92,7 +93,7 @@ export function DataComponent(component: RendererProps) {
           columns={p.columns.map((column) => ({
             id: column.field,
             header: text(column.labelKey),
-            accessor: (row) => value(row, column.field, column.format),
+            accessor: (row) => value(row, column.field, column.format, column.currency),
           }))}
           getRowId={(row) => {
             const id = display(row[p.rowKey]);
@@ -190,7 +191,7 @@ export function DataComponent(component: RendererProps) {
                 {p.columns.map((column) => (
                   <div key={column.field}>
                     <dt>{text(column.labelKey)}</dt>
-                    <dd>{value(row, column.field, column.format)}</dd>
+                    <dd>{value(row, column.field, column.format, column.currency)}</dd>
                   </div>
                 ))}
               </div>

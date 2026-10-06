@@ -78,7 +78,7 @@ function fixture() {
       findFirst: vi.fn().mockResolvedValue(version),
       findMany: vi.fn().mockResolvedValue([version]),
     },
-    assignment: { findMany: vi.fn().mockResolvedValue([{ campaignId: tenant }]) },
+    assignment: { findMany: vi.fn().mockResolvedValue([{ scriptId: script, campaignId: tenant }]) },
     tenant: { findFirst: vi.fn().mockResolvedValue({ settings: {} }) },
     user: {
       count: vi.fn().mockResolvedValue(1),
@@ -223,8 +223,17 @@ it('returns eligible reviews and readable mentions in date order, respecting aut
 it('skips deleted mention targets, unmentioned threads and authors reviewing their own work', async () => {
   const f = fixture();
   f.version.source.collaborationAuthors = [`user:${id}`];
-  f.tx.scriptVersion.findFirst.mockResolvedValue(null);
+  f.tx.scriptVersion.findMany.mockResolvedValueOnce([f.version]).mockResolvedValueOnce([]);
   expect(await run(() => f.service.notifications())).toEqual([]);
   f.thread.messages[0]!.mentions = [];
   expect(await run(() => f.service.notifications())).toEqual([]);
+});
+it('loads notifications in a bounded number of queries for 100 versions and 200 mentions', async () => {
+  const f = fixture();
+  f.tx.scriptVersion.findMany.mockResolvedValue(Array.from({ length: 100 }, () => f.version));
+  f.tx.authoringThread.findMany.mockResolvedValue(Array.from({ length: 200 }, () => f.thread));
+  await run(() => f.service.notifications());
+  expect(f.tx.assignment.findMany.mock.calls.length).toBeLessThanOrEqual(1);
+  expect(f.tx.scriptVersionReview.findMany.mock.calls.length).toBeLessThanOrEqual(1);
+  expect(f.tx.scriptVersion.findFirst).not.toHaveBeenCalled();
 });

@@ -1,20 +1,34 @@
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { Writable } from 'node:stream';
+
+import { Redis } from 'ioredis';
+import { exportJWK, generateKeyPair, SignJWT } from 'jose';
+import { pino } from 'pino';
+import { afterAll, beforeAll, describe, expect, inject, it, vi } from 'vitest';
 
 import { createAbility } from '@verbis/authz';
 import { DataSourceRefSchema, ScriptDocumentSchema } from '@verbis/script-schema';
 import { surveyScript } from '@verbis/script-schema/fixtures';
 
+import { createApp } from '../../src/bootstrap.js';
 import { requestContext } from '../../src/common/context/request-context.js';
 import { uuidv7 } from '../../src/common/crypto/uuid.js';
+import { createLoggerOptions } from '../../src/common/logging/logger.js';
 import { TenantDb } from '../../src/infra/database/tenant-db.js';
+import { NatsService } from '../../src/infra/nats/nats.service.js';
+import { OutboxRelayService } from '../../src/infra/outbox/outbox-relay.service.js';
+import { EventEnvelopeSchema } from '../../src/infra/outbox/outbox.types.js';
 import { RedisService } from '../../src/infra/redis/redis.service.js';
+import { AnalyticsSessionConsumer } from '../../src/modules/analytics/session.consumer.js';
 import { recomputeHash } from '../../src/modules/audit/core/audit-event.js';
 import { DefinitionSchema, PolicySchema } from '../../src/modules/integrations/engine/contracts.js';
 import { IntegrationEngineService } from '../../src/modules/integrations/integration-engine.service.js';
 import { AgentDesktopController } from '../../src/modules/runtime/agent-desktop.controller.js';
 import { RuntimeEngineService } from '../../src/modules/runtime/runtime-engine.service.js';
+import { RuntimePorts } from '../../src/modules/runtime/runtime-ports.js';
 import { RuntimeStateStore } from '../../src/modules/runtime/runtime-state.store.js';
+import { SecureCaptureService } from '../../src/modules/runtime/secure-capture.service.js';
 import { startApiProcess, type ApiProcess } from '../support/api-process.js';
+import { assertNoPciCanary, scanPciStores } from '../support/pci-canary.js';
 import { createTokenKit, type TokenKit } from '../support/tokens.js';
 
 import {
@@ -39,10 +53,10 @@ afterAll(async () => {
   await app.close();
   await owner.$disconnect();
 });
-async function fixture() {
+async function fixture(pci = false, testApp = app) {
   const tenant = await createTenant(owner, kit, uniqueSlug('runtime'));
   const headers = { 'content-type': 'application/json', ...(await tenant.auth()) };
-  const scriptResult = await app.inject({
+  const scriptResult = await testApp.inject({
     method: 'POST',
     url: '/v1/scripts',
     headers,
@@ -50,7 +64,7 @@ async function fixture() {
   });
   expect(scriptResult.statusCode).toBe(201);
   const script = scriptResult.json<{ id: string }>();
-  const versionResult = await app.inject({
+  const versionResult = await testApp.inject({
     method: 'POST',
     url: `/v1/scripts/${script.id}/versions`,
     headers,
@@ -59,6 +73,9 @@ async function fixture() {
         ...surveyScript,
         variables: [
           ...(surveyScript.variables ?? []),
+          ...(pci
+            ? [{ key: 'pciCanary', type: 'string', scope: 'session', classification: 'pci' }]
+            : []),
           { key: 'runtimeCounter', type: 'number', scope: 'session', persist: true },
           {
             key: 'runtimeCustomer',
@@ -87,11 +104,11 @@ async function fixture() {
   });
   const bffId = uuidv7(),
     tabId = uuidv7(),
-    engine = app.get(RuntimeEngineService);
+    engine = testApp.get(RuntimeEngineService);
   async function run<T>(
     fn: () => Promise<T>,
     overrideTenant: TenantFixture = tenant,
-    instance: NestFastifyApplication = app,
+    instance: NestFastifyApplication = testApp,
     ownTransactions = false,
   ) {
     const rules = [{ action: 'manage' as const, subject: 'all' as const }];
@@ -595,4 +612,152 @@ it('allows a concurrent writer during slow upstream I/O and rejects the fenced l
       where: { tenantId: f.tenant.tenantId, action: 'integration.datasource.executed' },
     }),
   ).toBe(1);
+});
+
+it('PCI canary: signed hosted capture and rejected raw PAN leave no PAN in SQL, decrypted state, Redis, NATS, analytics or logs', async () => {
+  const pan = '4111111111111111'; // Public synthetic card; the isolated PSP fixture owns the raw value.
+  let logs = '';
+  const stream = new Writable({
+    write(chunk: Buffer, _encoding, done) {
+      logs += chunk.toString();
+      done();
+    },
+  });
+  const env = integrationEnv(kit.jwks, {
+    ANALYTICS_ENABLED: 'true',
+    ANALYTICS_PSEUDONYM_KEY: Buffer.alloc(32, 7).toString('base64'),
+  });
+  const canaryApp = await createApp(env, { logger: pino(createLoggerOptions('info'), stream) });
+  const redis = new Redis(inject('redisUrl'));
+  await canaryApp.init();
+  await canaryApp.getHttpAdapter().getInstance().ready();
+  try {
+    const f = await fixture(true, canaryApp);
+    const interaction = await owner.interaction.create({
+      data: {
+        tenantId: f.tenant.tenantId,
+        externalId: uuidv7(),
+        channelType: 'voice',
+        direction: 'inbound',
+        startedAt: new Date(),
+        createdBy: 'fixture',
+        updatedBy: 'fixture',
+      },
+    });
+    await owner.session.update({
+      where: { id: f.session.id },
+      data: { kind: 'interaction', interactionId: interaction.id },
+    });
+    const keys = await generateKeyPair('ES256'),
+      jwk = await exportJWK(keys.publicKey);
+    const provider = new SecureCaptureService(
+      {
+        ...env,
+        PSP_TENANT_PROFILES: JSON.stringify([
+          {
+            tenantId: f.tenant.tenantId,
+            url: 'https://psp.canary.test/capture',
+            issuer: 'https://psp.canary.test',
+            jwks: { keys: [jwk] },
+          },
+        ]),
+      },
+      canaryApp.get(RedisService),
+      canaryApp.get(RuntimePorts),
+    );
+    provider.onModuleInit();
+    const headers = {
+      authorization: `Bearer ${await kit.sign({ sub: f.tenant.adminId, tnt: f.tenant.tenantId, sid: f.bffId })}`,
+      'idempotency-key': 'pci-canary-capture',
+    };
+    const call = (receipt: string) =>
+      canaryApp.inject({
+        method: 'POST',
+        url: `/v1/sessions/${f.session.id}/secure-field`,
+        headers,
+        payload: { ...f.claim, expectedSequence: 2, variable: 'pciCanary', receipt },
+      });
+    const denied = await call(pan);
+    expect(denied.statusCode, denied.body).toBe(400);
+    assertNoPciCanary(denied.body, pan);
+    const hostedProvider = async (input: string) => {
+      expect(input).toBe(pan);
+      return new SignJWT({
+        tenantId: f.tenant.tenantId,
+        sessionId: f.session.id,
+        variable: 'pciCanary',
+        token: 'tok_canary_' + 'a'.repeat(32),
+      })
+        .setProtectedHeader({ alg: 'ES256' })
+        .setIssuer('https://psp.canary.test')
+        .setAudience('verbis-secure-field')
+        .setJti(uuidv7())
+        .setIssuedAt()
+        .setExpirationTime('90s')
+        .sign(keys.privateKey);
+    };
+    const receipt = await hostedProvider(pan),
+      captured = await call(receipt);
+    expect(captured.statusCode, captured.body).toBe(201);
+    assertNoPciCanary(captured.body, pan);
+    // Payment token is persisted; the decrypted authoritative and cache state still contain no PAN.
+    const row = await owner.session.findUniqueOrThrow({ where: { id: f.session.id } }),
+      store = canaryApp.get(RuntimeStateStore);
+    const snapshot = await store.read(
+      f.tenant.tenantId,
+      row.id,
+      row.sequence,
+      row.variables,
+      row.version,
+    );
+    expect(snapshot.variables['pciCanary']).toBe('tok_canary_' + 'a'.repeat(32));
+    assertNoPciCanary(snapshot, pan);
+    assertNoPciCanary(store.open(f.tenant.tenantId, row.id, row.variables), pan);
+    const nats = canaryApp.get(NatsService);
+    await nats.ensureStreams();
+    const relay = canaryApp.get(OutboxRelayService);
+    for (let n = 0; n < 50; n++) {
+      if ((await relay.runOnce()).claimed === 0) break;
+    }
+    const manager = await nats.manager();
+    let messages = 0,
+      facts = 0;
+    for (const name of ['DOMAIN', 'AUDIT', 'SECURITY', 'SESSION', 'INTERACTION', 'DLQ']) {
+      const info = await manager.streams.info(name);
+      for (let seq = info.state.first_seq; seq > 0 && seq <= info.state.last_seq; seq++) {
+        const message = await manager.streams.getMessage(name, { seq });
+        if (!message) continue;
+        const text = new TextDecoder().decode(message.data);
+        assertNoPciCanary(text, pan);
+        messages++;
+        const event = EventEnvelopeSchema.parse(JSON.parse(text));
+        if (
+          event.tenantId === f.tenant.tenantId &&
+          event.type === 'verbis.runtime.session.changed.v1'
+        ) {
+          await f.run(() =>
+            canaryApp.get(AnalyticsSessionConsumer).handle(event, requestContext.require().tx!),
+          );
+          facts++;
+        }
+      }
+    }
+    expect(messages).toBeGreaterThan(0);
+    expect(facts).toBeGreaterThan(0);
+    expect(
+      await owner.analyticsFact.count({ where: { tenantId: f.tenant.tenantId } }),
+    ).toBeGreaterThan(0);
+    await scanPciStores(owner, redis, pan);
+    assertNoPciCanary(logs, pan);
+    // Positive control: the scanner itself must fail on a formatted or encoded leak.
+    expect(() => {
+      assertNoPciCanary('4111 1111 1111 1111', pan);
+    }).toThrow();
+    expect(() => {
+      assertNoPciCanary(Buffer.from(pan).toString('base64'), pan);
+    }).toThrow();
+  } finally {
+    redis.disconnect();
+    await canaryApp.close();
+  }
 });

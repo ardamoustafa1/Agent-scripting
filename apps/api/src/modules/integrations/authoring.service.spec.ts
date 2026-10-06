@@ -23,7 +23,7 @@ function fixture() {
     definition: DefinitionSchema.parse({
       baseUrl: 'https://synthetic.invalid',
       endpoint: '/lookup',
-      profiles: { dev: { baseUrl: 'https://dev.synthetic.invalid', auth: { type: 'none' } } },
+      profiles: { dev: { baseUrl: 'https://dev.customer.example.io', auth: { type: 'none' } } },
     }),
     policy: PolicySchema.parse({}),
     secretRefs: [],
@@ -184,4 +184,14 @@ it('allows an update-only editor to modify an existing integration without creat
   });
   expect(await f.run(() => f.service.save(f.input(), id, 1))).toMatchObject({ version: 2 });
   expect(f.authz.authorize).not.toHaveBeenCalledWith('create', expect.anything());
+});
+
+it('rejects example-domain defaults on the server before saving even outside production (T-17)', async () => {
+  const f = fixture();
+  const input = f.input();
+  input.definition.baseUrl = 'https://api.example.com';
+  await expect(f.run(() => f.service.save(input))).rejects.toMatchObject({
+    code: 'VERBIS_VALIDATION_FAILED',
+  });
+  expect(f.tx.dataSource.create).not.toHaveBeenCalled();
 });

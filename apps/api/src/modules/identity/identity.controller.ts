@@ -6,6 +6,8 @@ import { ApiOperation, ApiResponse, ApiTag } from '../../openapi/metadata.js';
 import { RequirePermissions } from '../authz/permissions.js';
 
 import {
+  GroupListQuerySchema,
+  GroupPageSchema,
   IdentityProviderPageSchema,
   IdpListQuerySchema,
   RoleListQuerySchema,
@@ -13,6 +15,7 @@ import {
   UserListQuerySchema,
   UserPageSchema,
   UserSchema,
+  type GroupListQuery,
   type IdpListQuery,
   type RoleListQuery,
   type UserListQuery,
@@ -46,6 +49,14 @@ export class IdentityController {
   @Get('roles')
   listRoles(@ZQuery(RoleListQuerySchema) query: RoleListQuery) {
     return this.identity.listRoles(query);
+  }
+
+  @ApiOperation({ summary: 'List team groups (names only) for scope and report pickers' })
+  @ApiResponse(200, 'A page of groups', GroupPageSchema)
+  @RequirePermissions('read:User')
+  @Get('groups')
+  listGroups(@ZQuery(GroupListQuerySchema) query: GroupListQuery) {
+    return this.identity.listGroups(query);
   }
 
   @ApiOperation({ summary: 'List identity providers' })

@@ -24,6 +24,36 @@ function Tree({
 }) {
   const { t } = useTranslation();
   if (depth > 16) return <Alert title={t('designer.rules.depth')} tone="warning" />;
+  if (allowExpressions && '$expr' in value && ['true', 'false'].includes(value.$expr.trim()))
+    return (
+      <>
+        <Select
+          label={t('designer.rules.value')}
+          value={value.$expr.trim()}
+          options={['true', 'false'].map((value) => ({ value, label: value }))}
+          onValueChange={(source) => {
+            change({ $expr: source });
+          }}
+        />
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => {
+            change({
+              all: [
+                {
+                  fact: fields[0]?.path ?? 'interaction.channel',
+                  op: 'eq',
+                  value: fields[0]?.type === 'boolean' ? false : '',
+                },
+              ],
+            });
+          }}
+        >
+          {t('designer.rules.addCondition')}
+        </Button>
+      </>
+    );
   if ('$expr' in value)
     return (
       <>

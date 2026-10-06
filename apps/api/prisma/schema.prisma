@@ -105,6 +105,7 @@ enum DataSourceProtocol {
   rest
   soap
   graphql
+  sql
 
   @@map("datasource_protocol")
 }
@@ -203,66 +204,68 @@ model Tenant {
   deletedAt  DateTime?    @map("deleted_at") @db.Timestamptz(3)
   version    Int          @default(1)
 
-  users                   User[]
-  roles                   Role[]
-  userRoles               UserRole[]
-  identityProviders       IdentityProvider[]
-  campaigns               Campaign[]
-  scripts                 Script[]
-  scriptVersions          ScriptVersion[]
-  screens                 Screen[]
-  components              Component[]
-  flows                   Flow[]
-  variables               Variable[]
-  dataSources             DataSource[]
-  secrets                 Secret[]
-  assignments             Assignment[]
-  channels                Channel[]
-  connectors              Connector[]
-  interactions            Interaction[]
-  sessions                Session[]
-  sessionEvents           SessionEvent[]
-  outcomes                Outcome[]
-  auditEvents             AuditEvent[]
-  auditChainHeads         AuditChainHead[]
-  auditCheckpoints        AuditCheckpoint[]
-  auditArchives           AuditArchive[]
-  siemDestinations        SiemDestination[]
-  versionReviews          ScriptVersionReview[]
-  sharedScreens           SharedScreen[]
-  sharedScreenVersions    SharedScreenVersion[]
-  screenLinks             ScriptScreenLink[]
-  templates               Template[]
-  campaignMappings        CampaignExternalMapping[]
-  siemCursors             SiemCursor[]
-  sessionChainHeads       SessionChainHead[]
-  outboxEvents            OutboxEvent[]
-  processedEvents         ProcessedEvent[]
-  idempotencyKeys         IdempotencyKey[]
-  analyticsCounts         AnalyticsEventCount[]
-  userIdentities          UserIdentity[]
-  groups                  Group[]
-  groupMembers            GroupMember[]
-  idpDomains              IdentityProviderDomain[]
-  scimTokens              ScimToken[]
-  serviceClients          ServiceClient[]
-  localCredentials        LocalCredential[]
-  launchIntents           LaunchIntent[]
-  launchTrustedIssuers    LaunchTrustedIssuer[]
-  authoringThreads        AuthoringThread[]
-  collaborationSnapshots  CollaborationSnapshot[]
-  scheduledReleases       ScheduledRelease[]
-  adminPrivacyRequests    AdminPrivacyRequest[]
-  aiCalls                 AiCall[]
-  aiUsages                AiUsage[]
-  analyticsErasedSessions AnalyticsErasedSession[]
-  analyticsFacts          AnalyticsFact[]
-  analyticsSchedules      AnalyticsSchedule[]
+  users                       User[]
+  roles                       Role[]
+  userRoles                   UserRole[]
+  identityProviders           IdentityProvider[]
+  campaigns                   Campaign[]
+  scripts                     Script[]
+  scriptVersions              ScriptVersion[]
+  screens                     Screen[]
+  components                  Component[]
+  flows                       Flow[]
+  variables                   Variable[]
+  dataSources                 DataSource[]
+  dataSourceVersions          DataSourceVersion[]
+  secrets                     Secret[]
+  assignments                 Assignment[]
+  channels                    Channel[]
+  connectors                  Connector[]
+  interactions                Interaction[]
+  sessions                    Session[]
+  sessionEvents               SessionEvent[]
+  outcomes                    Outcome[]
+  auditEvents                 AuditEvent[]
+  auditChainHeads             AuditChainHead[]
+  auditCheckpoints            AuditCheckpoint[]
+  auditArchives               AuditArchive[]
+  siemDestinations            SiemDestination[]
+  versionReviews              ScriptVersionReview[]
+  sharedScreens               SharedScreen[]
+  sharedScreenVersions        SharedScreenVersion[]
+  screenLinks                 ScriptScreenLink[]
+  templates                   Template[]
+  campaignMappings            CampaignExternalMapping[]
+  siemCursors                 SiemCursor[]
+  sessionChainHeads           SessionChainHead[]
+  outboxEvents                OutboxEvent[]
+  processedEvents             ProcessedEvent[]
+  idempotencyKeys             IdempotencyKey[]
+  analyticsCounts             AnalyticsEventCount[]
+  userIdentities              UserIdentity[]
+  groups                      Group[]
+  groupMembers                GroupMember[]
+  idpDomains                  IdentityProviderDomain[]
+  scimTokens                  ScimToken[]
+  serviceClients              ServiceClient[]
+  localCredentials            LocalCredential[]
+  launchIntents               LaunchIntent[]
+  launchTrustedIssuers        LaunchTrustedIssuer[]
+  authoringThreads            AuthoringThread[]
+  collaborationConflicts      CollaborationConflict[]
+  locations                   Location[]
+  collaborationSnapshots      CollaborationSnapshot[]
+  scheduledReleases           ScheduledRelease[]
+  adminPrivacyRequests        AdminPrivacyRequest[]
+  aiCalls                     AiCall[]
+  aiUsages                    AiUsage[]
+  analyticsErasedSessions     AnalyticsErasedSession[]
+  analyticsFacts              AnalyticsFact[]
+  analyticsSchedules          AnalyticsSchedule[]
+  sessionCapacityReservations SessionCapacityReservation[]
 
   @@unique([slug], map: "tenants_slug_key")
   @@map("tenants")
-  sessionCapacityReservations SessionCapacityReservation[]
-
 }
 
 model User {
@@ -733,6 +736,7 @@ model ScriptVersion {
   reviews                ScriptVersionReview[]
   screenLinks            ScriptScreenLink[]
   authoringThreads       AuthoringThread[]
+  collaborationConflicts CollaborationConflict[]
   collaborationSnapshots CollaborationSnapshot[]
 
   @@unique([scriptId, number], map: "script_versions_script_number_key")
@@ -858,7 +862,8 @@ model DataSource {
   deletedAt  DateTime?          @map("deleted_at") @db.Timestamptz(3)
   version    Int                @default(1)
 
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  tenant   Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  versions DataSourceVersion[]
 
   @@unique([tenantId, key], map: "data_sources_tenant_key_active_key", where: raw("deleted_at IS NULL"))
   @@index([tenantId, createdAt, id])
@@ -973,11 +978,12 @@ model Interaction {
 
 /// Short-lived internal admission leases; session INSERT consumes the lease transactionally.
 model SessionCapacityReservation {
-  id        String @id @db.Uuid
-  tenantId  String @map("tenant_id") @db.Uuid
+  id        String   @id @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
   expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
   @@index([tenantId, expiresAt])
   @@map("session_capacity_reservations")
 }
@@ -1668,4 +1674,65 @@ model AnalyticsSchedule {
   tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("analytics_schedules")
+}
+
+// Recoverable, append-only CRDT edits that lost the optimistic draft fence.
+model CollaborationConflict {
+  id              String        @id @default(uuid(7)) @db.Uuid
+  tenantId        String        @map("tenant_id") @db.Uuid
+  scriptVersionId String        @map("script_version_id") @db.Uuid
+  state           Bytes
+  baseVersion     Int           @map("base_version")
+  currentVersion  Int           @map("current_version")
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  scriptVersion   ScriptVersion @relation(fields: [scriptVersionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([tenantId, scriptVersionId, createdAt])
+  @@map("collaboration_conflicts")
+}
+
+/// Immutable append-only revision of a DataSource (ADR-0042). Written by a DB trigger in the
+/// mutation's transaction; secretRefs only, never secret values. Published pins resolve here.
+model DataSourceVersion {
+  id           String             @id @default(uuid(7)) @db.Uuid
+  tenantId     String             @map("tenant_id") @db.Uuid
+  dataSourceId String             @map("data_source_id") @db.Uuid
+  key          String
+  version      Int
+  protocol     DataSourceProtocol
+  definition   Json
+  secretRefs   String[]           @default([]) @map("secret_refs") @db.Uuid
+  policy       Json
+  contentHash  String             @map("content_hash") @db.Char(64)
+  createdAt    DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy    String             @map("created_by") @db.VarChar(128)
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  dataSource DataSource @relation(fields: [dataSourceId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+
+  @@unique([dataSourceId, version], map: "data_source_versions_source_version_key")
+  @@index([tenantId, key, version], map: "data_source_versions_tenant_key_idx")
+  @@map("data_source_versions")
+}
+
+/// Tenant location (site) catalog: the named, stable choices for ABAC `siteIds` role scopes.
+model Location {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  /// Stable kebab-case code; unique per tenant among active rows, immutable after creation.
+  code      String    @db.VarChar(64)
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy String    @map("created_by") @db.VarChar(128)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy String    @map("updated_by") @db.VarChar(128)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  version   Int       @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@unique([tenantId, code], map: "locations_tenant_code_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, createdAt, id])
+  @@map("locations")
 }

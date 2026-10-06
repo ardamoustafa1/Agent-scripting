@@ -87,3 +87,64 @@ test('1000 nodes keep the layer DOM bounded and record a drag frame budget', asy
   expect(fps).toBeGreaterThanOrEqual(59);
   expect(frames[Math.floor(frames.length * 0.95)]).toBeLessThan(20);
 });
+// P-16: each inspector keystroke remounted every canvas node (host keyed by store revision),
+// rebuilt the preview runtime and re-rendered all node frames: ≈64 ms median per key at 900 nodes
+// before the fix (149 ms at 1,000 in the audit). Keystroke → next frame must stay interactive.
+test('900 nodes keep inspector typing latency within the input budget', async ({ page }, info) => {
+  await page.route('**/api/v1/scripts/*/versions/1', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(editorFixture(900)), // + heading stays under the node limit
+    }),
+  );
+  await page.goto(`/scripts/${scriptId}/versions/1/edit`);
+  await page
+    .locator('.ed-palette [data-component-type="heading"]')
+    .getByRole('button')
+    .last()
+    .click();
+  const inspector = page.locator('.ed-inspector');
+  await inspector
+    .getByRole('textbox', { name: / · TR$/ })
+    .first()
+    .fill('Sentetik selamlama');
+  await expect(page.getByText('Fix document errors to preview.')).toHaveCount(0);
+  const field = inspector.getByRole('textbox', { name: / · EN$/ }).first();
+  await field.click();
+  await page.waitForTimeout(500);
+  await page.evaluate(() => {
+    const store = globalThis as unknown as { __keyLatency: number[] };
+    store.__keyLatency = [];
+    document.addEventListener(
+      'keydown',
+      (event) => {
+        const start = event.timeStamp;
+        requestAnimationFrame(() =>
+          setTimeout(() => store.__keyLatency.push(performance.now() - start), 0),
+        );
+      },
+      true,
+    );
+  });
+  await page.keyboard.type('Synthetic greeting text', { delay: 60 });
+  await expect(field).toHaveValue(/Synthetic greeting text$/);
+  await page.waitForTimeout(500);
+  const latency = await page.evaluate(
+    () => (globalThis as unknown as { __keyLatency: number[] }).__keyLatency,
+  );
+  // The first key after a pause applies to the canvas immediately; the rest are coalesced.
+  const steady = latency.slice(1).sort((a, b) => a - b);
+  const median = steady[Math.floor(steady.length / 2)] ?? 0,
+    p95 = steady[Math.floor(steady.length * 0.95)] ?? 0;
+  await info.attach('inspector-typing-latency', {
+    body: JSON.stringify({ median, p95, first: latency[0], samples: latency }),
+    contentType: 'application/json',
+  });
+  expect(latency).toHaveLength(23);
+  expect(median).toBeLessThan(50);
+  expect(p95).toBeLessThan(100);
+  // The canvas catches up once typing pauses and still renders every node.
+  await expect(page.getByText('Fix document errors to preview.')).toHaveCount(0);
+  expect(await page.locator('.ed-canvas-area [data-editor-node]').count()).toBeGreaterThan(900);
+});
