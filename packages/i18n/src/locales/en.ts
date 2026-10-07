@@ -17,6 +17,8 @@ export const en = {
     translate: 'Suggest translation',
     reply: 'Next reply',
     objection: 'Detect objection',
+    navigate: 'Suggest next page',
+    goto: 'Go to the suggested page',
     summary: 'Summary and disposition',
     generate: 'Generate suggestion',
     output: 'Review suggestion',

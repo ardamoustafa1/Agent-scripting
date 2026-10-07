@@ -18,6 +18,8 @@ export const tr: Catalog = {
     translate: 'Çeviri öner',
     reply: 'Sonraki yanıt',
     objection: 'İtirazı belirle',
+    navigate: 'Sonraki sayfayı öner',
+    goto: 'Önerilen sayfaya git',
     summary: 'Özet ve disposition',
     generate: 'Öneri üret',
     output: 'Öneriyi incele',

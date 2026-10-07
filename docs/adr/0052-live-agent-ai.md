@@ -1,6 +1,6 @@
 # ADR 0052 — Live agent AI: intent suggestions, notice detection and wrap-up summary
 
-Status: Proposed · 2026-10-07 · DIFFERENTIATORS E4, E5, E6, D5 (reply/objection/summary suggestions exist per ADR-0032; transcript streaming, navigation suggestions and PII reveal do not)
+Status: Partly accepted (E4 on-demand navigation suggestion implemented) · Proposed for the rest · 2026-10-07 · DIFFERENTIATORS E4, E5, E6, D5 (reply/objection/summary suggestions exist per ADR-0032; transcript streaming, navigation suggestions and PII reveal do not)
 
 ## Context
 
@@ -35,3 +35,19 @@ latency budget and clear limits on what the model may do.
 
 No change until accepted. D3's checklist and the existing on-demand suggestions remain the
 supported capabilities.
+
+## Decision (2026-10-07): on-demand navigation suggestion implemented
+
+The part that needs no transcript stream and no new provider decision is built:
+
+- New AI task `navigate` on the existing ADR-0032 path (SSO user, tenant opt-in and
+  `agentEnabled`, local PII redaction, quota reservation, audit, human approval). It is available
+  for chat and e-mail interactions while the session is `active`/`paused`.
+- The model sees `pageChoices` (`{id, name}` of every page of the **pinned** script version
+  except the one shown) and must answer `{ pageId | null, reason }`. The service rejects any
+  `pageId` that is not in that list, so a suggestion can never point outside the script.
+- The agent panel offers "Suggest next page"; accepting calls `runtime.navigate(pageId)`, which
+  keeps the runtime's required-field and rule checks. Nothing moves without a click.
+
+Still open and unchanged: live transcript stream with the 1.5 s p95 budget (and the speech
+service for voice platforms), E5 notice detection, D5 PII reveal.

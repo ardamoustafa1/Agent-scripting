@@ -8,6 +8,7 @@ export const AiTaskSchema = z.enum([
   'reply',
   'objection',
   'summary',
+  'navigate',
 ]);
 export const AiConfigSchema = z.strictObject({
   enabled: z.boolean().default(false),

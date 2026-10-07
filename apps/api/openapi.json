@@ -5248,7 +5248,8 @@
                       "translate",
                       "reply",
                       "objection",
-                      "summary"
+                      "summary",
+                      "navigate"
                     ]
                   },
                   "locale": {
@@ -5338,7 +5339,8 @@
                         "translate",
                         "reply",
                         "objection",
-                        "summary"
+                        "summary",
+                        "navigate"
                       ]
                     },
                     "requiresHumanApproval": {

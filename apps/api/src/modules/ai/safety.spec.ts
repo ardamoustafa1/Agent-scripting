@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { AiConfigSchema, AiRequestSchema } from '@verbis/shared-types';
 
-import { maskPatterns, systemPrompt, validateOutput } from './safety.js';
+import { maskPatterns, outputSchema, systemPrompt, validateOutput } from './safety.js';
 
 describe('AI trust boundary', () => {
   it('starts disabled and cannot accept a plaintext provider key', () => {
@@ -36,5 +36,24 @@ describe('AI trust boundary', () => {
   });
   it('requires synthetic scenarios with assertions', () => {
     expect(() => validateOutput('scenarios', [{ synthetic: false }])).toThrow();
+  });
+});
+
+describe('navigate output', () => {
+  it('requires a pageId (null allowed) and a reason, and rejects extra keys', () => {
+    const schema = outputSchema('navigate');
+    expect(schema.safeParse({ pageId: 'refunds', reason: 'r' }).success).toBe(true);
+    expect(schema.safeParse({ pageId: null, reason: 'r' }).success).toBe(true);
+    expect(schema.safeParse({ reason: 'r' }).success).toBe(false);
+    expect(schema.safeParse({ pageId: 'p', reason: 'r', extra: 1 }).success).toBe(false);
+    expect(
+      systemPrompt({
+        requestId: crypto.randomUUID(),
+        task: 'navigate',
+        locale: 'en',
+        text: '',
+        tone: 'neutral',
+      }),
+    ).toContain('page choices');
   });
 });

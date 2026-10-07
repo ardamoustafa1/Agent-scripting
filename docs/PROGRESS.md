@@ -1711,3 +1711,10 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - **B2 yol tekrarı (yalnız üst veri, [ADR-0050](adr/0050-deterministic-session-replay.md) kısmen kabul):** `GET /v1/sessions/:id/replay` (`runtime/domain/replay.ts` saf mantık: adımlar, sayfa ziyaret/süre, ulaşılmayan sayfalar, 5.000 olay üst sınırı, bilinmeyen olay türlerinden hiçbir veri kopyalanmaz), `GET /v1/sessions?scriptVersionId=` filtresi, `runtime.session.replayViewed` denetimi, tasarımcıda `lifecycle/replay.tsx` ve sürüm tablosunda "Oturum tekrarı" bağlantısı (`read:Session` olana). i18n `designer.replay.*` tr+en.
 - **Testler:** API birim 1828/1828 (yeni `replay.spec` 4), gerçek Postgres `runtime.int` replay senaryosu (PII `[REDACTED]`, denetim, sürüm filtresi, kiracılar arası 404) ve `suggestions.int` 5/5, designer birim 574/574 (yeni 3), Playwright `replay.spec.ts` (axe 0 ihlal), i18n 9/9. OpenAPI ve rota envanteri güncel.
 - Açık: kayıtlı veri kaynağı yanıtlarıyla birebir yeniden oynatma ve debugger'da açma (DPO/saklama kararı), canvas üzerinde öneri katmanı, Linux görsel baseline'ları.
+
+## 2026-10-07 — Canlı ajan AI: sayfa önerisi (DIFFERENTIATORS E4 kısmen, ADR-0052 kısmen kabul)
+
+- Durum: 🟦 adım 32 (AI) ve 25 (agent-web) kapsamında dilim tamamlandı; yerel kapılar yeşil, uzak CI çalıştırılmadı.
+- **`navigate` görevi:** `shared-types` `AiTaskSchema`, `safety.ts` (çıktı `{pageId|null, reason}`, istem), `ai.service.ts` (sabitlenmiş sürümün sayfaları, gösterilen hariç → `pageChoices`; sunucu tarafı kimlik doğrulaması; yalnız canlı sohbet/e-posta). `AiAssistant` "Önerilen sayfaya git" düğmesi; ajan panelinde onayda `runtime.navigate`. i18n `ai.navigate/goto` tr+en.
+- **Testler:** API AI birim 64/64 (yeni 4: seçenek listesi, `null`, uydurma/mevcut sayfa reddi, canlı olmayan durum), agent-web 193/193 (yeni 2), ui 123/123. OpenAPI güncel.
+- Açık: canlı transkript akışı + gecikme bütçesi, E5 uyum ifadesi tespiti, D5 PII açma ([ADR-0052](adr/0052-live-agent-ai.md)); gerçek sağlayıcıyla doğruluk ölçümü yapılmadı (model çıktısı yalnız sahte sağlayıcıyla test edildi).
