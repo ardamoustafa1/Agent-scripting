@@ -22,6 +22,7 @@ import { ScriptsController } from './scripts.controller.js';
 import { ScriptsRepository } from './scripts.repository.js';
 import { ScriptsService } from './scripts.service.js';
 import { SharedScreensService } from './shared-screens.service.js';
+import { SuggestionsService } from './suggestions.service.js';
 import { TeamController } from './team.controller.js';
 import { TeamService } from './team.service.js';
 import { TemplatesService } from './templates.service.js';
@@ -40,6 +41,7 @@ import { VersionLifecycleService } from './version-lifecycle.service.js';
   providers: [
     PreviewService,
     TeamService,
+    SuggestionsService,
     CollaborationService,
     DraftLeaseService,
     LaunchRealtime,

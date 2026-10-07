@@ -252,6 +252,7 @@ model Tenant {
   launchIntents               LaunchIntent[]
   launchTrustedIssuers        LaunchTrustedIssuer[]
   authoringThreads            AuthoringThread[]
+  scriptSuggestions           ScriptSuggestion[]
   collaborationConflicts      CollaborationConflict[]
   locations                   Location[]
   collaborationSnapshots      CollaborationSnapshot[]
@@ -736,6 +737,7 @@ model ScriptVersion {
   reviews                ScriptVersionReview[]
   screenLinks            ScriptScreenLink[]
   authoringThreads       AuthoringThread[]
+  suggestions            ScriptSuggestion[]
   collaborationConflicts CollaborationConflict[]
   collaborationSnapshots CollaborationSnapshot[]
 
@@ -1540,6 +1542,32 @@ model AuthoringThread {
 
   @@index([tenantId, scriptVersionId], map: "authoring_threads_version_idx")
   @@map("authoring_threads")
+}
+
+/// Reviewer-proposed change (RFC 6902 subset) the owner applies in one step (ADR-0051).
+model ScriptSuggestion {
+  id              String        @id @default(uuid(7)) @db.Uuid
+  tenantId        String        @map("tenant_id") @db.Uuid
+  scriptVersionId String        @map("script_version_id") @db.Uuid
+  title           String        @db.VarChar(120)
+  note            String?
+  operations      Json
+  /// Value found at every replace/remove path (and parent container of every add) at creation.
+  guards          Json          @default("[]")
+  /// Checksum of the draft the suggestion was made against.
+  baseChecksum    String        @map("base_checksum")
+  /// open | accepted | rejected | stale
+  state           String        @default("open") @db.VarChar(16)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       String        @map("created_by") @db.VarChar(128)
+  decidedAt       DateTime?     @map("decided_at") @db.Timestamptz(3)
+  decidedBy       String?       @map("decided_by") @db.VarChar(128)
+  decisionReason  String?       @map("decision_reason")
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  scriptVersion   ScriptVersion @relation(fields: [scriptVersionId], references: [id], onDelete: Restrict)
+
+  @@index([tenantId, scriptVersionId, state, createdAt], map: "script_suggestions_version_idx")
+  @@map("script_suggestions")
 }
 
 model CollaborationSnapshot {

@@ -1,6 +1,6 @@
 # ADR 0051 — Suggestion mode and script branches
 
-Status: Proposed · 2026-10-07 · DIFFERENTIATORS C2, C3 (the pure three-way merge and a merge preview endpoint exist; persistence and UI do not)
+Status: Accepted for suggestions (C2) · Proposed for branches (C3) · 2026-10-07 · DIFFERENTIATORS C2, C3 (the pure three-way merge and a merge preview endpoint exist; suggestions are implemented, branches are not)
 
 ## Context
 
@@ -35,3 +35,30 @@ three existing versions by stable ids and report every conflict.
 
 No schema or API change until accepted. The merge preview can already be used by tooling to
 combine two diverged versions by hand.
+
+## Decision (2026-10-07): suggestions implemented, branches still open
+
+Suggestions (part 1) are accepted and implemented with these choices for the open questions:
+
+- **One suggestion may touch any number of pages** (up to 200 operations), because a reviewer's
+  edit rarely stays inside one page. **Anyone who can read the script may propose; only users with
+  `update` on the script may accept or reject.** The owner rule is not special-cased: it is the
+  existing `update` ability, so SoD and ABAC apply unchanged.
+- **Stale detection is by guard, not by rebase.** Instead of storing the base document, each
+  operation records what it relied on (the value at a replaced/removed path, the absence of an
+  added key, the length of an array receiving an item). The patch applies only if every guard
+  still holds; otherwise it is reported as *stale* (derived at read time, never auto-resolved) and
+  can only be closed. This is stricter than the `mergeDocuments` rebase in the proposal and needs
+  no stored base; rebasing stale suggestions remains possible later through the merge.
+- **Operations are independent.** The editor's suggestion mode (`suggestOperations`) compares
+  objects key by key, arrays element by element only when identities and order are unchanged,
+  appends as `add`, and replaces any other array change as a whole, so no operation depends on an
+  index another operation shifts.
+- **Accepting goes through the normal draft update** (`updateDraft`: lease, optimistic version,
+  validation, projection, `script.version.updated`), then writes `script.suggestion.accepted`.
+  Creation and rejection are audited as `script.suggestion.created` / `.rejected`; operation
+  values are never copied into the audit event, only `op path`.
+- Table `script_suggestions` (tenant RLS, no delete grant); routes under
+  `/v1/scripts/:id/versions/:number/suggestions`.
+
+Branches (part 2) still need the `script_versions` migration decision above and are not built.

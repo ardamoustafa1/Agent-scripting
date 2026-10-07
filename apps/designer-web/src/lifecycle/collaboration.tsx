@@ -18,6 +18,7 @@ import { useWorkspace } from '../workspace/context.js';
 
 import { Comments } from './comments.js';
 import { followView, peerTone } from './peers.js';
+import { Suggestions } from './suggestions.js';
 import './styles.css';
 
 const Peer = z.object({
@@ -565,6 +566,13 @@ export function CollaborationPanel({
             />
           )}
           <Comments scriptId={scriptId} number={number} nodeId={state.selection[0] ?? 'script'} />
+          <Suggestions
+            scriptId={scriptId}
+            number={number}
+            onAccepted={() => {
+              window.location.reload();
+            }}
+          />
         </>
       )}
     </>

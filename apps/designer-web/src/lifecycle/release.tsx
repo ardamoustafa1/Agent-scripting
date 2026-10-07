@@ -19,6 +19,7 @@ import { draftFromChanges } from './change-summary-text.js';
 import { summarizeChanges } from './change-summary.js';
 import { Comments } from './comments.js';
 import { ReleaseRisk } from './release-risk.js';
+import { Suggestions } from './suggestions.js';
 import { VisualDiff } from './visual-diff.js';
 import './styles.css';
 
@@ -451,6 +452,7 @@ export default function ReleasePage() {
         nodeId="script"
         focusedThreadId={searchParams.get('thread') ?? ''}
       />
+      <Suggestions scriptId={id} number={version.number} />
     </section>
   );
 }

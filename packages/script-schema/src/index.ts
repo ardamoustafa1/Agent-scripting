@@ -43,3 +43,9 @@ export * from './tree/tree.js';
 export * from './schema/preview.js';
 export * from './merge.js';
 export { completionBypasses } from './validation/completion.js';
+export {
+  suggestOperations,
+  applySuggestion,
+  TooManyOperationsError,
+  MAX_SUGGESTION_OPERATIONS,
+} from './suggest.js';

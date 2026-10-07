@@ -52,6 +52,7 @@ import { LinkedScreens } from './linked-screens.js';
 import { LivePane } from './live-pane.js';
 import { ReuseScreen } from './reuse-screen.js';
 import { EditorDocumentSchema, EditorStore, useEditor } from './store.js';
+import { SuggestMode } from './suggest-mode.js';
 
 import type { IssueTarget } from './health.js';
 import '../flow/styles.css';
@@ -148,6 +149,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
   const state = useEditor(store),
     [mode, setMode] = useState('screen'),
     [collaborating, setCollaborating] = useState(false),
+    [suggesting, setSuggesting] = useState(false),
     [help, setHelp] = useState(false),
     [expanded, setExpanded] = useState(false),
     [live, setLive] = useState(readLivePreference),
@@ -173,6 +175,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
   useEffect(() => {
     if (
       collaborating ||
+      suggesting ||
       !dirty ||
       version.state !== 'draft' ||
       conflict.current ||
@@ -224,7 +227,17 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
     return () => {
       clearTimeout(timer);
     };
-  }, [state.document, dirty, save, session.csrfToken, scriptId, store, version, collaborating]);
+  }, [
+    state.document,
+    dirty,
+    save,
+    session.csrfToken,
+    scriptId,
+    store,
+    version,
+    collaborating,
+    suggesting,
+  ]);
   useEffect(() => {
     const unload = (event: BeforeUnloadEvent) => {
       if (dirty) {
@@ -597,6 +610,20 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
                 } finally {
                   inFlight.current = false;
                 }
+              }}
+            />
+          )}
+          {!collaborating && version.state === 'draft' && ability.can('read', 'Script') && (
+            <SuggestMode
+              scriptId={scriptId}
+              number={version.number}
+              store={store}
+              suggesting={suggesting}
+              canEnter={!dirty && save === 'saved'}
+              onSuggestingChange={setSuggesting}
+              onRestored={() => {
+                setSaved(store.getSnapshot().document);
+                setSave('saved');
               }}
             />
           )}

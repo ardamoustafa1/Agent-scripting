@@ -245,6 +245,21 @@ export const PROBLEM_CATALOG = {
     slug: 'script/version-immutable',
     title: 'Only draft versions can be changed',
   },
+  VERBIS_SUGGESTION_STALE: {
+    status: 409,
+    slug: 'suggestion/stale',
+    title: 'The suggestion no longer applies to the current draft',
+  },
+  VERBIS_SUGGESTION_INVALID: {
+    status: 422,
+    slug: 'suggestion/invalid',
+    title: 'The suggestion does not produce a valid script',
+  },
+  VERBIS_SUGGESTION_NOT_OPEN: {
+    status: 409,
+    slug: 'suggestion/not-open',
+    title: 'The suggestion has already been decided',
+  },
   VERBIS_SCRIPT_SEMVER_NOT_INCREASING: {
     status: 422,
     slug: 'script/semver-not-increasing',

@@ -1217,7 +1217,7 @@
       "controller": "TeamController",
       "handler": "rollback",
       "file": "apps/api/src/modules/scripts/team.controller.ts",
-      "line": 130,
+      "line": 135,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1269,7 +1269,7 @@
       "controller": "TeamController",
       "handler": "comment",
       "file": "apps/api/src/modules/scripts/team.controller.ts",
-      "line": 93,
+      "line": 98,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1282,7 +1282,7 @@
       "controller": "TeamController",
       "handler": "reply",
       "file": "apps/api/src/modules/scripts/team.controller.ts",
-      "line": 104,
+      "line": 109,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1295,7 +1295,7 @@
       "controller": "TeamController",
       "handler": "resolve",
       "file": "apps/api/src/modules/scripts/team.controller.ts",
-      "line": 117,
+      "line": 122,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1386,7 +1386,7 @@
       "controller": "TeamController",
       "handler": "schedule",
       "file": "apps/api/src/modules/scripts/team.controller.ts",
-      "line": 32,
+      "line": 37,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1400,6 +1400,45 @@
       "handler": "submit",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
       "line": 216,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/suggestions",
+      "controller": "TeamController",
+      "handler": "suggest",
+      "file": "apps/api/src/modules/scripts/team.controller.ts",
+      "line": 150,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/suggestions/:suggestion/accept",
+      "controller": "TeamController",
+      "handler": "acceptSuggestion",
+      "file": "apps/api/src/modules/scripts/team.controller.ts",
+      "line": 173,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/versions/:number/suggestions/:suggestion/reject",
+      "controller": "TeamController",
+      "handler": "rejectSuggestion",
+      "file": "apps/api/src/modules/scripts/team.controller.ts",
+      "line": 185,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
