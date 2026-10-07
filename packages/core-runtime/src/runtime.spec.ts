@@ -334,6 +334,94 @@ describe('action executor and runtime boundaries', () => {
     await runtime.next();
     await runtime.executor.execute([{ type: 'submitOutcome', outcome: 'DONE' }]);
   });
+  describe('early-exit outcomes (ADR-0047)', () => {
+    const mandatorySecond = () => {
+      const doc = runtimeFixture();
+      doc.pages[1]!.mandatory = true;
+      return doc;
+    };
+    it('skips the mandatory-page check only for an author-declared early exit', async () => {
+      const command = vi.fn().mockResolvedValue(undefined);
+      const { runtime } = engine(mandatorySecond(), { command });
+      await runtime.start();
+      await expect(
+        runtime.executor.execute([{ type: 'submitOutcome', outcome: 'WRONG_PARTY' }]),
+      ).rejects.toThrow('VERBIS_MANDATORY_PAGE_UNVISITED');
+      await expect(
+        runtime.executor.execute([
+          { type: 'submitOutcome', outcome: 'WRONG_PARTY', completion: 'complete' },
+        ]),
+      ).rejects.toThrow('VERBIS_MANDATORY_PAGE_UNVISITED');
+      expect(command).not.toHaveBeenCalled();
+      await runtime.executor.execute([
+        { type: 'submitOutcome', outcome: 'WRONG_PARTY', completion: 'early' },
+      ]);
+      expect(command).toHaveBeenCalledTimes(1);
+    });
+    it('validates only visited pages and ignores what an early exit legitimately leaves open', async () => {
+      const seen: string[][] = [];
+      let issues: { node: string; messageKey: string }[] = [];
+      const { runtime } = engine(mandatorySecond(), {
+        command: vi.fn().mockResolvedValue(undefined),
+        serverValidation: ({ pageIds }) => {
+          seen.push([...pageIds]);
+          return Promise.resolve(issues);
+        },
+      });
+      await runtime.start();
+      const early = [{ type: 'submitOutcome', outcome: 'REFUSED', completion: 'early' }] as const;
+      issues = [
+        { node: 'home-root', messageKey: 'runtime.required' },
+        { node: 'home-root', messageKey: 'components.mustRead' },
+        { node: 'home-root', messageKey: 'components.signatureRequired' },
+      ];
+      await runtime.executor.execute([...early]);
+      expect(seen).toEqual([['home']]);
+      // A value the agent DID enter must still be valid, even on an early exit.
+      issues = [{ node: 'home-root', messageKey: 'common.invalid' }];
+      await expect(runtime.executor.execute([...early])).rejects.toThrow(
+        'VERBIS_VALIDATION_FAILED',
+      );
+    });
+    it('a completing outcome still validates every page', async () => {
+      const seen: string[][] = [];
+      const { runtime } = engine(runtimeFixture(), {
+        command: vi.fn().mockResolvedValue(undefined),
+        serverValidation: ({ pageIds }) => {
+          seen.push([...pageIds]);
+          return Promise.resolve([]);
+        },
+      });
+      await runtime.start();
+      await runtime.executor.execute([{ type: 'submitOutcome', outcome: 'DONE' }]);
+      expect(seen).toEqual([['home', 'second']]);
+    });
+    it('an end node carries its completion into the outcome', async () => {
+      const bypass = (completion?: 'early') => {
+        const doc = mandatorySecond();
+        doc.flow.edges = [{ id: 'first-edge', from: 'home-flow', to: 'end-flow' }];
+        doc.flow.nodes = doc.flow.nodes.map((n) =>
+          n.id === 'end-flow'
+            ? { ...n, outcome: 'WRONG_PARTY', ...(completion ? { completion } : {}) }
+            : n,
+        );
+        return doc;
+      };
+      const command = vi.fn().mockResolvedValue(undefined);
+      const early = engine(bypass('early'), { command });
+      await early.runtime.start();
+      await early.runtime.next();
+      expect(early.runtime.store.get('runtime.ended')).toBe(true);
+      expect(command).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'submitOutcome', outcome: 'WRONG_PARTY' }),
+        expect.anything(),
+        expect.anything(),
+      );
+      const strict = engine(bypass(), { command: vi.fn().mockResolvedValue(undefined) });
+      await strict.runtime.start();
+      await expect(strict.runtime.next()).rejects.toThrow('VERBIS_MANDATORY_PAGE_UNVISITED');
+    });
+  });
   it('supports ICU interpolation and locale fallback', () => {
     const runtime = new Runtime({
       document: runtimeFixture(),

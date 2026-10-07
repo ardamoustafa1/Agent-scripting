@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { IdentifierSchema, NodeIdSchema } from '../ids.js';
 
-import { OutcomeCodeSchema } from './actions.js';
+import { OutcomeCodeSchema, OutcomeCompletionSchema } from './actions.js';
 import { ConditionSchema, I18nKeySchema, ValueSchema } from './primitives.js';
 
 const flowNodeBase = {
@@ -41,6 +41,8 @@ export const EndFlowNodeSchema = z.strictObject({
   ...flowNodeBase,
   type: z.literal('end'),
   outcome: OutcomeCodeSchema.optional(),
+  /** `early`: see `OutcomeCompletionSchema` (ADR-0047). Only meaningful together with `outcome`. */
+  completion: OutcomeCompletionSchema.optional(),
   disposition: OutcomeCodeSchema.optional(),
 });
 

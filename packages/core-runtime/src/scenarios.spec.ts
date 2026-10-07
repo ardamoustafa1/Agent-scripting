@@ -181,3 +181,42 @@ describe('synthetic acceptance runner boundaries', () => {
     await rejected;
   });
 });
+describe('scenario coverage and observation', () => {
+  it('reports flow-qualified nodes and edges taken and where the run stopped', async () => {
+    const document = runtimeFixture([
+      {
+        id: 'go',
+        type: 'button',
+        props: { labelKey: 'common.run' },
+        events: { onPress: [{ type: 'next' }] },
+      },
+    ]);
+    const flow = (document as { flow: { id: string; nodes: { id: string }[] } }).flow;
+    const result = await runScenario(
+      document,
+      createCoreRegistry(),
+      scenario({
+        steps: [{ type: 'event', node: 'go', event: 'onPress' }],
+        expected: { page: 'second' },
+      }),
+    );
+    expect(result.passed).toBe(true);
+    expect(result.observed).toEqual({ page: 'second', ended: false });
+    expect(result.coverage.nodes.every((key) => key.startsWith(`${flow.id}:`))).toBe(true);
+    expect(result.coverage.nodes).toContain(`${flow.id}:${flow.nodes[0]!.id}`);
+    expect(result.coverage.nodes).toContain(`${flow.id}:second-flow`);
+    expect(result.coverage.edges).toHaveLength(1);
+  });
+
+  it('still reports partial coverage and the stopping page when a scenario fails', async () => {
+    const result = await runScenario(
+      runtimeFixture([]),
+      createCoreRegistry(),
+      scenario({ expected: { ended: true } }),
+    );
+    expect(result.passed).toBe(false);
+    expect(result.observed).toEqual({ page: 'home', ended: false });
+    expect(result.coverage.nodes.length).toBeGreaterThan(0);
+    expect(result.coverage.edges).toEqual([]);
+  });
+});

@@ -119,6 +119,53 @@ const populated: Dashboard = {
       pValue: null,
       significant: false,
       reason: 'insufficient',
+      anytimePValue: null,
+      anytimeSignificant: false,
+    },
+  ],
+  insights: [
+    { kind: 'dropOff', target: 'v1:welcome', value: 0.4, baseline: null, samples: 80, impact: 32 },
+    { kind: 'slowSource', target: 'crm', value: 3200, baseline: 2000, samples: 60, impact: 72 },
+  ],
+  versions: [
+    {
+      versionId: '11111111-aaaa',
+      scriptId: 'onboarding',
+      firstSeenAt: '2026-10-01T09:00:00.000Z',
+      lastSeenAt: '2026-10-02T09:00:00.000Z',
+      sessions: 40,
+      completed: 20,
+      completionRate: 0.5,
+      meanDurationMs: 1000,
+      vsPrevious: null,
+    },
+    {
+      versionId: '22222222-bbbb',
+      scriptId: 'onboarding',
+      firstSeenAt: '2026-10-03T09:00:00.000Z',
+      lastSeenAt: '2026-10-04T09:00:00.000Z',
+      sessions: 40,
+      completed: 30,
+      completionRate: 0.75,
+      meanDurationMs: 900,
+      vsPrevious: {
+        versionId: '11111111-aaaa',
+        difference: 0.25,
+        durationDeltaMs: -100,
+        anytimePValue: 0.2,
+        significant: false,
+      },
+    },
+  ],
+  guardrails: [
+    {
+      experimentId: 'sample',
+      a: 'A',
+      b: 'B',
+      metric: 'compliance',
+      difference: -0.2,
+      pValue: 0.01,
+      worse: 'B',
     },
   ],
   active: [
@@ -201,11 +248,18 @@ it('renders privacy-safe cohorts, null metrics and all comparison outcomes acces
   expect(screen.getByText('analytics.yes')).toBeDefined();
   expect(screen.getByText('analytics.no')).toBeDefined();
   expect(screen.getByText('analytics.insufficient')).toBeDefined();
-  expect(screen.getAllByText('—').length).toBe(4);
+  expect(screen.getAllByText('—').length).toBe(9);
   expect(document.querySelectorAll('.vb-analytics-metric strong')[2]?.textContent).toBe('—');
   expect(screen.queryByText('privateagent'.repeat(6))).toBeNull();
   expect(screen.getAllByText('privateagent').length).toBeGreaterThan(0);
   expect(screen.getByText('welcome analytics.arrow offer')).toBeDefined();
+  expect(screen.getByText('analytics.guardrailCompliance')).toBeDefined();
+  expect(screen.getByRole('cell', { name: 'B' })).toBeDefined();
+  expect(screen.getByText('22222222')).toBeDefined();
+  expect(screen.getByText('analytics.versions')).toBeDefined();
+  expect(screen.getByText('analytics.insights')).toBeDefined();
+  expect(screen.getByText(/analytics.insight.dropOff.suggestion/)).toBeDefined();
+  expect(screen.getAllByText('welcome').length).toBeGreaterThan(1);
 });
 it('updates and clears each report filter without mutating the current filter', () => {
   const filter = {
@@ -218,13 +272,15 @@ it('updates and clears each report filter without mutating the current filter', 
   render(
     <AnalyticsDashboard filter={filter} onFilter={change} loading={false} onRetry={vi.fn()} />,
   );
+  // A fixed date far from the clock-relative default: an equal value would not fire onChange.
+  const date = '2000-01-15';
   for (const key of ['from', 'to', 'campaignId', 'teamId']) {
     fireEvent.change(screen.getByLabelText('analytics.' + key), {
-      target: { value: key.endsWith('Id') ? 'updated' : '2026-10-01' },
+      target: { value: key.endsWith('Id') ? 'updated' : date },
     });
     expect(change).toHaveBeenLastCalledWith({
       ...filter,
-      [key]: key.endsWith('Id') ? 'updated' : '2026-10-01',
+      [key]: key.endsWith('Id') ? 'updated' : date,
     });
   }
   fireEvent.change(screen.getByLabelText('analytics.channel'), { target: { value: 'chat' } });

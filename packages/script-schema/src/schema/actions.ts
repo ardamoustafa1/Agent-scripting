@@ -75,10 +75,17 @@ export const ValidatePageActionSchema = z.strictObject({
   },
 });
 
+/**
+ * `early` is an author-declared early exit (wrong party, failed verification, technical error,
+ * refusal): it skips the mandatory-page check and only demands that values the agent DID enter
+ * are valid (ADR-0047). Omission means a completing outcome and keeps the original behaviour.
+ */
+export const OutcomeCompletionSchema = z.enum(['complete', 'early']);
 export const SubmitOutcomeActionSchema = z.strictObject({
   type: z.literal('submitOutcome'),
   outcome: OutcomeCodeSchema,
   notes: ValueSchema.optional(),
+  completion: OutcomeCompletionSchema.optional(),
 });
 
 export const SetDispositionActionSchema = z.strictObject({

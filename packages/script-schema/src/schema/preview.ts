@@ -59,3 +59,4 @@ export const TestScenarioSchema = z
     'At least one assertion is required',
   );
 export type TestScenario = z.infer<typeof TestScenarioSchema>;
+export type TestScenarioInput = z.input<typeof TestScenarioSchema>;

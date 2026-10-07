@@ -1371,6 +1371,13 @@
             },
             "notes": {
               "$ref": "#/$defs/Value"
+            },
+            "completion": {
+              "type": "string",
+              "enum": [
+                "complete",
+                "early"
+              ]
             }
           },
           "required": [
@@ -2254,6 +2261,13 @@
             "outcome": {
               "type": "string",
               "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$"
+            },
+            "completion": {
+              "type": "string",
+              "enum": [
+                "complete",
+                "early"
+              ]
             },
             "disposition": {
               "type": "string",

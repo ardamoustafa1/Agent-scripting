@@ -441,9 +441,29 @@ export const creditCardSalesScript: ScriptDocumentInput = {
       { id: 'n-summary', type: 'page', page: 'summary', position: { x: 2000, y: 0 } },
       { id: 'n-decline', type: 'page', page: 'decline', position: { x: 1400, y: 200 } },
       { id: 'n-end-sale', type: 'end', outcome: 'SALE_OK', position: { x: 2200, y: 0 } },
-      { id: 'n-end-no-sale', type: 'end', outcome: 'NO_SALE', position: { x: 1600, y: 200 } },
-      { id: 'n-end-unverified', type: 'end', outcome: 'ID_FAILED', position: { x: 600, y: 200 } },
-      { id: 'n-end-tech', type: 'end', outcome: 'TECH_ERROR', position: { x: 200, y: 200 } },
+      {
+        id: 'n-end-no-sale',
+        type: 'end',
+        outcome: 'NO_SALE',
+        completion: 'early',
+        position: { x: 1600, y: 200 },
+      },
+      {
+        id: 'n-end-unverified',
+        type: 'end',
+        outcome: 'ID_FAILED',
+        completion: 'early',
+        position: { x: 600, y: 200 },
+      },
+      // A failed customer lookup never reaches the mandatory identity and consent pages, so this
+      // is an author-declared early exit (ADR-0047): it keeps the technical-error outcome.
+      {
+        id: 'n-end-tech',
+        type: 'end',
+        outcome: 'TECH_ERROR',
+        completion: 'early',
+        position: { x: 200, y: 200 },
+      },
     ],
     edges: [
       { id: 'e1', from: 'n-welcome', to: 'n-lookup' },

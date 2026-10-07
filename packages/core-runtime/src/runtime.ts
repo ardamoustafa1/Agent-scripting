@@ -372,7 +372,16 @@ export class Runtime {
               signal,
             );
           if (node.outcome)
-            await this.executor.execute([{ type: 'submitOutcome', outcome: node.outcome }], signal);
+            await this.executor.execute(
+              [
+                {
+                  type: 'submitOutcome',
+                  outcome: node.outcome,
+                  ...(node.completion === undefined ? {} : { completion: node.completion }),
+                },
+              ],
+              signal,
+            );
           this.frames.pop();
           if (!this.frames.length) {
             this.store.set('runtime.ended', true);

@@ -39,6 +39,11 @@ async function hookResult(work: () => Promise<unknown>, signal: AbortSignal): Pr
       : new RuntimeProblem('VERBIS_VALIDATION_SERVICE_FAILED');
   }
 }
+const OPEN_BY_EARLY_EXIT: ReadonlySet<string> = new Set([
+  'runtime.required',
+  'components.mustRead',
+  'components.signatureRequired',
+]);
 export class ValidationEngine {
   constructor(
     private runtime: Runtime,
@@ -97,6 +102,20 @@ export class ValidationEngine {
   }
   async page(page: string, signal = this.runtime.signal): Promise<FieldIssue[]> {
     return this.pages([page], signal);
+  }
+  /**
+   * Early-exit validation (ADR-0047): only pages the agent actually visited, and only problems with
+   * values that were entered. Missing required values, unread notices and missing signatures are
+   * exactly what an early exit (wrong party, refusal, technical error) legitimately leaves open.
+   */
+  async visited(signal = this.runtime.signal): Promise<FieldIssue[]> {
+    const issues = await this.pages(
+      this.runtime.document.pages
+        .filter((p) => this.runtime.store.get(`runtime.visited.${p.id}`) === true)
+        .map((p) => p.id),
+      signal,
+    );
+    return issues.filter((issue) => !OPEN_BY_EARLY_EXIT.has(issue.messageKey));
   }
   async script(signal = this.runtime.signal): Promise<FieldIssue[]> {
     return this.pages(

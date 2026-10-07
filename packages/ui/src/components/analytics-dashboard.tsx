@@ -692,6 +692,7 @@ export function AnalyticsDashboard({
                         <th>{t('analytics.dimension')}</th>
                         <th>{t('analytics.completion')}</th>
                         <th>{t('analytics.pValue')}</th>
+                        <th>{t('analytics.anytimeP')}</th>
                         <th>{t('analytics.significant')}</th>
                       </tr>
                     </thead>
@@ -703,6 +704,7 @@ export function AnalyticsDashboard({
                           </th>
                           <td>{percent(c.difference)}</td>
                           <td>{number(c.pValue)}</td>
+                          <td>{number(c.anytimePValue ?? null)}</td>
                           <td>
                             {t(
                               c.reason === 'insufficient'
@@ -716,7 +718,96 @@ export function AnalyticsDashboard({
                       ))}
                     </tbody>
                   </table>
+                  {(data.guardrails ?? []).length > 0 && (
+                    <>
+                      <h3>{t('analytics.guardrails')}</h3>
+                      <p>{t('analytics.guardrailsHint')}</p>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>{t('analytics.dimension')}</th>
+                            <th>{t('analytics.guardrailMetric')}</th>
+                            <th>{t('analytics.anytimeP')}</th>
+                            <th>{t('analytics.guardrailWorse')}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(data.guardrails ?? []).map((g) => (
+                            <tr key={g.experimentId + g.a + g.b + g.metric}>
+                              <th scope="row">
+                                {g.a} / {g.b}
+                              </th>
+                              <td>
+                                {t(
+                                  g.metric === 'abandonment'
+                                    ? 'analytics.guardrailAbandonment'
+                                    : 'analytics.guardrailCompliance',
+                                )}
+                              </td>
+                              <td>{number(g.pValue)}</td>
+                              <td>{g.worse ?? t('analytics.guardrailOk')}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </>
+                  )}
                 </section>
+                {(data.versions ?? []).length > 0 && (
+                  <section className="vb-analytics-card">
+                    <h2>{t('analytics.versions')}</h2>
+                    <p>{t('analytics.versionsHint')}</p>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>{t('analytics.version')}</th>
+                          <th>{t('analytics.firstSeen')}</th>
+                          <th>{t('analytics.sessions')}</th>
+                          <th>{t('analytics.completion')}</th>
+                          <th>{t('analytics.versionDelta')}</th>
+                          <th>{t('analytics.anytimeP')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(data.versions ?? []).map((v) => (
+                          <tr key={v.versionId}>
+                            <th scope="row">{v.versionId.slice(0, 8)}</th>
+                            <td>
+                              <time dateTime={v.firstSeenAt}>{v.firstSeenAt.slice(0, 10)}</time>
+                            </td>
+                            <td>{number(v.sessions)}</td>
+                            <td>{percent(v.completionRate)}</td>
+                            <td>{v.vsPrevious ? percent(v.vsPrevious.difference) : '—'}</td>
+                            <td>{v.vsPrevious ? number(v.vsPrevious.anytimePValue) : '—'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </section>
+                )}
+                {(data.insights ?? []).length > 0 && (
+                  <section className="vb-analytics-card">
+                    <h2>{t('analytics.insights')}</h2>
+                    <p>{t('analytics.insightsHint')}</p>
+                    <ol>
+                      {(data.insights ?? []).map((item) => (
+                        <li key={item.kind + item.target}>
+                          <strong>{t(`analytics.insight.${item.kind}.title`)}</strong>{' '}
+                          <code>{item.target.split(':').slice(1).join(' › ') || item.target}</code>{' '}
+                          · {number(item.samples)} {t('analytics.sessions')} ·{' '}
+                          {t(`analytics.insight.${item.kind}.value`, {
+                            value:
+                              item.kind === 'slowPage' || item.kind === 'slowSource'
+                                ? number(Math.round(item.value / 100) / 10)
+                                : percent(item.value),
+                          })}
+                          <br />
+                          {t(`analytics.insight.${item.kind}.suggestion`)}
+                        </li>
+                      ))}
+                    </ol>
+                  </section>
+                )}
                 {data.agents.length > 0 &&
                   chart(
                     data.agents.map((a) => ({ key: a.key.slice(0, 12), count: a.sessions })),

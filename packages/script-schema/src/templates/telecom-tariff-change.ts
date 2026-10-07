@@ -32,6 +32,7 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
     { key: 'otpValid', type: 'boolean', scope: 'session', default: false, persist: true },
     { key: 'tariffChangeConfirmed', type: 'boolean', scope: 'page', default: false },
     { key: 'effectiveDate', type: 'date', scope: 'session', persist: true },
+    { key: 'orderId', type: 'string', scope: 'session', classification: 'internal' },
     {
       key: 'campaignDiscount',
       type: 'number',
@@ -79,7 +80,9 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
       ref: 'tenant-datasource:tariff-change',
       version: 1,
       inputs: { msisdn: { $expr: 'vars.msisdn' }, tariff: { $expr: 'vars.selectedTariff' } },
-      outputs: { orderId: { path: '$.orderId' } },
+      // Mapped into an internal variable so it may be written back to the platform: raw data
+      // source results count as personal data and may not reach platform sinks.
+      outputs: { orderId: { path: '$.orderId', variable: 'orderId' } },
       policy: { timeoutMs: 15000 },
     },
   ],
@@ -128,7 +131,9 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
               maxLength: 6,
             },
             bindings: [{ variable: 'otpCode' }],
-            requiredWhen: { $expr: 'true' },
+            // The code is page-scoped and cleared on leaving; once verified it is no longer needed,
+            // or the final outcome would fail script-wide validation.
+            requiredWhen: { $expr: '!vars.otpValid' },
           },
           {
             id: 'btn-otp-verify',
@@ -313,7 +318,7 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
           type: 'writeBackToPlatform',
           attributes: {
             'tariff.new': { $expr: 'vars.selectedTariff' },
-            'tariff.order': { $expr: 'ds.changeTariff.orderId' },
+            'tariff.order': { $expr: 'vars.orderId' },
           },
         },
       ],
@@ -378,12 +383,12 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
         id: 'n-mark-date',
         type: 'setVariable',
         variable: 'effectiveDate',
-        value: { $expr: 'today()' },
+        value: { $expr: 'now()' },
       },
       { id: 'n-done', type: 'page', page: 'done' },
       { id: 'n-transfer', type: 'page', page: 'transfer' },
       { id: 'n-end-ok', type: 'end', outcome: 'TARIFF_CHANGED' },
-      { id: 'n-end-transfer', type: 'end', outcome: 'TRANSFERRED' },
+      { id: 'n-end-transfer', type: 'end', outcome: 'TRANSFERRED', completion: 'early' },
     ],
     edges: [
       { id: 'e1', from: 'n-identify', to: 'n-verify' },
