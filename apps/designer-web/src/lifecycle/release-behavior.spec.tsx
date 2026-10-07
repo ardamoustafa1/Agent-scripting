@@ -72,6 +72,34 @@ it('requires valid semver and a note before submitting a draft for review', asyn
     changeNote: 'Synthetic change note',
   });
 });
+it('drafts the change note from the real structural differences and never overwrites typed text', async () => {
+  const baseline = editorFixture();
+  const next = structuredClone(baseline);
+  next.document.variables.push({ key: 'extraVariable', type: 'string', scope: 'session' } as never);
+  const f = await setup('draft', {
+    [base]: { ...next, state: 'draft', number: 2 },
+    [`/v1/scripts/${scriptId}/versions/1`]: { ...baseline, state: 'published' },
+  });
+  const note = screen.getByLabelText<HTMLTextAreaElement>(f.label('lifecycle.changeNote'));
+  fireEvent.change(note, { target: { value: 'Typed by a person' } });
+  const draft = await screen.findByRole('button', { name: f.label('lifecycle.draftFromChanges') });
+  await waitFor(() => {
+    expect(draft.hasAttribute('disabled')).toBe(false);
+  });
+  fireEvent.click(draft);
+  expect(note.value.startsWith('Typed by a person\n- ')).toBe(true);
+  expect(note.value).toContain('extraVariable');
+  expect(note.value.length).toBeLessThanOrEqual(4000);
+});
+it('keeps the draft button disabled when nothing changed against the baseline', async () => {
+  const same = editorFixture();
+  const f = await setup('draft', {
+    [base]: { ...same, state: 'draft', number: 2 },
+    [`/v1/scripts/${scriptId}/versions/1`]: { ...same, state: 'published' },
+  });
+  const draft = await screen.findByRole('button', { name: f.label('lifecycle.draftFromChanges') });
+  expect(draft.hasAttribute('disabled')).toBe(true);
+});
 it('rejects and comments with review text, and allows withdrawal', async () => {
   const f = await setup('in_review');
   const reject = screen.getByRole('button', { name: f.label('lifecycle.reject') });

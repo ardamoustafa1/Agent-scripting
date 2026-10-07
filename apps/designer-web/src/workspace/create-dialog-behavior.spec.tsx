@@ -125,3 +125,43 @@ it('requires a campaign for script creation and explains a campaign-scope 403', 
     campaignId: campaignFixture.id,
   });
 });
+it('starts a script from a tested template and opens its first version', async () => {
+  const close = vi.fn();
+  const f = await mountDesigner(<CreateDialog kind="scripts" open onOpenChange={close} />, {
+    ...campaigns,
+    'GET /v1/templates': [
+      { id: 'builtin-nps-survey', name: 'NPS survey', builtIn: true },
+      { id: '01928f3a-0000-7000-8000-0000000000cc', name: 'Team template', builtIn: false },
+    ],
+    'POST /v1/templates/builtin-nps-survey/instantiate': {
+      script: { id: scriptFixture.id },
+      version: { number: 1 },
+    },
+  });
+  fireEvent.change(screen.getByLabelText(f.label('workspace.name')), {
+    target: { value: 'Synthetic survey' },
+  });
+  fireEvent.click(screen.getByRole('radio', { name: f.label('workspace.startWith.template') }));
+  // The campaign is chosen by the template flow, so its field is gone.
+  expect(screen.queryByRole('combobox', { name: f.label('workspace.createCampaign') })).toBeNull();
+  const create = screen.getByRole('button', { name: f.label('workspace.create') });
+  expect(create.hasAttribute('disabled')).toBe(true);
+  const picker = await screen.findByRole('combobox', {
+    name: f.label('workspace.startWith.choose'),
+  });
+  await waitFor(() => {
+    expect(picker.hasAttribute('disabled')).toBe(false);
+  });
+  fireEvent.click(picker);
+  fireEvent.click(
+    await screen.findByRole('option', { name: f.label('lifecycle.templates.builtin-nps-survey') }),
+  );
+  fireEvent.submit(create.closest('form')!);
+  await waitFor(() => {
+    expect(close).toHaveBeenCalledWith(false);
+  });
+  expect(f.router.state.location.pathname).toBe(`/scripts/${scriptFixture.id}/versions/1/edit`);
+  const request = f.requests.find((r) => r.method === 'POST')!;
+  expect(request.path).toBe('/v1/templates/builtin-nps-survey/instantiate');
+  expect(request.body).toEqual({ name: 'Synthetic survey' });
+});

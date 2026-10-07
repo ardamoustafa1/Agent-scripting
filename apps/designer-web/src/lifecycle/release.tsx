@@ -15,7 +15,10 @@ import { RegressionPanel } from '../preview/regression-panel.js';
 import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
 
+import { draftFromChanges } from './change-summary-text.js';
+import { summarizeChanges } from './change-summary.js';
 import { Comments } from './comments.js';
+import { ReleaseRisk } from './release-risk.js';
 import { VisualDiff } from './visual-diff.js';
 import './styles.css';
 
@@ -150,6 +153,10 @@ export default function ReleasePage() {
   if (!current.data) return <Loading />;
   const version = current.data,
     lint = previewLint(version.document, new EditorStore(version.document).issues());
+  const changeLines =
+    from !== number && previous.data
+      ? summarizeChanges(previous.data.document, version.document)
+      : null;
   const head = versions.data?.data.find((v) => v.id === script.data?.currentVersionId);
   const rollback = versions.data?.data.find(
     (v) => v.state === 'published' && v.number < (head?.number ?? 0),
@@ -197,6 +204,13 @@ export default function ReleasePage() {
         <Alert tone="warning" title={t('designer.preview.scenariosRequired')} />
       )}
       {success && <Alert tone="success" title={t('designer.lifecycle.done')} />}
+      <ReleaseRisk
+        scriptId={id}
+        queryKey={[...key, version.version, from]}
+        document={version.document}
+        baseline={from === number ? undefined : previous.data?.document}
+        patch={from === number ? [] : patch.data?.patch}
+      />
       <Dialog
         open={rollbackOpen}
         onOpenChange={(open) => {
@@ -246,6 +260,30 @@ export default function ReleasePage() {
                 }}
                 placeholder="1.0.0"
               />
+              <Button
+                variant="secondary"
+                disabled={!changeLines || changeLines.length === 0}
+                aria-describedby="lc-draft-hint"
+                onClick={() => {
+                  if (changeLines)
+                    setNote((current) =>
+                      [
+                        current.trim(),
+                        draftFromChanges(changeLines, (key, options) =>
+                          options ? t(key, options) : t(key),
+                        ),
+                      ]
+                        .filter(Boolean)
+                        .join('\n')
+                        .slice(0, 4000),
+                    );
+                }}
+              >
+                {t('designer.lifecycle.draftFromChanges')}
+              </Button>
+              <p id="lc-draft-hint" className="lc-empty-note">
+                {t('designer.lifecycle.draftFromChangesHint')}
+              </p>
               <Textarea
                 label={t('designer.lifecycle.changeNote')}
                 required

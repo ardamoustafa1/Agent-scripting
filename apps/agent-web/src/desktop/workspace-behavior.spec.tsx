@@ -157,13 +157,35 @@ it('waits for authorized interactions, reports socket state, and persists access
   fireEvent.click(
     await screen.findByRole('option', { name: i18n.t('agent.desktop.densities.compact') }),
   );
+  fireEvent.click(screen.getByRole('checkbox', { name: i18n.t('agent.desktop.focusModeSetting') }));
   await waitFor(() => {
     expect(JSON.parse(localStorage.getItem('verbis.agent.preferences') ?? '{}')).toEqual({
       size: 'large',
       density: 'compact',
+      focus: true,
     });
   });
   expect(document.querySelector('.ag-workspace')?.getAttribute('data-size')).toBe('large');
+  expect(document.querySelector('.ag-workspace')?.getAttribute('data-focus')).toBe('true');
+});
+it('toggles focus mode with Alt+F unless the agent is typing, keeping older saved preferences', async () => {
+  localStorage.setItem(
+    'verbis.agent.preferences',
+    JSON.stringify({ size: 'small', density: 'comfortable' }),
+  );
+  mount();
+  await screen.findByRole('heading', { name: i18n.t('agent.launch.waiting') });
+  const workspace = () => document.querySelector('.ag-workspace')?.getAttribute('data-focus');
+  expect(workspace()).toBe('false');
+  fireEvent.keyDown(document, { key: 'f', code: 'KeyF', altKey: true });
+  expect(workspace()).toBe('true');
+  const field = document.createElement('input');
+  document.body.append(field);
+  fireEvent.keyDown(field, { key: 'ƒ', code: 'KeyF', altKey: true });
+  expect(workspace()).toBe('true');
+  field.remove();
+  fireEvent.keyDown(document, { key: 'f', code: 'KeyF', altKey: true });
+  expect(workspace()).toBe('false');
 });
 it('loads valid saved preferences and keeps the waiting workspace usable when storage is restricted', async () => {
   localStorage.setItem(

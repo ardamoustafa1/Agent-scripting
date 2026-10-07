@@ -26,6 +26,8 @@ import {
   type Breakpoint,
 } from '@verbis/script-schema';
 
+import { insertBlock, type BlockId } from './blocks.js';
+
 export const editorRegistry = createComponentRegistry();
 export interface EditorState {
   document: ScriptDocument;
@@ -477,6 +479,16 @@ export class EditorStore {
       }
     });
     this.setView({ pageId: id });
+  }
+  /** Adds a verified building block as a new page, wired before the flow's end (A6). */
+  addBlock(block: BlockId, name: string) {
+    if (this.state.document.pages.every((page) => this.readonlyPages.has(page.id)))
+      throw new Error('VERBIS_READONLY');
+    let pageId = '';
+    this.edit((doc) => {
+      pageId = insertBlock(doc, block, name, this.idFactory);
+    });
+    this.setView({ pageId });
   }
   issues(): readonly EditorIssue[] {
     if (this.issueDocument === this.state.document) return this.issueCache;

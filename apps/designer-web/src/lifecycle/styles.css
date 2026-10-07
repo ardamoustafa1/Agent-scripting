@@ -363,3 +363,88 @@
   border-radius: var(--vb-radius-md);
   font-size: var(--vb-font-size-sm);
 }
+
+/* Release risk (DIFFERENTIATORS B5) */
+.lc-risk {
+  border-inline-start: 4px solid var(--vb-color-success);
+}
+.lc-risk[data-level='medium'] {
+  border-inline-start-color: var(--vb-color-warning);
+}
+.lc-risk[data-level='high'] {
+  border-inline-start-color: var(--vb-color-danger);
+}
+.lc-risk-header {
+  display: flex;
+  align-items: center;
+  gap: var(--vb-space-3);
+}
+.lc-risk-header h2,
+.lc-risk-header p {
+  margin: 0;
+}
+.lc-risk-header p {
+  margin-block-start: var(--vb-space-1);
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-sm);
+}
+.lc-risk-factors {
+  margin: var(--vb-space-3) 0;
+  padding-inline-start: var(--vb-space-5);
+}
+.lc-risk-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--vb-space-3);
+  margin: var(--vb-space-3) 0;
+}
+.lc-risk-facts dt {
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-xs);
+}
+.lc-risk-facts dd {
+  margin: 0;
+}
+.lc-risk-data summary {
+  cursor: pointer;
+  min-block-size: 24px;
+  font-weight: 600;
+}
+
+/* Presence tones and follow mode (DIFFERENTIATORS C1) */
+[data-tone='info'] {
+  --lc-peer: var(--vb-color-info);
+}
+[data-tone='success'] {
+  --lc-peer: var(--vb-color-success);
+}
+[data-tone='warning'] {
+  --lc-peer: var(--vb-color-warning);
+}
+[data-tone='primary'] {
+  --lc-peer: var(--vb-color-primary);
+}
+[data-tone='focus'] {
+  --lc-peer: var(--vb-color-focus);
+}
+[data-tone='brand-accent'] {
+  --lc-peer: var(--vb-color-brand-accent);
+}
+.lc-peer-cursor[data-tone] {
+  color: var(--vb-color-text);
+  border-inline-start: 3px solid var(--lc-peer);
+}
+.lc-peer-selection[data-tone] {
+  border-color: var(--lc-peer);
+  color: var(--vb-color-text);
+}
+.lc-peer-follow.vb-button {
+  padding: 2px;
+  border-radius: var(--vb-radius-full);
+  box-shadow: 0 0 0 2px var(--lc-peer, var(--vb-color-border));
+}
+.lc-peer-follow.vb-button[aria-pressed='true'] {
+  box-shadow:
+    0 0 0 2px var(--vb-color-surface-raised),
+    0 0 0 4px var(--lc-peer, var(--vb-color-primary));
+}

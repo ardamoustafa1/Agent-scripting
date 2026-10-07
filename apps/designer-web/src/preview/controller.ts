@@ -5,8 +5,10 @@ import {
   type DataSourceRequest,
 } from '@verbis/core-runtime';
 import {
+  JsonValueSchema,
   TestScenarioSchema,
   PreviewContextSchema,
+  type JsonValue,
   type ScriptDocument,
   type TestScenario,
   type PreviewStep,
@@ -15,6 +17,15 @@ import {
 import { editorRegistry } from '../editor/store.js';
 
 type Checkpoint = ReturnType<Runtime['checkpoint']>;
+/** One variable that changed between two snapshots. Sensitive values are never exposed. */
+export interface VariableChange {
+  variable: string;
+  masked: boolean;
+  before?: JsonValue;
+  after?: JsonValue;
+}
+export type WatchResult =
+  { status: 'value'; value: JsonValue } | { status: 'masked' } | { status: 'error' };
 export interface TimelineEntry {
   id: number;
   event: RuntimeSessionEvent;
@@ -179,6 +190,72 @@ export class PreviewController {
     this.create(snapshot);
     for (const key of breakpoints) this.runtime.executor.debugger.breakpoints.add(key);
     this.pause();
+  }
+  /**
+   * Rewind to the nearest earlier snapshot whose state differs from the latest one, so one step
+   * back always changes something (a page start and its wait share the same state).
+   */
+  stepBack(): boolean {
+    const snapshots = this.timeline.filter((row) => row.snapshot);
+    const latest = snapshots.at(-1);
+    if (!latest?.snapshot) return false;
+    const state = (snapshot: Checkpoint) =>
+      JSON.stringify([snapshot.store.values, snapshot.frames, snapshot.history]);
+    const current = state(latest.snapshot);
+    const target = snapshots
+      .slice(0, -1)
+      .reverse()
+      .find((row) => row.snapshot && state(row.snapshot) !== current);
+    if (!target) return false;
+    this.jump(target.id);
+    return true;
+  }
+  /** Variables whose value differs between this row's snapshot and the previous snapshot. */
+  changes(id: number): VariableChange[] {
+    const index = this.timeline.findIndex((row) => row.id === id);
+    const row = this.timeline[index];
+    if (!row?.snapshot) return [];
+    const previous = this.timeline
+      .slice(0, index)
+      .reverse()
+      .find((candidate) => candidate.snapshot)?.snapshot;
+    // The first snapshot is the starting state, not a change.
+    if (!previous) return [];
+    const values = (snapshot: Checkpoint | undefined) =>
+      new Map((snapshot?.store.values ?? []).filter(([path]) => path.startsWith('vars.')));
+    const before = values(previous),
+      after = values(row.snapshot);
+    const sensitive = new Map(row.snapshot.store.sensitivities);
+    const changes: VariableChange[] = [];
+    for (const path of new Set([...before.keys(), ...after.keys()])) {
+      const old = before.get(path) ?? null,
+        now = after.get(path) ?? null;
+      if (JSON.stringify(old) === JSON.stringify(now)) continue;
+      const variable = path.slice('vars.'.length);
+      const level = sensitive.get(variable);
+      changes.push(
+        level === 'pii' || level === 'pci'
+          ? { variable, masked: true }
+          : { variable, masked: false, before: old, after: now },
+      );
+    }
+    return changes.sort((a, b) => a.variable.localeCompare(b.variable));
+  }
+  /**
+   * Evaluates a watch expression with the sandboxed expression engine (ADR-0007): no eval, no
+   * side effects. Anything reading personal or card data is masked.
+   */
+  watch(expression: string): WatchResult {
+    try {
+      const level = this.runtime.expressions.sensitivity({ $expr: expression });
+      if (level === 'pii' || level === 'pci') return { status: 'masked' };
+      return {
+        status: 'value',
+        value: JsonValueSchema.parse(this.runtime.expressions.evaluate(expression)),
+      };
+    } catch {
+      return { status: 'error' };
+    }
   }
   scenario(name: string): TestScenario {
     if (this.liveUsed || this.branched || this.error || this.runtime.executor.busy)

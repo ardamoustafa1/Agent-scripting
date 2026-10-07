@@ -39,7 +39,33 @@ const dashboard = {
   active: [],
   liveCampaigns: [{ key: campaign, active: 2, completed: 5 }],
 };
+const trust = {
+  generatedAt: '2026-10-07T12:00:00.000Z',
+  windowDays: 30,
+  chain: {
+    status: 'attention',
+    valid: true,
+    checked: 1234,
+    headSeq: '1234',
+    breaks: 0,
+    truncated: false,
+    signaturesVerified: true,
+    checkpointsChecked: 4,
+    latestCheckpoint: { seq: '1200', signedAt: '2026-10-05T06:00:00.000Z' },
+    checkpointAgeHours: 54,
+  },
+  launch: { issued: 50, redeemed: 48, denied: 3, anomalies: 1, urlParamsRejected: 2 },
+  sensitiveAccess: {
+    auditExports: 2,
+    secretMetadataViews: 7,
+    secretUsageReads: 0,
+    userProfileViews: 11,
+    privacyExports: 1,
+  },
+  privacy: { open: 2, processed: 5, oldestOpenAt: '2026-09-20T09:00:00.000Z' },
+};
 const fixtures: Record<string, unknown> = {
+  '/api/v1/trust-center': trust,
   '/api/v1/tenant': { id: tenant, name: 'A11y fixture', settings: {}, version: 1 },
   '/api/v1/analytics/dashboard': dashboard,
   '/api/v1/analytics/schedules': [],
@@ -95,7 +121,7 @@ const axe = (page: Page) =>
 test.use({ locale: 'tr-TR' });
 for (const theme of ['light', 'dark', 'high-contrast'])
   for (const width of [390, 1440])
-    for (const route of ['users', 'analytics', 'identity', 'branding'])
+    for (const route of ['users', 'analytics', 'identity', 'branding', 'trust'])
       test(`${route} ${theme} ${width}px has no axe violations`, async ({ page }) => {
         await workspace(page, theme);
         await page.setViewportSize({ width, height: 900 });
@@ -105,6 +131,7 @@ for (const theme of ['light', 'dark', 'high-contrast'])
           await expect(page.getByText('Kimlik sağlayıcı').first()).toBeAttached();
         if (route === 'analytics') await expect(page.locator('.vb-analytics-kpis')).toBeVisible();
         if (route === 'identity') await expect(page.getByText('Keycloak').first()).toBeAttached();
+        if (route === 'trust') await expect(page.getByText('Dikkat gerekli').first()).toBeVisible();
         const { violations } = await axe(page).analyze();
         expect(
           violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`),

@@ -7,6 +7,7 @@ import {
   ChevronRight,
   PanelRight,
   CheckCircle2,
+  MessageSquareWarning,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +15,7 @@ import { z } from 'zod';
 
 import { ComponentProvider, type ComponentEnvironment } from '@verbis/components';
 import { ScriptRenderer, useRuntimePaths } from '@verbis/core-runtime';
+import { AgentFeedbackReasonSchema, AgentFeedbackResultSchema } from '@verbis/shared-types';
 import {
   Alert,
   Checkbox,
@@ -27,15 +29,25 @@ import {
   Tabs,
   Kbd,
   Skeleton,
+  Dialog,
+  Radio,
 } from '@verbis/ui';
 
-import { agentScreenReady, agentLaunchFailed } from '../observability.js';
+import { agentScreenReady, agentLaunchFailed, agentPageTransition } from '../observability.js';
 
 import { AgentAiPanel } from './ai-panel.js';
 import { api, Desktop } from './api.js';
+import { complianceChecklist, pendingCount } from './checklist.js';
 import { AgentController } from './controller.js';
 import { FailureNotice } from './failure-notice.js';
 import { classifyAgentFailure, type AgentFailure } from './failure.js';
+import {
+  describeTarget,
+  pageFocusTarget,
+  pageTitle,
+  shortcutIntent,
+  stepTrail,
+} from './navigation.js';
 import { type DraftVault } from './vault.js';
 
 export function SessionView({
@@ -160,7 +172,7 @@ function Interaction({
 }) {
   const { t } = useTranslation(),
     s = useSyncExternalStore(c.subscribe, c.getSnapshot, c.getSnapshot);
-  useRuntimePaths(c.runtime, ['runtime.page', 'runtime.errors', 'vars.*']);
+  useRuntimePaths(c.runtime, ['runtime.page', 'runtime.errors', 'runtime.read.*', 'vars.*']);
   const componentEnvironment = useMemo<ComponentEnvironment>(
     () => ({
       mediaOrigins: [],
@@ -191,6 +203,58 @@ function Interaction({
     outcome = c.desktop.campaign.outcomes.find((o) => o.code === s.disposition);
   const running = useRef(false);
   const [busy, setBusy] = useState(false);
+  // Show progress only for slow steps: a spinner that flashes for 40 ms reads as jank.
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    if (!busy) return undefined;
+    const timer = setTimeout(() => {
+      setSlow(true);
+    }, 150);
+    return () => {
+      clearTimeout(timer);
+      setSlow(false);
+    };
+  }, [busy]);
+  const section = useRef<HTMLElement>(null),
+    stepHeading = useRef<HTMLHeadingElement>(null),
+    transition = useRef<number | null>(null),
+    shownPage = useRef<string | null>(null),
+    [announcement, setAnnouncement] = useState(''),
+    [feedbackOpen, setFeedbackOpen] = useState(false),
+    [feedbackReason, setFeedbackReason] = useState<string>('confusing'),
+    [feedbackBusy, setFeedbackBusy] = useState(false),
+    [feedbackFailed, setFeedbackFailed] = useState(false);
+  const message = useCallback((key: string) => c.runtime.message(key), [c]);
+  // Read separately from `page` so the compiler can keep `next` memoized.
+  const checklist = complianceChecklist(c.runtime.document, c.runtime.store, message),
+    pending = pendingCount(checklist);
+  const shown = c.runtime.store.get('runtime.page');
+  const pageId = typeof shown === 'string' ? shown : null;
+  const currentTitle = pageId === null ? '' : pageTitle(c.runtime.document, pageId, message);
+  const trail = stepTrail(c.runtime.document, s.view.snapshot.history, pageId, message);
+  // A new page: put the caret in its first field (or on its title) and say where the agent is.
+  useEffect(() => {
+    if (shownPage.current === pageId) return;
+    const first = shownPage.current === null;
+    shownPage.current = pageId;
+    // The first page of a session keeps the workspace's own focus handling.
+    if (pageId === null || first) return;
+    const started = transition.current;
+    transition.current = null;
+    const frame = requestAnimationFrame(() => {
+      if (started !== null) agentPageTransition(performance.now() - started);
+      const root = section.current;
+      if (!active || !root) return;
+      const focused = document.activeElement;
+      if (focused && focused !== document.body && !root.contains(focused)) return;
+      const runtime = root.querySelector('.ag-runtime');
+      pageFocusTarget(runtime ?? root, stepHeading.current)?.focus({ preventScroll: false });
+      setAnnouncement(t('agent.desktop.nowOn', { page: currentTitle }));
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [pageId, active, currentTitle, t]);
   const run = useCallback(
     async (work: () => Promise<unknown>) => {
       if (running.current) return;
@@ -257,31 +321,22 @@ function Interaction({
   useEffect(() => {
     if (!active) return;
     const key = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === '/') {
+      const at = describeTarget(event.target);
+      const intent = shortcutIntent(event, at);
+      if (!intent) return;
+      if (intent.type === 'help') {
         event.preventDefault();
         setHelp((v) => !v);
         return;
       }
+      if (intent.type !== 'next' && intent.type !== 'back') return;
+      // Notes and the assistant are not part of the script: they never move the conversation.
+      if (event.target instanceof Element && event.target.closest('.ag-sidebar')) return;
       if (s.readOnly || !s.online || s.view.state !== 'active') return;
-      const element = event.target;
-      if (
-        element instanceof HTMLElement &&
-        (element.closest('textarea,[contenteditable=true],[role=combobox],[role=dialog]') ||
-          element.closest('button,a'))
-      )
-        return;
-      if (event.altKey && event.key === 'ArrowLeft') {
-        event.preventDefault();
-        void run(() => c.runtime.back());
-      }
-      if (
-        event.key === 'Enter' &&
-        !event.ctrlKey &&
-        !event.shiftKey &&
-        !event.altKey &&
-        !event.isComposing
-      ) {
-        event.preventDefault();
+      event.preventDefault();
+      if (intent.type === 'back') void run(() => c.runtime.back());
+      else {
+        transition.current = performance.now();
         void run(next);
       }
     };
@@ -301,6 +356,7 @@ function Interaction({
     wrap = s.view.state === 'wrapup';
   return (
     <section
+      ref={section}
       className="ag-interaction"
       data-agent-session={c.id}
       aria-label={t('agent.desktop.interaction')}
@@ -333,6 +389,9 @@ function Interaction({
           <PanelRight size={18} />
         </Button>
       </header>
+      <p className="vb-sr-only" role="status">
+        {announcement}
+      </p>
       <div className="ag-announcements" aria-live="polite">
         {!s.online && <Alert tone="warning" title={t('agent.desktop.offline')} />}{' '}
         {s.draftSaving && <p role="status">{t('agent.desktop.savingDraft')}</p>}
@@ -514,16 +573,50 @@ function Interaction({
               </Button>
             </section>
           ) : (
-            <fieldset
-              className="ag-runtime"
-              data-page-id={typeof page === 'string' ? page : undefined}
-              disabled={s.readOnly || s.view.state !== 'active'}
-            >
-              <legend className="vb-sr-only">{t('agent.desktop.script')}</legend>
-              <ComponentProvider environment={componentEnvironment}>
-                <ScriptRenderer runtime={c.runtime} autoStart={false} />
-              </ComponentProvider>
-            </fieldset>
+            <>
+              <header className="ag-step">
+                <p className="ag-step-count">
+                  {t('agent.desktop.step', { number: trail.length + 1 })}
+                </p>
+                <div className="ag-step-title">
+                  <h2 ref={stepHeading} tabIndex={-1}>
+                    {currentTitle}
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={!s.online || pageId === null}
+                    onClick={() => {
+                      setFeedbackFailed(false);
+                      setFeedbackOpen(true);
+                    }}
+                  >
+                    <MessageSquareWarning size={15} aria-hidden />
+                    {t('agent.desktop.feedback')}
+                  </Button>
+                </div>
+                {trail.length > 0 && (
+                  <details className="ag-trail">
+                    <summary>{t('agent.desktop.trail', { count: trail.length })}</summary>
+                    <ol>
+                      {trail.map((step, index) => (
+                        <li key={`${step.id}-${String(index)}`}>{step.title}</li>
+                      ))}
+                    </ol>
+                  </details>
+                )}
+              </header>
+              <fieldset
+                className="ag-runtime"
+                data-page-id={typeof page === 'string' ? page : undefined}
+                disabled={s.readOnly || s.view.state !== 'active'}
+              >
+                <legend className="vb-sr-only">{t('agent.desktop.script')}</legend>
+                <ComponentProvider environment={componentEnvironment}>
+                  <ScriptRenderer runtime={c.runtime} autoStart={false} />
+                </ComponentProvider>
+              </fieldset>
+            </>
           )}
         </div>
         {(side || ['chat', 'email'].includes(c.desktop.interaction.channel)) && (
@@ -546,6 +639,45 @@ function Interaction({
                     </dl>
                   ),
                 },
+                ...(checklist.length > 0
+                  ? [
+                      {
+                        value: 'compliance',
+                        label:
+                          pending > 0
+                            ? `${t('agent.desktop.compliance')} (${String(pending)})`
+                            : t('agent.desktop.compliance'),
+                        content: (
+                          <section aria-label={t('agent.desktop.compliance')}>
+                            <p>{t('agent.desktop.complianceHint')}</p>
+                            <p role="status">
+                              {t('agent.desktop.complianceProgress', {
+                                done: checklist.length - pending,
+                                total: checklist.length,
+                              })}
+                            </p>
+                            <ul className="ag-checklist">
+                              {checklist.map((item) => (
+                                <li key={item.id} data-done={item.done}>
+                                  <span aria-hidden="true">{item.done ? '✓' : '○'}</span>{' '}
+                                  <span>
+                                    {item.label} <small>· {item.page}</small>
+                                  </span>{' '}
+                                  <strong>
+                                    {t(
+                                      item.done
+                                        ? 'agent.desktop.complianceDone'
+                                        : 'agent.desktop.compliancePending',
+                                    )}
+                                  </strong>
+                                </li>
+                              ))}
+                            </ul>
+                          </section>
+                        ),
+                      },
+                    ]
+                  : []),
                 {
                   value: 'notes',
                   label: t('agent.desktop.notes'),
@@ -637,33 +769,88 @@ function Interaction({
             busy || s.readOnly || !s.online || Boolean(s.dataFailure) || s.view.state !== 'active'
           }
           data-agent-next=""
-          onClick={() => void run(next)}
+          loading={slow}
+          aria-busy={busy}
+          onClick={() => {
+            transition.current = performance.now();
+            void run(next);
+          }}
         >
           {t('agent.desktop.next')}
           <ChevronRight size={16} />
         </Button>
       </footer>
-      {help && (
-        <section className="ag-help" aria-label={t('agent.desktop.shortcuts')}>
-          <h2>{t('agent.desktop.shortcuts')}</h2>
-          <p>
-            <Kbd>{t('agent.desktop.shortcutNext')}</Kbd> {t('agent.desktop.next')}
-          </p>
-          <p>
-            <Kbd>{t('agent.desktop.shortcutBack')}</Kbd> {t('agent.desktop.back')}
-          </p>
-          <p>
-            <Kbd>{t('agent.desktop.shortcutHelp')}</Kbd> {t('agent.desktop.shortcuts')}
-          </p>
-          <Button
-            onClick={() => {
-              setHelp(false);
-            }}
-          >
-            {t('agent.desktop.close')}
+      <Dialog
+        open={feedbackOpen}
+        onOpenChange={setFeedbackOpen}
+        title={t('agent.desktop.feedbackTitle')}
+        description={t('agent.desktop.feedbackHelp')}
+      >
+        <form
+          className="ag-feedback"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (pageId === null) return;
+            setFeedbackBusy(true);
+            setFeedbackFailed(false);
+            // C5: only a fixed reason and the page id are sent; never free text or customer data.
+            void api(`/v1/sessions/${c.id}/desktop/feedback`, AgentFeedbackResultSchema, csrf, {
+              pageId,
+              reason: AgentFeedbackReasonSchema.parse(feedbackReason),
+            })
+              .then(() => {
+                setFeedbackOpen(false);
+                setAnnouncement(t('agent.desktop.feedbackSent'));
+              })
+              .catch(() => {
+                setFeedbackFailed(true);
+              })
+              .finally(() => {
+                setFeedbackBusy(false);
+              });
+          }}
+        >
+          <Radio
+            label={t('agent.desktop.feedbackReason')}
+            value={feedbackReason}
+            onValueChange={setFeedbackReason}
+            options={AgentFeedbackReasonSchema.options.map((value) => ({
+              value,
+              label: t(`agent.desktop.feedbackReasons.${value}`),
+            }))}
+          />
+          {feedbackFailed && <Alert tone="danger" title={t('agent.desktop.feedbackFailed')} />}
+          <Button type="submit" loading={feedbackBusy}>
+            {t('agent.desktop.feedbackSend')}
           </Button>
-        </section>
-      )}
+        </form>
+      </Dialog>
+      <Dialog
+        open={help}
+        onOpenChange={setHelp}
+        title={t('agent.desktop.shortcuts')}
+        description={t('agent.desktop.shortcutsHelp')}
+      >
+        <dl className="ag-shortcuts">
+          {(
+            [
+              ['shortcutNext', 'next'],
+              ['shortcutNextAnywhere', 'nextAnywhere'],
+              ['shortcutBack', 'back'],
+              ['shortcutFocus', 'focusMode'],
+              ['shortcutTabs', 'switchInteraction'],
+              ['shortcutHelpKeys', 'shortcuts'],
+            ] as const
+          ).map(([keys, action]) => (
+            <div key={action}>
+              <dt>
+                <Kbd>{t(`agent.desktop.${keys}`)}</Kbd>
+              </dt>
+              <dd>{t(`agent.desktop.${action}`)}</dd>
+            </div>
+          ))}
+        </dl>
+      </Dialog>
     </section>
   );
 }

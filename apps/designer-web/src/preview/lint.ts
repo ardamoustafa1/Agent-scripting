@@ -1,9 +1,21 @@
-import { walkNodes, type ScriptDocument, type Action } from '@verbis/script-schema';
+import {
+  completionBypasses,
+  walkNodes,
+  type ScriptDocument,
+  type Action,
+} from '@verbis/script-schema';
 
 import type { EditorIssue } from '../editor/store.js';
 
 export function previewLint(document: ScriptDocument, base: readonly EditorIssue[]): EditorIssue[] {
   const issues = [...base];
+  for (const bypass of completionBypasses(document))
+    issues.push({
+      severity: 'error',
+      code: 'VERBIS_LINT_COMPLETION_BYPASS',
+      path: bypass.pointer,
+      messageKey: 'designer.preview.lintCompletionBypass',
+    });
   let legal = false;
   walkNodes(document, ({ node }) => {
     legal ||= node.props['mustRead'] === true;

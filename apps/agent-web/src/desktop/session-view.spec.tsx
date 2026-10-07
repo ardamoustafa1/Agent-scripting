@@ -156,6 +156,15 @@ async function mount(
         ),
       );
     if (path.endsWith('/ai/status')) return Promise.resolve(Response.json({ agentEnabled: false }));
+    if (path.endsWith('/desktop/feedback'))
+      return Promise.resolve(
+        scenario.failStatus === 503
+          ? Response.json({ code: 'VERBIS_HTTP_UNAVAILABLE' }, { status: 503 })
+          : Response.json(
+              { recorded: true, threadId: '01928f3a-0000-7000-8000-0000000000fb' },
+              { status: 201 },
+            ),
+      );
     if (path.endsWith('/desktop')) return Promise.resolve(Response.json({ ...desktop, view }));
     if (path.endsWith('/attach'))
       return Promise.resolve(
@@ -174,6 +183,15 @@ async function mount(
       if (command['type'] === 'transition') view.state = command['state'] as View['state'];
       if (command['type'] === 'field')
         view.snapshot.variables[String(command['variable'])] = String(command['value']);
+      if (command['type'] === 'page')
+        view = {
+          ...view,
+          snapshot: {
+            ...view.snapshot,
+            currentPage: String(command['pageId']),
+            history: (command['history'] as string[] | undefined) ?? [],
+          },
+        };
     }
     if (path.endsWith('/outcome'))
       view = { ...view, sequence: view.sequence + 1, state: 'completed' };
@@ -229,9 +247,16 @@ it('loads the actual authorized session, exposes progress and shortcut help, and
   });
   expect(screen.getByRole('progressbar').getAttribute('aria-valuenow')).toBe('100');
   fireEvent.keyDown(document, { ctrlKey: true, key: '/' });
-  expect(screen.getByRole('region', { name: i18n.t('agent.desktop.shortcuts') })).toBeDefined();
-  fireEvent.click(screen.getByRole('button', { name: i18n.t('agent.desktop.close') }));
-  expect(screen.queryByRole('region', { name: i18n.t('agent.desktop.shortcuts') })).toBeNull();
+  const help = screen.getByRole('dialog', { name: i18n.t('agent.desktop.shortcuts') });
+  for (const action of ['next', 'nextAnywhere', 'back', 'focusMode', 'switchInteraction'])
+    expect(within(help).getByText(i18n.t(`agent.desktop.${action}`))).toBeDefined();
+  fireEvent.keyDown(help, { key: 'Escape' });
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+  // "?" opens the same help, but never while typing.
+  fireEvent.keyDown(document, { key: '?' });
+  expect(screen.getByRole('dialog', { name: i18n.t('agent.desktop.shortcuts') })).toBeDefined();
 });
 it('shows a safe load failure without displaying server exception details', async () => {
   await mount('active', 'voice', true);
@@ -253,6 +278,43 @@ it.each(['completed', 'paused', 'abandoned'] as const)(
     expect(document.querySelector('[data-agent-next]')?.getAttribute('disabled')).not.toBeNull();
   },
 );
+it('lists required notices in a live checklist that follows the runtime acknowledgement state', async () => {
+  await mount('active', 'chat', false, {
+    decorate: (desktop) => {
+      desktop.document.pages[0]?.layout.children?.push(
+        NodeSchema.parse({
+          id: 'txt-kvkk',
+          type: 'scriptText',
+          props: { mustRead: true, titleKey: 'notice.kvkk', textKey: 'notice.kvkk' },
+        }),
+      );
+      for (const locale of ['tr', 'en'])
+        desktop.document.i18n.messages[locale] = {
+          ...desktop.document.i18n.messages[locale],
+          'notice.kvkk': 'Privacy notice',
+        };
+    },
+  });
+  const tab = await screen.findByRole('tab', {
+    name: `${i18n.t('agent.desktop.compliance')} (1)`,
+  });
+  fireEvent.mouseDown(tab, { button: 0, ctrlKey: false });
+  const progress = (done: number) => i18n.t('agent.desktop.complianceProgress', { done, total: 1 });
+  expect(await screen.findByText(progress(0))).toBeDefined();
+  expect(screen.getByText(i18n.t('agent.desktop.compliancePending'))).toBeDefined();
+  fireEvent.click(screen.getByRole('checkbox', { name: i18n.t('components.readConfirmed') }));
+  expect(await screen.findByText(progress(1))).toBeDefined();
+  expect(screen.getByText(i18n.t('agent.desktop.complianceDone'))).toBeDefined();
+  // Nothing pending any more: the tab no longer shows a count.
+  expect(screen.getByRole('tab', { name: i18n.t('agent.desktop.compliance') })).toBeDefined();
+});
+it('hides the checklist tab when the script has no required notices', async () => {
+  await mount('active', 'chat');
+  await screen.findByRole('tab', { name: i18n.t('agent.desktop.summary') });
+  expect(
+    screen.queryByRole('tab', { name: new RegExp(i18n.t('agent.desktop.compliance')) }),
+  ).toBeNull();
+});
 it('shows side panel scalar/structured context and bounded history/transcript content', async () => {
   await mount('active', 'chat');
   expect(screen.getByText('Synthetic')).toBeDefined();
@@ -480,11 +542,99 @@ it('advances with Enter, fences typing and modified keys, and ignores shortcuts 
     expect(next.disabled).toBe(false);
   });
   fireEvent.keyDown(next, { key: 'Enter' });
-  fireEvent.keyDown(document, { key: 'Enter', ctrlKey: true });
+  fireEvent.keyDown(document, { key: 'Enter', shiftKey: true });
+  fireEvent.keyDown(document, { key: 'Enter', altKey: true });
   fireEvent.keyDown(document, { key: 'Enter', isComposing: true });
+  await new Promise((resolve) => setTimeout(resolve, 20));
   expect(f.requests.some((request) => request.path.endsWith('/commands'))).toBe(false);
   fireEvent.keyDown(document, { key: 'Enter' });
   await screen.findByRole('heading', { name: i18n.t('agent.desktop.wrapup') });
+});
+function twoPages(desktop: Desktop) {
+  const document = desktop.document;
+  document.pages.push({
+    ...document.pages[0]!,
+    id: 'details',
+    name: 'details',
+    titleKey: 'pages.details',
+    layout: NodeSchema.parse({
+      id: 'details-root',
+      type: 'box',
+      children: [
+        {
+          id: 'name-input',
+          type: 'textInput',
+          props: { labelKey: 'fields.name' },
+          bindings: [{ prop: 'value', variable: 'name' }],
+        },
+      ],
+    }),
+  });
+  document.flow.nodes.splice(1, 0, { id: 'n-details', type: 'page', page: 'details' });
+  document.flow.edges = [
+    { id: 'e1', from: 'n-home', to: 'n-details' },
+    { id: 'e2', from: 'n-details', to: 'n-end' },
+  ];
+  for (const locale of ['tr', 'en'])
+    document.i18n.messages[locale] = {
+      ...document.i18n.messages[locale],
+      'pages.details': 'Customer details',
+      'fields.name': 'Customer name',
+    };
+}
+it('names the current step, keeps the completed trail and puts the caret in the new page', async () => {
+  await mount('active', 'voice', false, { decorate: twoPages });
+  const next = document.querySelector<HTMLButtonElement>('[data-agent-next]')!;
+  await waitFor(() => {
+    expect(next.disabled).toBe(false);
+  });
+  expect(screen.getByRole('heading', { level: 2, name: 'Home' })).toBeDefined();
+  expect(screen.getByText(i18n.t('agent.desktop.step', { number: 1 }))).toBeDefined();
+  next.focus();
+  fireEvent.click(next);
+  const heading = await screen.findByRole('heading', { level: 2, name: 'Customer details' });
+  expect(heading).toBeDefined();
+  const field = screen.getByRole('textbox', { name: 'Customer name' });
+  await waitFor(() => {
+    expect(document.activeElement).toBe(field);
+  });
+  expect(
+    screen.getByText(i18n.t('agent.desktop.nowOn', { page: 'Customer details' })),
+  ).toBeDefined();
+  await waitFor(() => {
+    expect(screen.getByText(i18n.t('agent.desktop.step', { number: 2 }))).toBeDefined();
+  });
+  const trail = screen.getByText(i18n.t('agent.desktop.trail', { count: 1 })).closest('details')!;
+  expect(within(trail).getByText('Home')).toBeDefined();
+  // Ctrl+Enter moves on even from inside the answer field.
+  fireEvent.keyDown(field, { key: 'Enter', ctrlKey: true });
+  await screen.findByRole('heading', { name: i18n.t('agent.desktop.wrapup') });
+});
+it('never advances from the notes in the side panel', async () => {
+  const f = await mount('active', 'chat');
+  const next = document.querySelector<HTMLButtonElement>('[data-agent-next]')!;
+  await waitFor(() => {
+    expect(next.disabled).toBe(false);
+  });
+  const sidebar = screen.getByRole('complementary', { name: i18n.t('agent.desktop.sidebar') });
+  fireEvent.mouseDown(within(sidebar).getByRole('tab', { name: i18n.t('agent.desktop.notes') }), {
+    button: 0,
+  });
+  const notes = await within(sidebar).findByRole('textbox', {
+    name: i18n.t('agent.desktop.notes'),
+  });
+  fireEvent.keyDown(notes, { key: 'Enter', ctrlKey: true });
+  fireEvent.keyDown(notes, { key: 'Enter' });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  expect(
+    f.requests.some(
+      (request) =>
+        request.path.endsWith('/commands') &&
+        ['page', 'transition'].includes(
+          String((request.body['command'] as Record<string, unknown> | undefined)?.['type']),
+        ),
+    ),
+  ).toBe(false);
 });
 it('reports an inactive interaction as unseen and keeps its keyboard handler detached', async () => {
   const f = await mount('active', 'voice', false, { active: false });
@@ -601,3 +751,40 @@ it.each(['block', 'continue', 'manual'] as const)(
     }
   },
 );
+
+function resizeObserver() {
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe = vi.fn();
+      unobserve = vi.fn();
+      disconnect = vi.fn();
+    },
+  );
+}
+it('sends page feedback with only a fixed reason and announces it', async () => {
+  const f = await mount();
+  resizeObserver();
+  fireEvent.click(await screen.findByRole('button', { name: i18n.t('agent.desktop.feedback') }));
+  const dialog = await screen.findByRole('dialog', { name: i18n.t('agent.desktop.feedbackTitle') });
+  fireEvent.click(
+    within(dialog).getByRole('radio', { name: i18n.t('agent.desktop.feedbackReasons.tooLong') }),
+  );
+  fireEvent.click(
+    within(dialog).getByRole('button', { name: i18n.t('agent.desktop.feedbackSend') }),
+  );
+  await screen.findByText(i18n.t('agent.desktop.feedbackSent'));
+  expect(screen.queryByRole('dialog')).toBeNull();
+  const sent = f.requests.find((request) => request.path.endsWith('/desktop/feedback'));
+  expect(sent?.body).toEqual({ pageId: 'home', reason: 'tooLong' });
+});
+it('keeps the feedback dialog open with an error when sending fails', async () => {
+  await mount('active', 'voice', false, { failStatus: 503 });
+  resizeObserver();
+  fireEvent.click(await screen.findByRole('button', { name: i18n.t('agent.desktop.feedback') }));
+  const dialog = await screen.findByRole('dialog', { name: i18n.t('agent.desktop.feedbackTitle') });
+  fireEvent.click(
+    within(dialog).getByRole('button', { name: i18n.t('agent.desktop.feedbackSend') }),
+  );
+  await within(dialog).findByText(i18n.t('agent.desktop.feedbackFailed'));
+});

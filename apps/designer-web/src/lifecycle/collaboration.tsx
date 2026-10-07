@@ -17,6 +17,7 @@ import { type EditorStore } from '../editor/store.js';
 import { useWorkspace } from '../workspace/context.js';
 
 import { Comments } from './comments.js';
+import { followView, peerTone } from './peers.js';
 import './styles.css';
 
 const Peer = z.object({
@@ -57,7 +58,14 @@ export function CollaborationPanel({
     [status, setStatus] = useState('offline'),
     [recoveryId, setRecoveryId] = useState<string | null>(null),
     [recovering, setRecovering] = useState(false),
-    [peers, setPeers] = useState<Peer[]>([]);
+    [peers, setPeers] = useState<Peer[]>([]),
+    [following, setFollowing] = useState<string | null>(null),
+    [followNotice, setFollowNotice] = useState('');
+  const followingRef = useRef<string | null>(null);
+  useEffect(() => {
+    followingRef.current = following;
+  }, [following]);
+  const leftNotice = useRef((userId: string) => userId);
   const provider = useRef<HocuspocusProvider | null>(null),
     callbacks = useRef({ onSaved, onActive });
   useEffect(() => {
@@ -173,6 +181,13 @@ export function CollaborationPanel({
               })
           : [];
         setPeers(other);
+        // Following stops when the colleague leaves the room.
+        const followed = followingRef.current;
+        if (followed && !other.some((peer) => peer.userId === followed)) {
+          followingRef.current = null;
+          setFollowing(null);
+          setFollowNotice(leftNotice.current(followed));
+        }
       },
       onStateless: ({ payload }) => {
         const result = z
@@ -293,6 +308,7 @@ export function CollaborationPanel({
       if (peer.cursor) {
         const cursor = document.createElement('span');
         cursor.className = 'lc-peer-cursor';
+        cursor.dataset['tone'] = peerTone(peer.userId);
         cursor.style.insetInlineStart = `${peer.cursor.x * 100}%`;
         cursor.style.top = `${peer.cursor.y * 100}%`;
         cursor.textContent = `↖ ${members.data?.find((user) => user.id === peer.userId)?.name ?? peer.userId.slice(0, 8)}`;
@@ -307,6 +323,7 @@ export function CollaborationPanel({
           host = canvas.getBoundingClientRect(),
           selection = document.createElement('span');
         selection.className = 'lc-peer-selection';
+        selection.dataset['tone'] = peerTone(peer.userId);
         Object.assign(selection.style, {
           insetInlineStart: `${box.left - host.left}px`,
           top: `${box.top - host.top}px`,
@@ -323,6 +340,49 @@ export function CollaborationPanel({
       overlay.remove();
     };
   }, [peers, state.pageId, state.document, members.data]);
+  const nameOf = (userId: string) =>
+    members.data?.find((user) => user.id === userId)?.name ?? userId.slice(0, 8);
+  useEffect(() => {
+    leftNotice.current = (userId) =>
+      t('designer.collaboration.followEnded', {
+        name: members.data?.find((user) => user.id === userId)?.name ?? userId.slice(0, 8),
+      });
+  }, [members.data, t]);
+  // C1 follow mode: go where the colleague is; scroll to what they selected without selecting it.
+  const target = followView(peers, following);
+  const targetPage = target?.pageId,
+    targetNode = target?.nodeId;
+  useEffect(() => {
+    if (!following || !targetPage) return;
+    if (store.getSnapshot().pageId !== targetPage) store.setView({ pageId: targetPage });
+    const node = targetNode;
+    if (!node) return;
+    const frame = requestAnimationFrame(() => {
+      [...document.querySelectorAll('.ed-canvas [data-editor-node]')]
+        .find((element) => element.getAttribute('data-editor-node') === node)
+        ?.firstElementChild?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [following, targetPage, targetNode, store]);
+  // Any local interaction with the canvas hands control back to the designer.
+  useEffect(() => {
+    if (!following) return;
+    const stop = (event: Event) => {
+      if (event instanceof KeyboardEvent && ['Shift', 'Control', 'Alt', 'Meta'].includes(event.key))
+        return;
+      if (event.target instanceof Element && event.target.closest('.lc-presence')) return;
+      setFollowing(null);
+      setFollowNotice(t('designer.collaboration.followStopped'));
+    };
+    document.addEventListener('pointerdown', stop, true);
+    document.addEventListener('keydown', stop, true);
+    return () => {
+      document.removeEventListener('pointerdown', stop, true);
+      document.removeEventListener('keydown', stop, true);
+    };
+  }, [following, t]);
   const leave = async () => {
     setStatus('saving');
     store.setWriteSuspended(true);
@@ -404,15 +464,44 @@ export function CollaborationPanel({
         >
           {t('designer.lifecycle.team')}
         </Button>
-        {peers.map((peer, i) => (
-          <Avatar
-            key={`${peer.userId}-${i}`}
-            name={
-              members.data?.find((user) => user.id === peer.userId)?.name ?? peer.userId.slice(0, 8)
-            }
-            size="sm"
-          />
-        ))}
+        {[...new Map(peers.map((peer) => [peer.userId, peer])).values()].map((peer) => {
+          const name = nameOf(peer.userId);
+          const pressed = following === peer.userId;
+          return (
+            <Button
+              key={peer.userId}
+              variant="ghost"
+              size="sm"
+              className="lc-peer-follow"
+              data-tone={peerTone(peer.userId)}
+              aria-pressed={pressed}
+              aria-label={t(
+                pressed ? 'designer.collaboration.stopFollowing' : 'designer.collaboration.follow',
+                { name },
+              )}
+              title={t(
+                pressed ? 'designer.collaboration.stopFollowing' : 'designer.collaboration.follow',
+                { name },
+              )}
+              onClick={() => {
+                setFollowing(pressed ? null : peer.userId);
+                setFollowNotice(
+                  t(
+                    pressed
+                      ? 'designer.collaboration.followStopped'
+                      : 'designer.collaboration.following',
+                    { name },
+                  ),
+                );
+              }}
+            >
+              <Avatar name={name} size="sm" />
+            </Button>
+          );
+        })}
+        <span className="vb-sr-only" role="status">
+          {followNotice}
+        </span>
         <Badge
           tone={
             status === 'connected'
