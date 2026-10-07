@@ -47,7 +47,7 @@
       "controller": "AssignmentsController",
       "handler": "remove",
       "file": "apps/api/src/modules/assignments/assignments.controller.ts",
-      "line": 104,
+      "line": 131,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -242,7 +242,7 @@
       "controller": "AssignmentsController",
       "handler": "update",
       "file": "apps/api/src/modules/assignments/assignments.controller.ts",
-      "line": 88,
+      "line": 115,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -294,7 +294,7 @@
       "controller": "ScriptsController",
       "handler": "update",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 137,
+      "line": 139,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -660,7 +660,7 @@
       "controller": "AssignmentsController",
       "handler": "create",
       "file": "apps/api/src/modules/assignments/assignments.controller.ts",
-      "line": 69,
+      "line": 96,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -673,7 +673,7 @@
       "controller": "AssignmentsController",
       "handler": "batch",
       "file": "apps/api/src/modules/assignments/assignments.controller.ts",
-      "line": 36,
+      "line": 41,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1191,7 +1191,20 @@
       "controller": "ScriptsController",
       "handler": "create",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 121,
+      "line": 123,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/merge-preview",
+      "controller": "ScriptsController",
+      "handler": "mergePreview",
+      "file": "apps/api/src/modules/scripts/scripts.controller.ts",
+      "line": 288,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1217,7 +1230,7 @@
       "controller": "ScriptsController",
       "handler": "createVersion",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 153,
+      "line": 155,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1295,7 +1308,7 @@
       "controller": "ScriptsController",
       "handler": "livePreview",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 79,
+      "line": 81,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1308,7 +1321,7 @@
       "controller": "ScriptsController",
       "handler": "publish",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 268,
+      "line": 270,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1321,7 +1334,7 @@
       "controller": "ScriptsController",
       "handler": "regression",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 67,
+      "line": 69,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1334,7 +1347,7 @@
       "controller": "ScriptsController",
       "handler": "reopen",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 259,
+      "line": 261,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1347,7 +1360,7 @@
       "controller": "ScriptsController",
       "handler": "retire",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 277,
+      "line": 279,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1360,7 +1373,7 @@
       "controller": "ScriptsController",
       "handler": "review",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 236,
+      "line": 238,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1386,7 +1399,7 @@
       "controller": "ScriptsController",
       "handler": "submit",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 214,
+      "line": 216,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1399,7 +1412,7 @@
       "controller": "ScriptsController",
       "handler": "withdraw",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 227,
+      "line": 229,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1492,7 +1505,7 @@
       "controller": "AgentDesktopController",
       "handler": "call",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 256,
+      "line": 275,
       "decorators": [
         "OwnTenantTransactions"
       ],
@@ -1507,7 +1520,7 @@
       "controller": "AgentDesktopController",
       "handler": "recovery",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 208,
+      "line": 227,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1520,7 +1533,20 @@
       "controller": "AgentDesktopController",
       "handler": "failure",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 182,
+      "line": 185,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/desktop/feedback",
+      "controller": "AgentDesktopController",
+      "handler": "feedback",
+      "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
+      "line": 211,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1533,7 +1559,7 @@
       "controller": "AgentDesktopController",
       "handler": "telemetry",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 145,
+      "line": 148,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1918,7 +1944,7 @@
       "controller": "ScriptsController",
       "handler": "updateDraft",
       "file": "apps/api/src/modules/scripts/scripts.controller.ts",
-      "line": 195,
+      "line": 197,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [

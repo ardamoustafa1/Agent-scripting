@@ -125,7 +125,7 @@ All higher-level components are **compositions** of these primitives plus a smal
 | `showToast` | `messageKey, tone, params?` | Toast (i18n key) |
 | `openModal` / `closeModal` | `page` / — | Render a page in a dialog |
 | `validatePage` | `page?, onInvalid?` | Run required/validation checks |
-| `submitOutcome` | `outcome, notes?` | Record the session outcome |
+| `submitOutcome` | `outcome, notes?, completion?` | Record the session outcome. `completion: "early"` is an author-declared early exit (wrong party, failed verification, refusal, technical error): it skips the mandatory-page check and only requires that values already entered are valid ([ADR-0047](adr/0047-early-exit-outcomes.md)). Omitted = a completing outcome, which needs every mandatory page visited |
 | `setDisposition` | `code, subCode?` | Disposition code |
 | `writeBackToPlatform` | `attributes` | Attached data via the connector (capability-gated) |
 | `transferHint` | `target, reasonKey?` | Suggest a transfer target |
@@ -264,7 +264,7 @@ Partner types use exact componentRegistry version/integrity pins and the [compon
 
 See [ADR-0025](adr/0025-flow-rule-variable-editors.md). An explicit `{id,type:"start"}`
 passes through to its successor; `{id,type:"transfer",target,reasonKey?}` executes the existing
-transferHint action. End accepts `disposition?` in addition to `outcome?`; disposition executes
+transferHint action. End accepts `disposition?` and `completion?` (`"early"`, ADR-0047) in addition to `outcome?`; disposition executes
 before outcome. The entry is still `flow.start`, so migration retains legacy page entries.
 `flow.designer` optionally stores `groups:[{id,label,nodes}]` and
 `notes:[{id,text,position:{x,y}}]`. Designer metadata and positions do not affect semantic checksums.

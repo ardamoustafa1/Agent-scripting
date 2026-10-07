@@ -10,6 +10,8 @@ Related: [ARCHITECTURE](ARCHITECTURE.md) · [SECURITY](SECURITY.md) · [SCRIPT_M
 
 ## 1. Differentiators
 
+Expanded design, quality bar and wave plan: [DIFFERENTIATORS](DIFFERENTIATORS.md) (2026-10-06).
+
 | # | Capability | Verbis target | Typical gap we aim to close | Where it lives | Step |
 |---|---|---|---|---|---|
 | 1 | **Real-time co-editing** | Multiple designers edit the same script simultaneously (CRDT), presence cursors, comments, conflict-free merges | Check-in/check-out or last-save-wins | designer-web + core-api collab hub | 33 |

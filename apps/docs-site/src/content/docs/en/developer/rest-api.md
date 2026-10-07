@@ -6504,6 +6504,116 @@ Requires: delete:Assignment
 }
 ```
 
+## GET /v1/assignments/{id}/allocation
+
+Bandit (Thompson sampling) traffic advice for an A/B assignment: proposed weights, never applied; guardrail-breached arms get none
+
+Requires: read:Assignment
+
+```json
+{
+  "operationId": "Assignments.allocation",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Allocation advice",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/AllocationReport"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## GET /v1/assignments/{id}/rollout
+
+Canary rollout verdict: hold, advance (advisory) or rollback, from always-valid analytics. Apply a proposal with PATCH variants.
+
+Requires: read:Assignment
+
+```json
+{
+  "operationId": "Assignments.rollout",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Rollout verdict",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/RolloutReport"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## GET /v1/audit-checkpoints
 
 Signed checkpoints (latest 100)
@@ -8222,6 +8332,63 @@ Requires: read:Channel
         "application/json": {
           "schema": {
             "$ref": "#/components/schemas/ChannelPage"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## GET /v1/compliance/processing-record
+
+Record of processing derived from the published scripts (classified variables, origins, destinations); the export is audited
+
+Requires: export:Audit
+
+```json
+{
+  "operationId": "Compliance.processingRecord",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "format",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "default": "csv",
+        "type": "string",
+        "enum": [
+          "csv",
+          "json"
+        ]
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Processing record (JSON) or CSV file",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProcessingRecord"
           }
         }
       }
@@ -24352,6 +24519,71 @@ Requires: update:Script
 }
 ```
 
+## POST /v1/scripts/{id}/merge-preview
+
+Three-way structural merge preview of three versions (base, ours, theirs); stores nothing, conflicts are reported, never hidden
+
+Requires: read:Script
+
+```json
+{
+  "operationId": "Scripts.mergePreview",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/MergePreviewRequest"
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Merge preview",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/MergePreview"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## POST /v1/scripts/{id}/rollback
 
 Roll back the authoritative release head; explicit pins stay pinned
@@ -28524,6 +28756,71 @@ Requires: read:Session
 }
 ```
 
+## POST /v1/sessions/{id}/desktop/feedback
+
+Owner flags a script page with a fixed reason; designers see it as a comment
+
+Requires: read:Session
+
+```json
+{
+  "operationId": "AgentDesktop.feedback",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/AgentFeedbackInput"
+        }
+      }
+    }
+  },
+  "responses": {
+    "201": {
+      "description": "Recorded on the page comment thread",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/AgentFeedbackResult"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## POST /v1/sessions/{id}/desktop/telemetry
 
 Writer-fenced node timing and required-read acknowledgment; metadata only
@@ -31587,6 +31884,61 @@ Requires: manage:Tenant
 }
 ```
 
+## GET /v1/trust-center
+
+Trust center: audit-chain verification, launch security counters, sensitive-access counts and privacy request backlog (aggregates only)
+
+Requires: read:Audit
+
+```json
+{
+  "operationId": "TrustCenter.summary",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "days",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "default": 30,
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 90
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Trust center summary",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/TrustCenter"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## GET /v1/users
 
 List users (PII; access is audited)
@@ -32301,6 +32653,13 @@ Requires: update:User
           },
           "notes": {
             "$ref": "#/components/schemas/Value"
+          },
+          "completion": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "early"
+            ]
           }
         },
         "required": [
@@ -32609,6 +32968,110 @@ Requires: update:User
         "additionalProperties": false
       }
     ]
+  },
+  "AgentFeedbackInput": {
+    "type": "object",
+    "properties": {
+      "pageId": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      },
+      "reason": {
+        "$ref": "#/components/schemas/AgentFeedbackReason"
+      }
+    },
+    "required": [
+      "pageId",
+      "reason"
+    ],
+    "additionalProperties": false
+  },
+  "AgentFeedbackReason": {
+    "type": "string",
+    "enum": [
+      "confusing",
+      "incorrect",
+      "missingStep",
+      "tooLong"
+    ]
+  },
+  "AgentFeedbackResult": {
+    "type": "object",
+    "properties": {
+      "recorded": {
+        "type": "boolean",
+        "const": true
+      },
+      "threadId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      }
+    },
+    "required": [
+      "recorded",
+      "threadId"
+    ],
+    "additionalProperties": false
+  },
+  "AllocationReport": {
+    "type": "object",
+    "properties": {
+      "assignmentId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
+      "allocation": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "insufficient-sessions",
+              "no-eligible-arm"
+            ]
+          },
+          "arms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "probabilityBest": {
+                  "type": "number"
+                },
+                "weight": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "key",
+                "probabilityBest",
+                "weight"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "reason",
+          "arms"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "assignmentId",
+      "allocation"
+    ],
+    "additionalProperties": false
   },
   "AnalyticsDashboard": {
     "type": "object",
@@ -32942,6 +33405,15 @@ Requires: update:User
                 "sufficient",
                 "insufficient"
               ]
+            },
+            "anytimePValue": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "anytimeSignificant": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -32952,6 +33424,196 @@ Requires: update:User
             "pValue",
             "significant",
             "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "versions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "versionId": {
+              "type": "string"
+            },
+            "scriptId": {
+              "type": "string"
+            },
+            "firstSeenAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+            },
+            "lastSeenAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+            },
+            "sessions": {
+              "type": "number"
+            },
+            "completed": {
+              "type": "number"
+            },
+            "completionRate": {
+              "type": "number"
+            },
+            "meanDurationMs": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "vsPrevious": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "versionId": {
+                      "type": "string"
+                    },
+                    "difference": {
+                      "type": "number"
+                    },
+                    "durationDeltaMs": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "anytimePValue": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "significant": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "versionId",
+                    "difference",
+                    "durationDeltaMs",
+                    "anytimePValue",
+                    "significant"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "versionId",
+            "scriptId",
+            "firstSeenAt",
+            "lastSeenAt",
+            "sessions",
+            "completed",
+            "completionRate",
+            "meanDurationMs",
+            "vsPrevious"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "insights": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "dropOff",
+                "slowPage",
+                "errorNode",
+                "slowSource",
+                "failingSource"
+              ]
+            },
+            "target": {
+              "type": "string"
+            },
+            "value": {
+              "type": "number"
+            },
+            "baseline": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "samples": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "impact": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "value",
+            "baseline",
+            "samples",
+            "impact"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "guardrails": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "experimentId": {
+              "type": "string"
+            },
+            "a": {
+              "type": "string"
+            },
+            "b": {
+              "type": "string"
+            },
+            "metric": {
+              "type": "string",
+              "enum": [
+                "abandonment",
+                "compliance"
+              ]
+            },
+            "difference": {
+              "type": "number"
+            },
+            "pValue": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "worse": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "experimentId",
+            "a",
+            "b",
+            "metric",
+            "difference",
+            "pValue",
+            "worse"
           ],
           "additionalProperties": false
         }
@@ -37742,6 +38404,13 @@ Requires: update:User
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$"
           },
+          "completion": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "early"
+            ]
+          },
           "disposition": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$"
@@ -38692,6 +39361,105 @@ Requires: update:User
     ],
     "additionalProperties": false
   },
+  "MergePreview": {
+    "type": "object",
+    "properties": {
+      "base": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "ours": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "theirs": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "conflicts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "both-changed",
+                "deleted-vs-changed",
+                "duplicate-id"
+              ]
+            },
+            "base": {},
+            "ours": {},
+            "theirs": {}
+          },
+          "required": [
+            "path",
+            "kind",
+            "base",
+            "ours",
+            "theirs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "issues": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "document": {
+        "anyOf": [
+          {},
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "base",
+      "ours",
+      "theirs",
+      "conflicts",
+      "issues",
+      "document"
+    ],
+    "additionalProperties": false
+  },
+  "MergePreviewRequest": {
+    "type": "object",
+    "properties": {
+      "base": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      },
+      "ours": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      },
+      "theirs": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      }
+    },
+    "required": [
+      "base",
+      "ours",
+      "theirs"
+    ],
+    "additionalProperties": false
+  },
   "Node": {
     "type": "object",
     "properties": {
@@ -38882,6 +39650,18 @@ Requires: update:User
             },
             "createdAt": {
               "type": "string"
+            },
+            "feedback": {
+              "type": "object",
+              "properties": {
+                "reason": {
+                  "$ref": "#/components/schemas/AgentFeedbackReason"
+                }
+              },
+              "required": [
+                "reason"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
@@ -39347,6 +40127,90 @@ Requires: update:User
     ],
     "additionalProperties": false
   },
+  "ProcessingRecord": {
+    "type": "object",
+    "properties": {
+      "generatedAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+      },
+      "scripts": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "unreadable": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "rows": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "scriptId": {
+              "type": "string"
+            },
+            "scriptName": {
+              "type": "string"
+            },
+            "versionNumber": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "variable": {
+              "type": "string"
+            },
+            "classification": {
+              "type": "string",
+              "enum": [
+                "pii",
+                "pci"
+              ]
+            },
+            "origins": {
+              "type": "string"
+            },
+            "destinations": {
+              "type": "string"
+            },
+            "persisted": {
+              "type": "boolean"
+            },
+            "attention": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "scriptId",
+            "scriptName",
+            "versionNumber",
+            "variable",
+            "classification",
+            "origins",
+            "destinations",
+            "persisted",
+            "attention"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "generatedAt",
+      "scripts",
+      "unreadable",
+      "truncated",
+      "rows"
+    ],
+    "additionalProperties": false
+  },
   "PublishSharedScreenVersion": {
     "type": "object",
     "properties": {
@@ -39682,6 +40546,129 @@ Requires: update:User
     "required": [
       "targetNumber",
       "expectedCurrentVersionId"
+    ],
+    "additionalProperties": false
+  },
+  "RolloutReport": {
+    "type": "object",
+    "properties": {
+      "assignmentId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
+      "stableSessions": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "canarySessions": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "windowDays": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "decision": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "none",
+              "hold",
+              "advance",
+              "rollback"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "not-a-rollout",
+              "not-started",
+              "complete",
+              "guardrail-breached",
+              "completion-dropped",
+              "insufficient-sessions",
+              "no-harm-detected"
+            ]
+          },
+          "breached": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "from": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "to": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "proposal": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "weight": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "pinnedVersionId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                }
+              },
+              "required": [
+                "key",
+                "weight"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "action",
+          "reason",
+          "breached",
+          "from",
+          "to"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "assignmentId",
+      "stableSessions",
+      "canarySessions",
+      "windowDays",
+      "decision"
     ],
     "additionalProperties": false
   },
@@ -43204,6 +44191,226 @@ Requires: update:User
       "repeat",
       "autoStart",
       "onElapsed"
+    ],
+    "additionalProperties": false
+  },
+  "TrustCenter": {
+    "type": "object",
+    "properties": {
+      "generatedAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+      },
+      "windowDays": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "chain": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "healthy",
+              "attention",
+              "broken"
+            ]
+          },
+          "valid": {
+            "type": "boolean"
+          },
+          "checked": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "headSeq": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "breaks": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "signaturesVerified": {
+            "type": "boolean"
+          },
+          "checkpointsChecked": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "latestCheckpoint": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "seq": {
+                    "type": "string"
+                  },
+                  "signedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                  }
+                },
+                "required": [
+                  "seq",
+                  "signedAt"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "checkpointAgeHours": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "valid",
+          "checked",
+          "headSeq",
+          "breaks",
+          "truncated",
+          "signaturesVerified",
+          "checkpointsChecked",
+          "latestCheckpoint",
+          "checkpointAgeHours"
+        ],
+        "additionalProperties": false
+      },
+      "launch": {
+        "type": "object",
+        "properties": {
+          "issued": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "redeemed": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "denied": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "anomalies": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "urlParamsRejected": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "issued",
+          "redeemed",
+          "denied",
+          "anomalies",
+          "urlParamsRejected"
+        ],
+        "additionalProperties": false
+      },
+      "sensitiveAccess": {
+        "type": "object",
+        "properties": {
+          "auditExports": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "secretMetadataViews": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "secretUsageReads": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "userProfileViews": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "privacyExports": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "auditExports",
+          "secretMetadataViews",
+          "secretUsageReads",
+          "userProfileViews",
+          "privacyExports"
+        ],
+        "additionalProperties": false
+      },
+      "privacy": {
+        "type": "object",
+        "properties": {
+          "open": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "processed": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "oldestOpenAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "open",
+          "processed",
+          "oldestOpenAt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "generatedAt",
+      "windowDays",
+      "chain",
+      "launch",
+      "sensitiveAccess",
+      "privacy"
     ],
     "additionalProperties": false
   },
