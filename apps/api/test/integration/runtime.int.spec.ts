@@ -44,6 +44,13 @@ import type { PrismaClient } from '../../src/generated/prisma/client.js';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 
 let owner: PrismaClient, app: NestFastifyApplication, kit: TokenKit;
+function safeJson(text: string): unknown {
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return undefined;
+  }
+}
 beforeAll(async () => {
   kit = await createTokenKit();
   owner = ownerPrisma();
@@ -730,7 +737,11 @@ it('PCI canary: signed hosted capture and rejected raw PAN leave no PAN in SQL, 
         const text = new TextDecoder().decode(message.data);
         assertNoPciCanary(text, pan);
         messages++;
-        const event = EventEnvelopeSchema.parse(JSON.parse(text));
+        // Streams are shared with other suites (e.g. the outbox poison-message test), so a
+        // non-envelope payload is still scanned for the PAN above but not projected.
+        const parsed = EventEnvelopeSchema.safeParse(safeJson(text));
+        if (!parsed.success) continue;
+        const event = parsed.data;
         if (
           event.tenantId === f.tenant.tenantId &&
           event.type === 'verbis.runtime.session.changed.v1'

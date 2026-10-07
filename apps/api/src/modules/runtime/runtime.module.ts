@@ -5,6 +5,7 @@ import { IdentityModule } from '../identity/identity.module.js';
 import { IntegrationsModule } from '../integrations/integrations.module.js';
 
 import { AgentDesktopController } from './agent-desktop.controller.js';
+import { AgentFeedbackService } from './agent-feedback.service.js';
 import { RuntimeCipher } from './runtime-cipher.js';
 import {
   RuntimeCommandsController,
@@ -46,6 +47,7 @@ import { SecureCaptureService } from './secure-capture.service.js';
     RuntimeInteractionsHandler,
     RuntimePorts,
     SecureCaptureService,
+    AgentFeedbackService,
   ],
   exports: [
     RuntimeStateStore,

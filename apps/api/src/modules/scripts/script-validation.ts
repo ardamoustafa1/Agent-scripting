@@ -114,9 +114,14 @@ export async function regressionResults(document: ScriptDocument) {
       continue;
     }
     try {
-      results.push(
-        await runScenario(document, registry, scenario, Math.min(2000, deadline - Date.now())),
+      // The regression report contract carries outcomes only; coverage stays in the designer.
+      const { id, passed, durationMs, assertions, code } = await runScenario(
+        document,
+        registry,
+        scenario,
+        Math.min(2000, deadline - Date.now()),
       );
+      results.push({ id, passed, durationMs, assertions, ...(code === undefined ? {} : { code }) });
     } catch {
       results.push({
         id: scenario.id,

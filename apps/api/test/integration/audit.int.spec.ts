@@ -441,6 +441,49 @@ describe('audit query API', () => {
   });
 });
 
+describe('trust center (G1)', () => {
+  it('summarises chain verification and audited counters, and audits the read itself', async () => {
+    const tenant = await tenantWithEvents(2);
+    const res = await app.inject({
+      method: 'GET',
+      url: '/v1/trust-center?days=7',
+      headers: await tenant.auth(),
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json<{
+      windowDays: number;
+      chain: { valid: boolean; breaks: number; status: string };
+      launch: { denied: number };
+      privacy: { open: number };
+    }>();
+    expect(body.windowDays).toBe(7);
+    expect(body.chain).toMatchObject({ valid: true, breaks: 0 });
+    // No checkpoint exists for a fresh tenant: the status must never claim `healthy`.
+    expect(body.chain.status).toBe('attention');
+    expect(body.launch.denied).toBe(0);
+    expect(body.privacy.open).toBe(0);
+    const viewed = await owner.auditEvent.findFirst({
+      where: { tenantId: tenant.tenantId, action: 'audit.trustCenter.viewed' },
+    });
+    expect(viewed?.metadata).toMatchObject({ windowDays: 7 });
+  });
+  it('rejects an out-of-range window and denies callers without Audit read', async () => {
+    const tenant = await tenantWithEvents(1);
+    const bad = await app.inject({
+      method: 'GET',
+      url: '/v1/trust-center?days=400',
+      headers: await tenant.auth(),
+    });
+    expect(bad.statusCode).toBe(400);
+    const denied = await app.inject({
+      method: 'GET',
+      url: '/v1/trust-center',
+      headers: await tenant.auth(tenant.designerId),
+    });
+    expect(denied.statusCode).toBe(403);
+  });
+});
+
 describe('worker archive against real PostgreSQL', () => {
   it('exports independently verifiable audit rows and persists both archive states exactly once', async () => {
     const tenant = await tenantWithEvents(2);

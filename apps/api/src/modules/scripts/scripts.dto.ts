@@ -225,3 +225,30 @@ export const VersionDiffSchema = z
     summary: z.object({ lines: z.array(z.string()), totalChanges: z.number().int() }).loose(),
   })
   .meta({ id: 'ScriptVersionDiff' });
+
+const VersionNumberField = z.number().int().min(1).max(1_000_000);
+export const MergePreviewRequestSchema = z
+  .strictObject({ base: VersionNumberField, ours: VersionNumberField, theirs: VersionNumberField })
+  .refine(
+    (v) => new Set([v.base, v.ours, v.theirs]).size === 3,
+    'base, ours and theirs must be three different versions',
+  )
+  .meta({ id: 'MergePreviewRequest' });
+export const MergePreviewSchema = z
+  .object({
+    base: z.number().int(),
+    ours: z.number().int(),
+    theirs: z.number().int(),
+    conflicts: z.array(
+      z.object({
+        path: z.string(),
+        kind: z.enum(['both-changed', 'deleted-vs-changed', 'duplicate-id']),
+        base: z.unknown(),
+        ours: z.unknown(),
+        theirs: z.unknown(),
+      }),
+    ),
+    issues: z.array(z.string()),
+    document: z.unknown().nullable(),
+  })
+  .meta({ id: 'MergePreview' });

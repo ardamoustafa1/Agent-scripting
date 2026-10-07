@@ -7,6 +7,7 @@ import {
   creditCardSalesScript,
   surveyScript,
   telecomTariffChangeScript,
+  TEMPLATE_SCENARIOS,
 } from '@verbis/script-schema/templates';
 
 import { currentActor } from '../../common/actor.js';
@@ -95,6 +96,21 @@ function sectorTemplate(sector: 'insurance' | 'ecommerce') {
         : 'Verify identity; explain returns, delivery and personal data handling.',
     },
   };
+  // Shipped with a regression scenario so scripts created from it pass the publication gate.
+  document.testScenarios = [
+    {
+      id: insurance ? 'insuranceRenewalCompleted' : 'ecommerceRequestCompleted',
+      name: insurance ? 'Renewal reviewed and completed' : 'Order request completed',
+      synthetic: true,
+      context: {},
+      steps: [
+        { type: 'variable', variable: 'reference', value: 'SYNTHETIC-REF-1' },
+        { type: 'read', node: 'legal', acknowledged: true },
+        { type: 'event', node: 'btn-next', event: 'onPress' },
+      ],
+      expected: { ended: true, variables: { reference: 'SYNTHETIC-REF-1' } },
+    },
+  ];
   return document;
 }
 
@@ -104,19 +120,22 @@ const BUILT_IN = [
     id: 'builtin-credit-card-sales',
     name: 'Credit card sales',
     category: 'sales',
-    document: creditCardSalesScript,
+    document: { ...creditCardSalesScript, testScenarios: [...TEMPLATE_SCENARIOS.creditCardSales] },
   },
   {
     id: 'builtin-telecom-tariff-change',
     name: 'Telecom tariff change',
     category: 'retention',
-    document: telecomTariffChangeScript,
+    document: {
+      ...telecomTariffChangeScript,
+      testScenarios: [...TEMPLATE_SCENARIOS.telecomTariffChange],
+    },
   },
   {
     id: 'builtin-collections',
     name: 'Collections (right-party contact)',
     category: 'collections',
-    document: collectionsScript,
+    document: { ...collectionsScript, testScenarios: [...TEMPLATE_SCENARIOS.collections] },
   },
   {
     id: 'builtin-insurance-renewal',
@@ -130,7 +149,12 @@ const BUILT_IN = [
     category: 'service',
     document: sectorTemplate('ecommerce'),
   },
-  { id: 'builtin-nps-survey', name: 'NPS survey', category: 'survey', document: surveyScript },
+  {
+    id: 'builtin-nps-survey',
+    name: 'NPS survey',
+    category: 'survey',
+    document: { ...surveyScript, testScenarios: [...TEMPLATE_SCENARIOS.survey] },
+  },
 ] as const;
 
 @Injectable()
