@@ -1105,6 +1105,7 @@ export const en = {
       notifications: {
         review: 'Awaiting your review',
         mention: 'Mentioned in a comment',
+        suggestion: 'Suggested change to review',
       },
       connection: {
         offline: 'Offline',

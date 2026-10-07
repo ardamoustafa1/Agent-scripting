@@ -1113,6 +1113,7 @@ export const tr: Catalog = {
       notifications: {
         review: 'İnceleme bekliyor',
         mention: 'Bir yorumda etiketlendiniz',
+        suggestion: 'İncelenecek değişiklik önerisi',
       },
       connection: {
         offline: 'Çevrimdışı',

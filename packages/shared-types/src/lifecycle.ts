@@ -67,7 +67,7 @@ export const NotificationSchema = z
     id: z.string(),
     scriptId: z.uuid(),
     number: z.number().int(),
-    kind: z.enum(['review', 'mention']),
+    kind: z.enum(['review', 'mention', 'suggestion']),
     createdAt: z.string(),
     threadId: z.uuid().optional(),
   })

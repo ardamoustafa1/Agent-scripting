@@ -33,7 +33,7 @@ export function Notifications() {
             <Link
               to={`/scripts/${row.scriptId}/versions/${row.number}/release${row.threadId ? `?thread=${row.threadId}` : ''}`}
             >
-              <Badge tone={row.kind === 'review' ? 'warning' : 'info'}>
+              <Badge tone={row.kind === 'mention' ? 'info' : 'warning'}>
                 {t(`designer.lifecycle.notifications.${row.kind}`)}
               </Badge>{' '}
               {t('designer.lifecycle.versionLabel', { number: row.number })}

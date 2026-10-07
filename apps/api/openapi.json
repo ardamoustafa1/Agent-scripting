@@ -35008,7 +35008,8 @@
             "type": "string",
             "enum": [
               "review",
-              "mention"
+              "mention",
+              "suggestion"
             ]
           },
           "createdAt": {

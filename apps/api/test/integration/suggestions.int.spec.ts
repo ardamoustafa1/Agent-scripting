@@ -239,3 +239,39 @@ describe('suggestion mode (ADR-0051)', () => {
     expect(unauthenticated.statusCode).toBe(401);
   });
 });
+
+describe('suggestion notifications (D3)', () => {
+  it('tells the owner about an open suggestion, never the author, and stops once it is decided', async () => {
+    const { admin, designer, base } = await draft();
+    const suggestion = (
+      await app.inject({
+        method: 'POST',
+        url: `${base}/suggestions`,
+        headers: designer,
+        payload: rename('Notified name'),
+      })
+    ).json<Suggestion>();
+    const feed = async (headers: Record<string, string>) =>
+      (await app.inject({ method: 'GET', url: '/v1/authoring-notifications', headers })).json<
+        { id: string; kind: string; number: number }[]
+      >();
+    expect((await feed(admin)).filter((n) => n.kind === 'suggestion')).toEqual([
+      {
+        id: `suggestion-${suggestion.id}`,
+        kind: 'suggestion',
+        number: 1,
+        scriptId: expect.any(String) as string,
+        createdAt: expect.any(String) as string,
+      },
+    ]);
+    // The author is not notified about their own suggestion.
+    expect((await feed(designer)).some((n) => n.kind === 'suggestion')).toBe(false);
+    await app.inject({
+      method: 'POST',
+      url: `${base}/suggestions/${suggestion.id}/reject`,
+      headers: admin,
+      payload: {},
+    });
+    expect((await feed(admin)).some((n) => n.kind === 'suggestion')).toBe(false);
+  });
+});

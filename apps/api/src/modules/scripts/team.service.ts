@@ -286,7 +286,7 @@ export class TeamService {
       id: string;
       scriptId: string;
       number: number;
-      kind: 'review' | 'mention';
+      kind: 'review' | 'mention' | 'suggestion';
       createdAt: string;
       threadId?: string;
     }[] = [];
@@ -388,6 +388,60 @@ export class TeamService {
         kind: 'mention',
         threadId: thread.id,
         createdAt: thread.updatedAt.toISOString(),
+      });
+    }
+    // Open suggestions on drafts the user can change (never one's own).
+    const open = await tx.scriptSuggestion.findMany({
+      where: {
+        tenantId,
+        state: 'open',
+        createdBy: { not: `user:${userId}` },
+        createdAt: { gte: new Date(Date.now() - 14 * 86400000) },
+        scriptVersion: { state: 'draft', deletedAt: null, script: { deletedAt: null } },
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        scriptVersion: {
+          select: {
+            id: true,
+            scriptId: true,
+            number: true,
+            createdBy: true,
+            updatedBy: true,
+            source: true,
+          },
+        },
+      },
+      take: 100,
+      orderBy: { createdAt: 'desc' },
+    });
+    const suggestionCampaigns = open.length
+      ? await tx.assignment.findMany({
+          where: {
+            tenantId,
+            scriptId: { in: [...new Set(open.map((s) => s.scriptVersion.scriptId))] },
+            deletedAt: null,
+          },
+          select: { scriptId: true, campaignId: true },
+        })
+      : [];
+    for (const suggestion of open) {
+      const v = suggestion.scriptVersion;
+      const subject = asSubject('Script', {
+        id: v.scriptId,
+        campaignIds: suggestionCampaigns
+          .filter((c) => c.scriptId === v.scriptId)
+          .map((c) => c.campaignId),
+        authorIds: authorIdsOf({ ...v, contributors: this.contributors(v.source) }),
+      });
+      if (!authz.ability.can('update', subject)) continue;
+      notifications.push({
+        id: `suggestion-${suggestion.id}`,
+        scriptId: v.scriptId,
+        number: v.number,
+        kind: 'suggestion',
+        createdAt: suggestion.createdAt.toISOString(),
       });
     }
     return notifications.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
