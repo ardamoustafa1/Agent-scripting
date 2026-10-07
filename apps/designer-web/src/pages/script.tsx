@@ -291,6 +291,24 @@ export default function ScriptPage() {
                         </Link>
                       ),
                     },
+                    ...(ability.can('read', 'Session')
+                      ? [
+                          {
+                            id: 'replay',
+                            header: t('designer.replay.link'),
+                            accessor: (row: { number: number }) => row.number,
+                            cell: (row: { number: number }) => (
+                              <Link
+                                className="dw-action-link"
+                                to={`/scripts/${id}/versions/${row.number}/replay`}
+                              >
+                                {t('designer.replay.link')}
+                                <ArrowUpRight size={14} aria-hidden />
+                              </Link>
+                            ),
+                          },
+                        ]
+                      : []),
                     {
                       id: 'regression',
                       header: t('designer.preview.regression'),

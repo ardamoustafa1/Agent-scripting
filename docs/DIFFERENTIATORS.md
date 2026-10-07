@@ -97,7 +97,7 @@ Her madde: **Deneyim** (kullanıcı ne görür) · **Yöntem** (en iyi teknik) �
 - Yöntem: Oturum olayları + veri kaynağı yanıtları redakte edilerek saklanır; replay sırasında ağ yerine kayıtlı yanıtlar (record/replay), zamanlayıcılar sanal saatle. Erişim yetki ister ve denetlenir (hassas veri okuması).
 - Temel: ROADMAP P1 "Debugger gerçek I/O/timer continuation replay değil".
 - ADR: **evet** (saklama süresi, redaksiyon sınıfları, provenance, iptal güvenliği).
-- **Durum (2026-10-07):** başlanmadı. Tasarım önerisi [ADR-0050](adr/0050-deterministic-session-replay.md) (Proposed): maskelenmiş kayıt, kayıttan oynatma, `replay:Session` izni, 14 gün saklama. DPO kararı (tuzlu PII belirteci mi, yalnız sentetik değer mi) bekliyor. En yakın çalışan yetenek B3.
+- **Durum (2026-10-07):** kısmen uygulandı: **yol tekrarı (yalnız üst veri)**. Yeni veri kaydedilmez; çalışma zamanının zaten tuttuğu olay günlüğünden (`page.entered`, `field.changed`, `session.transitioned`, `timer.started`) sürümün sayfaları üzerinde adım adım yol, sayfada geçen süre ve hiç ulaşılmayan sayfalar çıkarılır (`GET /v1/sessions/:id/replay`, tasarımcıda `/scripts/:id/versions/:number/replay`). Değerler çalışma zamanının redakte ettiği hâliyle gösterilir; her görüntüleme `runtime.session.replayViewed` ile denetlenir; erişim `read:Session` (takım kapsamlı ABAC). Kayıtlı veri kaynağı yanıtlarıyla birebir yeniden oynatma ve debugger'da açma **yapılmadı** (DPO kararı bekliyor). Ayrıntı: [ADR-0050](adr/0050-deterministic-session-replay.md).
 
 **B3. Otomatik yol keşfi ve test üretimi**
 - Deneyim: "Tüm yolları test et" → sistem her dalı açan giriş kombinasyonlarını üretir, kapsama haritasını canvas'a boyar (yeşil: test edildi, kırmızı: hiç geçilmedi).

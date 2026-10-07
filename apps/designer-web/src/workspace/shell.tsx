@@ -61,6 +61,7 @@ import { WelcomeTour } from './welcome-tour.js';
 const AiStudio = lazy(() => import('../pages/ai.js'));
 const Analytics = lazy(() => import('../pages/analytics.js'));
 const Release = lazy(() => import('../lifecycle/release.js'));
+const Replay = lazy(() => import('../lifecycle/replay.js'));
 const Assignments = lazy(() => import('../lifecycle/assignments.js'));
 const Packages = lazy(() => import('../lifecycle/packages.js'));
 const Templates = lazy(() => import('../lifecycle/templates.js'));
@@ -492,6 +493,16 @@ export default function Shell({
                     <Route
                       path="/scripts/:id/versions/:number/release"
                       element={ability.can('read', 'Script') ? <Release /> : <Forbidden />}
+                    />
+                    <Route
+                      path="/scripts/:id/versions/:number/replay"
+                      element={
+                        ability.can('read', 'Script') && ability.can('read', 'Session') ? (
+                          <Replay />
+                        ) : (
+                          <Forbidden />
+                        )
+                      }
                     />
                     <Route
                       path="/scripts/:id/assignments"

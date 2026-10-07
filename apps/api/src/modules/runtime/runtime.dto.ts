@@ -47,6 +47,7 @@ export type SessionEventDto = z.infer<typeof SessionEventSchema>;
 export const SessionListQuerySchema = listQuerySchema(['createdAt', 'startedAt'], {
   state: SessionStateSchema.optional(),
   userId: UuidSchema.optional(),
+  scriptVersionId: UuidSchema.optional(),
 });
 export type SessionListQuery = z.output<typeof SessionListQuerySchema>;
 export const SessionEventListQuerySchema = listQuerySchema(['seq'], {}, 'seq');
@@ -80,3 +81,62 @@ export const toSessionEventDto = (row: SessionEventRow): SessionEventDto => ({
   payload: row.payload,
   occurredAt: iso(row.occurredAt),
 });
+
+/** Session path replay (ADR-0050, metadata-only). */
+export const ReplayStepSchema = z.discriminatedUnion('kind', [
+  z.object({
+    seq: z.number().int(),
+    atMs: z.number().int(),
+    kind: z.literal('page'),
+    pageId: z.string(),
+    pageName: z.string().nullable(),
+  }),
+  z.object({
+    seq: z.number().int(),
+    atMs: z.number().int(),
+    kind: z.literal('field'),
+    variable: z.string(),
+    value: z.string(),
+  }),
+  z.object({
+    seq: z.number().int(),
+    atMs: z.number().int(),
+    kind: z.literal('state'),
+    from: z.string(),
+    to: z.string(),
+  }),
+  z.object({
+    seq: z.number().int(),
+    atMs: z.number().int(),
+    kind: z.literal('timer'),
+    timerId: z.string(),
+  }),
+  z.object({
+    seq: z.number().int(),
+    atMs: z.number().int(),
+    kind: z.literal('other'),
+    type: z.string(),
+  }),
+]);
+export const SessionReplaySchema = z
+  .object({
+    sessionId: UuidSchema,
+    scriptId: UuidSchema,
+    versionNumber: z.number().int(),
+    state: SessionStateSchema,
+    startedAt: IsoDateTime,
+    durationMs: z.number().int(),
+    steps: z.array(ReplayStepSchema),
+    pages: z.array(
+      z.object({
+        pageId: z.string(),
+        name: z.string(),
+        visits: z.number().int(),
+        dwellMs: z.number().int(),
+      }),
+    ),
+    unreached: z.array(z.object({ id: z.string(), name: z.string() })),
+    truncated: z.boolean(),
+  })
+  .meta({ id: 'SessionReplay' });
+export type SessionReplayDto = z.infer<typeof SessionReplaySchema>;
