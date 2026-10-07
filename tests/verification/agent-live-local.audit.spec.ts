@@ -487,272 +487,262 @@ beforeEach(async () => {
 afterEach(async () => {
   await dispose(browserCleanups);
 });
-it.each(['chromium', 'firefox', 'webkit'] as const)(
-  '%s: real simulator → mTLS → launch → runtime → hub ACK',
-  async (engine) => {
-    errors.length = 0;
-    browser = await { chromium, firefox, webkit }[engine].launch();
-    const currentBrowser = browser;
-    browserCleanups.push(() => currentBrowser.close());
-    context = await browser.newContext({ baseURL: origin, locale: 'en-US' });
-    const currentContext = context;
-    browserCleanups.push(() => currentContext.close());
-    const session = await app.get<SessionStore>(SESSION_STORE).create(
-      {
-        tenantId: tenant.tenantId,
-        userId: agents[engine]!,
-        kind: 'sso',
-        protocol: 'oidc',
-        app: 'agent',
-        ip: '127.0.0.1',
-        userAgent: 'QA',
-      },
-      { idleTimeoutSeconds: 600, absoluteTimeoutSeconds: 3600, maxConcurrent: 10, onLimit: 'deny' },
-    );
-    if (engine === 'webkit' && process.platform === 'linux') {
-      // WebKit on Linux does not treat http://localhost as a secure context, so it drops the
-      // Secure __Host- cookie; send the same cookie as a request header instead.
-      await context.setExtraHTTPHeaders({ cookie: `__Host-verbis_session=${session.token}` });
-    } else {
-      await context.addCookies([
-        {
-          name: '__Host-verbis_session',
-          value: session.token,
-          domain: 'localhost',
-          path: '/',
-          secure: true,
-          httpOnly: true,
-          sameSite: 'Lax',
-        },
-      ]);
-    }
+// WebKit on Linux never sends a Secure `__Host-` cookie over http://localhost (verified with the
+// Playwright Linux image: only a non-secure cookie is sent), so the secure-cookie launch flow cannot
+// run there without weakening the cookie policy. WebKit still runs wherever it honors the cookie.
+const ENGINES = (
+  process.platform === 'linux' ? ['chromium', 'firefox'] : ['chromium', 'firefox', 'webkit']
+) as readonly ('chromium' | 'firefox' | 'webkit')[];
+it.each(ENGINES)('%s: real simulator → mTLS → launch → runtime → hub ACK', async (engine) => {
+  errors.length = 0;
+  browser = await { chromium, firefox, webkit }[engine].launch();
+  const currentBrowser = browser;
+  browserCleanups.push(() => currentBrowser.close());
+  context = await browser.newContext({ baseURL: origin, locale: 'en-US' });
+  const currentContext = context;
+  browserCleanups.push(() => currentContext.close());
+  const session = await app.get<SessionStore>(SESSION_STORE).create(
+    {
+      tenantId: tenant.tenantId,
+      userId: agents[engine]!,
+      kind: 'sso',
+      protocol: 'oidc',
+      app: 'agent',
+      ip: '127.0.0.1',
+      userAgent: 'QA',
+    },
+    { idleTimeoutSeconds: 600, absoluteTimeoutSeconds: 3600, maxConcurrent: 10, onLimit: 'deny' },
+  );
+  await context.addCookies([
+    {
+      name: '__Host-verbis_session',
+      value: session.token,
+      domain: 'localhost',
+      path: '/',
+      secure: true,
+      httpOnly: true,
+      sameSite: 'Lax',
+    },
+  ]);
 
-    const page = await context.newPage();
-    page.on('pageerror', (error) => errors.push(error.message));
-    const requests: string[] = [];
-    const writer = { tabId: '', writeToken: '' };
-    page.on('response', (response) => {
-      const path = new URL(response.url()).pathname;
-      if (path.endsWith('/attach') && response.status() === 201) {
+  const page = await context.newPage();
+  page.on('pageerror', (error) => errors.push(error.message));
+  const requests: string[] = [];
+  const writer = { tabId: '', writeToken: '' };
+  page.on('response', (response) => {
+    const path = new URL(response.url()).pathname;
+    if (path.endsWith('/attach') && response.status() === 201) {
+      void response
+        .json()
+        .then((body: { writeToken?: string }) => {
+          if (body.writeToken) {
+            writer.writeToken = body.writeToken;
+            writer.tabId = (response.request().postDataJSON() as { tabId: string }).tabId;
+          }
+        })
+        .catch(() => undefined);
+    }
+    if (path.startsWith('/api/')) {
+      requests.push(`${path}: ${response.status()}`);
+      if (response.status() >= 400)
         void response
           .json()
-          .then((body: { writeToken?: string }) => {
-            if (body.writeToken) {
-              writer.writeToken = body.writeToken;
-              writer.tabId = (response.request().postDataJSON() as { tabId: string }).tabId;
-            }
-          })
+          .then((body: { code?: string }) => requests.push(`error: ${body.code}`))
           .catch(() => undefined);
-      }
-      if (path.startsWith('/api/')) {
-        requests.push(`${path}: ${response.status()}`);
-        if (response.status() >= 400)
-          void response
-            .json()
-            .then((body: { code?: string }) => requests.push(`error: ${body.code}`))
-            .catch(() => undefined);
-      }
-    });
-    await page.goto('/');
-    try {
-      await browserExpect(page.getByText(/Waiting for an interaction/)).toBeVisible({
-        timeout: 20000,
-      });
-    } catch (error) {
-      throw new Error(
-        `Agent shell did not render: requests=${requests.join(', ')}; pageErrors=${errors.join(' | ')}; cookies=${JSON.stringify((await context.cookies()).map((c) => c.name))}; UI: ${(
-          await page
-            .locator('body')
-            .innerText()
-            .catch(() => '')
-        ).slice(0, 400)}`,
-        { cause: error },
-      );
     }
-    try {
-      await browserExpect(
-        page.getByText('Connector channel connected', { exact: true }),
-      ).toBeVisible({ timeout: 10000 });
-    } catch {
-      throw new Error(
-        `Launch connection failed: ${requests.join(', ')}; UI: ${await page.locator('body').innerText()}`,
-      );
-    }
-    const sessionResponse = await page.request.get('/api/auth/session');
-    const { csrfToken } = (await sessionResponse.json()) as { csrfToken: string };
-    expect(csrfToken).toBeTruthy();
-    await browserExpect(
-      page.getByRole('button', { name: 'Live monitoring', exact: true }),
-    ).toHaveCount(0);
-    const interactionCount = await owner.interaction.count({
-      where: { tenantId: tenant.tenantId },
+  });
+  await page.goto('/');
+  try {
+    await browserExpect(page.getByText(/Waiting for an interaction/)).toBeVisible({
+      timeout: 20000,
     });
-    const intentCount = await owner.launchIntent.count({ where: { tenantId: tenant.tenantId } });
-    const launchStarted = performance.now();
-    const platformAgentId = engine === 'firefox' ? 'qa-email-firefox' : `qa-${engine}`;
-    const connected = await app.inject({
-      method: 'POST',
-      url: `/v1/simulator/connectors/${connectorId}/interactions`,
-      headers: await tenant.auth(),
-      payload: {
-        channel: 'voice',
-        agentPlatformUserId: platformAgentId,
-        ...(engine === 'firefox' ? { agentEmail: 'firefox@qa.test' } : {}),
-        queue: 'qa-queue',
-        customerName: 'Synthetic customer',
-        autoConnect: true,
-      },
-    });
-    expect(connected.statusCode, connected.body).toBe(201);
-    const capacity = await app.inject({
-      method: 'POST',
-      url: `/v1/simulator/connectors/${connectorId}/interactions`,
-      headers: await tenant.auth(),
-      payload: { channel: 'voice', agentPlatformUserId: platformAgentId, autoConnect: true },
-    });
-    expect(capacity.statusCode, capacity.body).toBe(409);
-    expect(capacity.headers['content-type']).toContain('application/problem+json');
-    const capacityProblem = capacity.json<{
-      code: string;
-      correlationId: string;
-      errors: { path: string }[];
-    }>();
-    expect(capacityProblem.code).toBe('VERBIS_CONNECTOR_CONCURRENCY_LIMIT');
-    expect(capacityProblem.correlationId.length).toBeGreaterThan(0);
-    expect(capacityProblem.errors[0]?.path).toBe('/connector');
-    const call = connected.json<{ platformInteractionId: string }>();
-    await browserExpect
-      .poll(() => owner.interaction.count({ where: { tenantId: tenant.tenantId } }), {
-        timeout: 15000,
-      })
-      .toBe(interactionCount + 1);
-    await browserExpect
-      .poll(() => owner.launchIntent.count({ where: { tenantId: tenant.tenantId } }), {
-        timeout: 15000,
-      })
-      .toBe(intentCount + 1);
-    try {
-      await browserExpect(page).toHaveURL(/\/s\/[0-9a-f-]{36}$/, { timeout: 15000 });
-    } catch {
-      throw new Error(
-        `Launch failed: ${requests.join(', ')}; intents: ${JSON.stringify(await owner.launchIntent.findMany({ where: { tenantId: tenant.tenantId }, select: { state: true } }))}`,
-      );
-    }
-    await browserExpect(
-      page.getByRole('heading', { name: 'Synthetic customer', exact: true }),
-    ).toBeVisible();
-    await browserExpect(
-      page.getByRole('tab', { name: /Voice · Synthetic customer/ }),
-    ).toBeVisible();
-    const id = new URL(page.url()).pathname.split('/').at(-1)!;
-    await browserExpect(
-      page.getByRole('button', { name: 'Next', exact: true }).last(),
-    ).toBeEnabled();
-    const launchMs = performance.now() - launchStarted;
-    expect(launchMs).toBeLessThan(10000);
-    for (const width of [390, 768, 1440]) {
-      await page.setViewportSize({ width, height: 900 });
-      const size = await page.evaluate<{ width: number; scroll: number }>(
-        '({width: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth})',
-      );
-      expect(size.scroll, `${engine} active ${width}px overflow`).toBeLessThanOrEqual(
-        size.width + 1,
-      );
-      await page.screenshot({ path: `${evidence}/${engine}-active-${width}.png`, fullPage: true });
-    }
-    expect(await new AxeBuilder({ page }).analyze()).toMatchObject({ violations: [] });
-    const observer = await context.newPage();
-    await observer.goto(`/s/${id}`);
-    await browserExpect(observer.locator('.ag-runtime[data-page-id]')).toBeVisible();
-    const coldRenderMs = await observer.evaluate<number>('performance.now()');
-    expect(coldRenderMs).toBeLessThan(1500 * CI_BUDGET_FACTOR);
-    await observer.reload();
-    await browserExpect(observer.locator('.ag-runtime[data-page-id]')).toBeVisible();
-    const warmRenderMs = await observer.evaluate<number>('performance.now()');
-    expect(warmRenderMs).toBeLessThan(500 * CI_BUDGET_FACTOR);
-    await browserExpect(
-      observer.getByText('This session is open in another tab or available for observation only.', {
-        exact: true,
-      }),
-    ).toBeVisible();
-    await browserExpect(
-      observer.getByRole('button', { name: 'Next', exact: true }).last(),
-    ).toBeDisabled();
-    await observer.screenshot({ path: `${evidence}/${engine}-second-tab.png`, fullPage: true });
-    await observer.close();
+  } catch (error) {
+    throw new Error(
+      `Agent shell did not render: requests=${requests.join(', ')}; pageErrors=${errors.join(' | ')}; cookies=${JSON.stringify((await context.cookies()).map((c) => c.name))}; UI: ${(
+        await page
+          .locator('body')
+          .innerText()
+          .catch(() => '')
+      ).slice(0, 400)}`,
+      { cause: error },
+    );
+  }
+  try {
+    await browserExpect(page.getByText('Connector channel connected', { exact: true })).toBeVisible(
+      { timeout: 10000 },
+    );
+  } catch {
+    throw new Error(
+      `Launch connection failed: ${requests.join(', ')}; UI: ${await page.locator('body').innerText()}`,
+    );
+  }
+  const sessionResponse = await page.request.get('/api/auth/session');
+  const { csrfToken } = (await sessionResponse.json()) as { csrfToken: string };
+  expect(csrfToken).toBeTruthy();
+  await browserExpect(
+    page.getByRole('button', { name: 'Live monitoring', exact: true }),
+  ).toHaveCount(0);
+  const interactionCount = await owner.interaction.count({
+    where: { tenantId: tenant.tenantId },
+  });
+  const intentCount = await owner.launchIntent.count({ where: { tenantId: tenant.tenantId } });
+  const launchStarted = performance.now();
+  const platformAgentId = engine === 'firefox' ? 'qa-email-firefox' : `qa-${engine}`;
+  const connected = await app.inject({
+    method: 'POST',
+    url: `/v1/simulator/connectors/${connectorId}/interactions`,
+    headers: await tenant.auth(),
+    payload: {
+      channel: 'voice',
+      agentPlatformUserId: platformAgentId,
+      ...(engine === 'firefox' ? { agentEmail: 'firefox@qa.test' } : {}),
+      queue: 'qa-queue',
+      customerName: 'Synthetic customer',
+      autoConnect: true,
+    },
+  });
+  expect(connected.statusCode, connected.body).toBe(201);
+  const capacity = await app.inject({
+    method: 'POST',
+    url: `/v1/simulator/connectors/${connectorId}/interactions`,
+    headers: await tenant.auth(),
+    payload: { channel: 'voice', agentPlatformUserId: platformAgentId, autoConnect: true },
+  });
+  expect(capacity.statusCode, capacity.body).toBe(409);
+  expect(capacity.headers['content-type']).toContain('application/problem+json');
+  const capacityProblem = capacity.json<{
+    code: string;
+    correlationId: string;
+    errors: { path: string }[];
+  }>();
+  expect(capacityProblem.code).toBe('VERBIS_CONNECTOR_CONCURRENCY_LIMIT');
+  expect(capacityProblem.correlationId.length).toBeGreaterThan(0);
+  expect(capacityProblem.errors[0]?.path).toBe('/connector');
+  const call = connected.json<{ platformInteractionId: string }>();
+  await browserExpect
+    .poll(() => owner.interaction.count({ where: { tenantId: tenant.tenantId } }), {
+      timeout: 15000,
+    })
+    .toBe(interactionCount + 1);
+  await browserExpect
+    .poll(() => owner.launchIntent.count({ where: { tenantId: tenant.tenantId } }), {
+      timeout: 15000,
+    })
+    .toBe(intentCount + 1);
+  try {
+    await browserExpect(page).toHaveURL(/\/s\/[0-9a-f-]{36}$/, { timeout: 15000 });
+  } catch {
+    throw new Error(
+      `Launch failed: ${requests.join(', ')}; intents: ${JSON.stringify(await owner.launchIntent.findMany({ where: { tenantId: tenant.tenantId }, select: { state: true } }))}`,
+    );
+  }
+  await browserExpect(
+    page.getByRole('heading', { name: 'Synthetic customer', exact: true }),
+  ).toBeVisible();
+  await browserExpect(page.getByRole('tab', { name: /Voice · Synthetic customer/ })).toBeVisible();
+  const id = new URL(page.url()).pathname.split('/').at(-1)!;
+  await browserExpect(page.getByRole('button', { name: 'Next', exact: true }).last()).toBeEnabled();
+  const launchMs = performance.now() - launchStarted;
+  expect(launchMs).toBeLessThan(10000);
+  for (const width of [390, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    const size = await page.evaluate<{ width: number; scroll: number }>(
+      '({width: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth})',
+    );
+    expect(size.scroll, `${engine} active ${width}px overflow`).toBeLessThanOrEqual(size.width + 1);
+    await page.screenshot({ path: `${evidence}/${engine}-active-${width}.png`, fullPage: true });
+  }
+  expect(await new AxeBuilder({ page }).analyze()).toMatchObject({ violations: [] });
+  const observer = await context.newPage();
+  await observer.goto(`/s/${id}`);
+  await browserExpect(observer.locator('.ag-runtime[data-page-id]')).toBeVisible();
+  const coldRenderMs = await observer.evaluate<number>('performance.now()');
+  expect(coldRenderMs).toBeLessThan(1500 * CI_BUDGET_FACTOR);
+  await observer.reload();
+  await browserExpect(observer.locator('.ag-runtime[data-page-id]')).toBeVisible();
+  const warmRenderMs = await observer.evaluate<number>('performance.now()');
+  expect(warmRenderMs).toBeLessThan(500 * CI_BUDGET_FACTOR);
+  await browserExpect(
+    observer.getByText('This session is open in another tab or available for observation only.', {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await browserExpect(
+    observer.getByRole('button', { name: 'Next', exact: true }).last(),
+  ).toBeDisabled();
+  await observer.screenshot({ path: `${evidence}/${engine}-second-tab.png`, fullPage: true });
+  await observer.close();
 
-    await browserExpect.poll(() => writer.writeToken.length).toBe(43);
-    for (const paused of [true, false]) {
-      const current = await page.request.get(`/api/v1/sessions/${id}/state`);
-      const sequence = ((await current.json()) as { sequence: number }).sequence;
-      const recording = await page.request.post(`/api/v1/sessions/${id}/recording`, {
-        headers: { 'x-csrf-token': csrfToken, origin },
-        data: { ...writer, expectedSequence: sequence, paused },
-      });
-      expect(recording.status(), await recording.text()).toBe(201);
-      await browserExpect
-        .poll(
-          async () => {
-            const state = await app.inject({
-              method: 'GET',
-              url: `/v1/simulator/connectors/${connectorId}`,
-              headers: await tenant.auth(),
-            });
-            return state
-              .json<{ commands: { command: string; platformInteractionId: string }[] }>()
-              .commands.some(
-                (command) =>
-                  command.command === (paused ? 'pauseRecording' : 'resumeRecording') &&
-                  command.platformInteractionId === call.platformInteractionId,
-              );
-          },
-          { timeout: 10000 },
-        )
-        .toBe(true);
-    }
-    for (const action of ['hold', 'resume'] as const) {
-      const changed = await app.inject({
-        method: 'POST',
-        url: `/v1/simulator/connectors/${connectorId}/interactions/${call.platformInteractionId}/actions`,
-        headers: await tenant.auth(),
-        payload: { action },
-      });
-      expect(changed.statusCode, changed.body).toBe(200);
-      await browserExpect
-        .poll(
-          async () => {
-            const state = await page.request.get(`/api/v1/sessions/${id}/state`);
-            return ((await state.json()) as { state: string }).state;
-          },
-          { timeout: 10000 },
-        )
-        .toBe(action === 'hold' ? 'paused' : 'active');
-      if (action === 'hold') {
-        await browserExpect(
-          page.getByText('Interaction is on hold.', { exact: true }),
-        ).toBeVisible();
-        await browserExpect(
-          page.getByRole('button', { name: 'Next', exact: true }).last(),
-        ).toBeDisabled();
-      } else
-        await browserExpect(
-          page.getByRole('button', { name: 'Next', exact: true }).last(),
-        ).toBeEnabled();
-    }
-    await page.getByRole('textbox', { name: 'QA result', exact: true }).fill(`Persisted ${engine}`);
+  await browserExpect.poll(() => writer.writeToken.length).toBe(43);
+  for (const paused of [true, false]) {
+    const current = await page.request.get(`/api/v1/sessions/${id}/state`);
+    const sequence = ((await current.json()) as { sequence: number }).sequence;
+    const recording = await page.request.post(`/api/v1/sessions/${id}/recording`, {
+      headers: { 'x-csrf-token': csrfToken, origin },
+      data: { ...writer, expectedSequence: sequence, paused },
+    });
+    expect(recording.status(), await recording.text()).toBe(201);
     await browserExpect
       .poll(
         async () => {
-          const response = await page.request.get(`/api/v1/sessions/${id}/state`);
-          return ((await response.json()) as { snapshot: { variables: { qaResult: string } } })
-            .snapshot.variables.qaResult;
+          const state = await app.inject({
+            method: 'GET',
+            url: `/v1/simulator/connectors/${connectorId}`,
+            headers: await tenant.auth(),
+          });
+          return state
+            .json<{ commands: { command: string; platformInteractionId: string }[] }>()
+            .commands.some(
+              (command) =>
+                command.command === (paused ? 'pauseRecording' : 'resumeRecording') &&
+                command.platformInteractionId === call.platformInteractionId,
+            );
         },
         { timeout: 10000 },
       )
-      .toBe(`Persisted ${engine}`);
-    // Same 100 ms real page-transition budget as agent-web/e2e/performance.spec.ts.
-    // No API routes are mocked; timer starts before the native runtime Next click.
-    const pageTransitionMs = await page.evaluate<number>(`new Promise((resolve, reject) => {
+      .toBe(true);
+  }
+  for (const action of ['hold', 'resume'] as const) {
+    const changed = await app.inject({
+      method: 'POST',
+      url: `/v1/simulator/connectors/${connectorId}/interactions/${call.platformInteractionId}/actions`,
+      headers: await tenant.auth(),
+      payload: { action },
+    });
+    expect(changed.statusCode, changed.body).toBe(200);
+    await browserExpect
+      .poll(
+        async () => {
+          const state = await page.request.get(`/api/v1/sessions/${id}/state`);
+          return ((await state.json()) as { state: string }).state;
+        },
+        { timeout: 10000 },
+      )
+      .toBe(action === 'hold' ? 'paused' : 'active');
+    if (action === 'hold') {
+      await browserExpect(page.getByText('Interaction is on hold.', { exact: true })).toBeVisible();
+      await browserExpect(
+        page.getByRole('button', { name: 'Next', exact: true }).last(),
+      ).toBeDisabled();
+    } else
+      await browserExpect(
+        page.getByRole('button', { name: 'Next', exact: true }).last(),
+      ).toBeEnabled();
+  }
+  await page.getByRole('textbox', { name: 'QA result', exact: true }).fill(`Persisted ${engine}`);
+  await browserExpect
+    .poll(
+      async () => {
+        const response = await page.request.get(`/api/v1/sessions/${id}/state`);
+        return ((await response.json()) as { snapshot: { variables: { qaResult: string } } })
+          .snapshot.variables.qaResult;
+      },
+      { timeout: 10000 },
+    )
+    .toBe(`Persisted ${engine}`);
+  // Same 100 ms real page-transition budget as agent-web/e2e/performance.spec.ts.
+  // No API routes are mocked; timer starts before the native runtime Next click.
+  const pageTransitionMs = await page.evaluate<number>(`new Promise((resolve, reject) => {
       const field = document.querySelector('.ag-runtime[data-page-id]');
       const button = document.querySelector('[data-agent-next]');
       if (!field || !button || button.disabled) { reject(new Error('Runtime is not editable')); return; }
@@ -766,76 +756,75 @@ it.each(['chromium', 'firefox', 'webkit'] as const)(
       observer.observe(field, { attributes: true, attributeFilter: ['data-page-id'] });
       button.click();
     })`);
-    expect(pageTransitionMs).toBeLessThan(100);
-    await browserExpect(page.locator('.ag-runtime[data-page-id="confirmation"]')).toBeVisible();
-    await page.getByRole('button', { name: 'Next', exact: true }).last().click();
-    await browserExpect(page.getByRole('heading', { name: 'Wrap up', exact: true })).toBeVisible();
-    await page.getByRole('combobox', { name: 'Disposition', exact: true }).click();
-    await page.getByRole('option', { name: 'Success', exact: true }).click();
-    await browserExpect(
-      page.getByRole('button', { name: 'Submit outcome', exact: true }),
-    ).toBeDisabled();
-    await page.getByLabel('Notes', { exact: true }).fill('Synthetic persisted outcome');
-    expect(await new AxeBuilder({ page }).analyze()).toMatchObject({ violations: [] });
-    const writebackStarted = performance.now();
-    await page.getByRole('button', { name: 'Submit outcome', exact: true }).click();
-    await browserExpect
-      .poll(
-        async () => {
-          const response = await page.request.get(`/api/v1/sessions/${id}/desktop`);
-          expect(response.status()).toBe(200);
-          return ((await response.json()) as { writeback: string }).writeback;
-        },
-        { timeout: 30000 },
-      )
-      .toBe('success');
-    const writebackMs = performance.now() - writebackStarted;
-    expect(writebackMs).toBeLessThan(10000);
-    await page.reload();
-    await browserExpect(page.getByRole('heading', { name: 'Interaction completed' })).toBeVisible();
-    await page.screenshot({ path: `${evidence}/${engine}-completed.png`, fullPage: true });
-    expect(await new AxeBuilder({ page }).analyze()).toMatchObject({ violations: [] });
-    const snapshot = await app.inject({
-      method: 'GET',
-      url: `/v1/simulator/connectors/${connectorId}`,
-      headers: await tenant.auth(),
-    });
-    const commands = snapshot.json<{
-      commands: { command: string; platformInteractionId: string }[];
-    }>().commands;
-    expect(commands).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          command: 'writeAttributes',
-          platformInteractionId: call.platformInteractionId,
-          payload: { attributes: { qaResult: `Persisted ${engine}` } },
-        }),
-      ]),
-    );
-    expect(
-      commands.some(
-        (command) =>
-          command.command === 'setWrapUp' &&
-          command.platformInteractionId === call.platformInteractionId,
-      ),
-    ).toBe(true);
-    expect(await owner.outcome.count({ where: { sessionId: id, code: 'SUCCESS' } })).toBe(1);
-    expect(errors).toEqual([]);
-    const ended = await app.inject({
-      method: 'POST',
-      url: `/v1/simulator/connectors/${connectorId}/interactions/${call.platformInteractionId}/actions`,
-      headers: await tenant.auth(),
-      payload: { action: 'end' },
-    });
-    expect(ended.statusCode, ended.body).toBe(200);
-    measurements.push({
-      engine,
-      launchMs: Math.round(launchMs),
-      coldRenderMs: Math.round(coldRenderMs),
-      warmRenderMs: Math.round(warmRenderMs),
-      pageTransitionMs: Math.round(pageTransitionMs * 100) / 100,
-      writebackMs: Math.round(writebackMs),
-    });
-    writeFileSync(`${evidence}/measurements.json`, JSON.stringify(measurements, null, 2) + '\n');
-  },
-);
+  expect(pageTransitionMs).toBeLessThan(100);
+  await browserExpect(page.locator('.ag-runtime[data-page-id="confirmation"]')).toBeVisible();
+  await page.getByRole('button', { name: 'Next', exact: true }).last().click();
+  await browserExpect(page.getByRole('heading', { name: 'Wrap up', exact: true })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Disposition', exact: true }).click();
+  await page.getByRole('option', { name: 'Success', exact: true }).click();
+  await browserExpect(
+    page.getByRole('button', { name: 'Submit outcome', exact: true }),
+  ).toBeDisabled();
+  await page.getByLabel('Notes', { exact: true }).fill('Synthetic persisted outcome');
+  expect(await new AxeBuilder({ page }).analyze()).toMatchObject({ violations: [] });
+  const writebackStarted = performance.now();
+  await page.getByRole('button', { name: 'Submit outcome', exact: true }).click();
+  await browserExpect
+    .poll(
+      async () => {
+        const response = await page.request.get(`/api/v1/sessions/${id}/desktop`);
+        expect(response.status()).toBe(200);
+        return ((await response.json()) as { writeback: string }).writeback;
+      },
+      { timeout: 30000 },
+    )
+    .toBe('success');
+  const writebackMs = performance.now() - writebackStarted;
+  expect(writebackMs).toBeLessThan(10000);
+  await page.reload();
+  await browserExpect(page.getByRole('heading', { name: 'Interaction completed' })).toBeVisible();
+  await page.screenshot({ path: `${evidence}/${engine}-completed.png`, fullPage: true });
+  expect(await new AxeBuilder({ page }).analyze()).toMatchObject({ violations: [] });
+  const snapshot = await app.inject({
+    method: 'GET',
+    url: `/v1/simulator/connectors/${connectorId}`,
+    headers: await tenant.auth(),
+  });
+  const commands = snapshot.json<{
+    commands: { command: string; platformInteractionId: string }[];
+  }>().commands;
+  expect(commands).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        command: 'writeAttributes',
+        platformInteractionId: call.platformInteractionId,
+        payload: { attributes: { qaResult: `Persisted ${engine}` } },
+      }),
+    ]),
+  );
+  expect(
+    commands.some(
+      (command) =>
+        command.command === 'setWrapUp' &&
+        command.platformInteractionId === call.platformInteractionId,
+    ),
+  ).toBe(true);
+  expect(await owner.outcome.count({ where: { sessionId: id, code: 'SUCCESS' } })).toBe(1);
+  expect(errors).toEqual([]);
+  const ended = await app.inject({
+    method: 'POST',
+    url: `/v1/simulator/connectors/${connectorId}/interactions/${call.platformInteractionId}/actions`,
+    headers: await tenant.auth(),
+    payload: { action: 'end' },
+  });
+  expect(ended.statusCode, ended.body).toBe(200);
+  measurements.push({
+    engine,
+    launchMs: Math.round(launchMs),
+    coldRenderMs: Math.round(coldRenderMs),
+    warmRenderMs: Math.round(warmRenderMs),
+    pageTransitionMs: Math.round(pageTransitionMs * 100) / 100,
+    writebackMs: Math.round(writebackMs),
+  });
+  writeFileSync(`${evidence}/measurements.json`, JSON.stringify(measurements, null, 2) + '\n');
+});
