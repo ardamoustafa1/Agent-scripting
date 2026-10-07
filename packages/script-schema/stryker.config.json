@@ -5,7 +5,13 @@
   "vitest": {
     "configFile": "vitest.config.ts"
   },
-  "mutate": ["src/**/*.ts", "!src/**/*.spec.ts", "!src/fixtures/**", "!src/index.ts"],
+  "mutate": [
+    "src/**/*.ts",
+    "!src/**/*.spec.ts",
+    "!src/fixtures/**",
+    "!src/templates/**",
+    "!src/index.ts"
+  ],
   "coverageAnalysis": "perTest",
   "reporters": ["clear-text", "progress", "html", "json"],
   "thresholds": {

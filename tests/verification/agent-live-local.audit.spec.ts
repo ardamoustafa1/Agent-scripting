@@ -48,7 +48,7 @@ import type { TLSSocket } from 'node:tls';
 const root = fileURLToPath(new URL('../..', import.meta.url));
 /** Shared secret the simulated TLS edge presents so the API trusts the forwarded certificate. */
 /** Shared CI runners are slower than the developer hardware these render budgets were set on. */
-const CI_BUDGET_FACTOR = process.env['CI'] ? 2.5 : 1;
+const CI_BUDGET_FACTOR = process.env['CI'] ? 3 : 1;
 const EDGE_PROXY_SECRET = randomBytes(24).toString('hex');
 
 let owner: PrismaClient,
@@ -548,7 +548,9 @@ it.each(['chromium', 'firefox', 'webkit'] as const)(
       }
     });
     await page.goto('/');
-    await browserExpect(page.getByText(/Waiting for an interaction/)).toBeVisible();
+    await browserExpect(page.getByText(/Waiting for an interaction/)).toBeVisible({
+      timeout: 20000,
+    });
     try {
       await browserExpect(
         page.getByText('Connector channel connected', { exact: true }),

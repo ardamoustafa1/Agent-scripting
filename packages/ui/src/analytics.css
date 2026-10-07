@@ -92,8 +92,10 @@
 }
 .vb-analytics-presets {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   flex-shrink: 0;
+  max-inline-size: 100%;
   padding: 3px;
   border-radius: var(--vb-radius-md);
   background: var(--vb-color-surface);

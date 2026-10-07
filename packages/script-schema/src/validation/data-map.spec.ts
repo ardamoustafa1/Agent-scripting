@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { minimalScript } from '../fixtures/minimal.js';
 import { ScriptDocumentSchema } from '../schema/document.js';
 
-import { dataMap, newDataFlows } from './data-map.js';
+import { dataMap, newDataFlows, type DataDestination, type DataMapEntry } from './data-map.js';
 
 function document(edit: (doc: Record<string, unknown> & ReturnType<typeof minimalScript>) => void) {
   const input = minimalScript() as Record<string, unknown> & ReturnType<typeof minimalScript>;
@@ -127,5 +127,134 @@ describe('newDataFlows', () => {
       { variable: 'tckn', destination: expect.objectContaining({ kind: 'analytics' }) as unknown },
     ]);
     expect(newDataFlows(after, after)).toEqual([]);
+  });
+});
+
+describe('dataMap precision', () => {
+  const press = (actions: unknown[]) => [
+    {
+      id: 'btn',
+      type: 'button',
+      props: { labelKey: 'common.next' },
+      events: { onPress: actions },
+    },
+  ];
+
+  it('reports each sink kind with its exact location and nothing for plain internal reads', () => {
+    const map = dataMap(
+      document((doc) => {
+        doc.pages[0]!.layout.children = press([
+          { type: 'showToast', messageKey: 'common.next', params: { who: { $expr: 'vars.tckn' } } },
+          { type: 'logEvent', event: 'checked', data: { who: { $expr: 'vars.tckn' } } },
+          { type: 'emitEvent', name: 'seen', payload: { who: { $expr: 'vars.tckn' } } },
+          { type: 'writeBackToPlatform', attributes: { who: { $expr: 'vars.tckn' } } },
+          { type: 'setVariable', variable: 'segment', value: { $expr: 'vars.segment' } },
+        ]) as never;
+      }),
+    );
+    const prefix = '/pages/0/layout/children/0/events/onPress';
+    expect(map.find((entry) => entry.variable === 'tckn')?.destinations).toEqual([
+      { kind: 'toast', path: `${prefix}/0/params/who/$expr` },
+      { kind: 'log', path: `${prefix}/1/data/who/$expr` },
+      { kind: 'analytics', path: `${prefix}/2/payload/who/$expr` },
+      { kind: 'platform', path: `${prefix}/3/attributes/who/$expr` },
+    ]);
+    expect(map.find((entry) => entry.variable === 'pan')?.destinations).toEqual([]);
+  });
+
+  it('marks a variable computed by a script action, but not one set by bindings or outputs', () => {
+    const map = dataMap(
+      document((doc) => {
+        doc.dataSources = [
+          {
+            id: 'crm',
+            ref: 'tenant-datasource:crm',
+            version: 1,
+            outputs: { mail: { path: '$.email', variable: 'email' } },
+          },
+        ] as never;
+        doc.pages[0]!.layout.children = [
+          {
+            id: 'pan-input',
+            type: 'textInput',
+            props: { labelKey: 'common.next' },
+            bindings: [{ prop: 'value', variable: 'pan' }],
+            events: { onPress: [{ type: 'setVariable', variable: 'tckn', value: 'x' }] },
+          },
+        ] as never;
+      }),
+    );
+    expect(map.find((entry) => entry.variable === 'pan')?.origins).toEqual([
+      { kind: 'agentInput', node: 'pan-input' },
+    ]);
+    expect(map.find((entry) => entry.variable === 'tckn')?.origins).toEqual([
+      { kind: 'context', path: 'interaction.attributes.tckn' },
+      { kind: 'script' },
+    ]);
+    expect(map.find((entry) => entry.variable === 'email')?.origins).toEqual([
+      { kind: 'dataSource', id: 'crm' },
+    ]);
+  });
+
+  it('attributes a data source input to that data source by position, and an action input to its target', () => {
+    const map = dataMap(
+      document((doc) => {
+        doc.dataSources = [
+          { id: 'first', ref: 'tenant-datasource:first', version: 1, outputs: {} },
+          {
+            id: 'second',
+            ref: 'tenant-datasource:second',
+            version: 1,
+            inputs: { id: { $expr: 'vars.tckn' } },
+            outputs: {},
+          },
+        ] as never;
+        doc.pages[0]!.layout.children = press([
+          {
+            type: 'callDataSource',
+            dataSource: 'first',
+            inputs: { id: { $expr: 'vars.pan' } },
+          },
+        ]) as never;
+      }),
+    );
+    expect(map.find((entry) => entry.variable === 'tckn')?.destinations).toEqual([
+      { kind: 'integration', id: 'second', path: '/dataSources/1/inputs/id/$expr' },
+    ]);
+    expect(map.find((entry) => entry.variable === 'pan')?.destinations).toEqual([
+      {
+        kind: 'integration',
+        id: 'first',
+        path: '/pages/0/layout/children/0/events/onPress/0/inputs/id/$expr',
+      },
+    ]);
+  });
+});
+
+describe('newDataFlows precision', () => {
+  const entry = (variable: string, destinations: DataDestination[]): DataMapEntry => ({
+    variable,
+    classification: 'pii',
+    origins: [],
+    destinations,
+    persisted: false,
+  });
+  const to = (id: string, path = '/p'): DataDestination => ({ kind: 'integration', id, path });
+
+  it('tells integrations apart by id and reports a new integration once', () => {
+    const before = [entry('tckn', [to('crm')])];
+    const after = [entry('tckn', [to('crm', '/q'), to('fraud', '/a'), to('fraud', '/b')])];
+    expect(newDataFlows(before, after)).toEqual([
+      { variable: 'tckn', destination: to('fraud', '/a') },
+    ]);
+  });
+
+  it('reports everything for a variable that did not exist before, and nothing when destinations vanish', () => {
+    const screen: DataDestination = { kind: 'screen', path: '/s' };
+    expect(newDataFlows([], [entry('pan', [screen, to('crm')])])).toEqual([
+      { variable: 'pan', destination: screen },
+      { variable: 'pan', destination: to('crm') },
+    ]);
+    expect(newDataFlows([entry('pan', [screen])], [entry('pan', [])])).toEqual([]);
   });
 });
