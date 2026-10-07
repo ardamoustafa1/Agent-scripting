@@ -49,6 +49,7 @@ interface LockedVersion {
   updatedBy: string;
   submittedBy: string | null;
   contributors: string[];
+  branch: string | null;
 }
 
 const VERSION_EVENT: Record<LifecycleAction, string> = {
@@ -81,6 +82,11 @@ export class VersionLifecycleService {
   async submit(scriptId: string, number: number, input: Partial<SubmitVersionInput>) {
     const tx = this.db.current();
     const version = await this.#lock(tx, scriptId, number);
+    if (typeof version.branch === 'string')
+      throw new DomainError(
+        'VERBIS_BRANCH_NOT_PUBLISHABLE',
+        `version ${String(number)} belongs to branch "${version.branch}"`,
+      );
     const semver = input.semver ?? version.semver;
     const changeNote = input.changeNote?.trim();
     if (!changeNote || changeNote.length > 4000)
@@ -398,7 +404,7 @@ export class VersionLifecycleService {
     await this.leases.assertWritable(this.db.tenantId(), scriptId, number);
     const rows = await tx.$queryRaw<LockedVersion[]>`
       SELECT id, number, state::text AS state, semver, checksum, review_round AS "reviewRound",
-             created_by AS "createdBy", updated_by AS "updatedBy", submitted_by AS "submittedBy", coalesce(source->'collaborationAuthors','[]'::jsonb) AS contributors
+             created_by AS "createdBy", updated_by AS "updatedBy", submitted_by AS "submittedBy", branch, coalesce(source->'collaborationAuthors','[]'::jsonb) AS contributors
         FROM script_versions
        WHERE tenant_id = ${this.db.tenantId()}::uuid AND script_id = ${scriptId}::uuid
          AND number = ${number} AND deleted_at IS NULL

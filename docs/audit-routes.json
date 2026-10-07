@@ -1200,6 +1200,32 @@
     },
     {
       "method": "POST",
+      "path": "/v1/scripts/:id/branches",
+      "controller": "BranchesController",
+      "handler": "create",
+      "file": "apps/api/src/modules/scripts/branches.controller.ts",
+      "line": 31,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/scripts/:id/branches/:name/merge",
+      "controller": "BranchesController",
+      "handler": "merge",
+      "file": "apps/api/src/modules/scripts/branches.controller.ts",
+      "line": 52,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
       "path": "/v1/scripts/:id/merge-preview",
       "controller": "ScriptsController",
       "handler": "mergePreview",

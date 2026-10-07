@@ -93,6 +93,8 @@ export const ScriptVersionSummarySchema = z
     retiredAt: IsoDateTime.nullable(),
     reviewRound: z.number().int(),
     createdBy: z.string(),
+    /** Branch label; null on the mainline (ADR-0051). */
+    branch: z.string().nullable(),
   })
   .meta({ id: 'ScriptVersionSummary' });
 export type ScriptVersionSummaryDto = z.infer<typeof ScriptVersionSummarySchema>;
@@ -152,6 +154,7 @@ export function toVersionSummaryDto(row: VersionSummaryRow): ScriptVersionSummar
     retiredAt: isoOrNull(row.retiredAt),
     reviewRound: row.reviewRound,
     createdBy: row.createdBy,
+    branch: row.branch,
     createdAt: iso(row.createdAt),
     updatedAt: iso(row.updatedAt),
     version: row.version,
@@ -252,3 +255,44 @@ export const MergePreviewSchema = z
     document: z.unknown().nullable(),
   })
   .meta({ id: 'MergePreview' });
+
+// ─── Branches (ADR-0051) ──────────────────────────────────────────────────────
+export const BranchSchema = z
+  .object({
+    name: z.string(),
+    versionNumber: z.number().int().positive(),
+    parentNumber: z.number().int(),
+    state: z.string(),
+    createdAt: IsoDateTime,
+    createdBy: z.string(),
+    mergedInto: z.number().int().nullable(),
+  })
+  .meta({ id: 'ScriptBranch' });
+export const CreateBranchSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .max(64)
+      .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Use lower-case words separated by hyphens'),
+    fromNumber: z.number().int().positive(),
+  })
+  .meta({ id: 'CreateBranch' });
+export const BranchMergePreviewSchema = z
+  .object({
+    branch: z.string(),
+    baseNumber: z.number().int(),
+    mainlineNumber: z.number().int(),
+    branchNumber: z.number().int(),
+    conflicts: z.array(
+      z.object({
+        path: z.string(),
+        kind: z.enum(['both-changed', 'deleted-vs-changed', 'duplicate-id']),
+        base: z.unknown(),
+        ours: z.unknown(),
+        theirs: z.unknown(),
+      }),
+    ),
+    issues: z.array(z.string()),
+    canMerge: z.boolean(),
+  })
+  .meta({ id: 'BranchMergePreview' });

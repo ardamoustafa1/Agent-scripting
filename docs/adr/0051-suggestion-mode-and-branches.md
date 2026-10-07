@@ -1,6 +1,6 @@
 # ADR 0051 — Suggestion mode and script branches
 
-Status: Accepted for suggestions (C2) · Proposed for branches (C3) · 2026-10-07 · DIFFERENTIATORS C2, C3 (the pure three-way merge and a merge preview endpoint exist; suggestions are implemented, branches are not)
+Status: Accepted (suggestions C2 and branches C3 implemented) · 2026-10-07 · DIFFERENTIATORS C2, C3 (suggestions and branches are implemented)
 
 ## Context
 
@@ -61,4 +61,20 @@ Suggestions (part 1) are accepted and implemented with these choices for the ope
 - Table `script_suggestions` (tenant RLS, no delete grant); routes under
   `/v1/scripts/:id/versions/:number/suggestions`.
 
-Branches (part 2) still need the `script_versions` migration decision above and are not built.
+## Decision (2026-10-07): branches implemented
+
+- **A branch has exactly one working version.** `script_versions` gained `branch` (lower-case
+  hyphenated name) and `parent_version_id`; a partial unique index allows one live version per
+  `(script, branch)` and a check keeps both columns set or both null. Numbering stays global per
+  script, so `(script_id, number)` is unchanged and no per-branch numbering is needed. A branch
+  starts from a mainline version (a branch cannot start from a branch).
+- **A branch can never be submitted or published** (`VERBIS_BRANCH_NOT_PUBLISHABLE` in `submit`),
+  so every release still passes review, SoD and the publication gate as a mainline version.
+- **Merge** = `mergeDocuments(parent version, current mainline head, branch version)`. With any
+  conflict the merge is **refused** (`VERBIS_BRANCH_CONFLICT`, listing paths); the author resolves
+  it in the branch and merges again. A clean merge creates a **new mainline draft** through the
+  normal `createVersion` (validation, projection, `script.version.created`) plus
+  `script.branch.merged`; the branch records `mergedIntoNumber` and cannot be merged twice.
+  A visual per-node conflict resolver is not built.
+- Routes: `GET/POST /v1/scripts/:id/branches`, `GET .../:name/merge-preview`,
+  `POST .../:name/merge`. Branch creation needs `update` on the script; reading needs `read`.

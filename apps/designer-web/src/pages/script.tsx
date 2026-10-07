@@ -21,6 +21,7 @@ import { Badge, DataTable, Tabs, EmptyState, Button, Dialog } from '@verbis/ui';
 import { request, ResourceSchema, VersionsSchema } from '../api/client.js';
 import { newDocument } from '../editor/new-document.js';
 import { EditorDocumentSchema } from '../editor/store.js';
+import { Branches } from '../lifecycle/branches.js';
 import { RegressionPanel } from '../preview/regression-panel.js';
 import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
@@ -244,124 +245,141 @@ export default function ScriptPage() {
                   />
                 </div>
               ) : (
-                <DataTable
-                  label={t('designer.workspace.nav.releases')}
-                  data={versions.data.data}
-                  getRowId={(row) => row.id}
-                  columns={[
-                    {
-                      id: 'number',
-                      header: t('designer.workspace.version'),
-                      accessor: (row) => row.number,
-                    },
-                    {
-                      id: 'status',
-                      header: t('designer.workspace.statusFilter'),
-                      accessor: (row) => row.state,
-                      cell: (row) => (
-                        <Badge
-                          tone={
-                            row.state === 'published'
-                              ? 'success'
-                              : row.state === 'in_review'
-                                ? 'warning'
-                                : 'neutral'
-                          }
-                        >
-                          {t(`designer.workspace.status.${row.state}`, { defaultValue: row.state })}
-                        </Badge>
-                      ),
-                    },
-                    {
-                      id: 'owner',
-                      header: t('designer.workspace.owner'),
-                      accessor: (row) => row.createdBy ?? t('designer.workspace.unassigned'),
-                    },
-                    {
-                      id: 'release',
-                      header: t('designer.lifecycle.reviewRelease'),
-                      accessor: (row) => row.number,
-                      cell: (row) => (
-                        <Link
-                          className="dw-action-link"
-                          to={`/scripts/${id}/versions/${row.number}/release`}
-                        >
-                          {t('designer.lifecycle.reviewRelease')}
-                          <ArrowUpRight size={14} aria-hidden />
-                        </Link>
-                      ),
-                    },
-                    ...(ability.can('read', 'Session')
-                      ? [
-                          {
-                            id: 'replay',
-                            header: t('designer.replay.link'),
-                            accessor: (row: { number: number }) => row.number,
-                            cell: (row: { number: number }) => (
+                <>
+                  <DataTable
+                    label={t('designer.workspace.nav.releases')}
+                    data={versions.data.data}
+                    getRowId={(row) => row.id}
+                    columns={[
+                      {
+                        id: 'number',
+                        header: t('designer.workspace.version'),
+                        accessor: (row) => row.number,
+                        cell: (row) => (
+                          <>
+                            {row.number}
+                            {row.branch ? <Badge tone="info">{row.branch}</Badge> : null}
+                          </>
+                        ),
+                      },
+                      {
+                        id: 'status',
+                        header: t('designer.workspace.statusFilter'),
+                        accessor: (row) => row.state,
+                        cell: (row) => (
+                          <Badge
+                            tone={
+                              row.state === 'published'
+                                ? 'success'
+                                : row.state === 'in_review'
+                                  ? 'warning'
+                                  : 'neutral'
+                            }
+                          >
+                            {t(`designer.workspace.status.${row.state}`, {
+                              defaultValue: row.state,
+                            })}
+                          </Badge>
+                        ),
+                      },
+                      {
+                        id: 'owner',
+                        header: t('designer.workspace.owner'),
+                        accessor: (row) => row.createdBy ?? t('designer.workspace.unassigned'),
+                      },
+                      {
+                        id: 'release',
+                        header: t('designer.lifecycle.reviewRelease'),
+                        accessor: (row) => row.number,
+                        cell: (row) => (
+                          <Link
+                            className="dw-action-link"
+                            to={`/scripts/${id}/versions/${row.number}/release`}
+                          >
+                            {t('designer.lifecycle.reviewRelease')}
+                            <ArrowUpRight size={14} aria-hidden />
+                          </Link>
+                        ),
+                      },
+                      ...(ability.can('read', 'Session')
+                        ? [
+                            {
+                              id: 'replay',
+                              header: t('designer.replay.link'),
+                              accessor: (row: { number: number }) => row.number,
+                              cell: (row: { number: number }) => (
+                                <Link
+                                  className="dw-action-link"
+                                  to={`/scripts/${id}/versions/${row.number}/replay`}
+                                >
+                                  {t('designer.replay.link')}
+                                  <ArrowUpRight size={14} aria-hidden />
+                                </Link>
+                              ),
+                            },
+                          ]
+                        : []),
+                      {
+                        id: 'regression',
+                        header: t('designer.preview.regression'),
+                        accessor: (row) => row.number,
+                        cell: (row) => (
+                          <Dialog
+                            className="dw-regression-dialog"
+                            title={t('designer.preview.regression')}
+                            description={t('designer.lifecycle.versionLabel', {
+                              number: row.number,
+                            })}
+                            trigger={
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                startIcon={<FlaskConical size={16} aria-hidden />}
+                              >
+                                {t('designer.preview.regression')}
+                              </Button>
+                            }
+                            footer={
                               <Link
                                 className="dw-action-link"
-                                to={`/scripts/${id}/versions/${row.number}/replay`}
+                                to={`/scripts/${id}/versions/${row.number}/edit`}
                               >
-                                {t('designer.replay.link')}
-                                <ArrowUpRight size={14} aria-hidden />
+                                {t('designer.preview.title')}
+                                <ArrowUpRight size={16} aria-hidden />
                               </Link>
-                            ),
-                          },
-                        ]
-                      : []),
-                    {
-                      id: 'regression',
-                      header: t('designer.preview.regression'),
-                      accessor: (row) => row.number,
-                      cell: (row) => (
-                        <Dialog
-                          className="dw-regression-dialog"
-                          title={t('designer.preview.regression')}
-                          description={t('designer.lifecycle.versionLabel', { number: row.number })}
-                          trigger={
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              startIcon={<FlaskConical size={16} aria-hidden />}
-                            >
-                              {t('designer.preview.regression')}
-                            </Button>
-                          }
-                          footer={
-                            <Link
-                              className="dw-action-link"
-                              to={`/scripts/${id}/versions/${row.number}/edit`}
-                            >
-                              {t('designer.preview.title')}
-                              <ArrowUpRight size={16} aria-hidden />
-                            </Link>
-                          }
-                        >
-                          <RegressionPanel
-                            scriptId={id ?? ''}
-                            number={row.number}
-                            state={row.state}
-                            showHeading={false}
-                          />
-                        </Dialog>
-                      ),
-                    },
-                    {
-                      id: 'date',
-                      header: t('designer.workspace.edited'),
-                      accessor: (row) => row.createdAt,
-                      cell: (row) => (
-                        <time dateTime={row.createdAt} title={row.createdAt}>
-                          {Number.isNaN(Date.parse(row.createdAt))
-                            ? row.createdAt
-                            : new Intl.DateTimeFormat(i18n.language, {
-                                dateStyle: 'medium',
-                              }).format(new Date(row.createdAt))}
-                        </time>
-                      ),
-                    },
-                  ]}
-                />
+                            }
+                          >
+                            <RegressionPanel
+                              scriptId={id ?? ''}
+                              number={row.number}
+                              state={row.state}
+                              showHeading={false}
+                            />
+                          </Dialog>
+                        ),
+                      },
+                      {
+                        id: 'date',
+                        header: t('designer.workspace.edited'),
+                        accessor: (row) => row.createdAt,
+                        cell: (row) => (
+                          <time dateTime={row.createdAt} title={row.createdAt}>
+                            {Number.isNaN(Date.parse(row.createdAt))
+                              ? row.createdAt
+                              : new Intl.DateTimeFormat(i18n.language, {
+                                  dateStyle: 'medium',
+                                }).format(new Date(row.createdAt))}
+                          </time>
+                        ),
+                      },
+                    ]}
+                  />
+                  <Branches
+                    scriptId={id ?? ''}
+                    mainline={versions.data.data.filter((v) => !v.branch).map((v) => v.number)}
+                    onChanged={() => void versions.refetch()}
+                  />
+                </>
               ),
             },
             {

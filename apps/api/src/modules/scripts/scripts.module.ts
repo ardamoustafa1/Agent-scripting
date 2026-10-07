@@ -11,6 +11,8 @@ import {
   SharedScreensController,
   TemplatesController,
 } from './authoring.controller.js';
+import { BranchesController } from './branches.controller.js';
+import { BranchesService } from './branches.service.js';
 import { CollaborationController } from './collaboration.controller.js';
 import { CollaborationService } from './collaboration.service.js';
 import { PackageKeys } from './domain/package-format.js';
@@ -33,6 +35,7 @@ import { VersionLifecycleService } from './version-lifecycle.service.js';
   controllers: [
     ScriptsController,
     TeamController,
+    BranchesController,
     CollaborationController,
     SharedScreensController,
     TemplatesController,
@@ -42,6 +45,7 @@ import { VersionLifecycleService } from './version-lifecycle.service.js';
     PreviewService,
     TeamService,
     SuggestionsService,
+    BranchesService,
     CollaborationService,
     DraftLeaseService,
     LaunchRealtime,

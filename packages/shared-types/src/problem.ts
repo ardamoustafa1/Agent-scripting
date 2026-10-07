@@ -245,6 +245,26 @@ export const PROBLEM_CATALOG = {
     slug: 'script/version-immutable',
     title: 'Only draft versions can be changed',
   },
+  VERBIS_BRANCH_NOT_PUBLISHABLE: {
+    status: 409,
+    slug: 'branch/not-publishable',
+    title: 'A branch cannot be submitted or published; merge it into the mainline first',
+  },
+  VERBIS_BRANCH_EXISTS: {
+    status: 409,
+    slug: 'branch/exists',
+    title: 'A branch with this name already exists',
+  },
+  VERBIS_BRANCH_CONFLICT: {
+    status: 409,
+    slug: 'branch/conflict',
+    title: 'The branch and the mainline changed the same things; resolve them in the branch first',
+  },
+  VERBIS_BRANCH_MERGED: {
+    status: 409,
+    slug: 'branch/merged',
+    title: 'The branch has already been merged',
+  },
   VERBIS_SUGGESTION_STALE: {
     status: 409,
     slug: 'suggestion/stale',

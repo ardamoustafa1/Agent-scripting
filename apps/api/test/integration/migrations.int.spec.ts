@@ -55,6 +55,8 @@ describe('migrations', () => {
       '20261006190000_data_source_versions',
       '20261006200000_data_source_identity',
       '20261006200000_location_catalog',
+      '20261007210000_script_suggestions',
+      '20261007220000_script_branches',
     ]);
     expect(rows.every((row) => row.finished_at !== null && row.rolled_back_at === null)).toBe(true);
   });
@@ -114,7 +116,7 @@ describe('isolation catalogue', () => {
          AND c.relname NOT IN ('_prisma_migrations', 'audit_policy')
        GROUP BY c.relname, c.relrowsecurity, c.relforcerowsecurity
        ORDER BY c.relname`);
-    expect(rows.length).toBe(61);
+    expect(rows.length).toBe(62);
     for (const row of rows) {
       expect(row.rls, row.table).toBe(true);
       expect(row.forced, row.table).toBe(!NOT_FORCED.includes(row.table));

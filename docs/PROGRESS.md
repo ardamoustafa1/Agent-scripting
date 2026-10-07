@@ -1718,3 +1718,12 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - **`navigate` görevi:** `shared-types` `AiTaskSchema`, `safety.ts` (çıktı `{pageId|null, reason}`, istem), `ai.service.ts` (sabitlenmiş sürümün sayfaları, gösterilen hariç → `pageChoices`; sunucu tarafı kimlik doğrulaması; yalnız canlı sohbet/e-posta). `AiAssistant` "Önerilen sayfaya git" düğmesi; ajan panelinde onayda `runtime.navigate`. i18n `ai.navigate/goto` tr+en.
 - **Testler:** API AI birim 64/64 (yeni 4: seçenek listesi, `null`, uydurma/mevcut sayfa reddi, canlı olmayan durum), agent-web 193/193 (yeni 2), ui 123/123. OpenAPI güncel.
 - Açık: canlı transkript akışı + gecikme bütçesi, E5 uyum ifadesi tespiti, D5 PII açma ([ADR-0052](adr/0052-live-agent-ai.md)); gerçek sağlayıcıyla doğruluk ölçümü yapılmadı (model çıktısı yalnız sahte sağlayıcıyla test edildi).
+
+## 2026-10-07 — Dallar (DIFFERENTIATORS C3, ADR-0051 tamamen kabul)
+
+- Durum: 🟦 adım 26 (designer) ve 29 (script yaşam döngüsü) kapsamında dilim tamamlandı; yerel kapılar yeşil, uzak CI çalıştırılmadı.
+- **Veri:** migration `20261007220000_script_branches` (`branch`, `parent_version_id`, biçim ve çift-boş denetimi, dal başına tek canlı sürüm için kısmi benzersiz dizin). `ScriptVersionSummary` artık `branch` taşır (OpenAPI güncel).
+- **API:** `BranchesService`/`BranchesController`: listele, oluştur (ana hat sürümünden), birleştirme önizlemesi, birleştir (çakışmada `VERBIS_BRANCH_CONFLICT`, ikinci birleştirmede `VERBIS_BRANCH_MERGED`, ad çakışmasında `VERBIS_BRANCH_EXISTS`); `submit` dal sürümünü reddeder. Denetim: `script.branch.created/merged` (+ normal `script.version.created`).
+- **Arayüz:** `lifecycle/branches.tsx` ("Dallar" paneli, birleştirme diyaloğu çakışma listesiyle), sürüm tablosunda dal rozeti; i18n `designer.branches.*` tr+en.
+- **Testler:** gerçek Postgres `branches.int` 3 (iki taraflı birleştirme, çakışma reddi ve yeni sürüm oluşmaması, yayın engeli/ad/ata/kiracı), tüm API entegrasyon 332/332 (migrasyon testleri yeni iki migration ve 62 tablo için güncellendi), API birim 1832/1832, designer birim 579/579 (yeni 5), Playwright `branches.spec.ts` (axe 0 ihlal). Script ayrıntı görsel baseline'ları (darwin) güncellendi; **Linux baseline'ları `visual-baselines` ile yeniden üretilmeli.**
+- Açık: node bazında görsel çakışma çözücü, dal üzerinde birden çok sürüm, çakışmayı dalda otomatik tabanlama.

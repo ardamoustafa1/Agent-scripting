@@ -720,6 +720,12 @@ model ScriptVersion {
   reviewRound        Int                @default(0) @map("review_round")
   /// Provenance of imported versions (.verbis package).
   source             Json?
+  /// Branch label (ADR-0051). A branch has exactly one working version; branches never publish.
+  branch             String?            @db.VarChar(64)
+  /// The version a branch was created from; the common ancestor for the merge back.
+  parentVersionId    String?            @map("parent_version_id") @db.Uuid
+  parent             ScriptVersion?     @relation("ScriptVersionBranch", fields: [parentVersionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  children           ScriptVersion[]    @relation("ScriptVersionBranch")
   createdAt          DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
   createdBy          String             @map("created_by") @db.VarChar(128)
   updatedAt          DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -741,6 +747,7 @@ model ScriptVersion {
   collaborationConflicts CollaborationConflict[]
   collaborationSnapshots CollaborationSnapshot[]
 
+  @@unique([scriptId, branch], map: "script_versions_branch_key", where: raw("branch IS NOT NULL AND deleted_at IS NULL"))
   @@unique([scriptId, number], map: "script_versions_script_number_key")
   @@unique([scriptId, semver], map: "script_versions_script_semver_key", where: raw("semver IS NOT NULL AND deleted_at IS NULL"))
   @@index([tenantId, scriptId, number])
