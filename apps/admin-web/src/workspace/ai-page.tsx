@@ -30,7 +30,12 @@ export default function AiSettings() {
       <p>{t('ai.review')}</p>
       {!settings.data.available && <Alert title={t('ai.disabled')} />}
       <form
-        style={{ display: 'grid', gap: 'var(--vb-space-4)', maxInlineSize: 720 }}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1fr)',
+          gap: 'var(--vb-space-4)',
+          maxInlineSize: 720,
+        }}
         onSubmit={(e) => {
           e.preventDefault();
           setBusy(true);

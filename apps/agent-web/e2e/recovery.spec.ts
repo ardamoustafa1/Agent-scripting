@@ -264,7 +264,8 @@ test('25 session tabs hydrate only the active runtime and attach once', async ({
   const attaches = await fixture(page, undefined, undefined, undefined, 25);
   await expect(page.getByRole('tab')).toHaveCount(25);
   await expect(page.getByRole('textbox', { name: 'Notes', exact: true })).toBeVisible();
-  expect(attaches.filter((path) => path.endsWith('/attach'))).toHaveLength(1);
+  // The attach request can land just after the panel renders; wait for it, then it must stay at one.
+  await expect.poll(() => attaches.filter((path) => path.endsWith('/attach')).length).toBe(1);
   expect(requests.filter((path) => path.endsWith('/desktop')).length).toBeLessThanOrEqual(2);
   expect(requests.filter((path) => path.endsWith('/socket-ticket')).length).toBeLessThanOrEqual(2);
   test.info().annotations.push({

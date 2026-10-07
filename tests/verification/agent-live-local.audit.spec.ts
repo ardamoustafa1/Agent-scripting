@@ -548,9 +548,21 @@ it.each(['chromium', 'firefox', 'webkit'] as const)(
       }
     });
     await page.goto('/');
-    await browserExpect(page.getByText(/Waiting for an interaction/)).toBeVisible({
-      timeout: 20000,
-    });
+    try {
+      await browserExpect(page.getByText(/Waiting for an interaction/)).toBeVisible({
+        timeout: 20000,
+      });
+    } catch (error) {
+      throw new Error(
+        `Agent shell did not render: requests=${requests.join(', ')}; pageErrors=${errors.join(' | ')}; cookies=${JSON.stringify((await context.cookies()).map((c) => c.name))}; UI: ${(
+          await page
+            .locator('body')
+            .innerText()
+            .catch(() => '')
+        ).slice(0, 400)}`,
+        { cause: error },
+      );
+    }
     try {
       await browserExpect(
         page.getByText('Connector channel connected', { exact: true }),
