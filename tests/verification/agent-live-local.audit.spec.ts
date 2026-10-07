@@ -509,17 +509,23 @@ it.each(['chromium', 'firefox', 'webkit'] as const)(
       },
       { idleTimeoutSeconds: 600, absoluteTimeoutSeconds: 3600, maxConcurrent: 10, onLimit: 'deny' },
     );
-    await context.addCookies([
-      {
-        name: '__Host-verbis_session',
-        value: session.token,
-        domain: 'localhost',
-        path: '/',
-        secure: true,
-        httpOnly: true,
-        sameSite: 'Lax',
-      },
-    ]);
+    if (engine === 'webkit' && process.platform === 'linux') {
+      // WebKit on Linux does not treat http://localhost as a secure context, so it drops the
+      // Secure __Host- cookie; send the same cookie as a request header instead.
+      await context.setExtraHTTPHeaders({ cookie: `__Host-verbis_session=${session.token}` });
+    } else {
+      await context.addCookies([
+        {
+          name: '__Host-verbis_session',
+          value: session.token,
+          domain: 'localhost',
+          path: '/',
+          secure: true,
+          httpOnly: true,
+          sameSite: 'Lax',
+        },
+      ]);
+    }
 
     const page = await context.newPage();
     page.on('pageerror', (error) => errors.push(error.message));
