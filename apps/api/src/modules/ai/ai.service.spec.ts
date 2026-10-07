@@ -622,3 +622,67 @@ describe('navigate (ADR-0052 E4)', () => {
     expect(f.complete).not.toHaveBeenCalled();
   });
 });
+
+describe('notices (ADR-0052 E5)', () => {
+  const withNotices = () => {
+    const doc = ScriptDocumentSchema.parse(minimalScript());
+    doc.i18n.messages['en'] = {
+      ...doc.i18n.messages['en'],
+      'legal.text': 'This call may be recorded.',
+    };
+    doc.pages[0]!.layout.children = [
+      {
+        id: 'notice-recording',
+        type: 'scriptText',
+        props: { mustRead: true, textKey: 'legal.text' },
+        bindings: [],
+        events: {},
+      },
+    ] as never;
+    return doc;
+  };
+  const setup = (output: unknown) => {
+    const f = enabledService(true, true);
+    f.runtime.document = () => withNotices();
+    vi.mocked(postJson).mockResolvedValue({
+      text: 'Synthetic masked transcript',
+      count: 0,
+      complete: true,
+    });
+    f.complete.mockResolvedValue({ text: JSON.stringify(output), inputTokens: 8, outputTokens: 4 });
+    return f;
+  };
+  const ask = (f: ReturnType<typeof enabledService>) =>
+    requestContext.run(context, () =>
+      f.service.generate(
+        AiRequestSchema.parse({
+          requestId: request().requestId,
+          task: 'notices',
+          locale: 'en',
+          sessionId: context.principal.id,
+        }),
+      ),
+    );
+
+  it('sends the notice wording and returns only ids the script defines, as a suggestion', async () => {
+    const f = setup({ noticeIds: ['notice-recording'], reason: 'The operator read it out' });
+    const result = await ask(f);
+    expect(result).toMatchObject({
+      task: 'notices',
+      requiresHumanApproval: true,
+      value: { noticeIds: ['notice-recording'] },
+    });
+    const sent = (vi.mocked(postJson).mock.calls.at(-1)![2] as { text: string }).text;
+    expect(sent).toContain('This call may be recorded.');
+    expect(sent).toContain('noticeChoices');
+  });
+
+  it('accepts "none said" and refuses an invented notice id', async () => {
+    expect(await ask(setup({ noticeIds: [], reason: 'Nothing matched' }))).toMatchObject({
+      value: { noticeIds: [] },
+    });
+    await expect(ask(setup({ noticeIds: ['invented'], reason: 'x' }))).rejects.toMatchObject({
+      code: 'VERBIS_AI_OUTPUT',
+    });
+  });
+});

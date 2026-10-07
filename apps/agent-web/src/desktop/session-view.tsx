@@ -670,6 +670,12 @@ function Interaction({
                                         : 'agent.desktop.compliancePending',
                                     )}
                                   </strong>
+                                  {!item.done && s.probablySaid.includes(item.id) && (
+                                    <>
+                                      {' '}
+                                      <small>{t('agent.desktop.probablySaid')}</small>
+                                    </>
+                                  )}
                                 </li>
                               ))}
                             </ul>

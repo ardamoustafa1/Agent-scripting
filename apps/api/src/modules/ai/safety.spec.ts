@@ -57,3 +57,22 @@ describe('navigate output', () => {
     ).toContain('page choices');
   });
 });
+
+describe('notices output', () => {
+  it('requires a noticeIds list (empty allowed) and a reason', () => {
+    const schema = outputSchema('notices');
+    expect(schema.safeParse({ noticeIds: ['a'], reason: 'r' }).success).toBe(true);
+    expect(schema.safeParse({ noticeIds: [], reason: 'r' }).success).toBe(true);
+    expect(schema.safeParse({ reason: 'r' }).success).toBe(false);
+    expect(schema.safeParse({ noticeIds: 'a', reason: 'r' }).success).toBe(false);
+    expect(
+      systemPrompt({
+        requestId: crypto.randomUUID(),
+        task: 'notices',
+        locale: 'en',
+        text: '',
+        tone: 'neutral',
+      }),
+    ).toContain('notice choices');
+  });
+});

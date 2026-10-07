@@ -19,6 +19,8 @@ export const en = {
     objection: 'Detect objection',
     navigate: 'Suggest next page',
     goto: 'Go to the suggested page',
+    notices: 'Check which notices were said',
+    markSaid: 'Mark as probably said',
     summary: 'Summary and disposition',
     generate: 'Generate suggestion',
     output: 'Review suggestion',
@@ -2537,6 +2539,7 @@ export const en = {
       complianceHint:
         'Notices you must read to the customer. They are checked off when you confirm them in the script.',
       complianceDone: 'Done',
+      probablySaid: 'Probably said (AI), please confirm',
       compliancePending: 'Pending',
       complianceProgress: '{{done}} of {{total}} confirmed',
       notes: 'Notes',

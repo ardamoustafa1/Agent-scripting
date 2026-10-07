@@ -203,7 +203,9 @@ export function AiAssistant({
                         ? 'ai.focus'
                         : result.task === 'navigate'
                           ? 'ai.goto'
-                          : 'ai.apply',
+                          : result.task === 'notices'
+                            ? 'ai.markSaid'
+                            : 'ai.apply',
               )}
             </Button>
           )}

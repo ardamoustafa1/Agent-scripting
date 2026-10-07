@@ -256,3 +256,13 @@ it('does nothing when no page is suggested', async () => {
   });
   expect(navigate).not.toHaveBeenCalled();
 });
+it('records reviewed "probably said" notices on the controller without confirming them', async () => {
+  const f = await mount('chat', 'active', { noticeIds: ['notice-recording'] });
+  fireEvent.click(await screen.findByRole('combobox', { name: i18n.t('ai.task') }));
+  fireEvent.click(await screen.findByRole('option', { name: i18n.t('ai.notices') }));
+  fireEvent.click(await generate('ai.markSaid'));
+  await waitFor(() => {
+    expect(f.controller.getSnapshot().probablySaid).toEqual(['notice-recording']);
+  });
+  expect(f.controller.runtime.store.get('runtime.read.notice-recording')).not.toBe(true);
+});

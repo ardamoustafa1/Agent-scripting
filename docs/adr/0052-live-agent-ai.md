@@ -51,3 +51,13 @@ The part that needs no transcript stream and no new provider decision is built:
 
 Still open and unchanged: live transcript stream with the 1.5 s p95 budget (and the speech
 service for voice platforms), E5 notice detection, D5 PII reveal.
+
+### Also implemented: on-demand notice detection (E5)
+
+- AI task `notices`: the model receives `noticeChoices` (`{id, title, text}` of every `mustRead`
+  notice of the pinned script, wording in the request locale, bounded) and answers
+  `{ noticeIds, reason }`; the service rejects any id outside that list.
+- The agent panel's "Mark as probably said" stores the ids in the controller only
+  (`probablySaid`, not persisted); the checklist shows "Probably said (AI), please confirm" next to
+  a still-pending notice. The runtime acknowledgement (`runtime.read.<id>`), the server guard and
+  the audit trail are untouched: only the agent's confirmation satisfies them.

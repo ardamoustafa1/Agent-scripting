@@ -20,6 +20,8 @@ export const tr: Catalog = {
     objection: 'İtirazı belirle',
     navigate: 'Sonraki sayfayı öner',
     goto: 'Önerilen sayfaya git',
+    notices: 'Hangi bildirimlerin okunduğunu denetle',
+    markSaid: 'Okunmuş olabilir olarak işaretle',
     summary: 'Özet ve disposition',
     generate: 'Öneri üret',
     output: 'Öneriyi incele',
@@ -2564,6 +2566,7 @@ export const tr: Catalog = {
       complianceHint:
         'Müşteriye okumanız gereken bildirimler. Scriptte onayladığınızda işaretlenir.',
       complianceDone: 'Tamam',
+      probablySaid: 'Okunmuş olabilir (AI), lütfen onaylayın',
       compliancePending: 'Bekliyor',
       complianceProgress: '{{total}} bildirimden {{done}} tanesi onaylandı',
       notes: 'Notlar',

@@ -32,7 +32,7 @@ export function AgentAiPanel({ controller, csrf }: { controller: AgentController
         ['chat', 'email'].includes(c.desktop.interaction.channel)
           ? state.view.state === 'wrapup' || state.view.state === 'completed'
             ? ['summary']
-            : ['reply', 'objection', 'navigate']
+            : ['reply', 'objection', 'navigate', 'notices']
           : ['summary']
       }
       review={!state.readOnly && state.online}
@@ -47,6 +47,7 @@ export function AgentAiPanel({ controller, csrf }: { controller: AgentController
             disposition: z.string().nullable().optional(),
             objectionNodeId: z.string().nullable().optional(),
             pageId: z.string().nullable().optional(),
+            noticeIds: z.array(z.string()).optional(),
           })
           .parse(value);
         if (task === 'reply') {
@@ -64,6 +65,10 @@ export function AgentAiPanel({ controller, csrf }: { controller: AgentController
             target.tabIndex = -1;
             target.focus({ preventScroll: true });
           }
+          return;
+        }
+        if (task === 'notices') {
+          c.markProbablySaid(result.noticeIds ?? []);
           return;
         }
         if (task === 'navigate' && result.pageId) {

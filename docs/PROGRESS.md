@@ -1729,3 +1729,9 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - Açık: node bazında görsel çakışma çözücü, dal üzerinde birden çok sürüm, çakışmayı dalda otomatik tabanlama.
 
 - **Akış tuvali kararlılığı:** `flow/designer.tsx` her render'da `ReactFlow`'a yeni düğüm dizisi veriyordu (`groups` ve `[...groups, ...nodes]` memoize değildi). Memoize edildi: 360 koşuluk `flow.spec.ts` stresinde hata ~10 → 3, test süresi ~%40 kısaldı. Tam çözüm değil: "düğüm hiç görünür olmuyor" davranışı seyrek de olsa sürüyor; kök neden (React Flow ölçüm yarışı) açık.
+
+## 2026-10-07 — Uyum ifadesi tespiti, istek üzerine (DIFFERENTIATORS E5, ADR-0052)
+
+- `notices` AI görevi (`ai/notices.ts` bildirim seçenekleri, `safety.ts` çıktı `{noticeIds, reason}`, sunucuda kimlik doğrulaması), ajan panelinde "Okunmuş olabilir olarak işaretle", kontrol listesinde onay yerine geçmeyen işaret (`AgentState.probablySaid`). i18n tr+en.
+- Testler: API AI birim 70/70 (yeni: `notices.spec` 3, servis 2, çıktı 1), agent-web 195/195 (yeni 2), ui 123/123; OpenAPI güncel.
+- Açık: canlı transkript akışı + gecikme bütçesi, D5 PII açma (ürün kararı: ajanın müşteri adını varsayılan görmemesi çağrı akışını bozar), gerçek sağlayıcıyla doğruluk ölçümü.

@@ -5249,7 +5249,8 @@
                       "reply",
                       "objection",
                       "summary",
-                      "navigate"
+                      "navigate",
+                      "notices"
                     ]
                   },
                   "locale": {
@@ -5340,7 +5341,8 @@
                         "reply",
                         "objection",
                         "summary",
-                        "navigate"
+                        "navigate",
+                        "notices"
                       ]
                     },
                     "requiresHumanApproval": {
