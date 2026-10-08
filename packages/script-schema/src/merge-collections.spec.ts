@@ -291,13 +291,14 @@ describe('mergeDocuments / resolutions', () => {
     const lean = clone();
     setItems(lean, 'rules', []);
     const baseLean = ScriptDocumentSchema.parse(lean);
-    const a = { ...structuredClone(items(base, 'rules')[0]), description: 'ours item' },
-      b = { ...structuredClone(items(base, 'rules')[0]), description: 'theirs item' };
+    const first: Item = structuredClone(items(base, 'rules')[0] ?? {});
+    const a: Item = { ...first, description: 'ours item' },
+      b: Item = { ...first, description: 'theirs item' };
     const ours = structuredClone(baseLean),
       theirs = structuredClone(baseLean);
     setItems(ours, 'rules', [a]);
     setItems(theirs, 'rules', [b]);
-    const path = `/rules/${String(a.id)}`;
+    const path = `/rules/${String(a['id'])}`;
     expect(
       mergeDocuments(baseLean, ours, theirs, { [path]: 'theirs' }).document?.rules[0]?.description,
     ).toBe('theirs item');

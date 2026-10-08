@@ -1709,6 +1709,9 @@ export const en = {
       mergeConfirm: 'Merge',
     },
     suggest: {
+      marked: 'Suggested change',
+      showOnCanvas: 'Show on canvas',
+      hideOnCanvas: 'Hide from canvas',
       toggle: 'Suggest changes',
       saveFirst: 'Wait until your edits are saved',
       active: 'Suggestion mode: your edits are not saved',

@@ -44,6 +44,8 @@ export * from './schema/preview.js';
 export * from './merge.js';
 export { completionBypasses } from './validation/completion.js';
 export {
+  suggestionTargets,
+  type SuggestionTargets,
   suggestOperations,
   applySuggestion,
   TooManyOperationsError,

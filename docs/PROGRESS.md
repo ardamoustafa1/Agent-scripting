@@ -1742,3 +1742,5 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - Arayüz: birleştirme diyaloğunda her çakışma için iki sürümün özeti ve seçim; "Birleştir" tüm çakışmalar seçilince açılır. i18n tr+en.
 - Testler: script-schema 389/389 (yeni 4, kapsama %96,9/%93,4), gerçek Postgres `branches.int` 4/4 (açık seçim, bilinmeyen yol, `ours`/`theirs`, denetim), API birim 1838, designer birim 5 + Playwright `branches.spec` (axe).
 - Açık: tuval üstü (node bazında) görsel çözücü, dal üstünde birden çok sürüm.
+
+- **Öneri tuval katmanı (C2 devamı):** `script-schema/suggest.ts` `suggestionTargets` (işlem yollarını mevcut belgede yürüyüp en derindeki yerleşim düğümüne, yoksa sayfaya eşler), `editor/suggest-marks.ts` (küçük dış durum), `Frame`'de işaret, panelde "Tuvalde göster/gizle" (yalnız açık öneri ve belge verildiyse). Testler: script-schema 392, designer birim 582, Playwright `suggestions.spec` 3.

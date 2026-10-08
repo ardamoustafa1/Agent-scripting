@@ -1,6 +1,8 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
+import { editorFixture } from '../editor/fixtures.js';
+import { useSuggestionMark } from '../editor/suggest-marks.js';
 import { mountDesigner } from '../fixtures.spec.helpers.js';
 import { scriptId } from '../test-fixtures.js';
 
@@ -105,4 +107,44 @@ it('reports a loading failure', async () => {
     [path]: Response.json({}, { status: 500 }),
   });
   expect(await screen.findByRole('alert')).toBeTruthy();
+});
+
+function Mark({ id }: { id: string }) {
+  return <p>{useSuggestionMark(id) ? `${id}:marked` : `${id}:plain`}</p>;
+}
+it('shows an open suggestion on the canvas and clears the marks when hidden or unmounted', async () => {
+  const document = editorFixture().document;
+  const node = 'btn-next';
+  expect(document.pages[0]?.layout.children?.[0]).toMatchObject({ id: node });
+  const f = await mountDesigner(
+    <>
+      <Mark id={node} />
+      <Suggestions scriptId={scriptId} number={1} document={document} />
+    </>,
+    {
+      [path]: [
+        suggestion(open, 'open', {
+          operations: [
+            { op: 'replace', path: '/pages/0/layout/children/0/props/labelKey', value: 'x' },
+          ],
+        }),
+        suggestion(done, 'accepted'),
+      ],
+    },
+  );
+  expect(await screen.findByText(`${node}:plain`)).toBeTruthy();
+  // Only open suggestions can be shown.
+  const show = await screen.findAllByRole('button', { name: f.label('suggest.showOnCanvas') });
+  expect(show).toHaveLength(1);
+  fireEvent.click(show[0]!);
+  expect(await screen.findByText(`${node}:marked`)).toBeTruthy();
+  fireEvent.click(await screen.findByRole('button', { name: f.label('suggest.hideOnCanvas') }));
+  expect(await screen.findByText(`${node}:plain`)).toBeTruthy();
+});
+it('offers no canvas view without a document to show it on', async () => {
+  const f = await mountDesigner(<Suggestions scriptId={scriptId} number={1} />, {
+    [path]: [suggestion(open, 'open')],
+  });
+  await screen.findByText(`Suggestion ${open}`);
+  expect(screen.queryByRole('button', { name: f.label('suggest.showOnCanvas') })).toBeNull();
 });

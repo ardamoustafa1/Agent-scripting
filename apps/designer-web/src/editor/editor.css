@@ -1158,3 +1158,14 @@ button:focus-visible {
   color: var(--vb-color-text-muted);
   font-size: var(--vb-font-size-xs);
 }
+.ed-suggest-mark {
+  display: inline-block;
+  margin-inline-start: var(--vb-space-2);
+  padding: 1px var(--vb-space-2);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--vb-color-warning-contrast, var(--vb-color-text));
+  background: var(--vb-color-warning-soft, var(--vb-color-surface));
+  border: 1px dashed var(--vb-color-warning, var(--vb-color-border));
+  border-radius: var(--vb-radius-sm);
+}

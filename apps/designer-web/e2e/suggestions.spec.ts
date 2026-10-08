@@ -14,6 +14,24 @@ import {
 test.use({ locale: 'en-US' });
 
 const sent: { method: string; path: string; body: unknown }[] = [];
+const listed = [
+  {
+    id: '01928f3a-0000-7000-8000-0000000000a2',
+    scriptId,
+    versionNumber: 1,
+    title: 'Reword the button',
+    note: null,
+    operations: [
+      { op: 'replace', path: '/pages/0/layout/children/0/props/labelKey', value: 'common.next' },
+    ],
+    state: 'open',
+    createdAt: '2026-10-07T10:00:00.000Z',
+    createdBy: 'user:reviewer',
+    decidedAt: null,
+    decidedBy: null,
+    decisionReason: null,
+  },
+];
 async function open(page: Page) {
   sent.length = 0;
   await page.addInitScript(
@@ -47,7 +65,7 @@ async function open(page: Page) {
               decidedBy: null,
               decisionReason: null,
             }
-          : []
+          : listed
         : url.pathname.endsWith('/permissions')
           ? {
               ...permissionFixture,
@@ -122,4 +140,18 @@ test('discarding restores the saved draft and offers suggestion mode again', asy
   await expect(page.getByRole('button', { name: 'Suggest changes', exact: true })).toBeVisible();
   await expect(name).toHaveValue(original);
   expect(sent.filter((request) => request.method !== 'GET')).toEqual([]);
+});
+
+test('shows an open suggestion on the canvas from the review panel', async ({ page }) => {
+  await open(page);
+  await page
+    .getByRole('button', { name: /Join collaborative editing|Team and comments/ })
+    .first()
+    .click();
+  const panel = page.getByRole('region', { name: 'Suggestions' });
+  await expect(panel.getByText('Reword the button')).toBeVisible();
+  await panel.getByRole('button', { name: 'Show on canvas', exact: true }).click();
+  await expect(page.getByText('Suggested change')).toBeVisible();
+  await panel.getByRole('button', { name: 'Hide from canvas', exact: true }).click();
+  await expect(page.getByText('Suggested change')).toHaveCount(0);
 });

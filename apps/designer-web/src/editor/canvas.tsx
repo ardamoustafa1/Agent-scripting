@@ -14,6 +14,7 @@ import { Alert, Button } from '@verbis/ui';
 
 import { useNodeHeat } from './heatmap.js';
 import { editorRegistry, useEditor, type EditorStore } from './store.js';
+import { useSuggestionMark } from './suggest-marks.js';
 
 function renderedChild(element: Element): Element | null {
   let child = element.firstElementChild;
@@ -22,10 +23,16 @@ function renderedChild(element: Element): Element | null {
 }
 export function Frame({ node, children }: NodeDecorationProps) {
   const heat = useNodeHeat(node.id),
+    suggested = useSuggestionMark(node.id),
     { t } = useTranslation();
   return (
     <div data-editor-node={node.id} style={{ display: 'contents' }}>
       {children}
+      {suggested && (
+        <span className="ed-suggest-mark" role="note">
+          {t('designer.suggest.marked')}
+        </span>
+      )}
       {heat && (
         <span className="ed-heat-label" data-error={heat.errors > 0}>
           {t('analytics.heatSample', {

@@ -1,13 +1,15 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { useAbility } from '@verbis/authz/react';
+import { suggestionTargets, type ScriptDocument } from '@verbis/script-schema';
 import { SuggestionSchema, type Suggestion } from '@verbis/shared-types';
 import { Alert, Badge, Button, Textarea } from '@verbis/ui';
 
 import { ApiError, request } from '../api/client.js';
+import { setSuggestionMarks } from '../editor/suggest-marks.js';
 import { useWorkspace } from '../workspace/context.js';
 
 const TONE = { open: 'info', accepted: 'success', rejected: 'neutral', stale: 'warning' } as const;
@@ -16,10 +18,13 @@ const TONE = { open: 'info', accepted: 'success', rejected: 'neutral', stale: 'w
 export function Suggestions({
   scriptId,
   number,
+  document,
   onAccepted,
 }: {
   scriptId: string;
   number: number;
+  /** The draft being edited; with it each suggestion can be shown on the canvas. */
+  document?: ScriptDocument;
   /** The draft changed on the server; the editor must reload it. */
   onAccepted?: () => void;
 }) {
@@ -29,7 +34,8 @@ export function Suggestions({
     client = useQueryClient();
   const [reason, setReason] = useState<Record<string, string>>({}),
     [busy, setBusy] = useState(''),
-    [problem, setProblem] = useState('');
+    [problem, setProblem] = useState(''),
+    [shown, setShown] = useState('');
   const path = `/v1/scripts/${scriptId}/versions/${number}/suggestions`,
     key = [
       'workspace',
@@ -67,6 +73,22 @@ export function Suggestions({
     }
   };
   const canDecide = ability.can('update', 'Script');
+  const shownSuggestion = query.data?.find((s) => s.id === shown);
+  useEffect(() => {
+    if (!document || !shownSuggestion) {
+      setSuggestionMarks([]);
+      return;
+    }
+    const targets = suggestionTargets(document, shownSuggestion.operations);
+    const pageRoots = targets.pageIds.flatMap((id) => {
+      const root = document.pages.find((page) => page.id === id)?.layout.id;
+      return root ? [root] : [];
+    });
+    setSuggestionMarks([...targets.nodeIds, ...pageRoots]);
+    return () => {
+      setSuggestionMarks([]);
+    };
+  }, [document, shownSuggestion]);
   return (
     <section className="lc-card" aria-label={t('designer.suggest.panelTitle')}>
       <h2>{t('designer.suggest.panelTitle')}</h2>
@@ -92,6 +114,22 @@ export function Suggestions({
               ))}
             </ul>
             <time>{suggestion.createdAt}</time>
+            {document && suggestion.state === 'open' && (
+              <Button
+                size="sm"
+                variant="ghost"
+                aria-pressed={shown === suggestion.id}
+                onClick={() => {
+                  setShown(shown === suggestion.id ? '' : suggestion.id);
+                }}
+              >
+                {t(
+                  shown === suggestion.id
+                    ? 'designer.suggest.hideOnCanvas'
+                    : 'designer.suggest.showOnCanvas',
+                )}
+              </Button>
+            )}
             {suggestion.state === 'stale' && <p>{t('designer.suggest.staleHint')}</p>}
             {suggestion.decisionReason && <p>{suggestion.decisionReason}</p>}
             {canDecide && (suggestion.state === 'open' || suggestion.state === 'stale') && (

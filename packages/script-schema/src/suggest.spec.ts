@@ -5,6 +5,7 @@ import { ScriptDocumentSchema, type ScriptDocument } from './schema/document.js'
 import {
   applySuggestion,
   MAX_SUGGESTION_OPERATIONS,
+  suggestionTargets,
   suggestOperations,
   TooManyOperationsError,
 } from './suggest.js';
@@ -128,5 +129,69 @@ describe('suggestOperations', () => {
     const ok: Record<string, number> = {};
     for (let i = 0; i < MAX_SUGGESTION_OPERATIONS; i += 1) ok[`k${String(i)}`] = i;
     expect(suggestOperations(before, ok)).toHaveLength(MAX_SUGGESTION_OPERATIONS);
+  });
+});
+
+describe('suggestionTargets', () => {
+  const doc = {
+    pages: [
+      {
+        id: 'home',
+        name: 'Home',
+        timers: [{ id: 'timer-1' }],
+        layout: {
+          id: 'home-root',
+          children: [
+            { id: 'btn', props: { a: 1 }, children: [{ id: 'inner', props: {} }] },
+            { id: 'txt', props: {} },
+          ],
+        },
+      },
+      { id: 'other', name: 'Other', layout: { id: 'other-root', children: [] } },
+    ],
+    variables: [{ key: 'v' }],
+  };
+  const targets = (...operations: Parameters<typeof suggestionTargets>[1]) =>
+    suggestionTargets(doc, operations);
+
+  it('points at the deepest layout node on each path, and at the page for page-level changes', () => {
+    expect(
+      targets(
+        { op: 'replace', path: '/pages/0/layout/children/0/props/a', value: 2 },
+        { op: 'replace', path: '/pages/0/layout/children/0/children/0/props', value: {} },
+        { op: 'remove', path: '/pages/0/layout/children/1' },
+        { op: 'replace', path: '/pages/1/name', value: 'Renamed' },
+      ),
+    ).toEqual({ nodeIds: ['btn', 'inner', 'txt'], pageIds: ['other'] });
+  });
+
+  it('marks the layout root for changes to the layout itself and ignores ids that are not nodes', () => {
+    expect(targets({ op: 'replace', path: '/pages/0/layout/props', value: {} })).toEqual({
+      nodeIds: ['home-root'],
+      pageIds: [],
+    });
+    // A timer has an id but is not a layout node: the page is the target.
+    expect(targets({ op: 'replace', path: '/pages/0/timers/0/seconds', value: 5 })).toEqual({
+      nodeIds: [],
+      pageIds: ['home'],
+    });
+  });
+
+  it('contributes nothing for variables, missing targets and duplicates', () => {
+    expect(targets({ op: 'replace', path: '/variables/0/key', value: 'w' })).toEqual({
+      nodeIds: [],
+      pageIds: [],
+    });
+    expect(
+      targets(
+        { op: 'add', path: '/pages/0/layout/children/9', value: {} },
+        { op: 'replace', path: '/pages/0/layout/children/1/props', value: {} },
+        { op: 'remove', path: '/pages/0/layout/children/1/props/x' },
+      ),
+    ).toEqual({ nodeIds: ['home-root', 'txt'], pageIds: [] });
+    expect(targets({ op: 'replace', path: '/pages/7/name', value: 'x' })).toEqual({
+      nodeIds: [],
+      pageIds: [],
+    });
   });
 });

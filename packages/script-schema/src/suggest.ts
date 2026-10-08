@@ -1,4 +1,4 @@
-import { toPointer } from './pointer.js';
+import { fromPointer, toPointer } from './pointer.js';
 import { applyJsonPatch, type JsonPatchOperation } from './tree/json-patch.js';
 
 /**
@@ -93,4 +93,45 @@ export function applySuggestion<T extends object>(
   operations: readonly JsonPatchOperation[],
 ): T {
   return applyJsonPatch(base, operations);
+}
+
+export interface SuggestionTargets {
+  /** Layout nodes the operations touch (the deepest node on each path). */
+  readonly nodeIds: string[];
+  /** Pages touched without reaching a node inside them (renames, timers, page rules). */
+  readonly pageIds: string[];
+}
+
+/**
+ * Which nodes and pages of `document` a suggestion's operations touch, for showing it on the
+ * canvas. Paths are walked through the current document; the deepest layout node (or, failing
+ * that, the page) on each path is the target. Operations that touch neither (variables, rules,
+ * flow) contribute nothing.
+ */
+export function suggestionTargets(
+  document: unknown,
+  operations: readonly JsonPatchOperation[],
+): SuggestionTargets {
+  const nodes = new Set<string>(),
+    pages = new Set<string>();
+  for (const operation of operations) {
+    const segments = fromPointer(operation.path);
+    if (segments[0] !== 'pages') continue;
+    let current: unknown = document;
+    let page: string | undefined;
+    let node: string | undefined;
+    for (const [index, segment] of segments.entries()) {
+      if (current === null || typeof current !== 'object') break;
+      current = Array.isArray(current)
+        ? current[/^(0|[1-9]\d*)$/.test(segment) ? Number(segment) : -1]
+        : (current as Record<string, unknown>)[segment];
+      const id = isRecord(current) ? current['id'] : undefined;
+      if (typeof id !== 'string') continue;
+      if (index === 1) page = id;
+      else if (segment === 'layout' || segments[index - 1] === 'children') node = id;
+    }
+    if (node !== undefined) nodes.add(node);
+    else if (page !== undefined) pages.add(page);
+  }
+  return { nodeIds: [...nodes], pageIds: [...pages] };
 }

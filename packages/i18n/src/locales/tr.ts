@@ -1727,6 +1727,9 @@ export const tr: Catalog = {
       mergeConfirm: 'Birleştir',
     },
     suggest: {
+      marked: 'Önerilen değişiklik',
+      showOnCanvas: 'Tuvalde göster',
+      hideOnCanvas: 'Tuvalden gizle',
       toggle: 'Değişiklik öner',
       saveFirst: 'Düzenlemeleriniz kaydedilene kadar bekleyin',
       active: 'Öneri modu: düzenlemeleriniz kaydedilmez',

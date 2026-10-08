@@ -569,6 +569,7 @@ export function CollaborationPanel({
           <Suggestions
             scriptId={scriptId}
             number={number}
+            document={state.document}
             onAccepted={() => {
               window.location.reload();
             }}
