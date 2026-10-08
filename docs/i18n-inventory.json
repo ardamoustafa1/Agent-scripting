@@ -159,6 +159,26 @@
     "admin.simulator.status.wrapup",
     "admin.simulator.title",
     "adminWorkspace.absolute",
+    "adminWorkspace.account.address",
+    "adminWorkspace.account.app.admin",
+    "adminWorkspace.account.app.agent",
+    "adminWorkspace.account.app.designer",
+    "adminWorkspace.account.breakGlass",
+    "adminWorkspace.account.currentHint",
+    "adminWorkspace.account.device",
+    "adminWorkspace.account.end",
+    "adminWorkspace.account.endAll",
+    "adminWorkspace.account.endAllHint",
+    "adminWorkspace.account.endAllTitle",
+    "adminWorkspace.account.expires",
+    "adminWorkspace.account.intro",
+    "adminWorkspace.account.lastActive",
+    "adminWorkspace.account.method",
+    "adminWorkspace.account.none",
+    "adminWorkspace.account.signedIn",
+    "adminWorkspace.account.thisDevice",
+    "adminWorkspace.account.title",
+    "adminWorkspace.account.unknownDevice",
     "adminWorkspace.action",
     "adminWorkspace.activate",
     "adminWorkspace.actorId",
@@ -174,6 +194,7 @@
     "adminWorkspace.analyticsDays",
     "adminWorkspace.audit",
     "adminWorkspace.auditDays",
+    "adminWorkspace.authMethod",
     "adminWorkspace.before",
     "adminWorkspace.branding",
     "adminWorkspace.breakGlass",
@@ -189,7 +210,46 @@
     "adminWorkspace.classificationHint",
     "adminWorkspace.classifications",
     "adminWorkspace.clientId",
+    "adminWorkspace.clients.authHint.client_secret_basic",
+    "adminWorkspace.clients.authHint.client_secret_post",
+    "adminWorkspace.clients.authHint.tls_client_auth",
+    "adminWorkspace.clients.authMethod",
+    "adminWorkspace.clients.certificateOptional",
+    "adminWorkspace.clients.certificateRequired",
+    "adminWorkspace.clients.clientId",
+    "adminWorkspace.clients.clientSecret",
+    "adminWorkspace.clients.copied",
+    "adminWorkspace.clients.copyFailed",
+    "adminWorkspace.clients.copySecret",
+    "adminWorkspace.clients.create",
+    "adminWorkspace.clients.createButton",
+    "adminWorkspace.clients.createHint",
+    "adminWorkspace.clients.dangerTitle",
+    "adminWorkspace.clients.delete",
+    "adminWorkspace.clients.deleteHint",
+    "adminWorkspace.clients.done",
+    "adminWorkspace.clients.edit",
+    "adminWorkspace.clients.intro",
+    "adminWorkspace.clients.mtlsNoSecret",
+    "adminWorkspace.clients.neverUsed",
+    "adminWorkspace.clients.noSecret",
+    "adminWorkspace.clients.pickScope",
+    "adminWorkspace.clients.presetClear",
+    "adminWorkspace.clients.presetRead",
+    "adminWorkspace.clients.revealTitle",
+    "adminWorkspace.clients.revealWarning",
+    "adminWorkspace.clients.rotate",
+    "adminWorkspace.clients.rotateHint",
+    "adminWorkspace.clients.scopeCount",
+    "adminWorkspace.clients.scopes",
+    "adminWorkspace.clients.scopesHint",
+    "adminWorkspace.clients.secretTitle",
+    "adminWorkspace.clients.stored",
+    "adminWorkspace.clients.title",
+    "adminWorkspace.clients.tokenEndpoint",
     "adminWorkspace.close",
+    "adminWorkspace.code",
+    "adminWorkspace.compliance",
     "adminWorkspace.concurrent",
     "adminWorkspace.configuration",
     "adminWorkspace.confirm",
@@ -249,10 +309,21 @@
     "adminWorkspace.enum.adapterType.genesys_cloud",
     "adminWorkspace.enum.adapterType.genesys_engage",
     "adminWorkspace.enum.adapterType.nice_cxone",
+    "adminWorkspace.enum.channelType.callback",
+    "adminWorkspace.enum.channelType.chat",
+    "adminWorkspace.enum.channelType.email",
+    "adminWorkspace.enum.channelType.sms",
+    "adminWorkspace.enum.channelType.social",
+    "adminWorkspace.enum.channelType.video",
+    "adminWorkspace.enum.channelType.voice",
+    "adminWorkspace.enum.channelType.whatsapp",
     "adminWorkspace.enum.classification.internal",
     "adminWorkspace.enum.classification.pci",
     "adminWorkspace.enum.classification.pii",
     "adminWorkspace.enum.classification.public",
+    "adminWorkspace.enum.clientAuth.client_secret_basic",
+    "adminWorkspace.enum.clientAuth.client_secret_post",
+    "adminWorkspace.enum.clientAuth.tls_client_auth",
     "adminWorkspace.enum.ctiKind.campaign",
     "adminWorkspace.enum.ctiKind.dnis",
     "adminWorkspace.enum.ctiKind.flow",
@@ -317,6 +388,11 @@
     "adminWorkspace.enum.siemKind.kafka",
     "adminWorkspace.enum.siemKind.syslog",
     "adminWorkspace.enum.siemKind.webhook",
+    "adminWorkspace.enum.spState.active",
+    "adminWorkspace.enum.spState.next",
+    "adminWorkspace.enum.spState.retired",
+    "adminWorkspace.enum.spUse.encryption",
+    "adminWorkspace.enum.spUse.signing",
     "adminWorkspace.enum.status.active",
     "adminWorkspace.enum.status.deleting",
     "adminWorkspace.enum.status.deprovisioned",
@@ -365,11 +441,14 @@
     "adminWorkspace.intros.analytics",
     "adminWorkspace.intros.audit",
     "adminWorkspace.intros.branding",
+    "adminWorkspace.intros.compliance",
     "adminWorkspace.intros.connectors",
     "adminWorkspace.intros.data",
     "adminWorkspace.intros.identity",
+    "adminWorkspace.intros.mySessions",
     "adminWorkspace.intros.secrets",
     "adminWorkspace.intros.security",
+    "adminWorkspace.intros.serviceClients",
     "adminWorkspace.intros.simulator",
     "adminWorkspace.intros.systemHealth",
     "adminWorkspace.intros.tenants",
@@ -400,6 +479,7 @@
     "adminWorkspace.maxUsers",
     "adminWorkspace.metadata",
     "adminWorkspace.monogram",
+    "adminWorkspace.mySessions",
     "adminWorkspace.name",
     "adminWorkspace.navigation",
     "adminWorkspace.next",
@@ -411,6 +491,27 @@
     "adminWorkspace.onLimit",
     "adminWorkspace.onceHint",
     "adminWorkspace.operation",
+    "adminWorkspace.ops.channelProvider",
+    "adminWorkspace.ops.channelType",
+    "adminWorkspace.ops.channelsHint",
+    "adminWorkspace.ops.channelsNone",
+    "adminWorkspace.ops.channelsTitle",
+    "adminWorkspace.ops.check.collaboration",
+    "adminWorkspace.ops.check.database",
+    "adminWorkspace.ops.check.nats",
+    "adminWorkspace.ops.check.redis",
+    "adminWorkspace.ops.count",
+    "adminWorkspace.ops.day",
+    "adminWorkspace.ops.eventType",
+    "adminWorkspace.ops.eventsHint",
+    "adminWorkspace.ops.eventsNone",
+    "adminWorkspace.ops.eventsTitle",
+    "adminWorkspace.ops.noProvider",
+    "adminWorkspace.ops.overall",
+    "adminWorkspace.ops.state.down",
+    "adminWorkspace.ops.state.unknown",
+    "adminWorkspace.ops.state.up",
+    "adminWorkspace.ops.version",
     "adminWorkspace.outcome",
     "adminWorkspace.password",
     "adminWorkspace.path",
@@ -428,6 +529,47 @@
     "adminWorkspace.privacyHint",
     "adminWorkspace.probe",
     "adminWorkspace.process",
+    "adminWorkspace.processing.allClasses",
+    "adminWorkspace.processing.attention",
+    "adminWorkspace.processing.attentionHint",
+    "adminWorkspace.processing.attentionOnly",
+    "adminWorkspace.processing.audited",
+    "adminWorkspace.processing.classification",
+    "adminWorkspace.processing.csv",
+    "adminWorkspace.processing.destination.analytics",
+    "adminWorkspace.processing.destination.integration",
+    "adminWorkspace.processing.destination.log",
+    "adminWorkspace.processing.destination.platform",
+    "adminWorkspace.processing.destination.screen",
+    "adminWorkspace.processing.destination.toast",
+    "adminWorkspace.processing.destinations",
+    "adminWorkspace.processing.downloadHint",
+    "adminWorkspace.processing.downloadTitle",
+    "adminWorkspace.processing.empty",
+    "adminWorkspace.processing.generate",
+    "adminWorkspace.processing.intro",
+    "adminWorkspace.processing.json",
+    "adminWorkspace.processing.no",
+    "adminWorkspace.processing.noMatch",
+    "adminWorkspace.processing.noneListed",
+    "adminWorkspace.processing.ok",
+    "adminWorkspace.processing.origin.agentInput",
+    "adminWorkspace.processing.origin.context",
+    "adminWorkspace.processing.origin.dataSource",
+    "adminWorkspace.processing.origin.script",
+    "adminWorkspace.processing.origins",
+    "adminWorkspace.processing.persisted",
+    "adminWorkspace.processing.refresh",
+    "adminWorkspace.processing.resultTitle",
+    "adminWorkspace.processing.review",
+    "adminWorkspace.processing.script",
+    "adminWorkspace.processing.search",
+    "adminWorkspace.processing.summary",
+    "adminWorkspace.processing.title",
+    "adminWorkspace.processing.truncated",
+    "adminWorkspace.processing.unreadable",
+    "adminWorkspace.processing.variable",
+    "adminWorkspace.processing.yes",
     "adminWorkspace.productName",
     "adminWorkspace.protocol",
     "adminWorkspace.publicKeys",
@@ -461,12 +603,14 @@
     "adminWorkspace.scimTokens",
     "adminWorkspace.scope",
     "adminWorkspace.scopeHint",
+    "adminWorkspace.scopes",
     "adminWorkspace.search",
     "adminWorkspace.secretName",
     "adminWorkspace.secretRefs",
     "adminWorkspace.secrets",
     "adminWorkspace.security",
     "adminWorkspace.seq",
+    "adminWorkspace.serviceClients",
     "adminWorkspace.sessionDays",
     "adminWorkspace.sessions",
     "adminWorkspace.shownOnce",
@@ -477,6 +621,17 @@
     "adminWorkspace.slug",
     "adminWorkspace.sod",
     "adminWorkspace.sourceHint",
+    "adminWorkspace.sp.add",
+    "adminWorkspace.sp.alreadyNext",
+    "adminWorkspace.sp.download",
+    "adminWorkspace.sp.expiresSoon",
+    "adminWorkspace.sp.intro",
+    "adminWorkspace.sp.none",
+    "adminWorkspace.sp.promote",
+    "adminWorkspace.sp.promoteHint",
+    "adminWorkspace.sp.remove",
+    "adminWorkspace.sp.title",
+    "adminWorkspace.sp.validUntil",
     "adminWorkspace.ssoSession",
     "adminWorkspace.ssoUrl",
     "adminWorkspace.state",
@@ -592,10 +747,16 @@
     "agent.desktop.pending",
     "agent.desktop.preferences",
     "agent.desktop.preferencesHelp",
+    "agent.desktop.probablySaid",
     "agent.desktop.progress",
     "agent.desktop.progressLabel",
     "agent.desktop.readOnly",
     "agent.desktop.recent",
+    "agent.desktop.recording.hint",
+    "agent.desktop.recording.pause",
+    "agent.desktop.recording.pausedTitle",
+    "agent.desktop.recording.resume",
+    "agent.desktop.recording.resumedTitle",
     "agent.desktop.requiredScriptField",
     "agent.desktop.retry",
     "agent.desktop.savingDraft",
@@ -689,14 +850,18 @@
     "ai.focus",
     "ai.formal",
     "ai.generate",
+    "ai.goto",
     "ai.improve",
     "ai.inputRate",
     "ai.limit",
     "ai.loading",
     "ai.locale",
+    "ai.markSaid",
     "ai.maxOutput",
     "ai.model",
+    "ai.navigate",
     "ai.neutral",
+    "ai.notices",
     "ai.objection",
     "ai.output",
     "ai.outputRate",
@@ -1037,6 +1202,41 @@
     "designer.blocks.items.satisfactionSurvey.description",
     "designer.blocks.items.satisfactionSurvey.name",
     "designer.blocks.title",
+    "designer.branches.absent",
+    "designer.branches.branchSide",
+    "designer.branches.checking",
+    "designer.branches.chooseFor",
+    "designer.branches.chooseHelp",
+    "designer.branches.conflictList",
+    "designer.branches.conflicts",
+    "designer.branches.create",
+    "designer.branches.edit",
+    "designer.branches.empty",
+    "designer.branches.failed",
+    "designer.branches.from",
+    "designer.branches.help",
+    "designer.branches.invalidResult",
+    "designer.branches.kind.both-changed",
+    "designer.branches.kind.deleted-vs-changed",
+    "designer.branches.kind.duplicate-id",
+    "designer.branches.mainlineSide",
+    "designer.branches.merge",
+    "designer.branches.mergeConfirm",
+    "designer.branches.mergeHelp",
+    "designer.branches.mergePlan",
+    "designer.branches.mergeTitle",
+    "designer.branches.merged",
+    "designer.branches.mergedInto",
+    "designer.branches.name",
+    "designer.branches.new",
+    "designer.branches.open",
+    "designer.branches.openMerged",
+    "designer.branches.problem.conflict",
+    "designer.branches.problem.exists",
+    "designer.branches.problem.failed",
+    "designer.branches.problem.invalid",
+    "designer.branches.startFrom",
+    "designer.branches.title",
     "designer.campaign.add",
     "designer.campaign.categories.callback",
     "designer.campaign.categories.failure",
@@ -1267,6 +1467,9 @@
     "designer.editor.fitCanvas",
     "designer.editor.fullscreen",
     "designer.editor.group",
+    "designer.editor.groups.clipboard",
+    "designer.editor.groups.history",
+    "designer.editor.groups.structure",
     "designer.editor.hiddenCampaigns",
     "designer.editor.impactUnavailable",
     "designer.editor.inherit",
@@ -1311,6 +1514,7 @@
     "designer.editor.pageDefault",
     "designer.editor.pageName",
     "designer.editor.pages",
+    "designer.editor.panelWidth",
     "designer.editor.paste",
     "designer.editor.pending",
     "designer.editor.preservedEdits",
@@ -1325,6 +1529,9 @@
     "designer.editor.reorder",
     "designer.editor.requiredWhen",
     "designer.editor.resize",
+    "designer.editor.resizeHint",
+    "designer.editor.resizeLeft",
+    "designer.editor.resizeRight",
     "designer.editor.retry",
     "designer.editor.reuse",
     "designer.editor.reuseDescription",
@@ -1334,7 +1541,10 @@
     "designer.editor.saved",
     "designer.editor.saving",
     "designer.editor.search",
+    "designer.editor.searchPlaceholder",
     "designer.editor.selectHint",
+    "designer.editor.selectTip",
+    "designer.editor.selectTitle",
     "designer.editor.serviceFields.emptyWhen",
     "designer.editor.serviceFields.intervalMs",
     "designer.editor.serviceFields.visible",
@@ -1386,6 +1596,9 @@
     "designer.flow.error",
     "designer.flow.fit",
     "designer.flow.group",
+    "designer.flow.groups.add",
+    "designer.flow.groups.arrange",
+    "designer.flow.groups.flow",
     "designer.flow.handle",
     "designer.flow.import",
     "designer.flow.importFailed",
@@ -1403,6 +1616,7 @@
     "designer.flow.outcome",
     "designer.flow.reuseScreen",
     "designer.flow.screenFragment",
+    "designer.flow.selectTitle",
     "designer.flow.sourceScript",
     "designer.flow.sourceVersion",
     "designer.flow.success",
@@ -1634,11 +1848,23 @@
     "designer.lifecycle.changeNote",
     "designer.lifecycle.changed",
     "designer.lifecycle.checkDependencies",
+    "designer.lifecycle.closePanel",
     "designer.lifecycle.collaborationHelp",
     "designer.lifecycle.comment",
     "designer.lifecycle.commented",
     "designer.lifecycle.comments",
     "designer.lifecycle.confirmRollback",
+    "designer.lifecycle.conflicts.failed",
+    "designer.lifecycle.conflicts.help",
+    "designer.lifecycle.conflicts.none",
+    "designer.lifecycle.conflicts.overlap",
+    "designer.lifecycle.conflicts.priority",
+    "designer.lifecycle.conflicts.resolvedBy.id",
+    "designer.lifecycle.conflicts.resolvedBy.recency",
+    "designer.lifecycle.conflicts.resolvedBy.specificity",
+    "designer.lifecycle.conflicts.severity.certain",
+    "designer.lifecycle.conflicts.severity.possible",
+    "designer.lifecycle.conflicts.title",
     "designer.lifecycle.connection.conflict",
     "designer.lifecycle.connection.connected",
     "designer.lifecycle.connection.connecting",
@@ -1672,6 +1898,32 @@
     "designer.lifecycle.industries.survey",
     "designer.lifecycle.industries.telecom",
     "designer.lifecycle.industry",
+    "designer.lifecycle.insights.action.advance",
+    "designer.lifecycle.insights.action.hold",
+    "designer.lifecycle.insights.action.none",
+    "designer.lifecycle.insights.action.rollback",
+    "designer.lifecycle.insights.allocation",
+    "designer.lifecycle.insights.allocationReason.insufficient-sessions",
+    "designer.lifecycle.insights.allocationReason.no-eligible-arm",
+    "designer.lifecycle.insights.arm",
+    "designer.lifecycle.insights.armColumn",
+    "designer.lifecycle.insights.best",
+    "designer.lifecycle.insights.breached",
+    "designer.lifecycle.insights.current",
+    "designer.lifecycle.insights.failed",
+    "designer.lifecycle.insights.help",
+    "designer.lifecycle.insights.loading",
+    "designer.lifecycle.insights.proposal",
+    "designer.lifecycle.insights.reason.complete",
+    "designer.lifecycle.insights.reason.completion-dropped",
+    "designer.lifecycle.insights.reason.guardrail-breached",
+    "designer.lifecycle.insights.reason.insufficient-sessions",
+    "designer.lifecycle.insights.reason.no-harm-detected",
+    "designer.lifecycle.insights.reason.not-a-rollout",
+    "designer.lifecycle.insights.reason.not-started",
+    "designer.lifecycle.insights.rollout",
+    "designer.lifecycle.insights.sessions",
+    "designer.lifecycle.insights.title",
     "designer.lifecycle.integrationMapping",
     "designer.lifecycle.integrationVersion",
     "designer.lifecycle.invalidMentions",
@@ -1687,6 +1939,7 @@
     "designer.lifecycle.noReviews",
     "designer.lifecycle.notifications.mention",
     "designer.lifecycle.notifications.review",
+    "designer.lifecycle.notifications.suggestion",
     "designer.lifecycle.off",
     "designer.lifecycle.on",
     "designer.lifecycle.open",
@@ -1832,6 +2085,8 @@
     "designer.preview.device",
     "designer.preview.deviceFrame",
     "designer.preview.failed",
+    "designer.preview.groups.environment",
+    "designer.preview.groups.run",
     "designer.preview.height",
     "designer.preview.initialState",
     "designer.preview.jump",
@@ -1902,6 +2157,31 @@
     "designer.preview.watchHelp",
     "designer.preview.watchList",
     "designer.preview.width",
+    "designer.replay.duration",
+    "designer.replay.dwell",
+    "designer.replay.empty",
+    "designer.replay.link",
+    "designer.replay.page",
+    "designer.replay.pages",
+    "designer.replay.session",
+    "designer.replay.state.abandoned",
+    "designer.replay.state.active",
+    "designer.replay.state.completed",
+    "designer.replay.state.expired",
+    "designer.replay.state.launching",
+    "designer.replay.state.paused",
+    "designer.replay.state.wrapup",
+    "designer.replay.step.field",
+    "designer.replay.step.other",
+    "designer.replay.step.page",
+    "designer.replay.step.state",
+    "designer.replay.step.timer",
+    "designer.replay.timeline",
+    "designer.replay.title",
+    "designer.replay.truncated",
+    "designer.replay.unreached",
+    "designer.replay.visits",
+    "designer.replay.watermark",
     "designer.risk.advisory",
     "designer.risk.coverage",
     "designer.risk.coverageValue",
@@ -1937,8 +2217,11 @@
     "designer.rules.assignmentDescription",
     "designer.rules.depth",
     "designer.rules.description",
+    "designer.rules.emptyBody",
+    "designer.rules.emptyTitle",
     "designer.rules.field",
     "designer.rules.group",
+    "designer.rules.intro",
     "designer.rules.invalid",
     "designer.rules.logic",
     "designer.rules.not",
@@ -1971,6 +2254,40 @@
     "designer.screens.save",
     "designer.screens.source",
     "designer.screens.sourceVersion",
+    "designer.suggest.accept",
+    "designer.suggest.active",
+    "designer.suggest.changes",
+    "designer.suggest.decideProblem.conflict",
+    "designer.suggest.decideProblem.failed",
+    "designer.suggest.dialogHelp",
+    "designer.suggest.dialogTitle",
+    "designer.suggest.discard",
+    "designer.suggest.empty",
+    "designer.suggest.hideOnCanvas",
+    "designer.suggest.marked",
+    "designer.suggest.noteLabel",
+    "designer.suggest.op.add",
+    "designer.suggest.op.remove",
+    "designer.suggest.op.replace",
+    "designer.suggest.operations",
+    "designer.suggest.panelTitle",
+    "designer.suggest.problem.failed",
+    "designer.suggest.problem.invalid",
+    "designer.suggest.problem.tooMany",
+    "designer.suggest.propose",
+    "designer.suggest.reject",
+    "designer.suggest.rejectReason",
+    "designer.suggest.saveFirst",
+    "designer.suggest.send",
+    "designer.suggest.sent",
+    "designer.suggest.showOnCanvas",
+    "designer.suggest.staleHint",
+    "designer.suggest.state.accepted",
+    "designer.suggest.state.open",
+    "designer.suggest.state.rejected",
+    "designer.suggest.state.stale",
+    "designer.suggest.titleLabel",
+    "designer.suggest.toggle",
     "designer.variables.add",
     "designer.variables.classifications.internal",
     "designer.variables.classifications.pci",
@@ -1978,6 +2295,8 @@
     "designer.variables.classifications.public",
     "designer.variables.default",
     "designer.variables.edit",
+    "designer.variables.emptyBody",
+    "designer.variables.emptyTitle",
     "designer.variables.enum",
     "designer.variables.errors.defaultJson",
     "designer.variables.errors.defaultType",
@@ -1985,6 +2304,7 @@
     "designer.variables.errors.linked",
     "designer.variables.errors.name",
     "designer.variables.errors.nameTaken",
+    "designer.variables.intro",
     "designer.variables.name",
     "designer.variables.pii",
     "designer.variables.renameDescription",
@@ -2257,6 +2577,20 @@
     "trust.chain",
     "trust.chainStatus",
     "trust.checked",
+    "trust.checkpoints.downloadKeys",
+    "trust.checkpoints.error",
+    "trust.checkpoints.hash",
+    "trust.checkpoints.intro",
+    "trust.checkpoints.keyId",
+    "trust.checkpoints.keysHint",
+    "trust.checkpoints.keysTitle",
+    "trust.checkpoints.noKeys",
+    "trust.checkpoints.none",
+    "trust.checkpoints.seq",
+    "trust.checkpoints.sessions",
+    "trust.checkpoints.signedAt",
+    "trust.checkpoints.stale",
+    "trust.checkpoints.title",
     "trust.days",
     "trust.error",
     "trust.generated",
@@ -2534,6 +2868,26 @@
     "admin.simulator.status.wrapup",
     "admin.simulator.title",
     "adminWorkspace.absolute",
+    "adminWorkspace.account.address",
+    "adminWorkspace.account.app.admin",
+    "adminWorkspace.account.app.agent",
+    "adminWorkspace.account.app.designer",
+    "adminWorkspace.account.breakGlass",
+    "adminWorkspace.account.currentHint",
+    "adminWorkspace.account.device",
+    "adminWorkspace.account.end",
+    "adminWorkspace.account.endAll",
+    "adminWorkspace.account.endAllHint",
+    "adminWorkspace.account.endAllTitle",
+    "adminWorkspace.account.expires",
+    "adminWorkspace.account.intro",
+    "adminWorkspace.account.lastActive",
+    "adminWorkspace.account.method",
+    "adminWorkspace.account.none",
+    "adminWorkspace.account.signedIn",
+    "adminWorkspace.account.thisDevice",
+    "adminWorkspace.account.title",
+    "adminWorkspace.account.unknownDevice",
     "adminWorkspace.action",
     "adminWorkspace.activate",
     "adminWorkspace.actorId",
@@ -2549,6 +2903,7 @@
     "adminWorkspace.analyticsDays",
     "adminWorkspace.audit",
     "adminWorkspace.auditDays",
+    "adminWorkspace.authMethod",
     "adminWorkspace.before",
     "adminWorkspace.branding",
     "adminWorkspace.breakGlass",
@@ -2564,7 +2919,46 @@
     "adminWorkspace.classificationHint",
     "adminWorkspace.classifications",
     "adminWorkspace.clientId",
+    "adminWorkspace.clients.authHint.client_secret_basic",
+    "adminWorkspace.clients.authHint.client_secret_post",
+    "adminWorkspace.clients.authHint.tls_client_auth",
+    "adminWorkspace.clients.authMethod",
+    "adminWorkspace.clients.certificateOptional",
+    "adminWorkspace.clients.certificateRequired",
+    "adminWorkspace.clients.clientId",
+    "adminWorkspace.clients.clientSecret",
+    "adminWorkspace.clients.copied",
+    "adminWorkspace.clients.copyFailed",
+    "adminWorkspace.clients.copySecret",
+    "adminWorkspace.clients.create",
+    "adminWorkspace.clients.createButton",
+    "adminWorkspace.clients.createHint",
+    "adminWorkspace.clients.dangerTitle",
+    "adminWorkspace.clients.delete",
+    "adminWorkspace.clients.deleteHint",
+    "adminWorkspace.clients.done",
+    "adminWorkspace.clients.edit",
+    "adminWorkspace.clients.intro",
+    "adminWorkspace.clients.mtlsNoSecret",
+    "adminWorkspace.clients.neverUsed",
+    "adminWorkspace.clients.noSecret",
+    "adminWorkspace.clients.pickScope",
+    "adminWorkspace.clients.presetClear",
+    "adminWorkspace.clients.presetRead",
+    "adminWorkspace.clients.revealTitle",
+    "adminWorkspace.clients.revealWarning",
+    "adminWorkspace.clients.rotate",
+    "adminWorkspace.clients.rotateHint",
+    "adminWorkspace.clients.scopeCount",
+    "adminWorkspace.clients.scopes",
+    "adminWorkspace.clients.scopesHint",
+    "adminWorkspace.clients.secretTitle",
+    "adminWorkspace.clients.stored",
+    "adminWorkspace.clients.title",
+    "adminWorkspace.clients.tokenEndpoint",
     "adminWorkspace.close",
+    "adminWorkspace.code",
+    "adminWorkspace.compliance",
     "adminWorkspace.concurrent",
     "adminWorkspace.configuration",
     "adminWorkspace.confirm",
@@ -2624,10 +3018,21 @@
     "adminWorkspace.enum.adapterType.genesys_cloud",
     "adminWorkspace.enum.adapterType.genesys_engage",
     "adminWorkspace.enum.adapterType.nice_cxone",
+    "adminWorkspace.enum.channelType.callback",
+    "adminWorkspace.enum.channelType.chat",
+    "adminWorkspace.enum.channelType.email",
+    "adminWorkspace.enum.channelType.sms",
+    "adminWorkspace.enum.channelType.social",
+    "adminWorkspace.enum.channelType.video",
+    "adminWorkspace.enum.channelType.voice",
+    "adminWorkspace.enum.channelType.whatsapp",
     "adminWorkspace.enum.classification.internal",
     "adminWorkspace.enum.classification.pci",
     "adminWorkspace.enum.classification.pii",
     "adminWorkspace.enum.classification.public",
+    "adminWorkspace.enum.clientAuth.client_secret_basic",
+    "adminWorkspace.enum.clientAuth.client_secret_post",
+    "adminWorkspace.enum.clientAuth.tls_client_auth",
     "adminWorkspace.enum.ctiKind.campaign",
     "adminWorkspace.enum.ctiKind.dnis",
     "adminWorkspace.enum.ctiKind.flow",
@@ -2692,6 +3097,11 @@
     "adminWorkspace.enum.siemKind.kafka",
     "adminWorkspace.enum.siemKind.syslog",
     "adminWorkspace.enum.siemKind.webhook",
+    "adminWorkspace.enum.spState.active",
+    "adminWorkspace.enum.spState.next",
+    "adminWorkspace.enum.spState.retired",
+    "adminWorkspace.enum.spUse.encryption",
+    "adminWorkspace.enum.spUse.signing",
     "adminWorkspace.enum.status.active",
     "adminWorkspace.enum.status.deleting",
     "adminWorkspace.enum.status.deprovisioned",
@@ -2740,11 +3150,14 @@
     "adminWorkspace.intros.analytics",
     "adminWorkspace.intros.audit",
     "adminWorkspace.intros.branding",
+    "adminWorkspace.intros.compliance",
     "adminWorkspace.intros.connectors",
     "adminWorkspace.intros.data",
     "adminWorkspace.intros.identity",
+    "adminWorkspace.intros.mySessions",
     "adminWorkspace.intros.secrets",
     "adminWorkspace.intros.security",
+    "adminWorkspace.intros.serviceClients",
     "adminWorkspace.intros.simulator",
     "adminWorkspace.intros.systemHealth",
     "adminWorkspace.intros.tenants",
@@ -2775,6 +3188,7 @@
     "adminWorkspace.maxUsers",
     "adminWorkspace.metadata",
     "adminWorkspace.monogram",
+    "adminWorkspace.mySessions",
     "adminWorkspace.name",
     "adminWorkspace.navigation",
     "adminWorkspace.next",
@@ -2786,6 +3200,27 @@
     "adminWorkspace.onLimit",
     "adminWorkspace.onceHint",
     "adminWorkspace.operation",
+    "adminWorkspace.ops.channelProvider",
+    "adminWorkspace.ops.channelType",
+    "adminWorkspace.ops.channelsHint",
+    "adminWorkspace.ops.channelsNone",
+    "adminWorkspace.ops.channelsTitle",
+    "adminWorkspace.ops.check.collaboration",
+    "adminWorkspace.ops.check.database",
+    "adminWorkspace.ops.check.nats",
+    "adminWorkspace.ops.check.redis",
+    "adminWorkspace.ops.count",
+    "adminWorkspace.ops.day",
+    "adminWorkspace.ops.eventType",
+    "adminWorkspace.ops.eventsHint",
+    "adminWorkspace.ops.eventsNone",
+    "adminWorkspace.ops.eventsTitle",
+    "adminWorkspace.ops.noProvider",
+    "adminWorkspace.ops.overall",
+    "adminWorkspace.ops.state.down",
+    "adminWorkspace.ops.state.unknown",
+    "adminWorkspace.ops.state.up",
+    "adminWorkspace.ops.version",
     "adminWorkspace.outcome",
     "adminWorkspace.password",
     "adminWorkspace.path",
@@ -2803,6 +3238,47 @@
     "adminWorkspace.privacyHint",
     "adminWorkspace.probe",
     "adminWorkspace.process",
+    "adminWorkspace.processing.allClasses",
+    "adminWorkspace.processing.attention",
+    "adminWorkspace.processing.attentionHint",
+    "adminWorkspace.processing.attentionOnly",
+    "adminWorkspace.processing.audited",
+    "adminWorkspace.processing.classification",
+    "adminWorkspace.processing.csv",
+    "adminWorkspace.processing.destination.analytics",
+    "adminWorkspace.processing.destination.integration",
+    "adminWorkspace.processing.destination.log",
+    "adminWorkspace.processing.destination.platform",
+    "adminWorkspace.processing.destination.screen",
+    "adminWorkspace.processing.destination.toast",
+    "adminWorkspace.processing.destinations",
+    "adminWorkspace.processing.downloadHint",
+    "adminWorkspace.processing.downloadTitle",
+    "adminWorkspace.processing.empty",
+    "adminWorkspace.processing.generate",
+    "adminWorkspace.processing.intro",
+    "adminWorkspace.processing.json",
+    "adminWorkspace.processing.no",
+    "adminWorkspace.processing.noMatch",
+    "adminWorkspace.processing.noneListed",
+    "adminWorkspace.processing.ok",
+    "adminWorkspace.processing.origin.agentInput",
+    "adminWorkspace.processing.origin.context",
+    "adminWorkspace.processing.origin.dataSource",
+    "adminWorkspace.processing.origin.script",
+    "adminWorkspace.processing.origins",
+    "adminWorkspace.processing.persisted",
+    "adminWorkspace.processing.refresh",
+    "adminWorkspace.processing.resultTitle",
+    "adminWorkspace.processing.review",
+    "adminWorkspace.processing.script",
+    "adminWorkspace.processing.search",
+    "adminWorkspace.processing.summary",
+    "adminWorkspace.processing.title",
+    "adminWorkspace.processing.truncated",
+    "adminWorkspace.processing.unreadable",
+    "adminWorkspace.processing.variable",
+    "adminWorkspace.processing.yes",
     "adminWorkspace.productName",
     "adminWorkspace.protocol",
     "adminWorkspace.publicKeys",
@@ -2836,12 +3312,14 @@
     "adminWorkspace.scimTokens",
     "adminWorkspace.scope",
     "adminWorkspace.scopeHint",
+    "adminWorkspace.scopes",
     "adminWorkspace.search",
     "adminWorkspace.secretName",
     "adminWorkspace.secretRefs",
     "adminWorkspace.secrets",
     "adminWorkspace.security",
     "adminWorkspace.seq",
+    "adminWorkspace.serviceClients",
     "adminWorkspace.sessionDays",
     "adminWorkspace.sessions",
     "adminWorkspace.shownOnce",
@@ -2852,6 +3330,17 @@
     "adminWorkspace.slug",
     "adminWorkspace.sod",
     "adminWorkspace.sourceHint",
+    "adminWorkspace.sp.add",
+    "adminWorkspace.sp.alreadyNext",
+    "adminWorkspace.sp.download",
+    "adminWorkspace.sp.expiresSoon",
+    "adminWorkspace.sp.intro",
+    "adminWorkspace.sp.none",
+    "adminWorkspace.sp.promote",
+    "adminWorkspace.sp.promoteHint",
+    "adminWorkspace.sp.remove",
+    "adminWorkspace.sp.title",
+    "adminWorkspace.sp.validUntil",
     "adminWorkspace.ssoSession",
     "adminWorkspace.ssoUrl",
     "adminWorkspace.state",
@@ -2967,10 +3456,16 @@
     "agent.desktop.pending",
     "agent.desktop.preferences",
     "agent.desktop.preferencesHelp",
+    "agent.desktop.probablySaid",
     "agent.desktop.progress",
     "agent.desktop.progressLabel",
     "agent.desktop.readOnly",
     "agent.desktop.recent",
+    "agent.desktop.recording.hint",
+    "agent.desktop.recording.pause",
+    "agent.desktop.recording.pausedTitle",
+    "agent.desktop.recording.resume",
+    "agent.desktop.recording.resumedTitle",
     "agent.desktop.requiredScriptField",
     "agent.desktop.retry",
     "agent.desktop.savingDraft",
@@ -3064,14 +3559,18 @@
     "ai.focus",
     "ai.formal",
     "ai.generate",
+    "ai.goto",
     "ai.improve",
     "ai.inputRate",
     "ai.limit",
     "ai.loading",
     "ai.locale",
+    "ai.markSaid",
     "ai.maxOutput",
     "ai.model",
+    "ai.navigate",
     "ai.neutral",
+    "ai.notices",
     "ai.objection",
     "ai.output",
     "ai.outputRate",
@@ -3412,6 +3911,41 @@
     "designer.blocks.items.satisfactionSurvey.description",
     "designer.blocks.items.satisfactionSurvey.name",
     "designer.blocks.title",
+    "designer.branches.absent",
+    "designer.branches.branchSide",
+    "designer.branches.checking",
+    "designer.branches.chooseFor",
+    "designer.branches.chooseHelp",
+    "designer.branches.conflictList",
+    "designer.branches.conflicts",
+    "designer.branches.create",
+    "designer.branches.edit",
+    "designer.branches.empty",
+    "designer.branches.failed",
+    "designer.branches.from",
+    "designer.branches.help",
+    "designer.branches.invalidResult",
+    "designer.branches.kind.both-changed",
+    "designer.branches.kind.deleted-vs-changed",
+    "designer.branches.kind.duplicate-id",
+    "designer.branches.mainlineSide",
+    "designer.branches.merge",
+    "designer.branches.mergeConfirm",
+    "designer.branches.mergeHelp",
+    "designer.branches.mergePlan",
+    "designer.branches.mergeTitle",
+    "designer.branches.merged",
+    "designer.branches.mergedInto",
+    "designer.branches.name",
+    "designer.branches.new",
+    "designer.branches.open",
+    "designer.branches.openMerged",
+    "designer.branches.problem.conflict",
+    "designer.branches.problem.exists",
+    "designer.branches.problem.failed",
+    "designer.branches.problem.invalid",
+    "designer.branches.startFrom",
+    "designer.branches.title",
     "designer.campaign.add",
     "designer.campaign.categories.callback",
     "designer.campaign.categories.failure",
@@ -3642,6 +4176,9 @@
     "designer.editor.fitCanvas",
     "designer.editor.fullscreen",
     "designer.editor.group",
+    "designer.editor.groups.clipboard",
+    "designer.editor.groups.history",
+    "designer.editor.groups.structure",
     "designer.editor.hiddenCampaigns",
     "designer.editor.impactUnavailable",
     "designer.editor.inherit",
@@ -3686,6 +4223,7 @@
     "designer.editor.pageDefault",
     "designer.editor.pageName",
     "designer.editor.pages",
+    "designer.editor.panelWidth",
     "designer.editor.paste",
     "designer.editor.pending",
     "designer.editor.preservedEdits",
@@ -3700,6 +4238,9 @@
     "designer.editor.reorder",
     "designer.editor.requiredWhen",
     "designer.editor.resize",
+    "designer.editor.resizeHint",
+    "designer.editor.resizeLeft",
+    "designer.editor.resizeRight",
     "designer.editor.retry",
     "designer.editor.reuse",
     "designer.editor.reuseDescription",
@@ -3709,7 +4250,10 @@
     "designer.editor.saved",
     "designer.editor.saving",
     "designer.editor.search",
+    "designer.editor.searchPlaceholder",
     "designer.editor.selectHint",
+    "designer.editor.selectTip",
+    "designer.editor.selectTitle",
     "designer.editor.serviceFields.emptyWhen",
     "designer.editor.serviceFields.intervalMs",
     "designer.editor.serviceFields.visible",
@@ -3761,6 +4305,9 @@
     "designer.flow.error",
     "designer.flow.fit",
     "designer.flow.group",
+    "designer.flow.groups.add",
+    "designer.flow.groups.arrange",
+    "designer.flow.groups.flow",
     "designer.flow.handle",
     "designer.flow.import",
     "designer.flow.importFailed",
@@ -3778,6 +4325,7 @@
     "designer.flow.outcome",
     "designer.flow.reuseScreen",
     "designer.flow.screenFragment",
+    "designer.flow.selectTitle",
     "designer.flow.sourceScript",
     "designer.flow.sourceVersion",
     "designer.flow.success",
@@ -4009,11 +4557,23 @@
     "designer.lifecycle.changeNote",
     "designer.lifecycle.changed",
     "designer.lifecycle.checkDependencies",
+    "designer.lifecycle.closePanel",
     "designer.lifecycle.collaborationHelp",
     "designer.lifecycle.comment",
     "designer.lifecycle.commented",
     "designer.lifecycle.comments",
     "designer.lifecycle.confirmRollback",
+    "designer.lifecycle.conflicts.failed",
+    "designer.lifecycle.conflicts.help",
+    "designer.lifecycle.conflicts.none",
+    "designer.lifecycle.conflicts.overlap",
+    "designer.lifecycle.conflicts.priority",
+    "designer.lifecycle.conflicts.resolvedBy.id",
+    "designer.lifecycle.conflicts.resolvedBy.recency",
+    "designer.lifecycle.conflicts.resolvedBy.specificity",
+    "designer.lifecycle.conflicts.severity.certain",
+    "designer.lifecycle.conflicts.severity.possible",
+    "designer.lifecycle.conflicts.title",
     "designer.lifecycle.connection.conflict",
     "designer.lifecycle.connection.connected",
     "designer.lifecycle.connection.connecting",
@@ -4047,6 +4607,32 @@
     "designer.lifecycle.industries.survey",
     "designer.lifecycle.industries.telecom",
     "designer.lifecycle.industry",
+    "designer.lifecycle.insights.action.advance",
+    "designer.lifecycle.insights.action.hold",
+    "designer.lifecycle.insights.action.none",
+    "designer.lifecycle.insights.action.rollback",
+    "designer.lifecycle.insights.allocation",
+    "designer.lifecycle.insights.allocationReason.insufficient-sessions",
+    "designer.lifecycle.insights.allocationReason.no-eligible-arm",
+    "designer.lifecycle.insights.arm",
+    "designer.lifecycle.insights.armColumn",
+    "designer.lifecycle.insights.best",
+    "designer.lifecycle.insights.breached",
+    "designer.lifecycle.insights.current",
+    "designer.lifecycle.insights.failed",
+    "designer.lifecycle.insights.help",
+    "designer.lifecycle.insights.loading",
+    "designer.lifecycle.insights.proposal",
+    "designer.lifecycle.insights.reason.complete",
+    "designer.lifecycle.insights.reason.completion-dropped",
+    "designer.lifecycle.insights.reason.guardrail-breached",
+    "designer.lifecycle.insights.reason.insufficient-sessions",
+    "designer.lifecycle.insights.reason.no-harm-detected",
+    "designer.lifecycle.insights.reason.not-a-rollout",
+    "designer.lifecycle.insights.reason.not-started",
+    "designer.lifecycle.insights.rollout",
+    "designer.lifecycle.insights.sessions",
+    "designer.lifecycle.insights.title",
     "designer.lifecycle.integrationMapping",
     "designer.lifecycle.integrationVersion",
     "designer.lifecycle.invalidMentions",
@@ -4062,6 +4648,7 @@
     "designer.lifecycle.noReviews",
     "designer.lifecycle.notifications.mention",
     "designer.lifecycle.notifications.review",
+    "designer.lifecycle.notifications.suggestion",
     "designer.lifecycle.off",
     "designer.lifecycle.on",
     "designer.lifecycle.open",
@@ -4207,6 +4794,8 @@
     "designer.preview.device",
     "designer.preview.deviceFrame",
     "designer.preview.failed",
+    "designer.preview.groups.environment",
+    "designer.preview.groups.run",
     "designer.preview.height",
     "designer.preview.initialState",
     "designer.preview.jump",
@@ -4277,6 +4866,31 @@
     "designer.preview.watchHelp",
     "designer.preview.watchList",
     "designer.preview.width",
+    "designer.replay.duration",
+    "designer.replay.dwell",
+    "designer.replay.empty",
+    "designer.replay.link",
+    "designer.replay.page",
+    "designer.replay.pages",
+    "designer.replay.session",
+    "designer.replay.state.abandoned",
+    "designer.replay.state.active",
+    "designer.replay.state.completed",
+    "designer.replay.state.expired",
+    "designer.replay.state.launching",
+    "designer.replay.state.paused",
+    "designer.replay.state.wrapup",
+    "designer.replay.step.field",
+    "designer.replay.step.other",
+    "designer.replay.step.page",
+    "designer.replay.step.state",
+    "designer.replay.step.timer",
+    "designer.replay.timeline",
+    "designer.replay.title",
+    "designer.replay.truncated",
+    "designer.replay.unreached",
+    "designer.replay.visits",
+    "designer.replay.watermark",
     "designer.risk.advisory",
     "designer.risk.coverage",
     "designer.risk.coverageValue",
@@ -4312,8 +4926,11 @@
     "designer.rules.assignmentDescription",
     "designer.rules.depth",
     "designer.rules.description",
+    "designer.rules.emptyBody",
+    "designer.rules.emptyTitle",
     "designer.rules.field",
     "designer.rules.group",
+    "designer.rules.intro",
     "designer.rules.invalid",
     "designer.rules.logic",
     "designer.rules.not",
@@ -4346,6 +4963,40 @@
     "designer.screens.save",
     "designer.screens.source",
     "designer.screens.sourceVersion",
+    "designer.suggest.accept",
+    "designer.suggest.active",
+    "designer.suggest.changes",
+    "designer.suggest.decideProblem.conflict",
+    "designer.suggest.decideProblem.failed",
+    "designer.suggest.dialogHelp",
+    "designer.suggest.dialogTitle",
+    "designer.suggest.discard",
+    "designer.suggest.empty",
+    "designer.suggest.hideOnCanvas",
+    "designer.suggest.marked",
+    "designer.suggest.noteLabel",
+    "designer.suggest.op.add",
+    "designer.suggest.op.remove",
+    "designer.suggest.op.replace",
+    "designer.suggest.operations",
+    "designer.suggest.panelTitle",
+    "designer.suggest.problem.failed",
+    "designer.suggest.problem.invalid",
+    "designer.suggest.problem.tooMany",
+    "designer.suggest.propose",
+    "designer.suggest.reject",
+    "designer.suggest.rejectReason",
+    "designer.suggest.saveFirst",
+    "designer.suggest.send",
+    "designer.suggest.sent",
+    "designer.suggest.showOnCanvas",
+    "designer.suggest.staleHint",
+    "designer.suggest.state.accepted",
+    "designer.suggest.state.open",
+    "designer.suggest.state.rejected",
+    "designer.suggest.state.stale",
+    "designer.suggest.titleLabel",
+    "designer.suggest.toggle",
     "designer.variables.add",
     "designer.variables.classifications.internal",
     "designer.variables.classifications.pci",
@@ -4353,6 +5004,8 @@
     "designer.variables.classifications.public",
     "designer.variables.default",
     "designer.variables.edit",
+    "designer.variables.emptyBody",
+    "designer.variables.emptyTitle",
     "designer.variables.enum",
     "designer.variables.errors.defaultJson",
     "designer.variables.errors.defaultType",
@@ -4360,6 +5013,7 @@
     "designer.variables.errors.linked",
     "designer.variables.errors.name",
     "designer.variables.errors.nameTaken",
+    "designer.variables.intro",
     "designer.variables.name",
     "designer.variables.pii",
     "designer.variables.renameDescription",
@@ -4632,6 +5286,20 @@
     "trust.chain",
     "trust.chainStatus",
     "trust.checked",
+    "trust.checkpoints.downloadKeys",
+    "trust.checkpoints.error",
+    "trust.checkpoints.hash",
+    "trust.checkpoints.intro",
+    "trust.checkpoints.keyId",
+    "trust.checkpoints.keysHint",
+    "trust.checkpoints.keysTitle",
+    "trust.checkpoints.noKeys",
+    "trust.checkpoints.none",
+    "trust.checkpoints.seq",
+    "trust.checkpoints.sessions",
+    "trust.checkpoints.signedAt",
+    "trust.checkpoints.stale",
+    "trust.checkpoints.title",
     "trust.days",
     "trust.error",
     "trust.generated",
@@ -4752,7 +5420,7 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 1047,
+  "literalKeyCount": 1177,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
@@ -4824,23 +5492,23 @@
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 148
+      "line": 132
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 174
+      "line": 149
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 219
+      "line": 175
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 221
+      "line": 220
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 233
+      "line": 222
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
@@ -4848,11 +5516,15 @@
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 241
+      "line": 235
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 251
+      "line": 242
+    },
+    {
+      "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+      "line": 252
     },
     {
       "file": "apps/admin-web/src/workspace/ai-page.tsx",
@@ -4860,11 +5532,11 @@
     },
     {
       "file": "apps/admin-web/src/workspace/ai-page.tsx",
-      "line": 117
+      "line": 122
     },
     {
       "file": "apps/admin-web/src/workspace/ai-page.tsx",
-      "line": 162
+      "line": 167
     },
     {
       "file": "apps/admin-web/src/workspace/analytics-page.tsx",
@@ -4875,16 +5547,56 @@
       "line": 189
     },
     {
-      "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 149
+      "file": "apps/admin-web/src/workspace/clients-page.tsx",
+      "line": 237
+    },
+    {
+      "file": "apps/admin-web/src/workspace/clients-page.tsx",
+      "line": 238
+    },
+    {
+      "file": "apps/admin-web/src/workspace/clients-page.tsx",
+      "line": 244
+    },
+    {
+      "file": "apps/admin-web/src/workspace/clients-page.tsx",
+      "line": 269
+    },
+    {
+      "file": "apps/admin-web/src/workspace/clients-page.tsx",
+      "line": 339
+    },
+    {
+      "file": "apps/admin-web/src/workspace/compliance-page.tsx",
+      "line": 80
+    },
+    {
+      "file": "apps/admin-web/src/workspace/compliance-page.tsx",
+      "line": 175
+    },
+    {
+      "file": "apps/admin-web/src/workspace/compliance-page.tsx",
+      "line": 180
+    },
+    {
+      "file": "apps/admin-web/src/workspace/health-extras.tsx",
+      "line": 35
+    },
+    {
+      "file": "apps/admin-web/src/workspace/health-extras.tsx",
+      "line": 46
+    },
+    {
+      "file": "apps/admin-web/src/workspace/health-extras.tsx",
+      "line": 58
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 171
+      "line": 150
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 176
+      "line": 172
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
@@ -4892,35 +5604,35 @@
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 213
+      "line": 178
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 221
+      "line": 214
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 534
+      "line": 222
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 535
+      "line": 536
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 539
+      "line": 537
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 540
+      "line": 541
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 642
+      "line": 542
     },
     {
-      "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 104
+      "file": "apps/admin-web/src/workspace/identity-pages.tsx",
+      "line": 644
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
@@ -4932,7 +5644,7 @@
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 251
+      "line": 107
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
@@ -4940,15 +5652,27 @@
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 305
+      "line": 253
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 393
+      "line": 306
+    },
+    {
+      "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+      "line": 394
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
       "line": 606
+    },
+    {
+      "file": "apps/admin-web/src/workspace/sessions-page.tsx",
+      "line": 75
+    },
+    {
+      "file": "apps/admin-web/src/workspace/sessions-page.tsx",
+      "line": 89
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
@@ -5044,19 +5768,19 @@
     },
     {
       "file": "apps/admin-web/src/workspace/trust-page.tsx",
-      "line": 56
+      "line": 57
     },
     {
       "file": "apps/admin-web/src/workspace/trust-page.tsx",
-      "line": 58
+      "line": 59
     },
     {
       "file": "apps/admin-web/src/workspace/trust-page.tsx",
-      "line": 64
+      "line": 65
     },
     {
       "file": "apps/admin-web/src/workspace/trust-page.tsx",
-      "line": 66
+      "line": 67
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
@@ -5084,23 +5808,11 @@
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 305
+      "line": 308
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 305
-    },
-    {
-      "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 459
-    },
-    {
-      "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 460
-    },
-    {
-      "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 461
+      "line": 308
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
@@ -5108,23 +5820,35 @@
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 559
+      "line": 463
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 464
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 465
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 562
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 197
+      "line": 215
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 198
+      "line": 216
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 198
+      "line": 216
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 251
+      "line": 269
     },
     {
       "file": "apps/agent-web/src/desktop/failure-notice.tsx",
@@ -5132,23 +5856,27 @@
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 380
+      "line": 382
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 424
+      "line": 395
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 448
+      "line": 420
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 509
+      "line": 456
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 635
+      "line": 480
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 541
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
@@ -5156,15 +5884,19 @@
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 819
+      "line": 699
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 847
+      "line": 857
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 849
+      "line": 885
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 887
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
@@ -5223,8 +5955,28 @@
       "line": 131
     },
     {
+      "file": "apps/api/src/modules/runtime/domain/replay.ts",
+      "line": 81
+    },
+    {
+      "file": "apps/api/src/modules/runtime/domain/replay.ts",
+      "line": 101
+    },
+    {
+      "file": "apps/api/src/modules/runtime/domain/replay.ts",
+      "line": 111
+    },
+    {
+      "file": "apps/api/src/modules/runtime/domain/replay.ts",
+      "line": 112
+    },
+    {
+      "file": "apps/api/src/modules/runtime/domain/replay.ts",
+      "line": 118
+    },
+    {
       "file": "apps/designer-web/src/editor/canvas.tsx",
-      "line": 290
+      "line": 297
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
@@ -5288,51 +6040,59 @@
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 397
+      "line": 431
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 402
+      "line": 436
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 459
+      "line": 493
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 519
+      "line": 553
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 524
+      "line": 558
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 543
+      "line": 578
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 544
+      "line": 584
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 638
+      "line": 585
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 653
+      "line": 692
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 672
+      "line": 698
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 782
+      "line": 715
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 799
+      "line": 735
+    },
+    {
+      "file": "apps/designer-web/src/editor/editor.tsx",
+      "line": 871
+    },
+    {
+      "file": "apps/designer-web/src/editor/editor.tsx",
+      "line": 888
     },
     {
       "file": "apps/designer-web/src/editor/health-panel.tsx",
@@ -5368,11 +6128,7 @@
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 433
-    },
-    {
-      "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 590
+      "line": 443
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
@@ -5380,51 +6136,55 @@
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 634
+      "line": 610
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 768
+      "line": 644
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 778
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 15
+      "line": 59
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 113
+      "line": 163
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 150
+      "line": 200
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 182
+      "line": 232
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 201
+      "line": 255
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 211
+      "line": 265
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 435
+      "line": 489
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 436
+      "line": 490
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 442
+      "line": 496
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 446
+      "line": 500
     },
     {
       "file": "apps/designer-web/src/editor/live-pane.tsx",
@@ -5443,84 +6203,96 @@
       "line": 159
     },
     {
-      "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 61
-    },
-    {
-      "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 66
-    },
-    {
-      "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 73
-    },
-    {
-      "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 315
-    },
-    {
-      "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 426
-    },
-    {
-      "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 570
-    },
-    {
-      "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 621
-    },
-    {
-      "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 736
-    },
-    {
-      "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 848
-    },
-    {
-      "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 42
-    },
-    {
-      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "file": "apps/designer-web/src/editor/panel-resizer.tsx",
       "line": 53
     },
     {
-      "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 70
+      "file": "apps/designer-web/src/editor/suggest-mode.tsx",
+      "line": 144
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 89
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 95
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 102
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 351
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 369
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 498
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 644
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 695
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 810
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 930
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 81
+      "line": 43
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 115
+      "line": 54
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 124
+      "line": 71
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 140
+      "line": 82
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 265
+      "line": 116
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 270
+      "line": 125
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 275
+      "line": 141
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 298
+      "line": 279
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 284
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 289
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 313
     },
     {
       "file": "apps/designer-web/src/integrations/auth.tsx",
@@ -5563,8 +6335,40 @@
       "line": 25
     },
     {
+      "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
+      "line": 109
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
+      "line": 126
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
+      "line": 128
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
+      "line": 195
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
+      "line": 200
+    },
+    {
       "file": "apps/designer-web/src/lifecycle/assignments.tsx",
-      "line": 313
+      "line": 315
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/branches.tsx",
+      "line": 206
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/branches.tsx",
+      "line": 247
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/branches.tsx",
+      "line": 278
     },
     {
       "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
@@ -5608,19 +6412,19 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
-      "line": 478
-    },
-    {
-      "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
-      "line": 482
-    },
-    {
-      "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
       "line": 489
     },
     {
       "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
-      "line": 514
+      "line": 493
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
+      "line": 500
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
+      "line": 525
     },
     {
       "file": "apps/designer-web/src/lifecycle/comments.tsx",
@@ -5664,31 +6468,55 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 189
+      "line": 190
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 202
+      "line": 203
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 273
+      "line": 274
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 273
+      "line": 274
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 382
+      "line": 383
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 405
+      "line": 406
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 417
+      "line": 418
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/replay.tsx",
+      "line": 125
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/replay.tsx",
+      "line": 135
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/suggestions.tsx",
+      "line": 96
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/suggestions.tsx",
+      "line": 103
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/suggestions.tsx",
+      "line": 111
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/suggestions.tsx",
+      "line": 126
     },
     {
       "file": "apps/designer-web/src/lifecycle/templates.tsx",
@@ -5816,11 +6644,11 @@
     },
     {
       "file": "apps/designer-web/src/pages/script.tsx",
-      "line": 158
+      "line": 159
     },
     {
       "file": "apps/designer-web/src/pages/script.tsx",
-      "line": 271
+      "line": 279
     },
     {
       "file": "apps/designer-web/src/pages/settings.tsx",
@@ -5868,39 +6696,39 @@
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 252
+      "line": 253
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 310
+      "line": 313
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 380
+      "line": 386
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 461
+      "line": 467
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 488
+      "line": 494
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 631
+      "line": 637
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 652
+      "line": 658
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 654
+      "line": 660
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 767
+      "line": 773
     },
     {
       "file": "apps/designer-web/src/rules/assignment-rule.tsx",
@@ -5932,7 +6760,7 @@
     },
     {
       "file": "apps/designer-web/src/rules/manager.tsx",
-      "line": 85
+      "line": 99
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
@@ -5948,51 +6776,51 @@
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 178
+      "line": 184
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 186
+      "line": 192
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 241
+      "line": 247
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 249
+      "line": 255
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 274
+      "line": 284
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 278
+      "line": 288
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 281
+      "line": 291
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 341
+      "line": 351
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 370
+      "line": 380
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 386
+      "line": 396
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 437
+      "line": 447
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 439
+      "line": 449
     },
     {
       "file": "apps/designer-web/src/workspace/welcome-tour.tsx",

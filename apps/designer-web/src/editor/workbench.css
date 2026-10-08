@@ -186,14 +186,14 @@
 .ed-workspace .ed-left .vb-tab-list,
 .ed-workspace .ed-inspector .vb-tab-list {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   border-block-end: 1px solid var(--vb-color-border);
 }
+/* Tabs keep their natural width and wrap to a second row: never overlapped, never clipped. */
 .ed-workspace .ed-left .vb-tab,
 .ed-workspace .ed-inspector .vb-tab {
-  flex: 1 1 0;
-  min-inline-size: 0;
-  padding-inline: var(--vb-space-2);
+  flex: 1 0 auto;
+  padding-inline: var(--vb-space-3);
   white-space: nowrap;
   text-align: center;
 }

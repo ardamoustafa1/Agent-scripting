@@ -12,6 +12,8 @@ const CONNECTOR_SELECT = {
   platform: true,
   status: true,
   health: true,
+  // Read server-side only to derive the non-secret `kind` label; never returned as-is.
+  config: true,
   createdAt: true,
   updatedAt: true,
   version: true,

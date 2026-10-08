@@ -36449,7 +36449,11 @@ Requires: update:User
           "error"
         ]
       },
-      "health": {}
+      "health": {},
+      "kind": {
+        "type": "string",
+        "maxLength": 64
+      }
     },
     "required": [
       "id",

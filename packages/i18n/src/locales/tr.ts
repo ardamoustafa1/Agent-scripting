@@ -283,6 +283,7 @@ export const tr: Catalog = {
     heatmap: 'Isı haritası',
   },
   adminWorkspace: {
+    code: 'Kod',
     ops: {
       overall: 'Genel durum',
       version: 'sürüm {{version}}',

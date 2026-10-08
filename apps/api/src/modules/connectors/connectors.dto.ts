@@ -26,6 +26,8 @@ export const ConnectorSchema = z
     platform: z.string(),
     status: z.enum(['draft', 'active', 'disabled', 'error']),
     health: z.unknown(),
+    /** Non-secret flavour label of a generic connector (e.g. `simulator`); the rest of `config` stays private. */
+    kind: z.string().max(64).optional(),
   })
   .meta({ id: 'Connector' });
 export type ConnectorDto = z.infer<typeof ConnectorSchema>;
@@ -59,13 +61,23 @@ const meta = (row: { id: string; createdAt: Date; updatedAt: Date; version: numb
   version: row.version,
 });
 
-export const toConnectorDto = (row: ConnectorRow): ConnectorDto => ({
-  ...meta(row),
-  adapterType: row.adapterType,
-  platform: row.platform,
-  status: row.status,
-  health: row.health,
-});
+const KIND_PATTERN = /^[a-z][a-z0-9_-]{0,63}$/;
+/** Only a short lowercase label is exposed from `config`; it can never carry a secret reference. */
+export const publicConnectorKind = (config: unknown): string | undefined => {
+  const kind = (config as { kind?: unknown } | null | undefined)?.kind;
+  return typeof kind === 'string' && KIND_PATTERN.test(kind) ? kind : undefined;
+};
+export const toConnectorDto = (row: ConnectorRow): ConnectorDto => {
+  const kind = publicConnectorKind(row.config);
+  return {
+    ...meta(row),
+    adapterType: row.adapterType,
+    platform: row.platform,
+    status: row.status,
+    health: row.health,
+    ...(kind === undefined ? {} : { kind }),
+  };
+};
 export const toChannelDto = (row: ChannelRow): ChannelDto => ({
   ...meta(row),
   type: row.type,

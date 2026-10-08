@@ -1,5 +1,7 @@
 import { expect, it, vi } from 'vitest';
 
+import { AUDIT_ACTION } from '../audit/core/audit-event.js';
+
 import { SessionListQuerySchema } from './runtime.dto.js';
 import { RuntimeService } from './runtime.service.js';
 
@@ -45,5 +47,8 @@ it.each([true, false])(
     expect(list).toHaveBeenCalledTimes(1);
     expect(labels).toHaveBeenCalledTimes(reveal ? 1 : 0);
     expect(audit.record).toHaveBeenCalledTimes(reveal ? 1 : 0);
+    // The real AuditService rejects malformed names with a 500, so mocking it must not hide that.
+    for (const [, event] of audit.record.mock.calls as [unknown, { action: string }][])
+      expect(AUDIT_ACTION.test(event.action), event.action).toBe(true);
   },
 );

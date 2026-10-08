@@ -94,7 +94,7 @@ export class RuntimeService {
     );
     if (disclosures)
       await this.audit.record(this.db.current(), {
-        action: 'runtime.sessions.labels.read',
+        action: 'runtime.session.labelsRead',
         target: { type: 'Session', id: '*' },
         metadata: { count: disclosures },
       });

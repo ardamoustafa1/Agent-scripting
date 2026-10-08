@@ -1796,3 +1796,14 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - Klavye: ok tuşları ±16px (Shift ±64), Home/End uçlara; ARIA `separator` (pencere bölücü deseni), `aria-valuenow/min/max`, tr+en etiket. Canlı panel açıkken ve ≤900px'te gizli.
 - Palet etiketleri artık kesilmeden kırılır ("T.C. kimlik numarası").
 - Varsayılan genişlikler 212/252px (tuval ≥%65 koruması geçerli).
+
+## 2026-10-08 — Elle uçtan uca doğrulama (tarayıcı + gerçek backend) ve bulunan hatalar
+Yöntem: yerel `verbis-dev` tenant'ında Keycloak (dev) ile admin/designer/agent olarak giriş; tasarımcı, yönetim ve ajan uygulamaları gezildi; script oluşturma→dal→editör kaydı→senaryo→regresyon→inceleme→ikinci kişi onayı→yayın→kuyruk eşleme→simüle çağrı→ajan masaüstü→kayıt duraklat/sürdür→sonuçlandırma→geri yazım çalıştırıldı.
+Bulunup düzeltilenler:
+- **Oturum listesi 500** (`GET /v1/sessions`, supervisor listesi): `runtime.sessions.labels.read` audit eylemi biçim kuralına uymuyordu (`alan.varlık.fiil`); müşteri adı açılan her listede istisna → `runtime.session.labelsRead`. Test audit'i mock'ladığı için kaçırmıştı: test artık gerçek `AUDIT_ACTION` kuralını denetliyor + kaynak kodu tarayan koruma testi (`audit-action-names.spec.ts`).
+- **Simülatör sayfası hiçbir zaman connector bulamıyordu**: API `config` döndürmüyor ama UI `config.kind` arıyordu. API `Connector` DTO'suna yalnızca zararsız `kind` etiketi eklendi (regex ile sınırlı, `config` sızmaz); UI buna geçti; yükleme hatası artık kullanıcıya gösteriliyor (boş sayfa yerine). Zod 4'te `z.unknown()` alanı zorunlu sayılıyordu.
+- **Yönetim > Güvenlik** tablosunda ham `adminWorkspace.code` anahtarı (konumlar listesi): `code` etiketi eklendi + tüm `ResourceList` sütunlarını tarayan sözleşme testi.
+- Editör sağ panel sekmeleri üst üste biniyordu: sekmeler artık sarıyor.
+- `assignment-conflicts` OpenAPI yanıtı dizi olarak düzeltildi (önceki tur).
+Yerel ortam bulguları (kod değil): `.env`'de `HUB_TRUSTED_JWKS`/`HUB_TENANTS` boştu → hub, API'nin servis token'ını reddediyordu (403 `connector-dead-letters`, simülatör 404). `pnpm dev:bootstrap` bunu kurar; çalıştırıldı.
+Açık UX bulguları: script detayında `/versions` 403 olunca sonsuz iskelet (yetki mesajı yok); onay reddinde genel "kontrol başarısız" (SoD nedeni gösterilmiyor); "İncelemeye gönder" semver boşken sebepsiz pasif; scriptler listesi, scope'u olmayan tasarımcıya açılamayacak scriptleri gösteriyor; dev `designer` kullanıcısına seed kampanya kapsamı verilmemiş.

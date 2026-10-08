@@ -124,3 +124,23 @@ it('has a label and an intro for every registered admin page in both catalogs', 
     }
   }
 });
+
+// A generic ResourceList derives each header from `adminWorkspace.<column>`; a missing key shows up
+// as the raw key in the table header (found by hand on the locations list).
+it('has a header label in both catalogs for every column of a generic resource list', async () => {
+  const { readFileSync, readdirSync } = await import('node:fs');
+  const dir = `${process.cwd()}/src/workspace/`;
+  const columns = new Set<string>();
+  for (const file of readdirSync(dir).filter((f) => f.endsWith('.tsx') && !f.includes('.spec.')))
+    for (const list of readFileSync(dir + file, 'utf8').matchAll(
+      /<ResourceList[\s\S]*?columns=\{\[([^\]]*)\]\}/g,
+    ))
+      for (const column of (list[1] ?? '').matchAll(/'([A-Za-z]+)'/g))
+        if (column[1]) columns.add(column[1]);
+  expect(columns.size).toBeGreaterThan(5);
+  for (const locale of ['tr', 'en'] as const) {
+    const i18n = await createI18n(locale);
+    for (const column of columns)
+      expect(i18n.exists(`adminWorkspace.${column}`), `${locale}: ${column}`).toBe(true);
+  }
+});

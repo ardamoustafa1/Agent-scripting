@@ -278,6 +278,7 @@ export const en = {
     heatmap: 'Heatmap',
   },
   adminWorkspace: {
+    code: 'Code',
     ops: {
       overall: 'Overall',
       version: 'version {{version}}',

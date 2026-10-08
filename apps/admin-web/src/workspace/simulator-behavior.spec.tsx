@@ -11,7 +11,7 @@ const eligible = {
   id: syntheticId,
   adapterType: 'generic',
   status: 'active',
-  config: { kind: 'simulator' },
+  kind: 'simulator',
 };
 async function setup(interactions: SimInteraction[] = [], extra: Record<string, unknown> = {}) {
   const f = await mountAdmin(<Simulator />, {
@@ -174,8 +174,8 @@ it('shows disabled simulator when every connector is ineligible', async () => {
       data: [
         { ...eligible, adapterType: 'genesys' },
         { ...eligible, status: 'disabled' },
-        { ...eligible, config: null },
-        { ...eligible, config: { kind: 'other' } },
+        { ...eligible, kind: undefined },
+        { ...eligible, kind: 'other' },
       ],
     },
   });

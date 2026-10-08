@@ -129,6 +129,7 @@ export function SimulatorSection({ csrfToken }: { csrfToken: string }) {
       {connectors.isSuccess && connectorId === undefined ? (
         <p role="status">{t('admin.simulator.noConnector')}</p>
       ) : null}
+      {connectors.isError ? <p role="alert">{t(errorKey(connectors.error))}</p> : null}
       {connectorId === undefined ? null : (
         <>
           <form className="vb-stack" onSubmit={submit} aria-labelledby={`${id}-new`}>

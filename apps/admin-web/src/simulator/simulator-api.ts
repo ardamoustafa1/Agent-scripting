@@ -25,7 +25,12 @@ export type SimAction = (typeof SIM_ACTIONS)[number];
 
 const ConnectorPageSchema = z.object({
   data: z.array(
-    z.object({ id: z.string(), adapterType: z.string(), config: z.unknown(), status: z.string() }),
+    z.object({
+      id: z.string(),
+      adapterType: z.string(),
+      kind: z.string().optional(),
+      status: z.string(),
+    }),
   ),
 });
 
@@ -86,12 +91,7 @@ async function call(
 export async function listSimulatorConnectors(csrf: string): Promise<string[]> {
   const page = ConnectorPageSchema.parse(await call('GET', '/v1/connectors?limit=100', csrf));
   return page.data
-    .filter(
-      (c) =>
-        c.adapterType === 'generic' &&
-        c.status === 'active' &&
-        (c.config as { kind?: unknown } | null)?.kind === 'simulator',
-    )
+    .filter((c) => c.adapterType === 'generic' && c.status === 'active' && c.kind === 'simulator')
     .map((c) => c.id);
 }
 
