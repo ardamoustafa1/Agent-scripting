@@ -252,6 +252,7 @@ model Tenant {
   launchIntents               LaunchIntent[]
   launchTrustedIssuers        LaunchTrustedIssuer[]
   authoringThreads            AuthoringThread[]
+  scriptSuggestions           ScriptSuggestion[]
   collaborationConflicts      CollaborationConflict[]
   locations                   Location[]
   collaborationSnapshots      CollaborationSnapshot[]
@@ -719,6 +720,12 @@ model ScriptVersion {
   reviewRound        Int                @default(0) @map("review_round")
   /// Provenance of imported versions (.verbis package).
   source             Json?
+  /// Branch label (ADR-0051). A branch has exactly one working version; branches never publish.
+  branch             String?            @db.VarChar(64)
+  /// The version a branch was created from; the common ancestor for the merge back.
+  parentVersionId    String?            @map("parent_version_id") @db.Uuid
+  parent             ScriptVersion?     @relation("ScriptVersionBranch", fields: [parentVersionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  children           ScriptVersion[]    @relation("ScriptVersionBranch")
   createdAt          DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
   createdBy          String             @map("created_by") @db.VarChar(128)
   updatedAt          DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -736,9 +743,11 @@ model ScriptVersion {
   reviews                ScriptVersionReview[]
   screenLinks            ScriptScreenLink[]
   authoringThreads       AuthoringThread[]
+  suggestions            ScriptSuggestion[]
   collaborationConflicts CollaborationConflict[]
   collaborationSnapshots CollaborationSnapshot[]
 
+  @@unique([scriptId, branch], map: "script_versions_branch_key", where: raw("branch IS NOT NULL AND deleted_at IS NULL"))
   @@unique([scriptId, number], map: "script_versions_script_number_key")
   @@unique([scriptId, semver], map: "script_versions_script_semver_key", where: raw("semver IS NOT NULL AND deleted_at IS NULL"))
   @@index([tenantId, scriptId, number])
@@ -1540,6 +1549,32 @@ model AuthoringThread {
 
   @@index([tenantId, scriptVersionId], map: "authoring_threads_version_idx")
   @@map("authoring_threads")
+}
+
+/// Reviewer-proposed change (RFC 6902 subset) the owner applies in one step (ADR-0051).
+model ScriptSuggestion {
+  id              String        @id @default(uuid(7)) @db.Uuid
+  tenantId        String        @map("tenant_id") @db.Uuid
+  scriptVersionId String        @map("script_version_id") @db.Uuid
+  title           String        @db.VarChar(120)
+  note            String?
+  operations      Json
+  /// Value found at every replace/remove path (and parent container of every add) at creation.
+  guards          Json          @default("[]")
+  /// Checksum of the draft the suggestion was made against.
+  baseChecksum    String        @map("base_checksum")
+  /// open | accepted | rejected | stale
+  state           String        @default("open") @db.VarChar(16)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       String        @map("created_by") @db.VarChar(128)
+  decidedAt       DateTime?     @map("decided_at") @db.Timestamptz(3)
+  decidedBy       String?       @map("decided_by") @db.VarChar(128)
+  decisionReason  String?       @map("decision_reason")
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  scriptVersion   ScriptVersion @relation(fields: [scriptVersionId], references: [id], onDelete: Restrict)
+
+  @@index([tenantId, scriptVersionId, state, createdAt], map: "script_suggestions_version_idx")
+  @@map("script_suggestions")
 }
 
 model CollaborationSnapshot {

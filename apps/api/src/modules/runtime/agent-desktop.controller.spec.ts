@@ -7,6 +7,7 @@ import { requestContext } from '../../common/context/request-context.js';
 import { DomainError } from '../../common/errors/domain-errors.js';
 
 import { AgentDesktopController } from './agent-desktop.controller.js';
+import { AgentFeedbackService } from './agent-feedback.service.js';
 import { RuntimeDataService } from './runtime-data.service.js';
 
 import type { RuntimeEngineService } from './runtime-engine.service.js';
@@ -83,6 +84,7 @@ function fixture(state = 'active') {
     ),
     audit as unknown as AuditService,
     { publicProfile: () => undefined } as unknown as SecureCaptureService,
+    new AgentFeedbackService(db as unknown as TenantDb, audit as unknown as AuditService),
   );
   return { controller, runtime, tx, audit, integration, document, db };
 }
@@ -106,6 +108,21 @@ function asUser<T>(user: string, work: () => T) {
   );
 }
 describe('owner-only agent desktop BFF boundary', () => {
+  it('accepts page feedback only from the session owner', async () => {
+    const f = fixture();
+    const submit = vi
+      .spyOn(AgentFeedbackService.prototype, 'submit')
+      .mockResolvedValue({ recorded: true, threadId: id });
+    await expect(
+      asUser(tenant, () => f.controller.feedback(id, { pageId: 'home', reason: 'confusing' })),
+    ).rejects.toThrow();
+    expect(submit).not.toHaveBeenCalled();
+    await expect(
+      asUser(owner, () => f.controller.feedback(id, { pageId: 'home', reason: 'confusing' })),
+    ).resolves.toEqual({ recorded: true, threadId: id });
+    expect(submit).toHaveBeenCalledOnce();
+    submit.mockRestore();
+  });
   it('rejects another owner before returning context or auditing a successful read', async () => {
     const f = fixture();
     await expect(asUser('another-user', () => f.controller.desktop(id))).rejects.toThrow();

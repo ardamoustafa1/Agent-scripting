@@ -82,7 +82,12 @@ export function Comments({
       {(failed || query.isError) && <Alert tone="danger" title={t('designer.lifecycle.failed')} />}
       <ul className="lc-threads">
         {query.data
-          ?.filter((thread) => thread.nodeId === activeNode)
+          // The script-wide view also gathers agent feedback, which is filed on page roots.
+          ?.filter(
+            (thread) =>
+              thread.nodeId === activeNode ||
+              (activeNode === 'script' && thread.messages[0]?.feedback !== undefined),
+          )
           .map((thread) => (
             <li key={thread.id}>
               <Badge tone={thread.resolved ? 'success' : 'info'}>
@@ -94,7 +99,14 @@ export function Comments({
                     <strong>
                       {members.data?.find((u) => `user:${u.id}` === m.author)?.name ?? m.author}
                     </strong>
-                    <p>{m.text}</p>
+                    {m.feedback ? (
+                      <p className="lc-agent-feedback">
+                        <Badge tone="warning">{t('designer.comments.agentFeedback')}</Badge>{' '}
+                        {t(`designer.comments.feedbackReasons.${m.feedback.reason}`)}
+                      </p>
+                    ) : (
+                      <p>{m.text}</p>
+                    )}
                     {m.mentions.length > 0 && (
                       <p>
                         {m.mentions

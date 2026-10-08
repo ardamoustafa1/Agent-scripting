@@ -284,17 +284,6 @@
   margin-inline: auto;
   padding: var(--ag-padding);
 }
-.ag-help {
-  position: fixed;
-  inset-block-end: 5rem;
-  inset-inline-end: var(--vb-space-4);
-  padding: var(--vb-space-5);
-  border: 1px solid var(--vb-color-border);
-  border-radius: var(--vb-radius-lg);
-  background: var(--vb-color-surface-raised);
-  box-shadow: var(--vb-shadow-lg);
-  z-index: var(--vb-z-popover);
-}
 .ag-embedded .ag-brand > span {
   display: none;
 }
@@ -410,4 +399,105 @@
 .ag-session-failure code,
 .ag-announcements code {
   overflow-wrap: anywhere;
+}
+
+/* Where the agent is (DIFFERENTIATORS D2) */
+.ag-step {
+  margin-block-end: var(--vb-space-4);
+}
+.ag-step-count {
+  margin: 0;
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.ag-step h2 {
+  margin: var(--vb-space-1) 0 0;
+  font-size: calc(var(--ag-font-size) * 1.35);
+  line-height: 1.25;
+}
+.ag-step h2:focus-visible {
+  outline: 2px solid var(--vb-color-focus);
+  outline-offset: 4px;
+  border-radius: var(--vb-radius-xs);
+}
+.ag-trail {
+  margin-block-start: var(--vb-space-2);
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-sm);
+}
+.ag-trail summary {
+  cursor: pointer;
+  min-block-size: 24px;
+}
+.ag-trail ol {
+  margin: var(--vb-space-2) 0 0;
+  padding-inline-start: var(--vb-space-5);
+}
+.ag-shortcuts {
+  display: grid;
+  gap: var(--vb-space-2);
+  margin: 0;
+}
+.ag-shortcuts > div {
+  display: grid;
+  grid-template-columns: minmax(9rem, auto) 1fr;
+  align-items: center;
+  gap: var(--vb-space-3);
+}
+.ag-shortcuts dd {
+  margin: 0;
+}
+
+/* Focus mode: the current step, large and centred; secondary chrome steps back. */
+.ag-workspace[data-focus='true'] {
+  --ag-font-size: var(--vb-font-size-lg);
+}
+.ag-workspace[data-focus='true'][data-size='large'] {
+  --ag-font-size: var(--vb-font-size-xl);
+}
+.ag-workspace[data-focus='true'] .ag-script {
+  max-inline-size: 46rem;
+}
+.ag-workspace[data-focus='true'] .ag-trail {
+  display: none;
+}
+.ag-workspace[data-focus='true'] .ag-footer [data-agent-next] {
+  min-block-size: 3rem;
+  padding-inline: var(--vb-space-6);
+  font-size: var(--vb-font-size-md);
+}
+.ag-step-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vb-space-2);
+}
+.ag-feedback {
+  display: grid;
+  gap: var(--vb-space-3);
+}
+
+/* Live compliance checklist (DIFFERENTIATORS D3): status is text + icon, never colour alone. */
+.ag-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--vb-space-2);
+}
+.ag-checklist li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--vb-space-2);
+  min-block-size: 24px;
+}
+.ag-checklist li[data-done='true'] {
+  color: var(--vb-color-text-muted);
+}
+.ag-checklist small {
+  color: var(--vb-color-text-muted);
 }

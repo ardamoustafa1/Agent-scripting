@@ -28,6 +28,7 @@ export const collectionsScript: ScriptDocumentInput = {
     { key: 'promiseDate', type: 'date', scope: 'session', persist: true },
     { key: 'objectionReason', type: 'string', scope: 'session', persist: true },
     { key: 'escalate', type: 'boolean', scope: 'session', default: false },
+    { key: 'ptpReference', type: 'string', scope: 'session', classification: 'internal' },
     {
       key: 'minInstallment',
       type: 'number',
@@ -59,7 +60,9 @@ export const collectionsScript: ScriptDocumentInput = {
         amount: { $expr: 'vars.promiseAmount' },
         date: { $expr: 'vars.promiseDate' },
       },
-      outputs: { reference: { path: '$.reference' } },
+      // Mapped into an internal variable so the reference can be written back to the platform:
+      // raw data source results count as personal data and may not reach platform sinks.
+      outputs: { reference: { path: '$.reference', variable: 'ptpReference' } },
     },
   ],
   pages: [
@@ -283,14 +286,16 @@ export const collectionsScript: ScriptDocumentInput = {
                 expression: "vars.paymentPlan == 'full' ? vars.debtAmount : vars.minInstallment",
               },
             ],
-            requiredWhen: { $expr: 'true' },
+            // Required only when a plan is agreed: a refusal never visits this page.
+            requiredWhen: { $rule: 'r-has-plan' },
           },
           {
             id: 'in-promise-date',
             type: 'datePicker',
             props: { labelKey: 'promise.date' },
             bindings: [{ variable: 'promiseDate' }],
-            requiredWhen: { $expr: 'true' },
+            // Required only when a plan is agreed: a refusal never visits this page.
+            requiredWhen: { $rule: 'r-has-plan' },
           },
           {
             id: 'btn-promise-save',
@@ -312,7 +317,7 @@ export const collectionsScript: ScriptDocumentInput = {
                     {
                       type: 'writeBackToPlatform',
                       attributes: {
-                        ptpReference: { $expr: 'ds.registerPromise.reference' },
+                        ptpReference: { $expr: 'vars.ptpReference' },
                         ptpDate: { $expr: 'vars.promiseDate' },
                       },
                     },
@@ -387,7 +392,9 @@ export const collectionsScript: ScriptDocumentInput = {
       { id: 'n-promise', type: 'page', page: 'promise' },
       { id: 'n-wrap-up', type: 'page', page: 'wrap-up' },
       { id: 'n-end', type: 'end' },
-      { id: 'n-end-wrong-party', type: 'end', outcome: 'WRONG_PARTY' },
+      // The mandatory disclosure must never be read to a wrong party, so this end is an
+      // author-declared early exit (ADR-0047): the outcome is kept without visiting it.
+      { id: 'n-end-wrong-party', type: 'end', outcome: 'WRONG_PARTY', completion: 'early' },
     ],
     edges: [
       { id: 'e1', from: 'n-rpc', to: 'n-is-rpc' },

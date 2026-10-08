@@ -1,5 +1,8 @@
 import type { AnalyticsDashboard, AnalyticsFact } from '@verbis/shared-types';
 
+import { insightsOf } from './insights.js';
+import { msprtProportions } from './sequential.js';
+
 const terminal = new Set(['completed', 'abandoned', 'expired']);
 const mean = (values: number[]) =>
   values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
@@ -51,7 +54,12 @@ export function aggregate(
   }
   const scripts = new Map<string, AnalyticsFact[][]>(),
     agentGroups = new Map<string, AnalyticsFact[][]>(),
-    variantGroups = new Map<string, AnalyticsFact[][]>();
+    variantGroups = new Map<string, AnalyticsFact[][]>(),
+    versionGroups = new Map<string, AnalyticsFact[][]>();
+  const guard = new Map<
+    string,
+    { abandoned: number; complianceEligible: number; complianceOk: number }
+  >();
   const pages = new Map<
       string,
       { visits: number; sessionIds: Set<string>; dwells: number[]; dropOff: number }
@@ -100,6 +108,7 @@ export function aggregate(
       last = rows.at(-1);
     if (!first || !last) continue;
     add(scripts, first.scriptId, rows);
+    add(versionGroups, first.versionId, rows);
     if (agents) add(agentGroups, first.agent, rows);
     if (first.experimentId && first.variant)
       add(variantGroups, first.experimentId + '|' + first.variant, rows);
@@ -169,6 +178,16 @@ export function aggregate(
     }
     eligible += required.size;
     acknowledged += [...required].filter((id) => read.has(id)).length;
+    if (first.experimentId && first.variant) {
+      const key = first.experimentId + '|' + first.variant,
+        g = guard.get(key) ?? { abandoned: 0, complianceEligible: 0, complianceOk: 0 };
+      if (last.state === 'abandoned' || last.state === 'expired') g.abandoned++;
+      if (required.size > 0) {
+        g.complianceEligible++;
+        if ([...required].every((id) => read.has(id))) g.complianceOk++;
+      }
+      guard.set(key, g);
+    }
   }
   const all = [...sessions.values()],
     summary = all.length
@@ -179,24 +198,116 @@ export function aggregate(
     experimentId: key.split('|')[0] ?? '',
   }));
   const comparisons: AnalyticsDashboard['comparisons'] = [];
+  const guardrails: NonNullable<AnalyticsDashboard['guardrails']> = [];
   for (let i = 0; i < variants.length; i++)
     for (let j = i + 1; j < variants.length; j++) {
       const a = variants[i],
         b = variants[j];
-      if (a?.experimentId === b?.experimentId && a && b)
+      if (a?.experimentId === b?.experimentId && a && b) {
+        const sequential = msprtProportions(a, b);
         comparisons.push({
           experimentId: a.experimentId,
           a: a.key,
           b: b.key,
           ...significance(a, b),
+          anytimePValue: sequential.pValue,
+          anytimeSignificant: sequential.significant,
         });
+        const ga = guard.get(a.experimentId + '|' + a.key),
+          gb = guard.get(b.experimentId + '|' + b.key);
+        if (ga && gb) {
+          const abandon = msprtProportions(
+            { sessions: a.sessions, completed: ga.abandoned },
+            { sessions: b.sessions, completed: gb.abandoned },
+          );
+          guardrails.push({
+            experimentId: a.experimentId,
+            a: a.key,
+            b: b.key,
+            metric: 'abandonment',
+            difference: abandon.difference,
+            pValue: abandon.pValue,
+            // Higher abandonment is worse.
+            worse: abandon.significant ? (abandon.difference > 0 ? b.key : a.key) : null,
+          });
+          if (ga.complianceEligible > 0 && gb.complianceEligible > 0) {
+            const compliance = msprtProportions(
+              { sessions: ga.complianceEligible, completed: ga.complianceOk },
+              { sessions: gb.complianceEligible, completed: gb.complianceOk },
+            );
+            guardrails.push({
+              experimentId: a.experimentId,
+              a: a.key,
+              b: b.key,
+              metric: 'compliance',
+              difference: compliance.difference,
+              pValue: compliance.pValue,
+              // Lower compliance is worse.
+              worse: compliance.significant ? (compliance.difference < 0 ? b.key : a.key) : null,
+            });
+          }
+        }
+      }
     }
   // Bonferroni adjustment within each experiment prevents multi-variant false discovery inflation.
+  // It is valid for the always-valid p-values too (union bound over the comparisons).
   for (const c of comparisons) {
     const count = comparisons.filter((v) => v.experimentId === c.experimentId).length;
     if (c.pValue !== null) c.pValue = Math.min(1, c.pValue * count);
     c.significant = c.pValue !== null && c.pValue < 0.05;
+    if (c.anytimePValue !== null && c.anytimePValue !== undefined) {
+      c.anytimePValue = Math.min(1, c.anytimePValue * count);
+      c.anytimeSignificant = c.anytimePValue < 0.05;
+    }
   }
+  const versionRows = [...versionGroups].flatMap(([versionId, groups]) => {
+    const firsts = groups.flatMap((r) => (r[0] ? [r[0]] : [])),
+      ends = groups.flatMap((r) => {
+        const end = r.at(-1);
+        return end ? [end.at] : [];
+      }),
+      scriptId = firsts[0]?.scriptId,
+      firstSeenAt = firsts.map((f) => f.at).sort()[0],
+      lastSeenAt = ends.sort().at(-1);
+    if (!scriptId || !firstSeenAt || !lastSeenAt) return [];
+    const base = stats(versionId, groups);
+    return [
+      {
+        versionId,
+        scriptId,
+        firstSeenAt,
+        lastSeenAt,
+        sessions: base.sessions,
+        completed: base.completed,
+        completionRate: base.completionRate,
+        meanDurationMs: base.meanDurationMs,
+      },
+    ];
+  });
+  versionRows.sort(
+    (a, b) => a.firstSeenAt.localeCompare(b.firstSeenAt) || a.versionId.localeCompare(b.versionId),
+  );
+  const versions = versionRows.map((row, index) => {
+    const previous = versionRows
+      .slice(0, index)
+      .reverse()
+      .find((candidate) => candidate.scriptId === row.scriptId);
+    if (!previous) return { ...row, vsPrevious: null };
+    const test = msprtProportions(previous, row);
+    return {
+      ...row,
+      vsPrevious: {
+        versionId: previous.versionId,
+        difference: test.difference,
+        durationDeltaMs:
+          row.meanDurationMs !== null && previous.meanDurationMs !== null
+            ? row.meanDurationMs - previous.meanDurationMs
+            : null,
+        anytimePValue: test.pValue,
+        significant: test.significant,
+      },
+    };
+  });
   const active = all.flatMap((rows) => {
     const first = rows[0],
       last = rows.at(-1);
@@ -228,13 +339,7 @@ export function aggregate(
     if (last.state === 'completed') c.completed++;
     campaigns.set(key, c);
   }
-  return {
-    generatedAt: now.toISOString(),
-    sampleEvents: events.length,
-    ...summary,
-    scripts: [...scripts].map(([k, r]) => stats(k, r)),
-    agents: [...agentGroups].map(([k, r]) => stats(k, r)),
-    pages: [...pages].map(([key, p]) => ({
+  const pageRows = [...pages].map(([key, p]) => ({
       key,
       visits: p.visits,
       sessions: p.sessionIds.size,
@@ -242,18 +347,30 @@ export function aggregate(
       dropOff: p.dropOff,
       dropOffRate: p.dropOff / p.sessionIds.size,
     })),
-    paths: [...paths.values()].sort((a, b) => b.count - a.count),
-    outcomes: [...outcomes].map(([key, count]) => ({ key, count })),
-    sources: [...sources].map(([key, s]) => ({
+    sourceRows = [...sources].map(([key, s]) => ({
       key,
       calls: s.calls,
       meanLatencyMs: mean(s.durations) ?? 0,
       errorRate: s.errors / s.calls,
     })),
-    heatmap: [...heat.values()].map(({ dwells, ...h }) => ({ ...h, meanDwellMs: mean(dwells) })),
+    heatRows = [...heat.values()].map(({ dwells, ...h }) => ({ ...h, meanDwellMs: mean(dwells) }));
+  return {
+    generatedAt: now.toISOString(),
+    sampleEvents: events.length,
+    ...summary,
+    scripts: [...scripts].map(([k, r]) => stats(k, r)),
+    agents: [...agentGroups].map(([k, r]) => stats(k, r)),
+    pages: pageRows,
+    paths: [...paths.values()].sort((a, b) => b.count - a.count),
+    outcomes: [...outcomes].map(([key, count]) => ({ key, count })),
+    sources: sourceRows,
+    heatmap: heatRows,
     compliance: { eligible, acknowledged, rate: eligible ? acknowledged / eligible : null },
     variants,
     comparisons,
+    guardrails,
+    versions,
+    insights: insightsOf({ pages: pageRows, heatmap: heatRows, sources: sourceRows }),
     active,
     liveCampaigns: [...campaigns.values()],
   };

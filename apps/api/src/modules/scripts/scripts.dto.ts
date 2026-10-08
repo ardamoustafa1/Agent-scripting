@@ -93,6 +93,8 @@ export const ScriptVersionSummarySchema = z
     retiredAt: IsoDateTime.nullable(),
     reviewRound: z.number().int(),
     createdBy: z.string(),
+    /** Branch label; null on the mainline (ADR-0051). */
+    branch: z.string().nullable(),
   })
   .meta({ id: 'ScriptVersionSummary' });
 export type ScriptVersionSummaryDto = z.infer<typeof ScriptVersionSummarySchema>;
@@ -152,6 +154,7 @@ export function toVersionSummaryDto(row: VersionSummaryRow): ScriptVersionSummar
     retiredAt: isoOrNull(row.retiredAt),
     reviewRound: row.reviewRound,
     createdBy: row.createdBy,
+    branch: row.branch,
     createdAt: iso(row.createdAt),
     updatedAt: iso(row.updatedAt),
     version: row.version,
@@ -225,3 +228,80 @@ export const VersionDiffSchema = z
     summary: z.object({ lines: z.array(z.string()), totalChanges: z.number().int() }).loose(),
   })
   .meta({ id: 'ScriptVersionDiff' });
+
+const VersionNumberField = z.number().int().min(1).max(1_000_000);
+export const MergePreviewRequestSchema = z
+  .strictObject({ base: VersionNumberField, ours: VersionNumberField, theirs: VersionNumberField })
+  .refine(
+    (v) => new Set([v.base, v.ours, v.theirs]).size === 3,
+    'base, ours and theirs must be three different versions',
+  )
+  .meta({ id: 'MergePreviewRequest' });
+export const MergePreviewSchema = z
+  .object({
+    base: z.number().int(),
+    ours: z.number().int(),
+    theirs: z.number().int(),
+    conflicts: z.array(
+      z.object({
+        path: z.string(),
+        kind: z.enum(['both-changed', 'deleted-vs-changed', 'duplicate-id']),
+        base: z.unknown(),
+        ours: z.unknown(),
+        theirs: z.unknown(),
+      }),
+    ),
+    issues: z.array(z.string()),
+    document: z.unknown().nullable(),
+  })
+  .meta({ id: 'MergePreview' });
+
+// ─── Branches (ADR-0051) ──────────────────────────────────────────────────────
+export const BranchSchema = z
+  .object({
+    name: z.string(),
+    versionNumber: z.number().int().positive(),
+    parentNumber: z.number().int(),
+    state: z.string(),
+    createdAt: IsoDateTime,
+    createdBy: z.string(),
+    mergedInto: z.number().int().nullable(),
+  })
+  .meta({ id: 'ScriptBranch' });
+export const CreateBranchSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .max(64)
+      .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Use lower-case words separated by hyphens'),
+    fromNumber: z.number().int().positive(),
+  })
+  .meta({ id: 'CreateBranch' });
+export const BranchMergePreviewSchema = z
+  .object({
+    branch: z.string(),
+    baseNumber: z.number().int(),
+    mainlineNumber: z.number().int(),
+    branchNumber: z.number().int(),
+    conflicts: z.array(
+      z.object({
+        path: z.string(),
+        kind: z.enum(['both-changed', 'deleted-vs-changed', 'duplicate-id']),
+        /** Short JSON excerpts (null = absent) of the common ancestor, the mainline and the branch. */
+        base: z.string().nullable(),
+        ours: z.string().nullable(),
+        theirs: z.string().nullable(),
+      }),
+    ),
+    issues: z.array(z.string()),
+    /** True when every conflict (none, or each one resolved) would let the merge go through. */
+    canMerge: z.boolean(),
+  })
+  .meta({ id: 'BranchMergePreview' });
+export const BranchMergeSchema = z
+  .strictObject({
+    /** Chosen side per conflict path from the preview: `ours` = mainline, `theirs` = branch. */
+    resolutions: z.record(z.string().max(512), z.enum(['ours', 'theirs'])).default({}),
+  })
+  .refine((value) => Object.keys(value.resolutions).length <= 200, 'at most 200 resolutions')
+  .meta({ id: 'BranchMerge' });

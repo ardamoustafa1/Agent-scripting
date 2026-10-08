@@ -30,8 +30,37 @@ Launch offers remain connected while sessions are open. The waiting screen shows
 status and recent sessions (channel connectivity is not a vendor health probe). Tabs support arrow,
 Home/End selection and unread badges. Header, script, optional side panels, chat transcript and page
 progress use token styles, logical properties and TR/EN messages. Font size, density and themes are
-agent preferences. Enter advances validated pages, Alt+Left goes back, Ctrl+/ shows shortcut help.
+agent preferences. Enter advances validated pages (also after a single-line answer, never from a
+multi-line field or a focused control), Ctrl/⌘+Enter advances from anywhere in the script, Alt+Left
+goes back (not while typing), `?` or Ctrl+/ opens the shortcut dialog, Alt+F toggles focus mode and
+Alt+1…9 selects an interaction; Alt shortcuts use physical key codes. Shortcuts never act inside
+dialogs or from the side panel (notes, assistant). After a page change, focus moves to the first
+field (else the step heading) and a status region announces the page. Each step shows its number,
+title (page title key, else name) and the completed steps from the authoritative view history.
+Focus mode (a stored preference, default off) enlarges text and centres the current step. Page
+transition duration is exported as the `agent.page_transition` span (duration only, no identifiers);
+the Next button shows progress only after 150 ms.
 Language changes preserve the controller and writer lease.
+
+**Required-notice checklist.** When the script has `mustRead` text nodes, the side panel gets a
+"Required notices" tab (with the pending count) listing them in page order with the page where each
+appears and a text status (done/pending, never colour alone). It reads exactly the state the runtime
+guard reads (`runtime.read.<id>`, the `acknowledged` prop or its bound variable), so it cannot show
+"done" while the guard still blocks the outcome; it adds no script state. Each confirmation is
+already audited (`runtime.session.textacknowledged`) and counted in analytics. The tab does not
+block wrap-up: an agent can still close a call whose customer hung up, and early-exit endings
+(ADR-0047) record their outcome without the notices.
+
+**Step feedback to designers.** A "Feedback" button next to the step title (disabled offline or
+without a page) opens a dialog with a fixed reason: confusing, incorrect, missing step, too long.
+There is no free text, so no customer data can be typed into it. `POST
+/v1/sessions/:id/desktop/feedback` (`{pageId, reason}`, session owner only, `read:Session`) checks the
+page exists in the pinned script version and files the reason as a comment on that page's layout
+root, in a feedback-only thread (a new thread after 500 messages; never appended to a designer
+conversation). The comment stores no session reference. It emits `runtime.desktop.feedbackSubmitted`
+(target: the session) and `script.comment.created` (`source: agentFeedback`). Designers see an "agent
+feedback" badge with the reason in node and script-wide comment views. Only the global API rate
+limiter applies; a dedicated per-session limit is a follow-up.
 
 Context sidebar fields are connector-provided: `history`, `knowledge`, `objections` arrays, plus
 `channel.chat.transcript` from normalized chat events. No invented CRM or knowledge API is called.

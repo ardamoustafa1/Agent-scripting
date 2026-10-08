@@ -138,3 +138,28 @@ it('shows empty and failed notification states', async () => {
   await f.client.invalidateQueries();
   expect(await screen.findByRole('alert')).toBeTruthy();
 });
+it('shows agent feedback from page roots in the script-wide view, localized and without text', async () => {
+  const feedbackThread = {
+    id: '01928f3a-0000-7000-8000-0000000000fb',
+    nodeId: 'home-root',
+    resolved: false,
+    version: 1,
+    messages: [
+      {
+        id: '01928f3a-0000-7000-8000-0000000000fc',
+        author: 'user:01928f3a-0000-7000-8000-0000000000fd',
+        text: '',
+        mentions: [],
+        createdAt: '2026-10-07T10:00:00Z',
+        feedback: { reason: 'missingStep' },
+      },
+    ],
+  };
+  const f = await mountDesigner(<Comments scriptId={scriptId} number={1} nodeId="script" />, {
+    [path]: [thread, feedbackThread],
+    [`/v1/scripts/${scriptId}/versions/1/team-members`]: [],
+  });
+  expect(await screen.findByText(f.label('comments.feedbackReasons.missingStep'))).toBeTruthy();
+  expect(screen.getByText(f.label('comments.agentFeedback'))).toBeTruthy();
+  expect(screen.getByText('Synthetic comment')).toBeTruthy();
+});

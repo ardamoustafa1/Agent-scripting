@@ -8,6 +8,7 @@ import { RequirePermissions } from '../authz/permissions.js';
 import {
   SessionEventListQuerySchema,
   SessionEventPageSchema,
+  SessionReplaySchema,
   SessionListQuerySchema,
   SessionPageSchema,
   SessionSchema,
@@ -46,5 +47,15 @@ export class RuntimeController {
     @ZQuery(SessionEventListQuerySchema) query: SessionEventListQuery,
   ) {
     return this.runtime.listEvents(id, query);
+  }
+
+  @ApiOperation({
+    summary: 'Metadata-only path replay of a session over its pinned script version (audited)',
+  })
+  @ApiResponse(200, 'The session path', SessionReplaySchema)
+  @RequirePermissions('read:Session')
+  @Get(':id/replay')
+  replay(@ZParam('id', UuidSchema) id: string) {
+    return this.runtime.replay(id);
   }
 }

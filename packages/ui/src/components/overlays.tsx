@@ -17,6 +17,8 @@ export interface DialogProps {
   footer?: ReactNode;
   initialFocus?: RefObject<HTMLElement>;
   className?: string;
+  /** Runs before focus is restored; call `event.preventDefault()` to move focus elsewhere. */
+  onCloseAutoFocus?: (event: Event) => void;
 }
 export function Dialog({
   trigger,
@@ -26,6 +28,7 @@ export function Dialog({
   footer,
   initialFocus,
   className = '',
+  onCloseAutoFocus,
   ...root
 }: DialogProps) {
   const previousFocus = useRef<HTMLElement | null>(null);
@@ -47,6 +50,8 @@ export function Dialog({
             }
           }}
           onCloseAutoFocus={(event) => {
+            onCloseAutoFocus?.(event);
+            if (event.defaultPrevented) return;
             if (!trigger && previousFocus.current?.isConnected) {
               event.preventDefault();
               previousFocus.current.focus();
@@ -85,6 +90,7 @@ export function Sheet({
   initialFocus,
   side = 'end',
   className = '',
+  onCloseAutoFocus,
   ...root
 }: SheetProps) {
   const previousFocus = useRef<HTMLElement | null>(null);
@@ -107,6 +113,8 @@ export function Sheet({
             }
           }}
           onCloseAutoFocus={(event) => {
+            onCloseAutoFocus?.(event);
+            if (event.defaultPrevented) return;
             if (!trigger && previousFocus.current?.isConnected) {
               event.preventDefault();
               previousFocus.current.focus();

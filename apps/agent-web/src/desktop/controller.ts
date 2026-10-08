@@ -36,6 +36,8 @@ export interface AgentState {
   callbackAt: string;
   notice: string | null;
   writeback: Desktop['writeback'];
+  /** Notices an AI check judged as probably said; never counts as confirmation (ADR-0052 E5). */
+  probablySaid: readonly string[];
 }
 /** One independent controller per securely launched interaction; writes remain server sequenced. */
 export class AgentController {
@@ -76,6 +78,7 @@ export class AgentController {
       dataFailure: null,
       readOnly: true,
       note: '',
+      probablySaid: [],
       disposition: '',
       callbackAt: '',
       notice: null,
@@ -658,6 +661,10 @@ export class AgentController {
         }),
       );
     });
+  }
+  /** Marks notices as probably said; the agent's own confirmation stays the only thing that counts. */
+  markProbablySaid(ids: readonly string[]) {
+    this.publish({ probablySaid: [...new Set([...this.state.probablySaid, ...ids])] });
   }
   preferences(patch: Partial<Pick<AgentState, 'note' | 'disposition' | 'callbackAt'>>) {
     this.publish(patch);

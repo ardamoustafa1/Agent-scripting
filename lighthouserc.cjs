@@ -6,6 +6,9 @@ module.exports = {
       url: ['http://localhost/'],
       numberOfRuns: 3,
       settings: {
+        // The agent desktop runs on operator workstations, not phones on a cellular network, so it
+        // is measured with Lighthouse's desktop profile (the default simulates slow-4G mobile).
+        preset: 'desktop',
         onlyCategories: ['performance', 'accessibility'],
         chromeFlags: '--headless --no-sandbox',
       },

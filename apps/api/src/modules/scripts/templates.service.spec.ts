@@ -2,11 +2,12 @@ import { randomUUID } from 'node:crypto';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { ScriptDocumentSchema } from '@verbis/script-schema';
+import { completionBypasses, ScriptDocumentSchema } from '@verbis/script-schema';
 import { minimalScript } from '@verbis/script-schema/fixtures';
 
 import { requestContext, systemContext } from '../../common/context/request-context.js';
 
+import { regressionResults, requirePassingResults } from './script-validation.js';
 import { CreateTemplateSchema, TemplatesService } from './templates.service.js';
 
 import type { ScriptsService } from './scripts.service.js';
@@ -80,6 +81,31 @@ describe('template authoring and tenant boundaries', () => {
     expect(again.filter((template) => template.builtIn).map((template) => template.name)).toEqual(
       builtins.map((template) => template.name),
     );
+  });
+  it('ships every built-in template with regression scenarios that pass the publication gate', async () => {
+    const f = fixture();
+    const builtins = (await f.service.list({})).filter((template) => template.builtIn);
+    for (const template of builtins) {
+      await f.run(() => f.service.instantiate(template.id, { name: 'Synthetic copy' }));
+      const document = ScriptDocumentSchema.parse(
+        f.scripts.createVersion.mock.calls.at(-1)?.[1].document,
+      );
+      expect(document.testScenarios?.length ?? 0).toBeGreaterThan(0);
+      // ADR-0047: no completing outcome may be reachable without a mandatory page.
+      expect({ template: template.id, bypasses: completionBypasses(document) }).toEqual({
+        template: template.id,
+        bypasses: [],
+      });
+      const results = await regressionResults(document);
+      expect(
+        results
+          .filter((result) => !result.passed)
+          .map((result) => `${template.id}/${result.id}:${result.code ?? 'assertion'}`),
+      ).toEqual([]);
+      expect(() => {
+        requirePassingResults(results);
+      }).not.toThrow();
+    }
   });
   it('combines category and case-insensitive search while retaining saved tenant templates', async () => {
     const f = fixture();

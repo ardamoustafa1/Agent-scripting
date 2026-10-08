@@ -73,6 +73,8 @@ export const ApiEnvSchema = z
     AI_REDACTOR_JSON: z.string().default(''),
     ANALYTICS_ENABLED: envSchemas.boolean.default(false),
     ANALYTICS_REPORTS_ENABLED: envSchemas.boolean.default(false),
+    /** Automatic rollback of canary rollouts on guardrail breach (ADR-0049). Needs analytics. */
+    ROLLOUT_GUARD_ENABLED: envSchemas.boolean.default(false),
     ANALYTICS_SMTP_URL: optionalText,
     ANALYTICS_MAIL_FROM: z.preprocess(blank, z.email().optional()),
     ANALYTICS_STORAGE: z.enum(['postgres', 'clickhouse']).default('postgres'),

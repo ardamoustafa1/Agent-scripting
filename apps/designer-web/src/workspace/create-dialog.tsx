@@ -2,10 +2,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 
 import { asSubject } from '@verbis/authz';
 import { useCan, useAbility } from '@verbis/authz/react';
-import { Button, Dialog, Input, Textarea, Alert } from '@verbis/ui';
+import { Button, Dialog, Input, Textarea, Alert, Radio, Select } from '@verbis/ui';
 
 import {
   request,
@@ -17,6 +18,12 @@ import {
 } from '../api/client.js';
 
 import { useWorkspace } from './context.js';
+
+const TemplateList = z.array(z.object({ id: z.string(), name: z.string(), builtIn: z.boolean() }));
+const Instantiated = z.object({
+  script: z.object({ id: z.uuid() }),
+  version: z.object({ number: z.number().int() }),
+});
 
 export function CreateDialog({
   kind,
@@ -36,6 +43,21 @@ export function CreateDialog({
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [campaignId, setCampaignId] = useState('');
+  // A7: start blank or from a tested template.
+  const [start, setStart] = useState<'blank' | 'template'>('blank');
+  const [templateId, setTemplateId] = useState('');
+  const templates = useQuery({
+    queryKey: [
+      'workspace',
+      session.user.tenantId,
+      session.user.id,
+      session.session.id,
+      'create-templates',
+    ],
+    enabled: open && allowed && kind === 'scripts' && start === 'template',
+    queryFn: ({ signal }) => request('/v1/templates', TemplateList, { signal }),
+  });
+  const fromTemplate = kind === 'scripts' && start === 'template';
   const campaignFieldId = useId();
   const campaigns = useQuery({
     queryKey: [
@@ -66,6 +88,19 @@ export function CreateDialog({
   });
   const selectedCampaign = campaigns.data?.some((c) => c.id === campaignId) === true;
   const submission = useRef<{ payload: string; key: string } | null>(null);
+  const instantiate = useMutation({
+    mutationFn: () =>
+      request(`/v1/templates/${encodeURIComponent(templateId)}/instantiate`, Instantiated, {
+        method: 'POST',
+        csrf: session.csrfToken,
+        body: { name, ...(description.trim() ? { description } : {}) },
+      }),
+    onSuccess: (value) => {
+      void query.invalidateQueries({ queryKey: ['workspace', session.user.tenantId] });
+      onOpenChange(false);
+      void navigate(`/scripts/${value.script.id}/versions/${String(value.version.number)}/edit`);
+    },
+  });
   const create = useMutation({
     mutationFn: () => {
       if (!allowed) throw new Error('VERBIS_FORBIDDEN');
@@ -112,7 +147,8 @@ export function CreateDialog({
         className="dw-form"
         onSubmit={(event) => {
           event.preventDefault();
-          create.mutate();
+          if (fromTemplate) instantiate.mutate();
+          else create.mutate();
         }}
       >
         <Input
@@ -133,6 +169,41 @@ export function CreateDialog({
           }}
         />
         {kind === 'scripts' && (
+          <Radio
+            label={t('designer.workspace.startWith.label')}
+            value={start}
+            onValueChange={(value) => {
+              setStart(value === 'template' ? 'template' : 'blank');
+            }}
+            options={[
+              { value: 'blank', label: t('designer.workspace.startWith.blank') },
+              { value: 'template', label: t('designer.workspace.startWith.template') },
+            ]}
+          />
+        )}
+        {fromTemplate && (
+          <>
+            <Select
+              label={t('designer.workspace.startWith.choose')}
+              value={templateId}
+              disabled={templates.isPending || templates.isError}
+              onValueChange={setTemplateId}
+              options={(templates.data ?? []).map((row) => ({
+                value: row.id,
+                label: row.builtIn ? t(`designer.lifecycle.templates.${row.id}`) : row.name,
+              }))}
+            />
+            <p>{t('designer.workspace.startWith.templateHelp')}</p>
+            {templates.isError && (
+              <Alert tone="danger" title={t('designer.workspace.error')}>
+                <Button variant="secondary" onClick={() => void templates.refetch()}>
+                  {t('designer.workspace.retry')}
+                </Button>
+              </Alert>
+            )}
+          </>
+        )}
+        {kind === 'scripts' && !fromTemplate && (
           <>
             <div className="vb-form-field">
               <label htmlFor={campaignFieldId}>{t('designer.workspace.createCampaign')}</label>
@@ -167,6 +238,7 @@ export function CreateDialog({
             )}
           </>
         )}
+        {instantiate.isError && <Alert tone="danger" title={t('designer.workspace.error')} />}
         {create.isError && (
           <Alert
             tone="danger"
@@ -181,8 +253,10 @@ export function CreateDialog({
         )}
         <Button
           type="submit"
-          loading={create.isPending}
-          disabled={!name.trim() || (kind === 'scripts' && !selectedCampaign)}
+          loading={create.isPending || instantiate.isPending}
+          disabled={
+            !name.trim() || (fromTemplate ? !templateId : kind === 'scripts' && !selectedCampaign)
+          }
         >
           {t('designer.workspace.create')}
         </Button>

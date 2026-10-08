@@ -44,6 +44,13 @@ import type { PrismaClient } from '../../src/generated/prisma/client.js';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 
 let owner: PrismaClient, app: NestFastifyApplication, kit: TokenKit;
+function safeJson(text: string): unknown {
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return undefined;
+  }
+}
 beforeAll(async () => {
   kit = await createTokenKit();
   owner = ownerPrisma();
@@ -730,7 +737,11 @@ it('PCI canary: signed hosted capture and rejected raw PAN leave no PAN in SQL, 
         const text = new TextDecoder().decode(message.data);
         assertNoPciCanary(text, pan);
         messages++;
-        const event = EventEnvelopeSchema.parse(JSON.parse(text));
+        // Streams are shared with other suites (e.g. the outbox poison-message test), so a
+        // non-envelope payload is still scanned for the PAN above but not projected.
+        const parsed = EventEnvelopeSchema.safeParse(safeJson(text));
+        if (!parsed.success) continue;
+        const event = parsed.data;
         if (
           event.tenantId === f.tenant.tenantId &&
           event.type === 'verbis.runtime.session.changed.v1'
@@ -760,4 +771,81 @@ it('PCI canary: signed hosted capture and rejected raw PAN leave no PAN in SQL, 
     redis.disconnect();
     await canaryApp.close();
   }
+});
+
+describe('session path replay (ADR-0050, metadata-only)', () => {
+  it('reconstructs a real session path without exposing redacted values, audits the read and filters by version', async () => {
+    const f = await fixture();
+    const page = surveyScript.pages[0]?.id;
+    if (!page) throw new Error('fixture needs a page');
+    const synthetic = 'Synthetic replay customer name';
+    const send = (expectedSequence: number, command: object) =>
+      f.run(() =>
+        f.engine.command(f.session.id, {
+          ...f.claim,
+          expectedSequence,
+          command,
+        } as never),
+      );
+    await send(2, { type: 'page', pageId: page });
+    await send(3, { type: 'field', variable: 'runtimeCounter', value: 7 });
+    await send(4, { type: 'field', variable: 'runtimeCustomer', value: synthetic });
+    await send(5, { type: 'transition', state: 'wrapup' });
+
+    const headers = await f.tenant.auth();
+    const response = await app.inject({
+      method: 'GET',
+      url: `/v1/sessions/${f.session.id}/replay`,
+      headers,
+    });
+    expect(response.statusCode).toBe(200);
+    const replay = response.json<{
+      versionNumber: number;
+      steps: { kind: string; variable?: string; value?: string; pageId?: string; to?: string }[];
+      pages: { pageId: string; visits: number }[];
+      unreached: { id: string }[];
+    }>();
+    expect(replay.versionNumber).toBe(1);
+    expect(replay.pages).toMatchObject([{ pageId: page, visits: 1 }]);
+    expect(replay.unreached.map((p) => p.id)).not.toContain(page);
+    const fields = replay.steps.filter((s) => s.kind === 'field');
+    expect(fields).toEqual([
+      expect.objectContaining({ variable: 'runtimeCounter', value: '7' }),
+      expect.objectContaining({ variable: 'runtimeCustomer', value: '[REDACTED]' }),
+    ]);
+    expect(response.body).not.toContain(synthetic);
+    expect(replay.steps.at(-1)).toMatchObject({ kind: 'state', to: 'wrapup' });
+
+    const audits = await owner.auditEvent.findMany({
+      where: {
+        tenantId: f.tenant.tenantId,
+        targetId: f.session.id,
+        action: 'runtime.session.replayViewed',
+      },
+    });
+    expect(audits).toHaveLength(1);
+
+    const versionId = f.session.scriptVersionId;
+    const listed = await app.inject({
+      method: 'GET',
+      url: `/v1/sessions?scriptVersionId=${versionId}`,
+      headers,
+    });
+    expect(listed.json<{ data: { id: string }[] }>().data.map((s) => s.id)).toEqual([f.session.id]);
+    const none = await app.inject({
+      method: 'GET',
+      url: `/v1/sessions?scriptVersionId=${uuidv7()}`,
+      headers,
+    });
+    expect(none.json<{ data: unknown[] }>().data).toEqual([]);
+
+    // Another tenant cannot replay it.
+    const other = await createTenant(owner, kit, uniqueSlug('replay-other'));
+    const foreign = await app.inject({
+      method: 'GET',
+      url: `/v1/sessions/${f.session.id}/replay`,
+      headers: await other.auth(),
+    });
+    expect(foreign.statusCode).toBe(404);
+  });
 });

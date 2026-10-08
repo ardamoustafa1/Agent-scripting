@@ -27,6 +27,7 @@ import { RuntimeEngineService } from '../runtime/runtime-engine.service.js';
 import { ScriptsService } from '../scripts/scripts.service.js';
 
 import { extractText } from './import.js';
+import { noticeChoices, type NoticeChoice } from './notices.js';
 import { EndpointSchema, type LlmProvider } from './providers.js';
 import { maskPatterns, systemPrompt, validateOutput } from './safety.js';
 import { postJson } from './transport.js';
@@ -189,11 +190,13 @@ export class AiService {
       const endpoint = this.endpoints().find((e) => e.id === config.endpointId);
       if (!endpoint || !endpoint.models.includes(config.model) || !config.secretRef)
         throw new DomainError('VERBIS_AI_UNAVAILABLE');
-      const agent = ['reply', 'objection', 'summary'].includes(input.task);
+      const agent = ['reply', 'objection', 'summary', 'navigate', 'notices'].includes(input.task);
       let document = input.document;
       let text = input.text;
       const objections: string[] = [];
       let dispositions: string[] = [];
+      let pages: { id: string; name: string }[] = [];
+      let notices: NoticeChoice[] = [];
       if (agent) {
         if (!config.agentEnabled || !input.sessionId || input.file || input.document)
           throw new ForbiddenError();
@@ -220,6 +223,12 @@ export class AiService {
           operatorContext: input.text,
         });
         const snapshot = await this.runtime.snapshot(row);
+        if (input.task === 'navigate')
+          pages = ScriptDocumentSchema.parse(document)
+            .pages.filter((page) => page.id !== snapshot.currentPage)
+            .map((page) => ({ id: page.id, name: page.name }));
+        if (input.task === 'notices')
+          notices = noticeChoices(ScriptDocumentSchema.parse(document), input.locale);
         walkNodes(ScriptDocumentSchema.parse(document), ({ node, pageId }) => {
           if (pageId === snapshot.currentPage && node.type === 'objectionHandler')
             objections.push(node.id);
@@ -264,6 +273,8 @@ export class AiService {
         text,
         objections,
         dispositions,
+        pages,
+        notices,
       };
     });
     const id = uuidv7(),
@@ -282,6 +293,8 @@ export class AiService {
         document: prepared.document ?? null,
         objectionIds: prepared.objections,
         dispositionCodes: prepared.dispositions,
+        pageChoices: prepared.pages,
+        noticeChoices: prepared.notices,
       });
       if (original.length > 200000) throw new Error('INPUT_LIMIT');
       const patterns = maskPatterns(original);
@@ -370,16 +383,20 @@ export class AiService {
         JSON.parse(result.text) as unknown,
         prepared.document,
       );
-      if (['reply', 'objection', 'summary'].includes(input.task)) {
+      if (['reply', 'objection', 'summary', 'navigate', 'notices'].includes(input.task)) {
         const proposal = z
           .looseObject({
+            pageId: z.string().nullable().optional(),
+            noticeIds: z.array(z.string()).optional(),
             objectionNodeId: z.string().nullable().optional(),
             disposition: z.string().nullable().optional(),
           })
           .parse(value);
         if (
           (proposal.objectionNodeId && !prepared.objections.includes(proposal.objectionNodeId)) ||
-          (proposal.disposition && !prepared.dispositions.includes(proposal.disposition))
+          (proposal.disposition && !prepared.dispositions.includes(proposal.disposition)) ||
+          (proposal.pageId && !prepared.pages.some((page) => page.id === proposal.pageId)) ||
+          proposal.noticeIds?.some((id) => !prepared.notices.some((notice) => notice.id === id))
         )
           throw new Error('UNAPPROVED_REFERENCE');
       }

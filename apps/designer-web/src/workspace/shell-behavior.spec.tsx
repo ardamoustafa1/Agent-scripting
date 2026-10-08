@@ -70,9 +70,16 @@ it.each([false, true])('toggles theme using the command palette from dark=%s', a
   const f = await setup('/settings', { dark });
   fireEvent.keyDown(document, { key: 'k', ctrlKey: true });
   const dialog = await screen.findByRole('dialog');
-  fireEvent.click(within(dialog).getByRole('option', { name: f.label('workspace.toggleTheme') }));
-  expect(f.setTheme).toHaveBeenCalledWith(dark ? 'light' : 'dark');
+  // A previous run may list it under "Recent" too; both rows run the same command.
+  const [option] = within(dialog).getAllByRole('option', {
+    name: f.label('workspace.toggleTheme'),
+  });
+  fireEvent.click(option!);
   expect(screen.queryByRole('dialog')).toBeNull();
+  // Commands run once the palette has closed and restored focus.
+  await waitFor(() => {
+    expect(f.setTheme).toHaveBeenCalledWith(dark ? 'light' : 'dark');
+  });
 });
 it('opens creation from the command palette and navigates to a permitted destination', async () => {
   const f = await setup();

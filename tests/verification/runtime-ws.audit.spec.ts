@@ -110,8 +110,10 @@ beforeAll(async () => {
     origin: 'http://localhost:5175',
     'x-csrf-token': browser.record.csrfToken,
   };
-  await app.listen(0, '127.0.0.1');
-  url = await app.getUrl();
+  // The disposable nginx container reaches the API through the Docker host gateway, so the
+  // listener must not be loopback-only (Linux runners have no loopback proxy like Docker Desktop).
+  await app.listen(0, '0.0.0.0');
+  url = `http://127.0.0.1:${new URL(await app.getUrl()).port}`;
 });
 afterAll(async () => {
   for (const socket of sockets) socket.close();
@@ -214,9 +216,10 @@ describe('V2 real WebSocket disconnect reconnect', () => {
   });
   it('real nginx agent bundle blocks a foreign iframe and must audit the rejection', async () => {
     const appPort = new URL(url).port;
-    const config = readFileSync(new URL('../../deploy/nginx-compose.conf', import.meta.url), 'utf8')
-      .replaceAll('api:4000', `host.docker.internal:${appPort}`)
-      .replaceAll('collaboration:4010', `host.docker.internal:${appPort}`);
+    const config = readFileSync(
+      new URL('../../deploy/nginx-compose.conf', import.meta.url),
+      'utf8',
+    ).replace(/\b(?:api|collaboration):\d+/g, `host.docker.internal:${appPort}`);
     const edge = await new GenericContainer('nginxinc/nginx-unprivileged:1.31-alpine')
       .withCopyContentToContainer([{ target: '/etc/nginx/conf.d/default.conf', content: config }])
       .withCopyFilesToContainer([
@@ -237,6 +240,7 @@ describe('V2 real WebSocket disconnect reconnect', () => {
           target: '/usr/share/nginx/html',
         },
       ])
+      .withExtraHosts([{ host: 'host.docker.internal', ipAddress: 'host-gateway' }])
       .withExposedPorts(8080)
       .withWaitStrategy(Wait.forHttp('/health', 8080))
       .start();

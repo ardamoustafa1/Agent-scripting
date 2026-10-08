@@ -384,3 +384,55 @@ it('leaves a failed initial connection and restores REST editing without losing 
   expect(socket.destroy).toHaveBeenCalledOnce();
   expect(await screen.findByRole('alert')).toBeTruthy();
 });
+it('follows a colleague to their page without selecting, and stops on local input or when they leave', async () => {
+  const f = await setup();
+  f.store.addPage('Second page');
+  const second = f.store.getSnapshot().pageId;
+  f.store.setView({ pageId: 'home' });
+  await waitFor(() => {
+    expect(f.requests.some((r) => r.path.endsWith('/team-members'))).toBe(true);
+  });
+  const peer = (pageId: string) => {
+    f.socket.states.set(1, { userId: campaignId, pageId, selection: ['btn-next'], cursor: null });
+    act(() => {
+      f.socket.options.onAwarenessChange();
+    });
+  };
+  peer('home');
+  const follow = await screen.findByRole('button', {
+    name: f.i18n.t('designer.collaboration.follow', { name: 'Synthetic peer' }),
+  });
+  expect(follow.getAttribute('data-tone')).toMatch(
+    /^(info|success|warning|primary|focus|brand-accent)$/,
+  );
+  fireEvent.click(follow);
+  expect(follow.getAttribute('aria-pressed')).toBe('true');
+  expect(
+    screen.getByText(f.i18n.t('designer.collaboration.following', { name: 'Synthetic peer' })),
+  ).toBeTruthy();
+
+  peer(second);
+  await waitFor(() => {
+    expect(f.store.getSnapshot().pageId).toBe(second);
+  });
+  // Following never changes the follower's own selection.
+  expect(f.store.getSnapshot().selection).toEqual([]);
+
+  fireEvent.keyDown(document, { key: 'ArrowDown' });
+  await screen.findByText(f.i18n.t('designer.collaboration.followStopped'));
+  peer('home');
+  expect(f.store.getSnapshot().pageId).toBe(second);
+
+  fireEvent.click(
+    screen.getByRole('button', {
+      name: f.i18n.t('designer.collaboration.follow', { name: 'Synthetic peer' }),
+    }),
+  );
+  f.socket.states.delete(1);
+  act(() => {
+    f.socket.options.onAwarenessChange();
+  });
+  await screen.findByText(
+    f.i18n.t('designer.collaboration.followEnded', { name: 'Synthetic peer' }),
+  );
+});

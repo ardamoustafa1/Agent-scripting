@@ -245,6 +245,41 @@ export const PROBLEM_CATALOG = {
     slug: 'script/version-immutable',
     title: 'Only draft versions can be changed',
   },
+  VERBIS_BRANCH_NOT_PUBLISHABLE: {
+    status: 409,
+    slug: 'branch/not-publishable',
+    title: 'A branch cannot be submitted or published; merge it into the mainline first',
+  },
+  VERBIS_BRANCH_EXISTS: {
+    status: 409,
+    slug: 'branch/exists',
+    title: 'A branch with this name already exists',
+  },
+  VERBIS_BRANCH_CONFLICT: {
+    status: 409,
+    slug: 'branch/conflict',
+    title: 'The branch and the mainline changed the same things; resolve them in the branch first',
+  },
+  VERBIS_BRANCH_MERGED: {
+    status: 409,
+    slug: 'branch/merged',
+    title: 'The branch has already been merged',
+  },
+  VERBIS_SUGGESTION_STALE: {
+    status: 409,
+    slug: 'suggestion/stale',
+    title: 'The suggestion no longer applies to the current draft',
+  },
+  VERBIS_SUGGESTION_INVALID: {
+    status: 422,
+    slug: 'suggestion/invalid',
+    title: 'The suggestion does not produce a valid script',
+  },
+  VERBIS_SUGGESTION_NOT_OPEN: {
+    status: 409,
+    slug: 'suggestion/not-open',
+    title: 'The suggestion has already been decided',
+  },
   VERBIS_SCRIPT_SEMVER_NOT_INCREASING: {
     status: 422,
     slug: 'script/semver-not-increasing',

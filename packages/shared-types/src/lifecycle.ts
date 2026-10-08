@@ -16,6 +16,20 @@ export const CommentInputSchema = z
 export const CommentReplySchema = CommentInputSchema.omit({ nodeId: true }).meta({
   id: 'NodeCommentReply',
 });
+/** Fixed reasons only: free text from a live call could carry customer personal data. */
+export const AgentFeedbackReasonSchema = z
+  .enum(['confusing', 'incorrect', 'missingStep', 'tooLong'])
+  .meta({ id: 'AgentFeedbackReason' });
+export const AgentFeedbackInputSchema = z
+  .strictObject({
+    pageId: z.string().min(1).max(128),
+    reason: AgentFeedbackReasonSchema,
+  })
+  .meta({ id: 'AgentFeedbackInput' });
+export const AgentFeedbackResultSchema = z
+  .object({ recorded: z.literal(true), threadId: z.uuid() })
+  .meta({ id: 'AgentFeedbackResult' });
+
 export const ThreadSchema = z
   .object({
     id: z.uuid(),
@@ -29,6 +43,8 @@ export const ThreadSchema = z
           text: z.string(),
           mentions: z.array(z.uuid()),
           createdAt: z.string(),
+          /** Structured agent feedback (C5); `text` is empty and the reason is shown localized. */
+          feedback: z.object({ reason: AgentFeedbackReasonSchema }).optional(),
         }),
       )
       .max(500),
@@ -51,7 +67,7 @@ export const NotificationSchema = z
     id: z.string(),
     scriptId: z.uuid(),
     number: z.number().int(),
-    kind: z.enum(['review', 'mention']),
+    kind: z.enum(['review', 'mention', 'suggestion']),
     createdAt: z.string(),
     threadId: z.uuid().optional(),
   })

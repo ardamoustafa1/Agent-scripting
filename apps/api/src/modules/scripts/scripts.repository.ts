@@ -48,6 +48,8 @@ const VERSION_SUMMARY_SELECT = {
   createdBy: true,
   updatedBy: true,
   source: true,
+  branch: true,
+  parentVersionId: true,
   createdAt: true,
   updatedAt: true,
   version: true,

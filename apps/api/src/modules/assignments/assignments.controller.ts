@@ -25,13 +25,18 @@ import {
   type UpdateAssignmentInput,
 } from './assignments.dto.js';
 import { AssignmentsService } from './assignments.service.js';
+import { AllocationReportSchema, RolloutReportSchema } from './rollout.dto.js';
+import { RolloutService } from './rollout.service.js';
 
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @ApiTag('assignments')
 @Controller('v1/assignments')
 export class AssignmentsController {
-  constructor(@Inject(AssignmentsService) private readonly assignments: AssignmentsService) {}
+  constructor(
+    @Inject(AssignmentsService) private readonly assignments: AssignmentsService,
+    @Inject(RolloutService) private readonly rollouts: RolloutService,
+  ) {}
 
   @ApiOperation({
     summary: 'Atomically assign multiple campaigns or update priorities and windows',
@@ -54,6 +59,28 @@ export class AssignmentsController {
   @Get()
   list(@ZQuery(AssignmentListQuerySchema) query: AssignmentListQuery) {
     return this.assignments.list(query);
+  }
+
+  @ApiOperation({
+    summary:
+      'Canary rollout verdict: hold, advance (advisory) or rollback, from always-valid analytics. Apply a proposal with PATCH variants.',
+  })
+  @ApiResponse(200, 'Rollout verdict', RolloutReportSchema)
+  @RequirePermissions('read:Assignment')
+  @Get(':id/rollout')
+  rollout(@ZParam('id', UuidSchema) id: string) {
+    return this.rollouts.evaluate(id);
+  }
+
+  @ApiOperation({
+    summary:
+      'Bandit (Thompson sampling) traffic advice for an A/B assignment: proposed weights, never applied; guardrail-breached arms get none',
+  })
+  @ApiResponse(200, 'Allocation advice', AllocationReportSchema)
+  @RequirePermissions('read:Assignment')
+  @Get(':id/allocation')
+  allocation(@ZParam('id', UuidSchema) id: string) {
+    return this.rollouts.allocation(id);
   }
 
   @ApiOperation({ summary: 'Get an assignment' })

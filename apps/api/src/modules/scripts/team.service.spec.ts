@@ -84,6 +84,7 @@ function fixture() {
       count: vi.fn().mockResolvedValue(1),
       findMany: vi.fn().mockResolvedValue([{ id, displayName: 'Synthetic member' }]),
     },
+    scriptSuggestion: { findMany: vi.fn().mockResolvedValue([]) },
     authoringThread: {
       findFirst: vi.fn().mockResolvedValue(thread),
       findFirstOrThrow: vi.fn().mockResolvedValue(thread),

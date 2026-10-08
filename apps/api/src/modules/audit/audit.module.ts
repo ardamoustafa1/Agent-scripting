@@ -12,15 +12,23 @@ import { SecurityReportsController } from './security-reports.controller.js';
 import { SessionEventWriter } from './session-events/session-event.writer.js';
 import { SiemDestinationsController } from './siem/siem-destinations.controller.js';
 import { SiemDestinationsService } from './siem/siem-destinations.service.js';
+import { TrustCenterController } from './trust-center.controller.js';
+import { TrustCenterService } from './trust-center.service.js';
 
 @Module({
-  controllers: [AuditController, SiemDestinationsController, SecurityReportsController],
+  controllers: [
+    AuditController,
+    SiemDestinationsController,
+    SecurityReportsController,
+    TrustCenterController,
+  ],
   providers: [
     AuditService,
     AuditRepository,
     AuditQueryService,
     SessionEventWriter,
     SiemDestinationsService,
+    TrustCenterService,
     AuditTrailInterceptor,
     AuditFailureInterceptor,
     {

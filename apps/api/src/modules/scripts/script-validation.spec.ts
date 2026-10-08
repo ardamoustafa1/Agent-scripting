@@ -9,7 +9,7 @@ import {
   ScriptDocumentSchema,
 } from '@verbis/script-schema';
 import { minimalScript } from '@verbis/script-schema/fixtures';
-import { IntegrationDefinitionSchema } from '@verbis/shared-types';
+import { IntegrationDefinitionSchema, RegressionReportSchema } from '@verbis/shared-types';
 
 import {
   regressionResults,
@@ -177,4 +177,21 @@ it('releases historical pinned definitions after a live edit, retaining producti
     ],
   };
   await expect(validateDataSourceReferences(tx, 'tenant', doc, true)).resolves.toBeUndefined();
+});
+it('reports only the regression contract fields, never designer coverage or observations', async () => {
+  const document = ScriptDocumentSchema.parse(minimalScript());
+  document.testScenarios = [
+    TestScenarioSchema.parse({
+      id: 'reachesHome',
+      name: 'Reaches home',
+      synthetic: true,
+      context: {},
+      steps: [],
+      expected: { page: 'home' },
+    }),
+  ];
+  const [result] = await regressionResults(document);
+  expect(result).toMatchObject({ id: 'reachesHome', passed: true });
+  expect(Object.keys(result ?? {}).sort()).toEqual(['assertions', 'durationMs', 'id', 'passed']);
+  expect(RegressionReportSchema.shape.results.element.safeParse(result).success).toBe(true);
 });

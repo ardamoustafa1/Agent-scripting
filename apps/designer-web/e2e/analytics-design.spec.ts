@@ -22,6 +22,8 @@ for (const locale of ['tr', 'en']) {
           page,
         }) => {
           await page.setViewportSize({ width, height: 1000 });
+          // The default report range is relative to today; pin the date so baselines stay valid.
+          await page.clock.setFixedTime(new Date('2026-10-06T12:00:00Z'));
           await page.addInitScript(
             ({ theme, tenant, user }) => {
               localStorage.setItem('verbis.theme', theme);

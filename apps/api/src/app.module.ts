@@ -19,6 +19,7 @@ import { AuditModule } from './modules/audit/audit.module.js';
 import { AccessGuard } from './modules/authz/access.guard.js';
 import { AuthzModule } from './modules/authz/authz.module.js';
 import { CampaignsModule } from './modules/campaigns/campaigns.module.js';
+import { ComplianceModule } from './modules/compliance/compliance.module.js';
 import { ConnectorsModule } from './modules/connectors/connectors.module.js';
 import { IdentityModule } from './modules/identity/identity.module.js';
 import { IntegrationsModule } from './modules/integrations/integrations.module.js';
@@ -48,6 +49,7 @@ export const FEATURE_MODULES: readonly Type[] = [
   LaunchModule,
   ConnectorsModule,
   AnalyticsModule,
+  ComplianceModule,
   AdminModule,
 ];
 

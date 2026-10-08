@@ -38,6 +38,8 @@ import {
   ScriptVersionSummarySchema,
   SubmitVersionSchema,
   UpdateDraftSchema,
+  MergePreviewRequestSchema,
+  MergePreviewSchema,
   VersionDiffSchema,
   type ReviewVersionInput,
   type SubmitVersionInput,
@@ -281,6 +283,21 @@ export class ScriptsController {
   @Post(':id/versions/:number/retire')
   retire(@ZParam('id', UuidSchema) id: string, @ZParam('number', VersionNumber) number: number) {
     return this.lifecycle.retire(id, number);
+  }
+
+  @ApiOperation({
+    summary:
+      'Three-way structural merge preview of three versions (base, ours, theirs); stores nothing, conflicts are reported, never hidden',
+  })
+  @ApiResponse(200, 'Merge preview', MergePreviewSchema)
+  @Can('read', 'Script')
+  @HttpCode(200)
+  @Post(':id/merge-preview')
+  mergePreview(
+    @ZParam('id', UuidSchema) id: string,
+    @ZBody(MergePreviewRequestSchema) body: z.output<typeof MergePreviewRequestSchema>,
+  ) {
+    return this.lifecycle.mergePreview(id, body);
   }
 
   @ApiOperation({ summary: 'Diff two versions: RFC 6902 patch + human-readable summary' })

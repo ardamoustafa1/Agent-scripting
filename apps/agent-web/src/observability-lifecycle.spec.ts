@@ -138,3 +138,23 @@ it('binds requests to the launch span, records only bounded vital metadata and f
 function firePageHide() {
   window.dispatchEvent(new Event('pagehide'));
 }
+it('records page transition duration only, and only when tracing is enabled', async () => {
+  const off = await setup(false);
+  await off.module.initializeObservability();
+  off.module.agentPageTransition(42);
+  expect(off.startSpan).not.toHaveBeenCalled();
+
+  const f = await setup();
+  await f.module.initializeObservability();
+  const before = f.spans.length;
+  f.module.agentPageTransition(42.6);
+  f.module.agentPageTransition(Number.NaN);
+  f.module.agentPageTransition(-1);
+  const recorded = f.spans.slice(before);
+  expect(f.startSpan).toHaveBeenCalledWith('agent.page_transition');
+  expect(recorded).toHaveLength(1);
+  expect(recorded[0]?.setAttribute.mock.calls).toEqual([
+    ['verbis.agent.page_transition.duration_ms', 43],
+  ]);
+  expect(recorded[0]?.end).toHaveBeenCalledOnce();
+});

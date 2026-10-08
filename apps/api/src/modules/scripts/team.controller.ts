@@ -9,6 +9,9 @@ import {
   NotificationSchema,
   RollbackSchema,
   ReleaseScheduleSchema,
+  SuggestionDecisionSchema,
+  SuggestionInputSchema,
+  SuggestionSchema,
 } from '@verbis/shared-types';
 
 import { UuidSchema } from '../../common/dto.js';
@@ -17,6 +20,7 @@ import { ApiOperation, ApiResponse, ApiTag } from '../../openapi/metadata.js';
 import { Can } from '../authz/permissions.js';
 
 import { ReleaseJobsService } from './release-jobs.service.js';
+import { SuggestionsService } from './suggestions.service.js';
 import { TeamService } from './team.service.js';
 import { VersionLifecycleService } from './version-lifecycle.service.js';
 
@@ -27,6 +31,7 @@ export class TeamController {
   constructor(
     @Inject(ReleaseJobsService) private readonly jobs: ReleaseJobsService,
     @Inject(TeamService) private readonly team: TeamService,
+    @Inject(SuggestionsService) private readonly suggestions: SuggestionsService,
     @Inject(VersionLifecycleService) private readonly lifecycle: VersionLifecycleService,
   ) {}
   @ApiOperation({
@@ -141,5 +146,53 @@ export class TeamController {
     @ZBody(RollbackSchema) body: z.infer<typeof RollbackSchema>,
   ) {
     return this.lifecycle.rollback(id, body.targetNumber, body.expectedCurrentVersionId);
+  }
+  @ApiOperation({ summary: 'Propose a change to a draft as RFC 6902 operations (suggestion mode)' })
+  @ApiResponse(201, 'Suggestion', SuggestionSchema)
+  @Can('read', 'Script')
+  @Post('scripts/:id/versions/:number/suggestions')
+  suggest(
+    @ZParam('id', UuidSchema) id: string,
+    @ZParam('number', NumberSchema) number: number,
+    @ZBody(SuggestionInputSchema) body: z.infer<typeof SuggestionInputSchema>,
+  ) {
+    return this.suggestions.create(id, number, body);
+  }
+  @ApiOperation({
+    summary: 'List suggestions of a version; open ones that no longer apply are stale',
+  })
+  @ApiResponse(200, 'Suggestions', z.array(SuggestionSchema))
+  @Can('read', 'Script')
+  @Get('scripts/:id/versions/:number/suggestions')
+  listSuggestions(
+    @ZParam('id', UuidSchema) id: string,
+    @ZParam('number', NumberSchema) number: number,
+  ) {
+    return this.suggestions.list(id, number);
+  }
+  @ApiOperation({ summary: 'Apply a suggestion to the draft; stale suggestions are refused' })
+  @ApiResponse(200, 'Accepted suggestion', SuggestionSchema)
+  @Can('update', 'Script')
+  @HttpCode(200)
+  @Post('scripts/:id/versions/:number/suggestions/:suggestion/accept')
+  acceptSuggestion(
+    @ZParam('id', UuidSchema) id: string,
+    @ZParam('number', NumberSchema) number: number,
+    @ZParam('suggestion', UuidSchema) suggestion: string,
+  ) {
+    return this.suggestions.accept(id, number, suggestion);
+  }
+  @ApiOperation({ summary: 'Reject a suggestion with an optional reason' })
+  @ApiResponse(200, 'Rejected suggestion', SuggestionSchema)
+  @Can('update', 'Script')
+  @HttpCode(200)
+  @Post('scripts/:id/versions/:number/suggestions/:suggestion/reject')
+  rejectSuggestion(
+    @ZParam('id', UuidSchema) id: string,
+    @ZParam('number', NumberSchema) number: number,
+    @ZParam('suggestion', UuidSchema) suggestion: string,
+    @ZBody(SuggestionDecisionSchema) body: z.infer<typeof SuggestionDecisionSchema>,
+  ) {
+    return this.suggestions.reject(id, number, suggestion, body);
   }
 }

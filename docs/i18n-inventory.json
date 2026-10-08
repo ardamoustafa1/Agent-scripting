@@ -27,6 +27,9 @@
     "admin.attachedData.variableFor",
     "admin.attachedData.writeBack",
     "admin.attachedData.writeBackFor",
+    "admin.auditCertificate.download",
+    "admin.auditCertificate.help",
+    "admin.auditCertificate.title",
     "admin.auth.breakGlass.code",
     "admin.auth.breakGlass.email",
     "admin.auth.breakGlass.hint",
@@ -96,6 +99,14 @@
     "admin.hello.appName",
     "admin.hello.description",
     "admin.hello.title",
+    "admin.locations.code",
+    "admin.locations.create",
+    "admin.locations.name",
+    "admin.locations.remove",
+    "admin.locations.title",
+    "admin.onboarding.help",
+    "admin.onboarding.name",
+    "admin.onboarding.title",
     "admin.simulator.action.connect",
     "admin.simulator.action.customerMessage",
     "admin.simulator.action.end",
@@ -157,6 +168,7 @@
     "adminWorkspace.agentTitle",
     "adminWorkspace.ai",
     "adminWorkspace.allCampaigns",
+    "adminWorkspace.allSites",
     "adminWorkspace.allTeams",
     "adminWorkspace.analytics",
     "adminWorkspace.analyticsDays",
@@ -194,6 +206,14 @@
     "adminWorkspace.dark",
     "adminWorkspace.data",
     "adminWorkspace.dead",
+    "adminWorkspace.deadLetters",
+    "adminWorkspace.deadLettersDurable",
+    "adminWorkspace.deadLettersHint",
+    "adminWorkspace.deadLettersPersistFailures",
+    "adminWorkspace.deadLettersPersisted",
+    "adminWorkspace.deadLettersReplay",
+    "adminWorkspace.deadLettersReplayLimit",
+    "adminWorkspace.deadLettersReplayed",
     "adminWorkspace.defaultRoles",
     "adminWorkspace.denied",
     "adminWorkspace.description",
@@ -353,6 +373,7 @@
     "adminWorkspace.intros.simulator",
     "adminWorkspace.intros.systemHealth",
     "adminWorkspace.intros.tenants",
+    "adminWorkspace.intros.trust",
     "adminWorkspace.intros.users",
     "adminWorkspace.invalid",
     "adminWorkspace.ip",
@@ -382,6 +403,7 @@
     "adminWorkspace.name",
     "adminWorkspace.navigation",
     "adminWorkspace.next",
+    "adminWorkspace.no",
     "adminWorkspace.noSamples",
     "adminWorkspace.noScopeOptions",
     "adminWorkspace.occurredAt",
@@ -393,6 +415,9 @@
     "adminWorkspace.password",
     "adminWorkspace.path",
     "adminWorkspace.pending",
+    "adminWorkspace.pickerLoadMore",
+    "adminWorkspace.pickerNoMatches",
+    "adminWorkspace.pickerSearch",
     "adminWorkspace.platform",
     "adminWorkspace.platformUserId",
     "adminWorkspace.port",
@@ -473,6 +498,7 @@
     "adminWorkspace.totp",
     "adminWorkspace.tr",
     "adminWorkspace.truncated",
+    "adminWorkspace.trust",
     "adminWorkspace.url",
     "adminWorkspace.usedBy",
     "adminWorkspace.user",
@@ -486,6 +512,7 @@
     "adminWorkspace.version",
     "adminWorkspace.waitingText",
     "adminWorkspace.workspace",
+    "adminWorkspace.yes",
     "agent.desktop.back",
     "agent.desktop.callback",
     "agent.desktop.channels.chat",
@@ -498,6 +525,11 @@
     "agent.desktop.channels.whatsapp",
     "agent.desktop.close",
     "agent.desktop.completed",
+    "agent.desktop.compliance",
+    "agent.desktop.complianceDone",
+    "agent.desktop.complianceHint",
+    "agent.desktop.compliancePending",
+    "agent.desktop.complianceProgress",
     "agent.desktop.confirmManualData",
     "agent.desktop.conflict",
     "agent.desktop.connection.connected",
@@ -527,6 +559,19 @@
     "agent.desktop.failure.network",
     "agent.desktop.failure.script",
     "agent.desktop.failure.storage",
+    "agent.desktop.feedback",
+    "agent.desktop.feedbackFailed",
+    "agent.desktop.feedbackHelp",
+    "agent.desktop.feedbackReason",
+    "agent.desktop.feedbackReasons.confusing",
+    "agent.desktop.feedbackReasons.incorrect",
+    "agent.desktop.feedbackReasons.missingStep",
+    "agent.desktop.feedbackReasons.tooLong",
+    "agent.desktop.feedbackSend",
+    "agent.desktop.feedbackSent",
+    "agent.desktop.feedbackTitle",
+    "agent.desktop.focusMode",
+    "agent.desktop.focusModeSetting",
     "agent.desktop.fontSize",
     "agent.desktop.held",
     "agent.desktop.history",
@@ -537,9 +582,11 @@
     "agent.desktop.logout",
     "agent.desktop.manualData",
     "agent.desktop.next",
+    "agent.desktop.nextAnywhere",
     "agent.desktop.noMonitorSessions",
     "agent.desktop.notes",
     "agent.desktop.notice",
+    "agent.desktop.nowOn",
     "agent.desktop.objections",
     "agent.desktop.offline",
     "agent.desktop.pending",
@@ -553,10 +600,17 @@
     "agent.desktop.retry",
     "agent.desktop.savingDraft",
     "agent.desktop.script",
+    "agent.desktop.sessionRateLimited",
+    "agent.desktop.sessionUnavailable",
     "agent.desktop.shortcutBack",
+    "agent.desktop.shortcutFocus",
     "agent.desktop.shortcutHelp",
+    "agent.desktop.shortcutHelpKeys",
     "agent.desktop.shortcutNext",
+    "agent.desktop.shortcutNextAnywhere",
+    "agent.desktop.shortcutTabs",
     "agent.desktop.shortcuts",
+    "agent.desktop.shortcutsHelp",
     "agent.desktop.sidebar",
     "agent.desktop.signIn",
     "agent.desktop.sizes.large",
@@ -569,6 +623,7 @@
     "agent.desktop.states.launching",
     "agent.desktop.states.paused",
     "agent.desktop.states.wrapup",
+    "agent.desktop.step",
     "agent.desktop.storage",
     "agent.desktop.subCodes",
     "agent.desktop.submit",
@@ -577,9 +632,11 @@
     "agent.desktop.supervisorReadOnly",
     "agent.desktop.supportCode",
     "agent.desktop.supportCodeCopied",
+    "agent.desktop.switchInteraction",
     "agent.desktop.tab",
     "agent.desktop.takeover",
     "agent.desktop.tenant",
+    "agent.desktop.trail",
     "agent.desktop.transcript",
     "agent.desktop.transferred",
     "agent.desktop.unread",
@@ -672,9 +729,11 @@
     "analytics.active",
     "analytics.agents",
     "analytics.all",
+    "analytics.anytimeP",
     "analytics.arrow",
     "analytics.campaignId",
     "analytics.campaignPlaceholder",
+    "analytics.campaignSearch",
     "analytics.channel",
     "analytics.channels.callback",
     "analytics.channels.chat",
@@ -707,11 +766,36 @@
     "analytics.eyebrow",
     "analytics.filters",
     "analytics.filtersHint",
+    "analytics.firstSeen",
     "analytics.frequency",
     "analytics.from",
+    "analytics.guardrailAbandonment",
+    "analytics.guardrailCompliance",
+    "analytics.guardrailMetric",
+    "analytics.guardrailOk",
+    "analytics.guardrailWorse",
+    "analytics.guardrails",
+    "analytics.guardrailsHint",
     "analytics.heatSample",
     "analytics.heatmap",
     "analytics.hour",
+    "analytics.insight.dropOff.suggestion",
+    "analytics.insight.dropOff.title",
+    "analytics.insight.dropOff.value",
+    "analytics.insight.errorNode.suggestion",
+    "analytics.insight.errorNode.title",
+    "analytics.insight.errorNode.value",
+    "analytics.insight.failingSource.suggestion",
+    "analytics.insight.failingSource.title",
+    "analytics.insight.failingSource.value",
+    "analytics.insight.slowPage.suggestion",
+    "analytics.insight.slowPage.title",
+    "analytics.insight.slowPage.value",
+    "analytics.insight.slowSource.suggestion",
+    "analytics.insight.slowSource.title",
+    "analytics.insight.slowSource.value",
+    "analytics.insights",
+    "analytics.insightsHint",
     "analytics.insufficient",
     "analytics.lastSeven",
     "analytics.lastThirty",
@@ -732,6 +816,13 @@
     "analytics.recipientsPlaceholder",
     "analytics.recipientsRequired",
     "analytics.recipientsSelected",
+    "analytics.recommendations.data-loss",
+    "analytics.recommendations.help",
+    "analytics.recommendations.insufficient-sample",
+    "analytics.recommendations.needs-two-cohorts",
+    "analytics.recommendations.not-significant",
+    "analytics.recommendations.title",
+    "analytics.recommendations.winner",
     "analytics.remove",
     "analytics.retry",
     "analytics.save",
@@ -751,8 +842,13 @@
     "analytics.table",
     "analytics.teamId",
     "analytics.teamPlaceholder",
+    "analytics.teamSearch",
     "analytics.title",
     "analytics.to",
+    "analytics.version",
+    "analytics.versionDelta",
+    "analytics.versions",
+    "analytics.versionsHint",
     "analytics.weekly",
     "analytics.yes",
     "authz.roleDescriptions.agent",
@@ -806,6 +902,7 @@
     "common.locale.tr",
     "common.productName",
     "common.retry",
+    "common.retryAfter",
     "common.skipToContent",
     "common.theme.dark",
     "common.theme.high-contrast",
@@ -928,6 +1025,18 @@
     "components.unavailable",
     "components.unconfigured",
     "components.value",
+    "designer.blocks.add",
+    "designer.blocks.addShort",
+    "designer.blocks.help",
+    "designer.blocks.items.callback.description",
+    "designer.blocks.items.callback.name",
+    "designer.blocks.items.identityCheck.description",
+    "designer.blocks.items.identityCheck.name",
+    "designer.blocks.items.privacyConsent.description",
+    "designer.blocks.items.privacyConsent.name",
+    "designer.blocks.items.satisfactionSurvey.description",
+    "designer.blocks.items.satisfactionSurvey.name",
+    "designer.blocks.title",
     "designer.campaign.add",
     "designer.campaign.categories.callback",
     "designer.campaign.categories.failure",
@@ -951,6 +1060,85 @@
     "designer.campaign.settings",
     "designer.campaign.status",
     "designer.campaign.subCodes",
+    "designer.collaboration.follow",
+    "designer.collaboration.followEnded",
+    "designer.collaboration.followStopped",
+    "designer.collaboration.following",
+    "designer.collaboration.stopFollowing",
+    "designer.commands.goToNode",
+    "designer.commands.goToPage",
+    "designer.commands.groups.blocks",
+    "designer.commands.groups.components",
+    "designer.commands.groups.edit",
+    "designer.commands.groups.insert",
+    "designer.commands.groups.pages",
+    "designer.commands.groups.script",
+    "designer.commands.groups.view",
+    "designer.commands.health",
+    "designer.commands.insert",
+    "designer.commands.liveOff",
+    "designer.commands.liveOn",
+    "designer.commands.switchMode",
+    "designer.commands.viewport",
+    "designer.commands.zoomIn",
+    "designer.commands.zoomOut",
+    "designer.commands.zoomReset",
+    "designer.comments.agentFeedback",
+    "designer.comments.feedbackReasons.confusing",
+    "designer.comments.feedbackReasons.incorrect",
+    "designer.comments.feedbackReasons.missingStep",
+    "designer.comments.feedbackReasons.tooLong",
+    "designer.coverage.add",
+    "designer.coverage.branch",
+    "designer.coverage.complete",
+    "designer.coverage.failed",
+    "designer.coverage.failing",
+    "designer.coverage.found",
+    "designer.coverage.gaps",
+    "designer.coverage.generate",
+    "designer.coverage.generateFor",
+    "designer.coverage.generatedName",
+    "designer.coverage.help",
+    "designer.coverage.kinds.condition",
+    "designer.coverage.kinds.default",
+    "designer.coverage.kinds.error",
+    "designer.coverage.kinds.plain",
+    "designer.coverage.kinds.success",
+    "designer.coverage.meter",
+    "designer.coverage.mockChange",
+    "designer.coverage.noEdges",
+    "designer.coverage.noScenarios",
+    "designer.coverage.notFound",
+    "designer.coverage.readOnly",
+    "designer.coverage.rerun",
+    "designer.coverage.run",
+    "designer.coverage.summary",
+    "designer.coverage.tab",
+    "designer.dataMap.classes.pci",
+    "designer.dataMap.classes.pii",
+    "designer.dataMap.destinations.analytics",
+    "designer.dataMap.destinations.integration",
+    "designer.dataMap.destinations.log",
+    "designer.dataMap.destinations.platform",
+    "designer.dataMap.destinations.screen",
+    "designer.dataMap.destinations.toast",
+    "designer.dataMap.empty",
+    "designer.dataMap.from",
+    "designer.dataMap.help",
+    "designer.dataMap.new",
+    "designer.dataMap.no",
+    "designer.dataMap.none",
+    "designer.dataMap.nowhere",
+    "designer.dataMap.origins.agentInput",
+    "designer.dataMap.origins.context",
+    "designer.dataMap.origins.dataSource",
+    "designer.dataMap.origins.script",
+    "designer.dataMap.risky",
+    "designer.dataMap.stored",
+    "designer.dataMap.title",
+    "designer.dataMap.to",
+    "designer.dataMap.variable",
+    "designer.dataMap.yes",
     "designer.editor.actionInvalid",
     "designer.editor.actionParameters",
     "designer.editor.actionType",
@@ -1067,6 +1255,7 @@
     "designer.editor.dnd.outside",
     "designer.editor.dnd.over",
     "designer.editor.dnd.picked",
+    "designer.editor.dnd.placed",
     "designer.editor.dropTarget",
     "designer.editor.duplicate",
     "designer.editor.enabledWhen",
@@ -1078,6 +1267,7 @@
     "designer.editor.fitCanvas",
     "designer.editor.fullscreen",
     "designer.editor.group",
+    "designer.editor.hiddenCampaigns",
     "designer.editor.impactUnavailable",
     "designer.editor.inherit",
     "designer.editor.insertionTarget",
@@ -1099,6 +1289,7 @@
     "designer.editor.moveDown",
     "designer.editor.moveUp",
     "designer.editor.newPage",
+    "designer.editor.newPageName",
     "designer.editor.nextResults",
     "designer.editor.noMatchingNodes",
     "designer.editor.noMatchingPages",
@@ -1117,6 +1308,7 @@
     "designer.editor.options.value",
     "designer.editor.outdated",
     "designer.editor.override",
+    "designer.editor.pageDefault",
     "designer.editor.pageName",
     "designer.editor.pages",
     "designer.editor.paste",
@@ -1129,6 +1321,7 @@
     "designer.editor.recoverConflict",
     "designer.editor.redo",
     "designer.editor.referencedCondition",
+    "designer.editor.renamePage",
     "designer.editor.reorder",
     "designer.editor.requiredWhen",
     "designer.editor.resize",
@@ -1142,6 +1335,10 @@
     "designer.editor.saving",
     "designer.editor.search",
     "designer.editor.selectHint",
+    "designer.editor.serviceFields.emptyWhen",
+    "designer.editor.serviceFields.intervalMs",
+    "designer.editor.serviceFields.visible",
+    "designer.editor.serviceFields.watch",
     "designer.editor.shortcutDetail",
     "designer.editor.shortcuts",
     "designer.editor.shortcutsList",
@@ -1227,6 +1424,36 @@
     "designer.flow.types.transfer",
     "designer.flow.zoomIn",
     "designer.flow.zoomOut",
+    "designer.health.categories.accessibility",
+    "designer.health.categories.data",
+    "designer.health.categories.flow",
+    "designer.health.categories.language",
+    "designer.health.categories.performance",
+    "designer.health.categories.privacy",
+    "designer.health.clean",
+    "designer.health.count",
+    "designer.health.description",
+    "designer.health.go",
+    "designer.health.goTo",
+    "designer.health.grades.excellent",
+    "designer.health.grades.fair",
+    "designer.health.grades.good",
+    "designer.health.grades.poor",
+    "designer.health.issues.unusedSensitive",
+    "designer.health.issues.unusedVariable",
+    "designer.health.locations.document",
+    "designer.health.locations.node",
+    "designer.health.locations.page",
+    "designer.health.locations.rule",
+    "designer.health.locations.variable",
+    "designer.health.noIssues",
+    "designer.health.severity.error",
+    "designer.health.severity.info",
+    "designer.health.severity.warning",
+    "designer.health.short",
+    "designer.health.summary",
+    "designer.health.title",
+    "designer.health.trigger",
     "designer.hello.appName",
     "designer.hello.description",
     "designer.hello.title",
@@ -1336,6 +1563,26 @@
     "designer.integrations.soap",
     "designer.integrations.sourceField",
     "designer.integrations.sourceFields",
+    "designer.integrations.sql.addParameter",
+    "designer.integrations.sql.catalogNotice",
+    "designer.integrations.sql.clientId",
+    "designer.integrations.sql.clientIdHint",
+    "designer.integrations.sql.down",
+    "designer.integrations.sql.error.invalid",
+    "designer.integrations.sql.error.required",
+    "designer.integrations.sql.error.tooMany",
+    "designer.integrations.sql.moveDown",
+    "designer.integrations.sql.moveUp",
+    "designer.integrations.sql.noImport",
+    "designer.integrations.sql.parameterPath",
+    "designer.integrations.sql.parameters",
+    "designer.integrations.sql.parametersHelp",
+    "designer.integrations.sql.queryKey",
+    "designer.integrations.sql.queryKeyHint",
+    "designer.integrations.sql.removeParameter",
+    "designer.integrations.sql.target",
+    "designer.integrations.sql.targetHint",
+    "designer.integrations.sql.up",
     "designer.integrations.stay",
     "designer.integrations.subtitle",
     "designer.integrations.success",
@@ -1363,6 +1610,7 @@
     "designer.lifecycle.aWeight",
     "designer.lifecycle.ab",
     "designer.lifecycle.actions",
+    "designer.lifecycle.activeVersion",
     "designer.lifecycle.added",
     "designer.lifecycle.after",
     "designer.lifecycle.approved",
@@ -1374,6 +1622,7 @@
     "designer.lifecycle.baseline",
     "designer.lifecycle.before",
     "designer.lifecycle.cancel",
+    "designer.lifecycle.cancelRollback",
     "designer.lifecycle.categories.collections",
     "designer.lifecycle.categories.onboarding",
     "designer.lifecycle.categories.other",
@@ -1389,6 +1638,7 @@
     "designer.lifecycle.comment",
     "designer.lifecycle.commented",
     "designer.lifecycle.comments",
+    "designer.lifecycle.confirmRollback",
     "designer.lifecycle.connection.conflict",
     "designer.lifecycle.connection.connected",
     "designer.lifecycle.connection.connecting",
@@ -1403,6 +1653,8 @@
     "designer.lifecycle.dependencies",
     "designer.lifecycle.diff",
     "designer.lifecycle.done",
+    "designer.lifecycle.draftFromChanges",
+    "designer.lifecycle.draftFromChangesHint",
     "designer.lifecycle.editAssignment",
     "designer.lifecycle.export",
     "designer.lifecycle.failed",
@@ -1459,6 +1711,7 @@
     "designer.lifecycle.reviews",
     "designer.lifecycle.rollback",
     "designer.lifecycle.rollbackHelp",
+    "designer.lifecycle.rollbackImpact",
     "designer.lifecycle.save",
     "designer.lifecycle.savePriorities",
     "designer.lifecycle.schedule",
@@ -1477,6 +1730,20 @@
     "designer.lifecycle.sources.builtin",
     "designer.lifecycle.sources.tenant",
     "designer.lifecycle.submit",
+    "designer.lifecycle.summary.components",
+    "designer.lifecycle.summary.dataSourcesAdded",
+    "designer.lifecycle.summary.dataSourcesChanged",
+    "designer.lifecycle.summary.dataSourcesRemoved",
+    "designer.lifecycle.summary.flow",
+    "designer.lifecycle.summary.messages",
+    "designer.lifecycle.summary.pagesAdded",
+    "designer.lifecycle.summary.pagesChanged",
+    "designer.lifecycle.summary.pagesRemoved",
+    "designer.lifecycle.summary.rules",
+    "designer.lifecycle.summary.scenarios",
+    "designer.lifecycle.summary.sensitive",
+    "designer.lifecycle.summary.variablesAdded",
+    "designer.lifecycle.summary.variablesRemoved",
     "designer.lifecycle.target",
     "designer.lifecycle.team",
     "designer.lifecycle.templateHelp",
@@ -1496,6 +1763,46 @@
     "designer.lifecycle.versionLabel",
     "designer.lifecycle.versionPolicy",
     "designer.lifecycle.withdraw",
+    "designer.live.controls",
+    "designer.live.device",
+    "designer.live.devices.desktop",
+    "designer.live.devices.phone",
+    "designer.live.devices.tablet",
+    "designer.live.ended",
+    "designer.live.failed",
+    "designer.live.frame",
+    "designer.live.language",
+    "designer.live.live",
+    "designer.live.page",
+    "designer.live.paused",
+    "designer.live.restart",
+    "designer.live.restarted",
+    "designer.live.theme",
+    "designer.live.title",
+    "designer.live.toggle",
+    "designer.preview.actions.back",
+    "designer.preview.actions.callDataSource",
+    "designer.preview.actions.closeModal",
+    "designer.preview.actions.conditional",
+    "designer.preview.actions.emitEvent",
+    "designer.preview.actions.logEvent",
+    "designer.preview.actions.maskField",
+    "designer.preview.actions.navigate",
+    "designer.preview.actions.next",
+    "designer.preview.actions.openModal",
+    "designer.preview.actions.parallel",
+    "designer.preview.actions.runSubflow",
+    "designer.preview.actions.sequence",
+    "designer.preview.actions.setDisposition",
+    "designer.preview.actions.setVariable",
+    "designer.preview.actions.showToast",
+    "designer.preview.actions.startTimer",
+    "designer.preview.actions.stopTimer",
+    "designer.preview.actions.submitOutcome",
+    "designer.preview.actions.transferHint",
+    "designer.preview.actions.validatePage",
+    "designer.preview.actions.writeBackToPlatform",
+    "designer.preview.addWatch",
     "designer.preview.ani",
     "designer.preview.approve",
     "designer.preview.attachedData",
@@ -1504,6 +1811,9 @@
     "designer.preview.breakpointHelp",
     "designer.preview.breakpoints",
     "designer.preview.campaign",
+    "designer.preview.changedMasked",
+    "designer.preview.changedValue",
+    "designer.preview.changes",
     "designer.preview.channel",
     "designer.preview.channels.callback",
     "designer.preview.channels.chat",
@@ -1528,6 +1838,7 @@
     "designer.preview.language",
     "designer.preview.lifecycleDone",
     "designer.preview.lint",
+    "designer.preview.lintCompletionBypass",
     "designer.preview.lintDebounce",
     "designer.preview.lintLabel",
     "designer.preview.lintLegal",
@@ -1557,18 +1868,27 @@
     "designer.preview.publish",
     "designer.preview.regression",
     "designer.preview.regressionHelp",
+    "designer.preview.remove",
+    "designer.preview.removeWatch",
     "designer.preview.restart",
     "designer.preview.resume",
     "designer.preview.reviewComment",
     "designer.preview.runScenarios",
+    "designer.preview.sample.done",
+    "designer.preview.sample.failed",
+    "designer.preview.sample.missing",
+    "designer.preview.sampleFromSchema",
     "designer.preview.saveFirst",
     "designer.preview.saveScenario",
     "designer.preview.scenarioName",
     "designer.preview.scenarios",
     "designer.preview.scenariosRequired",
+    "designer.preview.severity.error",
+    "designer.preview.severity.warning",
     "designer.preview.simulation",
     "designer.preview.staleReport",
     "designer.preview.step",
+    "designer.preview.stepBack",
     "designer.preview.syntheticConfirm",
     "designer.preview.syntheticHelp",
     "designer.preview.theme",
@@ -1577,8 +1897,34 @@
     "designer.preview.title",
     "designer.preview.visited",
     "designer.preview.watch",
+    "designer.preview.watchError",
+    "designer.preview.watchExpression",
     "designer.preview.watchHelp",
+    "designer.preview.watchList",
     "designer.preview.width",
+    "designer.risk.advisory",
+    "designer.risk.coverage",
+    "designer.risk.coverageValue",
+    "designer.risk.factors.blockingIssues",
+    "designer.risk.factors.largeChange",
+    "designer.risk.factors.lowCoverage",
+    "designer.risk.factors.lowHealth",
+    "designer.risk.factors.mediumChange",
+    "designer.risk.factors.newDataFlows",
+    "designer.risk.factors.newExposure",
+    "designer.risk.factors.noTests",
+    "designer.risk.factors.partialCoverage",
+    "designer.risk.factors.removedPages",
+    "designer.risk.factors.wideImpact",
+    "designer.risk.impact",
+    "designer.risk.impactUnknown",
+    "designer.risk.impactValue",
+    "designer.risk.levels.high",
+    "designer.risk.levels.low",
+    "designer.risk.levels.medium",
+    "designer.risk.measuring",
+    "designer.risk.none",
+    "designer.risk.title",
     "designer.rules.abTargeting",
     "designer.rules.add",
     "designer.rules.addCondition",
@@ -1617,6 +1963,14 @@
     "designer.rules.title",
     "designer.rules.value",
     "designer.rules.visual",
+    "designer.screens.create",
+    "designer.screens.empty",
+    "designer.screens.help",
+    "designer.screens.key",
+    "designer.screens.publish",
+    "designer.screens.save",
+    "designer.screens.source",
+    "designer.screens.sourceVersion",
     "designer.variables.add",
     "designer.variables.classifications.internal",
     "designer.variables.classifications.pci",
@@ -1625,6 +1979,12 @@
     "designer.variables.default",
     "designer.variables.edit",
     "designer.variables.enum",
+    "designer.variables.errors.defaultJson",
+    "designer.variables.errors.defaultType",
+    "designer.variables.errors.enumEmpty",
+    "designer.variables.errors.linked",
+    "designer.variables.errors.name",
+    "designer.variables.errors.nameTaken",
     "designer.variables.name",
     "designer.variables.pii",
     "designer.variables.renameDescription",
@@ -1787,6 +2147,11 @@
     "designer.workspace.ssoManaged",
     "designer.workspace.standard",
     "designer.workspace.start",
+    "designer.workspace.startWith.blank",
+    "designer.workspace.startWith.choose",
+    "designer.workspace.startWith.label",
+    "designer.workspace.startWith.template",
+    "designer.workspace.startWith.templateHelp",
     "designer.workspace.status.APPROVED",
     "designer.workspace.status.DRAFT",
     "designer.workspace.status.IN_REVIEW",
@@ -1885,6 +2250,46 @@
     "script.validation.variableReadonly",
     "script.validation.variableTypeMismatch",
     "script.validation.variableUndefined",
+    "trust.access",
+    "trust.accessHint",
+    "trust.auditExports",
+    "trust.breaks",
+    "trust.chain",
+    "trust.chainStatus",
+    "trust.checked",
+    "trust.days",
+    "trust.error",
+    "trust.generated",
+    "trust.latestCheckpoint",
+    "trust.launch",
+    "trust.launchAnomalies",
+    "trust.launchDenied",
+    "trust.launchIssued",
+    "trust.launchRedeemed",
+    "trust.launchUrlParams",
+    "trust.loading",
+    "trust.no",
+    "trust.none",
+    "trust.privacy",
+    "trust.privacyExports",
+    "trust.privacyOldest",
+    "trust.privacyOpen",
+    "trust.privacyProcessed",
+    "trust.scope",
+    "trust.secretUsage",
+    "trust.secretViews",
+    "trust.signatures",
+    "trust.status.attention",
+    "trust.status.broken",
+    "trust.status.healthy",
+    "trust.statusHint.attention",
+    "trust.statusHint.broken",
+    "trust.statusHint.healthy",
+    "trust.title",
+    "trust.truncated",
+    "trust.userViews",
+    "trust.window",
+    "trust.yes",
     "ui.breadcrumb",
     "ui.calendar",
     "ui.clear",
@@ -1897,6 +2302,7 @@
     "ui.noResults",
     "ui.notifications",
     "ui.previousMonth",
+    "ui.recent",
     "ui.remove",
     "ui.resizeColumn",
     "ui.resizePane",
@@ -1996,6 +2402,9 @@
     "admin.attachedData.variableFor",
     "admin.attachedData.writeBack",
     "admin.attachedData.writeBackFor",
+    "admin.auditCertificate.download",
+    "admin.auditCertificate.help",
+    "admin.auditCertificate.title",
     "admin.auth.breakGlass.code",
     "admin.auth.breakGlass.email",
     "admin.auth.breakGlass.hint",
@@ -2065,6 +2474,14 @@
     "admin.hello.appName",
     "admin.hello.description",
     "admin.hello.title",
+    "admin.locations.code",
+    "admin.locations.create",
+    "admin.locations.name",
+    "admin.locations.remove",
+    "admin.locations.title",
+    "admin.onboarding.help",
+    "admin.onboarding.name",
+    "admin.onboarding.title",
     "admin.simulator.action.connect",
     "admin.simulator.action.customerMessage",
     "admin.simulator.action.end",
@@ -2126,6 +2543,7 @@
     "adminWorkspace.agentTitle",
     "adminWorkspace.ai",
     "adminWorkspace.allCampaigns",
+    "adminWorkspace.allSites",
     "adminWorkspace.allTeams",
     "adminWorkspace.analytics",
     "adminWorkspace.analyticsDays",
@@ -2163,6 +2581,14 @@
     "adminWorkspace.dark",
     "adminWorkspace.data",
     "adminWorkspace.dead",
+    "adminWorkspace.deadLetters",
+    "adminWorkspace.deadLettersDurable",
+    "adminWorkspace.deadLettersHint",
+    "adminWorkspace.deadLettersPersistFailures",
+    "adminWorkspace.deadLettersPersisted",
+    "adminWorkspace.deadLettersReplay",
+    "adminWorkspace.deadLettersReplayLimit",
+    "adminWorkspace.deadLettersReplayed",
     "adminWorkspace.defaultRoles",
     "adminWorkspace.denied",
     "adminWorkspace.description",
@@ -2322,6 +2748,7 @@
     "adminWorkspace.intros.simulator",
     "adminWorkspace.intros.systemHealth",
     "adminWorkspace.intros.tenants",
+    "adminWorkspace.intros.trust",
     "adminWorkspace.intros.users",
     "adminWorkspace.invalid",
     "adminWorkspace.ip",
@@ -2351,6 +2778,7 @@
     "adminWorkspace.name",
     "adminWorkspace.navigation",
     "adminWorkspace.next",
+    "adminWorkspace.no",
     "adminWorkspace.noSamples",
     "adminWorkspace.noScopeOptions",
     "adminWorkspace.occurredAt",
@@ -2362,6 +2790,9 @@
     "adminWorkspace.password",
     "adminWorkspace.path",
     "adminWorkspace.pending",
+    "adminWorkspace.pickerLoadMore",
+    "adminWorkspace.pickerNoMatches",
+    "adminWorkspace.pickerSearch",
     "adminWorkspace.platform",
     "adminWorkspace.platformUserId",
     "adminWorkspace.port",
@@ -2442,6 +2873,7 @@
     "adminWorkspace.totp",
     "adminWorkspace.tr",
     "adminWorkspace.truncated",
+    "adminWorkspace.trust",
     "adminWorkspace.url",
     "adminWorkspace.usedBy",
     "adminWorkspace.user",
@@ -2455,6 +2887,7 @@
     "adminWorkspace.version",
     "adminWorkspace.waitingText",
     "adminWorkspace.workspace",
+    "adminWorkspace.yes",
     "agent.desktop.back",
     "agent.desktop.callback",
     "agent.desktop.channels.chat",
@@ -2467,6 +2900,11 @@
     "agent.desktop.channels.whatsapp",
     "agent.desktop.close",
     "agent.desktop.completed",
+    "agent.desktop.compliance",
+    "agent.desktop.complianceDone",
+    "agent.desktop.complianceHint",
+    "agent.desktop.compliancePending",
+    "agent.desktop.complianceProgress",
     "agent.desktop.confirmManualData",
     "agent.desktop.conflict",
     "agent.desktop.connection.connected",
@@ -2496,6 +2934,19 @@
     "agent.desktop.failure.network",
     "agent.desktop.failure.script",
     "agent.desktop.failure.storage",
+    "agent.desktop.feedback",
+    "agent.desktop.feedbackFailed",
+    "agent.desktop.feedbackHelp",
+    "agent.desktop.feedbackReason",
+    "agent.desktop.feedbackReasons.confusing",
+    "agent.desktop.feedbackReasons.incorrect",
+    "agent.desktop.feedbackReasons.missingStep",
+    "agent.desktop.feedbackReasons.tooLong",
+    "agent.desktop.feedbackSend",
+    "agent.desktop.feedbackSent",
+    "agent.desktop.feedbackTitle",
+    "agent.desktop.focusMode",
+    "agent.desktop.focusModeSetting",
     "agent.desktop.fontSize",
     "agent.desktop.held",
     "agent.desktop.history",
@@ -2506,9 +2957,11 @@
     "agent.desktop.logout",
     "agent.desktop.manualData",
     "agent.desktop.next",
+    "agent.desktop.nextAnywhere",
     "agent.desktop.noMonitorSessions",
     "agent.desktop.notes",
     "agent.desktop.notice",
+    "agent.desktop.nowOn",
     "agent.desktop.objections",
     "agent.desktop.offline",
     "agent.desktop.pending",
@@ -2522,10 +2975,17 @@
     "agent.desktop.retry",
     "agent.desktop.savingDraft",
     "agent.desktop.script",
+    "agent.desktop.sessionRateLimited",
+    "agent.desktop.sessionUnavailable",
     "agent.desktop.shortcutBack",
+    "agent.desktop.shortcutFocus",
     "agent.desktop.shortcutHelp",
+    "agent.desktop.shortcutHelpKeys",
     "agent.desktop.shortcutNext",
+    "agent.desktop.shortcutNextAnywhere",
+    "agent.desktop.shortcutTabs",
     "agent.desktop.shortcuts",
+    "agent.desktop.shortcutsHelp",
     "agent.desktop.sidebar",
     "agent.desktop.signIn",
     "agent.desktop.sizes.large",
@@ -2538,6 +2998,7 @@
     "agent.desktop.states.launching",
     "agent.desktop.states.paused",
     "agent.desktop.states.wrapup",
+    "agent.desktop.step",
     "agent.desktop.storage",
     "agent.desktop.subCodes",
     "agent.desktop.submit",
@@ -2546,9 +3007,11 @@
     "agent.desktop.supervisorReadOnly",
     "agent.desktop.supportCode",
     "agent.desktop.supportCodeCopied",
+    "agent.desktop.switchInteraction",
     "agent.desktop.tab",
     "agent.desktop.takeover",
     "agent.desktop.tenant",
+    "agent.desktop.trail",
     "agent.desktop.transcript",
     "agent.desktop.transferred",
     "agent.desktop.unread",
@@ -2641,9 +3104,11 @@
     "analytics.active",
     "analytics.agents",
     "analytics.all",
+    "analytics.anytimeP",
     "analytics.arrow",
     "analytics.campaignId",
     "analytics.campaignPlaceholder",
+    "analytics.campaignSearch",
     "analytics.channel",
     "analytics.channels.callback",
     "analytics.channels.chat",
@@ -2676,11 +3141,36 @@
     "analytics.eyebrow",
     "analytics.filters",
     "analytics.filtersHint",
+    "analytics.firstSeen",
     "analytics.frequency",
     "analytics.from",
+    "analytics.guardrailAbandonment",
+    "analytics.guardrailCompliance",
+    "analytics.guardrailMetric",
+    "analytics.guardrailOk",
+    "analytics.guardrailWorse",
+    "analytics.guardrails",
+    "analytics.guardrailsHint",
     "analytics.heatSample",
     "analytics.heatmap",
     "analytics.hour",
+    "analytics.insight.dropOff.suggestion",
+    "analytics.insight.dropOff.title",
+    "analytics.insight.dropOff.value",
+    "analytics.insight.errorNode.suggestion",
+    "analytics.insight.errorNode.title",
+    "analytics.insight.errorNode.value",
+    "analytics.insight.failingSource.suggestion",
+    "analytics.insight.failingSource.title",
+    "analytics.insight.failingSource.value",
+    "analytics.insight.slowPage.suggestion",
+    "analytics.insight.slowPage.title",
+    "analytics.insight.slowPage.value",
+    "analytics.insight.slowSource.suggestion",
+    "analytics.insight.slowSource.title",
+    "analytics.insight.slowSource.value",
+    "analytics.insights",
+    "analytics.insightsHint",
     "analytics.insufficient",
     "analytics.lastSeven",
     "analytics.lastThirty",
@@ -2701,6 +3191,13 @@
     "analytics.recipientsPlaceholder",
     "analytics.recipientsRequired",
     "analytics.recipientsSelected",
+    "analytics.recommendations.data-loss",
+    "analytics.recommendations.help",
+    "analytics.recommendations.insufficient-sample",
+    "analytics.recommendations.needs-two-cohorts",
+    "analytics.recommendations.not-significant",
+    "analytics.recommendations.title",
+    "analytics.recommendations.winner",
     "analytics.remove",
     "analytics.retry",
     "analytics.save",
@@ -2720,8 +3217,13 @@
     "analytics.table",
     "analytics.teamId",
     "analytics.teamPlaceholder",
+    "analytics.teamSearch",
     "analytics.title",
     "analytics.to",
+    "analytics.version",
+    "analytics.versionDelta",
+    "analytics.versions",
+    "analytics.versionsHint",
     "analytics.weekly",
     "analytics.yes",
     "authz.roleDescriptions.agent",
@@ -2775,6 +3277,7 @@
     "common.locale.tr",
     "common.productName",
     "common.retry",
+    "common.retryAfter",
     "common.skipToContent",
     "common.theme.dark",
     "common.theme.high-contrast",
@@ -2897,6 +3400,18 @@
     "components.unavailable",
     "components.unconfigured",
     "components.value",
+    "designer.blocks.add",
+    "designer.blocks.addShort",
+    "designer.blocks.help",
+    "designer.blocks.items.callback.description",
+    "designer.blocks.items.callback.name",
+    "designer.blocks.items.identityCheck.description",
+    "designer.blocks.items.identityCheck.name",
+    "designer.blocks.items.privacyConsent.description",
+    "designer.blocks.items.privacyConsent.name",
+    "designer.blocks.items.satisfactionSurvey.description",
+    "designer.blocks.items.satisfactionSurvey.name",
+    "designer.blocks.title",
     "designer.campaign.add",
     "designer.campaign.categories.callback",
     "designer.campaign.categories.failure",
@@ -2920,6 +3435,85 @@
     "designer.campaign.settings",
     "designer.campaign.status",
     "designer.campaign.subCodes",
+    "designer.collaboration.follow",
+    "designer.collaboration.followEnded",
+    "designer.collaboration.followStopped",
+    "designer.collaboration.following",
+    "designer.collaboration.stopFollowing",
+    "designer.commands.goToNode",
+    "designer.commands.goToPage",
+    "designer.commands.groups.blocks",
+    "designer.commands.groups.components",
+    "designer.commands.groups.edit",
+    "designer.commands.groups.insert",
+    "designer.commands.groups.pages",
+    "designer.commands.groups.script",
+    "designer.commands.groups.view",
+    "designer.commands.health",
+    "designer.commands.insert",
+    "designer.commands.liveOff",
+    "designer.commands.liveOn",
+    "designer.commands.switchMode",
+    "designer.commands.viewport",
+    "designer.commands.zoomIn",
+    "designer.commands.zoomOut",
+    "designer.commands.zoomReset",
+    "designer.comments.agentFeedback",
+    "designer.comments.feedbackReasons.confusing",
+    "designer.comments.feedbackReasons.incorrect",
+    "designer.comments.feedbackReasons.missingStep",
+    "designer.comments.feedbackReasons.tooLong",
+    "designer.coverage.add",
+    "designer.coverage.branch",
+    "designer.coverage.complete",
+    "designer.coverage.failed",
+    "designer.coverage.failing",
+    "designer.coverage.found",
+    "designer.coverage.gaps",
+    "designer.coverage.generate",
+    "designer.coverage.generateFor",
+    "designer.coverage.generatedName",
+    "designer.coverage.help",
+    "designer.coverage.kinds.condition",
+    "designer.coverage.kinds.default",
+    "designer.coverage.kinds.error",
+    "designer.coverage.kinds.plain",
+    "designer.coverage.kinds.success",
+    "designer.coverage.meter",
+    "designer.coverage.mockChange",
+    "designer.coverage.noEdges",
+    "designer.coverage.noScenarios",
+    "designer.coverage.notFound",
+    "designer.coverage.readOnly",
+    "designer.coverage.rerun",
+    "designer.coverage.run",
+    "designer.coverage.summary",
+    "designer.coverage.tab",
+    "designer.dataMap.classes.pci",
+    "designer.dataMap.classes.pii",
+    "designer.dataMap.destinations.analytics",
+    "designer.dataMap.destinations.integration",
+    "designer.dataMap.destinations.log",
+    "designer.dataMap.destinations.platform",
+    "designer.dataMap.destinations.screen",
+    "designer.dataMap.destinations.toast",
+    "designer.dataMap.empty",
+    "designer.dataMap.from",
+    "designer.dataMap.help",
+    "designer.dataMap.new",
+    "designer.dataMap.no",
+    "designer.dataMap.none",
+    "designer.dataMap.nowhere",
+    "designer.dataMap.origins.agentInput",
+    "designer.dataMap.origins.context",
+    "designer.dataMap.origins.dataSource",
+    "designer.dataMap.origins.script",
+    "designer.dataMap.risky",
+    "designer.dataMap.stored",
+    "designer.dataMap.title",
+    "designer.dataMap.to",
+    "designer.dataMap.variable",
+    "designer.dataMap.yes",
     "designer.editor.actionInvalid",
     "designer.editor.actionParameters",
     "designer.editor.actionType",
@@ -3036,6 +3630,7 @@
     "designer.editor.dnd.outside",
     "designer.editor.dnd.over",
     "designer.editor.dnd.picked",
+    "designer.editor.dnd.placed",
     "designer.editor.dropTarget",
     "designer.editor.duplicate",
     "designer.editor.enabledWhen",
@@ -3047,6 +3642,7 @@
     "designer.editor.fitCanvas",
     "designer.editor.fullscreen",
     "designer.editor.group",
+    "designer.editor.hiddenCampaigns",
     "designer.editor.impactUnavailable",
     "designer.editor.inherit",
     "designer.editor.insertionTarget",
@@ -3068,6 +3664,7 @@
     "designer.editor.moveDown",
     "designer.editor.moveUp",
     "designer.editor.newPage",
+    "designer.editor.newPageName",
     "designer.editor.nextResults",
     "designer.editor.noMatchingNodes",
     "designer.editor.noMatchingPages",
@@ -3086,6 +3683,7 @@
     "designer.editor.options.value",
     "designer.editor.outdated",
     "designer.editor.override",
+    "designer.editor.pageDefault",
     "designer.editor.pageName",
     "designer.editor.pages",
     "designer.editor.paste",
@@ -3098,6 +3696,7 @@
     "designer.editor.recoverConflict",
     "designer.editor.redo",
     "designer.editor.referencedCondition",
+    "designer.editor.renamePage",
     "designer.editor.reorder",
     "designer.editor.requiredWhen",
     "designer.editor.resize",
@@ -3111,6 +3710,10 @@
     "designer.editor.saving",
     "designer.editor.search",
     "designer.editor.selectHint",
+    "designer.editor.serviceFields.emptyWhen",
+    "designer.editor.serviceFields.intervalMs",
+    "designer.editor.serviceFields.visible",
+    "designer.editor.serviceFields.watch",
     "designer.editor.shortcutDetail",
     "designer.editor.shortcuts",
     "designer.editor.shortcutsList",
@@ -3196,6 +3799,36 @@
     "designer.flow.types.transfer",
     "designer.flow.zoomIn",
     "designer.flow.zoomOut",
+    "designer.health.categories.accessibility",
+    "designer.health.categories.data",
+    "designer.health.categories.flow",
+    "designer.health.categories.language",
+    "designer.health.categories.performance",
+    "designer.health.categories.privacy",
+    "designer.health.clean",
+    "designer.health.count",
+    "designer.health.description",
+    "designer.health.go",
+    "designer.health.goTo",
+    "designer.health.grades.excellent",
+    "designer.health.grades.fair",
+    "designer.health.grades.good",
+    "designer.health.grades.poor",
+    "designer.health.issues.unusedSensitive",
+    "designer.health.issues.unusedVariable",
+    "designer.health.locations.document",
+    "designer.health.locations.node",
+    "designer.health.locations.page",
+    "designer.health.locations.rule",
+    "designer.health.locations.variable",
+    "designer.health.noIssues",
+    "designer.health.severity.error",
+    "designer.health.severity.info",
+    "designer.health.severity.warning",
+    "designer.health.short",
+    "designer.health.summary",
+    "designer.health.title",
+    "designer.health.trigger",
     "designer.hello.appName",
     "designer.hello.description",
     "designer.hello.title",
@@ -3305,6 +3938,26 @@
     "designer.integrations.soap",
     "designer.integrations.sourceField",
     "designer.integrations.sourceFields",
+    "designer.integrations.sql.addParameter",
+    "designer.integrations.sql.catalogNotice",
+    "designer.integrations.sql.clientId",
+    "designer.integrations.sql.clientIdHint",
+    "designer.integrations.sql.down",
+    "designer.integrations.sql.error.invalid",
+    "designer.integrations.sql.error.required",
+    "designer.integrations.sql.error.tooMany",
+    "designer.integrations.sql.moveDown",
+    "designer.integrations.sql.moveUp",
+    "designer.integrations.sql.noImport",
+    "designer.integrations.sql.parameterPath",
+    "designer.integrations.sql.parameters",
+    "designer.integrations.sql.parametersHelp",
+    "designer.integrations.sql.queryKey",
+    "designer.integrations.sql.queryKeyHint",
+    "designer.integrations.sql.removeParameter",
+    "designer.integrations.sql.target",
+    "designer.integrations.sql.targetHint",
+    "designer.integrations.sql.up",
     "designer.integrations.stay",
     "designer.integrations.subtitle",
     "designer.integrations.success",
@@ -3332,6 +3985,7 @@
     "designer.lifecycle.aWeight",
     "designer.lifecycle.ab",
     "designer.lifecycle.actions",
+    "designer.lifecycle.activeVersion",
     "designer.lifecycle.added",
     "designer.lifecycle.after",
     "designer.lifecycle.approved",
@@ -3343,6 +3997,7 @@
     "designer.lifecycle.baseline",
     "designer.lifecycle.before",
     "designer.lifecycle.cancel",
+    "designer.lifecycle.cancelRollback",
     "designer.lifecycle.categories.collections",
     "designer.lifecycle.categories.onboarding",
     "designer.lifecycle.categories.other",
@@ -3358,6 +4013,7 @@
     "designer.lifecycle.comment",
     "designer.lifecycle.commented",
     "designer.lifecycle.comments",
+    "designer.lifecycle.confirmRollback",
     "designer.lifecycle.connection.conflict",
     "designer.lifecycle.connection.connected",
     "designer.lifecycle.connection.connecting",
@@ -3372,6 +4028,8 @@
     "designer.lifecycle.dependencies",
     "designer.lifecycle.diff",
     "designer.lifecycle.done",
+    "designer.lifecycle.draftFromChanges",
+    "designer.lifecycle.draftFromChangesHint",
     "designer.lifecycle.editAssignment",
     "designer.lifecycle.export",
     "designer.lifecycle.failed",
@@ -3428,6 +4086,7 @@
     "designer.lifecycle.reviews",
     "designer.lifecycle.rollback",
     "designer.lifecycle.rollbackHelp",
+    "designer.lifecycle.rollbackImpact",
     "designer.lifecycle.save",
     "designer.lifecycle.savePriorities",
     "designer.lifecycle.schedule",
@@ -3446,6 +4105,20 @@
     "designer.lifecycle.sources.builtin",
     "designer.lifecycle.sources.tenant",
     "designer.lifecycle.submit",
+    "designer.lifecycle.summary.components",
+    "designer.lifecycle.summary.dataSourcesAdded",
+    "designer.lifecycle.summary.dataSourcesChanged",
+    "designer.lifecycle.summary.dataSourcesRemoved",
+    "designer.lifecycle.summary.flow",
+    "designer.lifecycle.summary.messages",
+    "designer.lifecycle.summary.pagesAdded",
+    "designer.lifecycle.summary.pagesChanged",
+    "designer.lifecycle.summary.pagesRemoved",
+    "designer.lifecycle.summary.rules",
+    "designer.lifecycle.summary.scenarios",
+    "designer.lifecycle.summary.sensitive",
+    "designer.lifecycle.summary.variablesAdded",
+    "designer.lifecycle.summary.variablesRemoved",
     "designer.lifecycle.target",
     "designer.lifecycle.team",
     "designer.lifecycle.templateHelp",
@@ -3465,6 +4138,46 @@
     "designer.lifecycle.versionLabel",
     "designer.lifecycle.versionPolicy",
     "designer.lifecycle.withdraw",
+    "designer.live.controls",
+    "designer.live.device",
+    "designer.live.devices.desktop",
+    "designer.live.devices.phone",
+    "designer.live.devices.tablet",
+    "designer.live.ended",
+    "designer.live.failed",
+    "designer.live.frame",
+    "designer.live.language",
+    "designer.live.live",
+    "designer.live.page",
+    "designer.live.paused",
+    "designer.live.restart",
+    "designer.live.restarted",
+    "designer.live.theme",
+    "designer.live.title",
+    "designer.live.toggle",
+    "designer.preview.actions.back",
+    "designer.preview.actions.callDataSource",
+    "designer.preview.actions.closeModal",
+    "designer.preview.actions.conditional",
+    "designer.preview.actions.emitEvent",
+    "designer.preview.actions.logEvent",
+    "designer.preview.actions.maskField",
+    "designer.preview.actions.navigate",
+    "designer.preview.actions.next",
+    "designer.preview.actions.openModal",
+    "designer.preview.actions.parallel",
+    "designer.preview.actions.runSubflow",
+    "designer.preview.actions.sequence",
+    "designer.preview.actions.setDisposition",
+    "designer.preview.actions.setVariable",
+    "designer.preview.actions.showToast",
+    "designer.preview.actions.startTimer",
+    "designer.preview.actions.stopTimer",
+    "designer.preview.actions.submitOutcome",
+    "designer.preview.actions.transferHint",
+    "designer.preview.actions.validatePage",
+    "designer.preview.actions.writeBackToPlatform",
+    "designer.preview.addWatch",
     "designer.preview.ani",
     "designer.preview.approve",
     "designer.preview.attachedData",
@@ -3473,6 +4186,9 @@
     "designer.preview.breakpointHelp",
     "designer.preview.breakpoints",
     "designer.preview.campaign",
+    "designer.preview.changedMasked",
+    "designer.preview.changedValue",
+    "designer.preview.changes",
     "designer.preview.channel",
     "designer.preview.channels.callback",
     "designer.preview.channels.chat",
@@ -3497,6 +4213,7 @@
     "designer.preview.language",
     "designer.preview.lifecycleDone",
     "designer.preview.lint",
+    "designer.preview.lintCompletionBypass",
     "designer.preview.lintDebounce",
     "designer.preview.lintLabel",
     "designer.preview.lintLegal",
@@ -3526,18 +4243,27 @@
     "designer.preview.publish",
     "designer.preview.regression",
     "designer.preview.regressionHelp",
+    "designer.preview.remove",
+    "designer.preview.removeWatch",
     "designer.preview.restart",
     "designer.preview.resume",
     "designer.preview.reviewComment",
     "designer.preview.runScenarios",
+    "designer.preview.sample.done",
+    "designer.preview.sample.failed",
+    "designer.preview.sample.missing",
+    "designer.preview.sampleFromSchema",
     "designer.preview.saveFirst",
     "designer.preview.saveScenario",
     "designer.preview.scenarioName",
     "designer.preview.scenarios",
     "designer.preview.scenariosRequired",
+    "designer.preview.severity.error",
+    "designer.preview.severity.warning",
     "designer.preview.simulation",
     "designer.preview.staleReport",
     "designer.preview.step",
+    "designer.preview.stepBack",
     "designer.preview.syntheticConfirm",
     "designer.preview.syntheticHelp",
     "designer.preview.theme",
@@ -3546,8 +4272,34 @@
     "designer.preview.title",
     "designer.preview.visited",
     "designer.preview.watch",
+    "designer.preview.watchError",
+    "designer.preview.watchExpression",
     "designer.preview.watchHelp",
+    "designer.preview.watchList",
     "designer.preview.width",
+    "designer.risk.advisory",
+    "designer.risk.coverage",
+    "designer.risk.coverageValue",
+    "designer.risk.factors.blockingIssues",
+    "designer.risk.factors.largeChange",
+    "designer.risk.factors.lowCoverage",
+    "designer.risk.factors.lowHealth",
+    "designer.risk.factors.mediumChange",
+    "designer.risk.factors.newDataFlows",
+    "designer.risk.factors.newExposure",
+    "designer.risk.factors.noTests",
+    "designer.risk.factors.partialCoverage",
+    "designer.risk.factors.removedPages",
+    "designer.risk.factors.wideImpact",
+    "designer.risk.impact",
+    "designer.risk.impactUnknown",
+    "designer.risk.impactValue",
+    "designer.risk.levels.high",
+    "designer.risk.levels.low",
+    "designer.risk.levels.medium",
+    "designer.risk.measuring",
+    "designer.risk.none",
+    "designer.risk.title",
     "designer.rules.abTargeting",
     "designer.rules.add",
     "designer.rules.addCondition",
@@ -3586,6 +4338,14 @@
     "designer.rules.title",
     "designer.rules.value",
     "designer.rules.visual",
+    "designer.screens.create",
+    "designer.screens.empty",
+    "designer.screens.help",
+    "designer.screens.key",
+    "designer.screens.publish",
+    "designer.screens.save",
+    "designer.screens.source",
+    "designer.screens.sourceVersion",
     "designer.variables.add",
     "designer.variables.classifications.internal",
     "designer.variables.classifications.pci",
@@ -3594,6 +4354,12 @@
     "designer.variables.default",
     "designer.variables.edit",
     "designer.variables.enum",
+    "designer.variables.errors.defaultJson",
+    "designer.variables.errors.defaultType",
+    "designer.variables.errors.enumEmpty",
+    "designer.variables.errors.linked",
+    "designer.variables.errors.name",
+    "designer.variables.errors.nameTaken",
     "designer.variables.name",
     "designer.variables.pii",
     "designer.variables.renameDescription",
@@ -3756,6 +4522,11 @@
     "designer.workspace.ssoManaged",
     "designer.workspace.standard",
     "designer.workspace.start",
+    "designer.workspace.startWith.blank",
+    "designer.workspace.startWith.choose",
+    "designer.workspace.startWith.label",
+    "designer.workspace.startWith.template",
+    "designer.workspace.startWith.templateHelp",
     "designer.workspace.status.APPROVED",
     "designer.workspace.status.DRAFT",
     "designer.workspace.status.IN_REVIEW",
@@ -3854,6 +4625,46 @@
     "script.validation.variableReadonly",
     "script.validation.variableTypeMismatch",
     "script.validation.variableUndefined",
+    "trust.access",
+    "trust.accessHint",
+    "trust.auditExports",
+    "trust.breaks",
+    "trust.chain",
+    "trust.chainStatus",
+    "trust.checked",
+    "trust.days",
+    "trust.error",
+    "trust.generated",
+    "trust.latestCheckpoint",
+    "trust.launch",
+    "trust.launchAnomalies",
+    "trust.launchDenied",
+    "trust.launchIssued",
+    "trust.launchRedeemed",
+    "trust.launchUrlParams",
+    "trust.loading",
+    "trust.no",
+    "trust.none",
+    "trust.privacy",
+    "trust.privacyExports",
+    "trust.privacyOldest",
+    "trust.privacyOpen",
+    "trust.privacyProcessed",
+    "trust.scope",
+    "trust.secretUsage",
+    "trust.secretViews",
+    "trust.signatures",
+    "trust.status.attention",
+    "trust.status.broken",
+    "trust.status.healthy",
+    "trust.statusHint.attention",
+    "trust.statusHint.broken",
+    "trust.statusHint.healthy",
+    "trust.title",
+    "trust.truncated",
+    "trust.userViews",
+    "trust.window",
+    "trust.yes",
     "ui.breadcrumb",
     "ui.calendar",
     "ui.clear",
@@ -3866,6 +4677,7 @@
     "ui.noResults",
     "ui.notifications",
     "ui.previousMonth",
+    "ui.recent",
     "ui.remove",
     "ui.resizeColumn",
     "ui.resizePane",
@@ -3940,7 +4752,7 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 835,
+  "literalKeyCount": 1047,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
@@ -4056,7 +4868,11 @@
     },
     {
       "file": "apps/admin-web/src/workspace/analytics-page.tsx",
-      "line": 21
+      "line": 22
+    },
+    {
+      "file": "apps/admin-web/src/workspace/analytics-page.tsx",
+      "line": 189
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
@@ -4100,15 +4916,7 @@
     },
     {
       "file": "apps/admin-web/src/workspace/identity-pages.tsx",
-      "line": 635
-    },
-    {
-      "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 102
-    },
-    {
-      "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 103
+      "line": 642
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
@@ -4116,27 +4924,31 @@
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 249
+      "line": 105
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 250
+      "line": 106
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 303
+      "line": 251
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 390
+      "line": 252
     },
     {
       "file": "apps/admin-web/src/workspace/operations-pages.tsx",
-      "line": 578
+      "line": 305
     },
     {
-      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 56
+      "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+      "line": 393
+    },
+    {
+      "file": "apps/admin-web/src/workspace/operations-pages.tsx",
+      "line": 606
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
@@ -4152,7 +4964,7 @@
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 61
+      "line": 60
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
@@ -4164,75 +4976,91 @@
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 152
+      "line": 64
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 153
+      "line": 182
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 154
+      "line": 183
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 155
+      "line": 235
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 229
+      "line": 236
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 230
+      "line": 237
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 282
+      "line": 238
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 283
+      "line": 312
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 284
+      "line": 313
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 285
+      "line": 365
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 286
+      "line": 366
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 355
+      "line": 367
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 356
+      "line": 368
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 357
+      "line": 369
+    },
+    {
+      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+      "line": 438
+    },
+    {
+      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+      "line": 439
+    },
+    {
+      "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
+      "line": 440
+    },
+    {
+      "file": "apps/admin-web/src/workspace/trust-page.tsx",
+      "line": 56
+    },
+    {
+      "file": "apps/admin-web/src/workspace/trust-page.tsx",
+      "line": 58
+    },
+    {
+      "file": "apps/admin-web/src/workspace/trust-page.tsx",
+      "line": 64
+    },
+    {
+      "file": "apps/admin-web/src/workspace/trust-page.tsx",
+      "line": 66
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 11
-    },
-    {
-      "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 18
-    },
-    {
-      "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 25
-    },
-    {
-      "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 27
+      "line": 21
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
@@ -4240,47 +5068,63 @@
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 30
+      "line": 35
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 295
+      "line": 37
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 295
+      "line": 38
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 401
+      "line": 40
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 401
+      "line": 305
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 401
+      "line": 305
     },
     {
       "file": "apps/admin-web/src/workspace/widgets.tsx",
-      "line": 444
+      "line": 459
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 460
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 461
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 462
+    },
+    {
+      "file": "apps/admin-web/src/workspace/widgets.tsx",
+      "line": 559
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 181
+      "line": 197
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 182
+      "line": 198
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 182
+      "line": 198
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 235
+      "line": 251
     },
     {
       "file": "apps/agent-web/src/desktop/failure-notice.tsx",
@@ -4288,63 +5132,79 @@
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 324
+      "line": 380
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 365
-    },
-    {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 389
-    },
-    {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 450
-    },
-    {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 542
-    },
-    {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 353
-    },
-    {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 357
-    },
-    {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 394
-    },
-    {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 404
-    },
-    {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
       "line": 424
     },
     {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 438
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 448
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 509
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 635
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 667
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 819
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 847
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 849
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 447
+      "line": 392
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 453
+      "line": 396
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 631
+      "line": 434
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 636
+      "line": 444
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 464
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 478
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 494
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 500
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 678
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 683
     },
     {
       "file": "apps/agent-web/src/launch/genesys-linked-page.tsx",
@@ -4367,8 +5227,60 @@
       "line": 290
     },
     {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 76
+    },
+    {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 78
+    },
+    {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 84
+    },
+    {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 102
+    },
+    {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 109
+    },
+    {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 125
+    },
+    {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 165
+    },
+    {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 167
+    },
+    {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 170
+    },
+    {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 220
+    },
+    {
+      "file": "apps/designer-web/src/editor/data-map-view.tsx",
+      "line": 59
+    },
+    {
+      "file": "apps/designer-web/src/editor/data-map-view.tsx",
+      "line": 85
+    },
+    {
+      "file": "apps/designer-web/src/editor/data-map-view.tsx",
+      "line": 117
+    },
+    {
       "file": "apps/designer-web/src/editor/data-sources.tsx",
-      "line": 212
+      "line": 222
     },
     {
       "file": "apps/designer-web/src/editor/drag-a11y.ts",
@@ -4376,99 +5288,163 @@
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 390
+      "line": 397
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 395
+      "line": 402
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 408
+      "line": 459
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 409
+      "line": 519
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 511
+      "line": 524
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 526
+      "line": 543
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 545
+      "line": 544
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 644
+      "line": 638
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 661
+      "line": 653
+    },
+    {
+      "file": "apps/designer-web/src/editor/editor.tsx",
+      "line": 672
+    },
+    {
+      "file": "apps/designer-web/src/editor/editor.tsx",
+      "line": 782
+    },
+    {
+      "file": "apps/designer-web/src/editor/editor.tsx",
+      "line": 799
+    },
+    {
+      "file": "apps/designer-web/src/editor/health-panel.tsx",
+      "line": 114
+    },
+    {
+      "file": "apps/designer-web/src/editor/health-panel.tsx",
+      "line": 123
+    },
+    {
+      "file": "apps/designer-web/src/editor/health-panel.tsx",
+      "line": 130
+    },
+    {
+      "file": "apps/designer-web/src/editor/health-panel.tsx",
+      "line": 189
+    },
+    {
+      "file": "apps/designer-web/src/editor/health-panel.tsx",
+      "line": 211
+    },
+    {
+      "file": "apps/designer-web/src/editor/health-panel.tsx",
+      "line": 216
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 108
+      "line": 119
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 190
+      "line": 214
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 416
+      "line": 433
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 567
+      "line": 590
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 577
+      "line": 600
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 611
+      "line": 634
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 745
+      "line": 768
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 14
+      "line": 15
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 112
+      "line": 113
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 148
+      "line": 150
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 180
+      "line": 182
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 199
+      "line": 201
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 209
+      "line": 211
+    },
+    {
+      "file": "apps/designer-web/src/editor/layers.tsx",
+      "line": 435
+    },
+    {
+      "file": "apps/designer-web/src/editor/layers.tsx",
+      "line": 436
+    },
+    {
+      "file": "apps/designer-web/src/editor/layers.tsx",
+      "line": 442
+    },
+    {
+      "file": "apps/designer-web/src/editor/layers.tsx",
+      "line": 446
+    },
+    {
+      "file": "apps/designer-web/src/editor/live-pane.tsx",
+      "line": 98
+    },
+    {
+      "file": "apps/designer-web/src/editor/live-pane.tsx",
+      "line": 124
+    },
+    {
+      "file": "apps/designer-web/src/editor/live-pane.tsx",
+      "line": 143
+    },
+    {
+      "file": "apps/designer-web/src/editor/live-pane.tsx",
+      "line": 159
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 54
-    },
-    {
-      "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 59
+      "line": 61
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
@@ -4476,51 +5452,75 @@
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 323
+      "line": 73
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 431
+      "line": 315
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 573
+      "line": 426
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 624
+      "line": 570
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 739
+      "line": 621
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 851
+      "line": 736
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 848
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 48
+      "line": 42
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 65
+      "line": 53
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 76
+      "line": 70
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 227
+      "line": 81
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 232
+      "line": 115
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 237
+      "line": 124
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 140
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 265
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 270
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 275
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 298
     },
     {
       "file": "apps/designer-web/src/integrations/auth.tsx",
@@ -4528,51 +5528,111 @@
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 187
+      "line": 190
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 203
+      "line": 206
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 413
+      "line": 430
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 564
+      "line": 585
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 638
+      "line": 659
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 787
+      "line": 810
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 951
+      "line": 974
     },
     {
       "file": "apps/designer-web/src/integrations/list.tsx",
       "line": 41
     },
     {
+      "file": "apps/designer-web/src/integrations/sql-form.tsx",
+      "line": 25
+    },
+    {
       "file": "apps/designer-web/src/lifecycle/assignments.tsx",
-      "line": 312
+      "line": 313
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
+      "line": 13
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
+      "line": 14
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
+      "line": 15
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
+      "line": 21
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
+      "line": 22
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
+      "line": 28
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
+      "line": 29
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
+      "line": 30
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
+      "line": 35
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/change-summary.ts",
+      "line": 157
     },
     {
       "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
-      "line": 416
+      "line": 478
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
+      "line": 482
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
+      "line": 489
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/collaboration.tsx",
+      "line": 514
     },
     {
       "file": "apps/designer-web/src/lifecycle/comments.tsx",
-      "line": 89
+      "line": 94
     },
     {
       "file": "apps/designer-web/src/lifecycle/comments.tsx",
-      "line": 129
+      "line": 105
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/comments.tsx",
+      "line": 141
     },
     {
       "file": "apps/designer-web/src/lifecycle/notifications.tsx",
@@ -4595,8 +5655,12 @@
       "line": 221
     },
     {
-      "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 176
+      "file": "apps/designer-web/src/lifecycle/release-risk.tsx",
+      "line": 96
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/release-risk.tsx",
+      "line": 108
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
@@ -4604,15 +5668,27 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 309
+      "line": 202
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 332
+      "line": 273
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 344
+      "line": 273
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/release.tsx",
+      "line": 382
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/release.tsx",
+      "line": 405
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/release.tsx",
+      "line": 417
     },
     {
       "file": "apps/designer-web/src/lifecycle/templates.tsx",
@@ -4700,55 +5776,83 @@
     },
     {
       "file": "apps/designer-web/src/pages/campaign.tsx",
-      "line": 82
-    },
-    {
-      "file": "apps/designer-web/src/pages/library.tsx",
       "line": 83
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 95
+      "line": 85
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 98
+      "line": 97
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 107
+      "line": 100
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 175
+      "line": 109
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 217
+      "line": 177
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 218
+      "line": 220
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 230
+      "line": 221
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 290
+      "line": 233
+    },
+    {
+      "file": "apps/designer-web/src/pages/library.tsx",
+      "line": 293
     },
     {
       "file": "apps/designer-web/src/pages/script.tsx",
-      "line": 157
+      "line": 158
     },
     {
       "file": "apps/designer-web/src/pages/script.tsx",
-      "line": 269
+      "line": 271
     },
     {
       "file": "apps/designer-web/src/pages/settings.tsx",
       "line": 25
+    },
+    {
+      "file": "apps/designer-web/src/pages/shared-screens.tsx",
+      "line": 158
+    },
+    {
+      "file": "apps/designer-web/src/preview/coverage-panel.tsx",
+      "line": 53
+    },
+    {
+      "file": "apps/designer-web/src/preview/coverage-panel.tsx",
+      "line": 122
+    },
+    {
+      "file": "apps/designer-web/src/preview/coverage-panel.tsx",
+      "line": 161
+    },
+    {
+      "file": "apps/designer-web/src/preview/coverage.ts",
+      "line": 131
+    },
+    {
+      "file": "apps/designer-web/src/preview/coverage.ts",
+      "line": 136
+    },
+    {
+      "file": "apps/designer-web/src/preview/coverage.ts",
+      "line": 142
     },
     {
       "file": "apps/designer-web/src/preview/regression-panel.tsx",
@@ -4764,27 +5868,39 @@
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 199
+      "line": 252
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 248
+      "line": 310
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 318
+      "line": 380
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 399
+      "line": 461
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 517
+      "line": 488
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 615
+      "line": 631
+    },
+    {
+      "file": "apps/designer-web/src/preview/studio.tsx",
+      "line": 652
+    },
+    {
+      "file": "apps/designer-web/src/preview/studio.tsx",
+      "line": 654
+    },
+    {
+      "file": "apps/designer-web/src/preview/studio.tsx",
+      "line": 767
     },
     {
       "file": "apps/designer-web/src/rules/assignment-rule.tsx",
@@ -4820,59 +5936,63 @@
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
-      "line": 108
+      "line": 143
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
-      "line": 173
+      "line": 193
+    },
+    {
+      "file": "apps/designer-web/src/workspace/create-dialog.tsx",
+      "line": 245
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 168
+      "line": 178
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 176
+      "line": 186
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 227
+      "line": 241
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 235
+      "line": 249
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 260
+      "line": 274
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 264
+      "line": 278
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 267
+      "line": 281
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 327
+      "line": 341
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 356
+      "line": 370
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 372
+      "line": 386
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 423
+      "line": 437
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 425
+      "line": 439
     },
     {
       "file": "apps/designer-web/src/workspace/welcome-tour.tsx",
@@ -5788,27 +6908,55 @@
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 388
+      "line": 392
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 475
+      "line": 479
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 486
+      "line": 490
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 542
+      "line": 499
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 546
+      "line": 502
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",
-      "line": 686
+      "line": 511
+    },
+    {
+      "file": "packages/ui/src/components/analytics-dashboard.tsx",
+      "line": 563
+    },
+    {
+      "file": "packages/ui/src/components/analytics-dashboard.tsx",
+      "line": 567
+    },
+    {
+      "file": "packages/ui/src/components/analytics-dashboard.tsx",
+      "line": 709
+    },
+    {
+      "file": "packages/ui/src/components/analytics-dashboard.tsx",
+      "line": 741
+    },
+    {
+      "file": "packages/ui/src/components/analytics-dashboard.tsx",
+      "line": 795
+    },
+    {
+      "file": "packages/ui/src/components/analytics-dashboard.tsx",
+      "line": 798
+    },
+    {
+      "file": "packages/ui/src/components/analytics-dashboard.tsx",
+      "line": 805
     },
     {
       "file": "packages/ui/src/components/data-table.tsx",

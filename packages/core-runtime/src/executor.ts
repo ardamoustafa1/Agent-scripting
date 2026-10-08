@@ -219,13 +219,15 @@ export class ActionExecutor {
         return;
       }
       case 'submitOutcome': {
+        const early = action.completion === 'early';
         if (
+          !early &&
           r.document.pages.some(
             (page) => page.mandatory && r.store.get(`runtime.visited.${page.id}`) !== true,
           )
         )
           throw new RuntimeProblem('VERBIS_MANDATORY_PAGE_UNVISITED');
-        if ((await r.validation.script(signal)).length)
+        if ((await (early ? r.validation.visited(signal) : r.validation.script(signal))).length)
           throw new RuntimeProblem('VERBIS_VALIDATION_FAILED');
         const values = action.notes === undefined ? {} : { notes: action.notes };
         e.assertSink(values);

@@ -20,7 +20,7 @@ export interface ReleaseGateIssue {
 export function scenarioReleaseGate(
   document: ScriptDocument,
   scenarios: readonly TestScenario[],
-  results: readonly ScenarioResult[],
+  results: readonly Pick<ScenarioResult, 'id' | 'passed'>[],
 ): { ok: boolean; issues: ReleaseGateIssue[] } {
   const issues: ReleaseGateIssue[] = [];
   if (scenarios.length === 0) issues.push({ code: 'NO_SCENARIOS', subject: '' });

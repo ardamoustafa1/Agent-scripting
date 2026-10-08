@@ -66,6 +66,16 @@ export function agentScreenReady(id: string): void {
     }),
   );
 }
+/**
+ * Time from the agent asking for the next page to it being painted (DIFFERENTIATORS D1 budget:
+ * p95 < 100 ms). Only the duration is exported: no session, page or script identifiers.
+ */
+export function agentPageTransition(durationMs: number): void {
+  if (!enabled || !Number.isFinite(durationMs) || durationMs < 0) return;
+  const span = tracer().startSpan('agent.page_transition');
+  span.setAttribute('verbis.agent.page_transition.duration_ms', Math.round(durationMs));
+  span.end();
+}
 export function agentLaunchFailed(current?: AgentLaunch | string): void {
   const handle = typeof current === 'string' ? launches.get(current) : current;
   if (!handle) return;

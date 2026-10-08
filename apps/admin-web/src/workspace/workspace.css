@@ -287,7 +287,8 @@
     padding-inline: var(--vb-space-4);
     flex-wrap: wrap;
   }
-  .aw-card .vb-button {
+  .aw-card .vb-button,
+  .aw-main .vb-button {
     max-inline-size: 100%;
     white-space: normal;
     overflow-wrap: anywhere;

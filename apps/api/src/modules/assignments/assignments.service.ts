@@ -24,6 +24,7 @@ import {
   type UpdateAssignmentInput,
 } from './assignments.dto.js';
 import { AssignmentsRepository, type AssignmentRow } from './assignments.repository.js';
+import { rolloutArms } from './rollout.js';
 
 import type { TransactionClient } from '../../infra/database/prisma.service.js';
 
@@ -147,6 +148,42 @@ export class AssignmentsService {
     });
     await this.#event(tx, 'updated', dto);
     return { ...dto, warnings: await this.#warnings(tx, dto) };
+  }
+
+  /**
+   * Rolls a canary rollout back to the stable arm (canary weight 0, pinned versions untouched).
+   * Used only by the rollout guard: there is no human caller to authorise, so the evidence that
+   * triggered it is recorded in the audit event instead. Returns null when the assignment is no
+   * longer an active canary (already rolled back, edited meanwhile) so the call is idempotent.
+   */
+  async rollbackCanary(
+    tx: TransactionClient,
+    tenantId: string,
+    id: string,
+    actor: string,
+    breached: readonly string[],
+  ): Promise<AssignmentDto | null> {
+    const before = await this.repository.find(tx, tenantId, id);
+    if (before === null) return null;
+    const dto = toAssignmentDto(before),
+      arms = rolloutArms(dto.variants);
+    if (!arms || arms.canary.weight <= 0) return null;
+    const variants = [
+      { ...arms.stable, weight: 10_000 },
+      { ...arms.canary, weight: 0 },
+    ];
+    const row = await this.repository.update(tx, tenantId, id, before.version, { variants }, actor);
+    if (row === null) return null;
+    const after = toAssignmentDto(row);
+    await this.audit.record(tx, {
+      action: 'assignment.rollout.rolledBack',
+      target: { type: 'Assignment', id },
+      before: dto,
+      after,
+      metadata: { automatic: true, breached: [...breached], fromWeight: arms.canary.weight },
+    });
+    await this.#event(tx, 'updated', after);
+    return after;
   }
 
   async remove(id: string, expectedVersion: number): Promise<void> {

@@ -208,3 +208,116 @@ it('isolates the preview from scripts and exposes the page name', async () => {
   expect(frame.srcdoc).toContain("script-src 'none'");
   expect(screen.getByText(new RegExp(f.label('preview.page') + ':')).textContent).toContain('Home');
 });
+it('fills a data source mock from the integration output schema through its output paths', async () => {
+  const store = new EditorStore(minimalScript());
+  store.edit((doc) => {
+    doc.dataSources.push(
+      DataSourceRefSchema.parse({
+        id: 'crm',
+        ref: 'tenant-datasource:crm-lookup',
+        version: 2,
+        outputs: {
+          name: { path: '$.customer.name' },
+          tier: { path: '$.tier' },
+        },
+      }),
+    );
+  });
+  const f = await mountDesigner(
+    <PreviewStudio
+      store={store}
+      scriptId={scriptId}
+      number={1}
+      versionState="draft"
+      dirty={false}
+    />,
+    {
+      '/v1/data-sources?limit=20&q=crm-lookup': {
+        data: [
+          {
+            key: 'crm-lookup',
+            version: 2,
+            definition: {
+              outputSchema: {
+                type: 'object',
+                properties: {
+                  customer: { type: 'object', properties: { name: { type: 'string' } } },
+                  tier: { enum: ['gold', 'silver'] },
+                },
+              },
+            },
+          },
+        ],
+        page: { nextCursor: null },
+      },
+    },
+  );
+  fireEvent.mouseDown(screen.getByRole('tab', { name: f.label('preview.dataSources') }), {
+    button: 0,
+  });
+  fireEvent.click(await screen.findByRole('button', { name: f.label('preview.sampleFromSchema') }));
+  await screen.findByText(f.label('preview.sample.done'));
+  const field = screen.getByRole('textbox', { name: f.label('preview.mockOutputs') });
+  expect(JSON.parse((field as HTMLTextAreaElement).value)).toEqual({
+    name: 'sample',
+    tier: 'gold',
+  });
+});
+it('evaluates watch expressions safely, masks personal data and lets the designer remove them', async () => {
+  const f = await setup();
+  f.tab('watch');
+  const add = async (expression: string) => {
+    fireEvent.change(
+      await screen.findByRole('textbox', { name: f.label('preview.watchExpression') }),
+      {
+        target: { value: expression },
+      },
+    );
+    fireEvent.click(screen.getByRole('button', { name: f.label('preview.addWatch') }));
+  };
+  await add('vars.synthetic + 2');
+  await add('vars.synthetic + 2');
+  await add('vars.privateValue');
+  await add('vars.');
+  const list = await screen.findByRole('list', { name: f.label('preview.watchList') });
+  await waitFor(() => {
+    expect(within(list).getAllByRole('listitem')).toHaveLength(3);
+  });
+  await waitFor(() => {
+    expect(within(list).getByText('3')).toBeTruthy();
+  });
+  expect(within(list).getByText(f.label('preview.masked'))).toBeTruthy();
+  expect(within(list).getByText(f.label('preview.watchError'))).toBeTruthy();
+  fireEvent.click(
+    within(list).getByRole('button', {
+      name: f.label('preview.removeWatch').replace('{{expression}}', 'vars.'),
+    }),
+  );
+  expect(within(list).getAllByRole('listitem')).toHaveLength(2);
+});
+it.each([
+  ['missing', { data: [], page: { nextCursor: null } }],
+  ['failed', Response.json({ code: 'VERBIS_HTTP_UNAVAILABLE' }, { status: 503 })],
+] as const)('explains a %s integration schema when filling a mock', async (state, response) => {
+  const store = new EditorStore(minimalScript());
+  store.edit((doc) => {
+    doc.dataSources.push(
+      DataSourceRefSchema.parse({ id: 'crm', ref: 'tenant-datasource:crm-lookup', version: 1 }),
+    );
+  });
+  const f = await mountDesigner(
+    <PreviewStudio
+      store={store}
+      scriptId={scriptId}
+      number={1}
+      versionState="draft"
+      dirty={false}
+    />,
+    { '/v1/data-sources?limit=20&q=crm-lookup': response },
+  );
+  fireEvent.mouseDown(screen.getByRole('tab', { name: f.label('preview.dataSources') }), {
+    button: 0,
+  });
+  fireEvent.click(await screen.findByRole('button', { name: f.label('preview.sampleFromSchema') }));
+  await screen.findByText(f.label(`preview.sample.${state}`));
+});

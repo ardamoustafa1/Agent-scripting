@@ -41,6 +41,19 @@ Maintenance uses `tenants.settings.audit.analyticsRetentionDays` (default 365 da
 - A/B variants use the launch decision's saved variant key and assignment ID. Two-sided pooled two-proportion z tests require all four contingency cells >=5, use p<0.05, and apply Bonferroni correction within each experiment. Drafting a new experiment should create a new assignment ID. No causal claim is made for observational session comparisons.
 - Supervisor updates poll every 10s (plus NATS delivery lag); observations older than 30 minutes are excluded from active counts. Full session IDs are technical references; customer/agent names are never returned.
 
+## Sequential A/B, guardrails, release impact and insights
+
+Added 2026-10-07 ([ADR-0048](../adr/0048-sequential-ab-inference.md)). Comparisons keep the fixed-horizon
+`pValue` and add `anytimePValue`/`anytimeSignificant` (normal-mixture mSPRT, τ = 0.05, ≥ 30 sessions per
+arm): read these while an experiment is running. `guardrails` compare abandonment and required-notice
+compliance separately and name the significantly worse arm. `versions` lists outcomes per published
+version in release order with a comparison against the previous version of the same script
+(observational: time and traffic mix are not controlled). `insights` are ranked, thresholded pointers
+(drop-off, slow page, failing field, slow or failing data source; ≥ 30 samples) with fixed kinds and
+no free text. Canary rollouts and bandit advice reuse these results
+([ADR-0049](../adr/0049-canary-rollout-on-ab-assignments.md)): `GET /v1/assignments/:id/rollout` and
+`GET /v1/assignments/:id/allocation`.
+
 ## Verification (commands only; not run)
 
 ```sh

@@ -32,6 +32,7 @@ import './workspace.css';
 
 const AiSettings = lazy(() => import('./ai-page.js'));
 const Analytics = lazy(() => import('./analytics-page.js'));
+const Trust = lazy(() => import('./trust-page.js'));
 const Tenants = lazy(() =>
   import('./tenant-pages.js').then((module) => ({ default: module.Tenants })),
 );
@@ -80,6 +81,7 @@ const pages = [
   { id: 'secrets', subject: 'Secret', action: 'manage', icon: KeyRound, view: Secrets },
   { id: 'ai', subject: 'Tenant', action: 'manage', icon: Activity, view: AiSettings },
   { id: 'audit', subject: 'Audit', action: 'read', icon: ScrollText, view: Audit },
+  { id: 'trust', subject: 'Audit', action: 'read', icon: ShieldCheck, view: Trust },
   { id: 'security', subject: 'Tenant', action: 'manage', icon: LockKeyhole, view: Security },
   { id: 'data', subject: 'Tenant', action: 'manage', icon: Database, view: DataManagement },
   { id: 'branding', subject: 'Tenant', action: 'manage', icon: Palette, view: Branding },

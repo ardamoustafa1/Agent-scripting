@@ -2,6 +2,7 @@ import { Controller, Get, Post, Inject, HttpCode, Header } from '@nestjs/common'
 import { z } from 'zod';
 
 import { JsonValueSchema } from '@verbis/script-schema';
+import { AgentFeedbackInputSchema, AgentFeedbackResultSchema } from '@verbis/shared-types';
 
 import { UuidSchema } from '../../common/dto.js';
 import { ForbiddenError } from '../../common/errors/domain-errors.js';
@@ -14,6 +15,7 @@ import { AuditService } from '../audit/audit.service.js';
 import { RequirePermissions } from '../authz/permissions.js';
 import { OutcomeSchema } from '../campaigns/campaigns.dto.js';
 
+import { AgentFeedbackService } from './agent-feedback.service.js';
 import { CommandSchema, RuntimeViewSchema } from './domain/runtime.js';
 import {
   RuntimeDataService,
@@ -60,6 +62,7 @@ export class AgentDesktopController {
     @Inject(RuntimeDataService) private readonly data: RuntimeDataService,
     @Inject(AuditService) private readonly audit: AuditService,
     @Inject(SecureCaptureService) private readonly capture: SecureCaptureService,
+    @Inject(AgentFeedbackService) private readonly feedbackService: AgentFeedbackService,
   ) {}
   private requireOwner(userId: string) {
     assertRuntimeOwner(userId);
@@ -204,6 +207,22 @@ export class AgentDesktopController {
       metadata: input,
     });
     return { recorded: true };
+  }
+  @Post(':id/desktop/feedback')
+  @HttpCode(201)
+  @RequirePermissions('read:Session')
+  @NoResponseReplay()
+  @ApiOperation({
+    summary: 'Owner flags a script page with a fixed reason; designers see it as a comment',
+  })
+  @ApiResponse(201, 'Recorded on the page comment thread', AgentFeedbackResultSchema)
+  async feedback(
+    @ZParam('id', UuidSchema) id: string,
+    @ZBody(AgentFeedbackInputSchema) input: z.infer<typeof AgentFeedbackInputSchema>,
+  ) {
+    const row = await this.runtime.row(id);
+    this.requireOwner(row.userId);
+    return this.feedbackService.submit(row, input);
   }
   @Post(':id/desktop/data-source-recovery')
   @HttpCode(200)

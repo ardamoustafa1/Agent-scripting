@@ -126,3 +126,51 @@
 .pv-panel li {
   overflow-wrap: anywhere;
 }
+
+/* Time travel and watch expressions (DIFFERENTIATORS B1) */
+.pv-watch-form {
+  display: flex;
+  align-items: end;
+  gap: var(--vb-space-2);
+}
+.pv-watch-form .vb-form-field {
+  flex: 1;
+}
+.pv-watches {
+  display: grid;
+  gap: var(--vb-space-1);
+  margin: var(--vb-space-2) 0;
+  padding: 0;
+  list-style: none;
+}
+.pv-watches li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--vb-space-2);
+  padding: var(--vb-space-1) var(--vb-space-2);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-sm);
+}
+.pv-watches code {
+  overflow-wrap: anywhere;
+}
+.pv-watches output {
+  font-family: var(--vb-font-mono);
+  font-size: var(--vb-font-size-sm);
+}
+.pv-changes {
+  flex-basis: 100%;
+  margin: var(--vb-space-1) 0 0;
+  padding-inline-start: var(--vb-space-4);
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-xs);
+}
+.pv-sample {
+  display: flex;
+  align-items: center;
+  gap: var(--vb-space-2);
+  margin-block: var(--vb-space-2);
+  font-size: var(--vb-font-size-sm);
+  color: var(--vb-color-text-muted);
+}

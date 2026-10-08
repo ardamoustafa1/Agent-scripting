@@ -232,3 +232,37 @@ it('shows summaries for completed email sessions while retaining read-only revie
     i18n.t('ai.summary'),
   );
 });
+
+it('moves to a suggested page only after the operator approves it, through the runtime', async () => {
+  const f = await mount('chat', 'active', { pageId: 'second-page' });
+  const navigate = vi.spyOn(f.controller.runtime, 'navigate').mockResolvedValue(undefined);
+  fireEvent.click(await screen.findByRole('combobox', { name: i18n.t('ai.task') }));
+  fireEvent.click(await screen.findByRole('option', { name: i18n.t('ai.navigate') }));
+  const approve = await generate('ai.goto');
+  expect(navigate).not.toHaveBeenCalled();
+  fireEvent.click(approve);
+  await waitFor(() => {
+    expect(navigate).toHaveBeenCalledWith('second-page');
+  });
+});
+it('does nothing when no page is suggested', async () => {
+  const f = await mount('chat', 'active', { pageId: null });
+  const navigate = vi.spyOn(f.controller.runtime, 'navigate').mockResolvedValue(undefined);
+  fireEvent.click(await screen.findByRole('combobox', { name: i18n.t('ai.task') }));
+  fireEvent.click(await screen.findByRole('option', { name: i18n.t('ai.navigate') }));
+  fireEvent.click(await generate('ai.goto'));
+  await waitFor(() => {
+    expect(screen.getByRole('button', { name: i18n.t('ai.saved') })).toBeTruthy();
+  });
+  expect(navigate).not.toHaveBeenCalled();
+});
+it('records reviewed "probably said" notices on the controller without confirming them', async () => {
+  const f = await mount('chat', 'active', { noticeIds: ['notice-recording'] });
+  fireEvent.click(await screen.findByRole('combobox', { name: i18n.t('ai.task') }));
+  fireEvent.click(await screen.findByRole('option', { name: i18n.t('ai.notices') }));
+  fireEvent.click(await generate('ai.markSaid'));
+  await waitFor(() => {
+    expect(f.controller.getSnapshot().probablySaid).toEqual(['notice-recording']);
+  });
+  expect(f.controller.runtime.store.get('runtime.read.notice-recording')).not.toBe(true);
+});

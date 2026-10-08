@@ -21,14 +21,15 @@ concurrency:
 jobs:
   mutation:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    # script-schema has ~3.4k mutants; static (module-level schema) mutants rerun the whole suite.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
         package: [expr, script-schema]
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
@@ -43,15 +44,28 @@ jobs:
           path: packages/${{ matrix.package }}/reports/mutation/
           if-no-files-found: error
   stability:
+    name: stability (${{ matrix.lane }} ${{ matrix.app }} ${{ matrix.shard }})
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
+    env:
+      LANE_APP: ${{ matrix.app }}
+      LANE_SHARD: ${{ matrix.shard }}
     strategy:
       fail-fast: false
       matrix:
-        lane: [flaky, quarantine]
+        # The 5x repeat lane over the whole designer suite alone exceeds any single-job budget,
+        # so it is sharded; quarantine runs once over everything.
+        include:
+          - { lane: flaky, app: designer-web, shard: 1/4 }
+          - { lane: flaky, app: designer-web, shard: 2/4 }
+          - { lane: flaky, app: designer-web, shard: 3/4 }
+          - { lane: flaky, app: designer-web, shard: 4/4 }
+          - { lane: flaky, app: agent-web, shard: 1/1 }
+          - { lane: flaky, app: admin-web, shard: 1/1 }
+          - { lane: quarantine, app: '', shard: '' }
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
@@ -63,7 +77,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: stability-${{ matrix.lane }}
+          name: stability-${{ matrix.lane }}-${{ matrix.app }}-${{ strategy.job-index }}
           path: |
             apps/*/test-results/
             apps/*/playwright-report/

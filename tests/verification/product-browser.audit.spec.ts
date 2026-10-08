@@ -603,6 +603,7 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
         'secrets',
         'ai',
         'audit',
+        'trust',
         'security',
         'data',
         'branding',
@@ -623,7 +624,7 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
       ],
       true,
     ],
-    ['security_auditor', ['audit'], [], false],
+    ['security_auditor', ['audit', 'trust'], [], false],
     [
       'script_designer',
       [],
@@ -663,7 +664,7 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
       ['analytics', 'campaigns', 'scripts', 'variables', 'templates', 'releases'],
       false,
     ],
-    ['agent', ['users'], ['scripts', 'screens', 'variables', 'templates', 'releases'], false],
+    ['agent', [], ['scripts', 'screens', 'variables', 'templates', 'releases'], false],
     ['report_viewer', ['analytics'], ['analytics'], false],
     [
       'api_client',
@@ -957,9 +958,11 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
     await page.getByLabel('Description', { exact: true }).fill('Delivery issue eligibility');
     await mode(page, 'Screen');
     await page.getByRole('tab', { name: 'Pages', exact: true }).click();
-    await page.getByLabel('Page name', { exact: true }).fill('01 · Delivery welcome');
+    await page.getByLabel('Rename selected page', { exact: true }).fill('01 · Delivery welcome');
     await page.getByRole('button', { name: 'Add page', exact: true }).click();
-    await page.getByLabel('Page name', { exact: true }).fill('02 · Issue and resolution');
+    await page
+      .getByLabel('Rename selected page', { exact: true })
+      .fill('02 · Issue and resolution');
     await page.getByRole('tab', { name: 'Components', exact: true }).click();
     await palette.locator('[data-component-type="heading"]').getByRole('button').last().click();
     await inspector.getByLabel('Text key · TR', { exact: true }).fill('Teslimat sorunu ve çözüm');

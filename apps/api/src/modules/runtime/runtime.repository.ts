@@ -43,13 +43,14 @@ export class RuntimeRepository {
     query: SessionListQuery,
     liveOnly = false,
   ): Promise<SessionRow[]> {
-    const { state, userId } = query.filters;
+    const { state, userId, scriptVersionId } = query.filters;
     const where: Prisma.SessionWhereInput = {
       tenantId,
       deletedAt: null,
       ...(liveOnly ? { state: { in: ['launching', 'active', 'paused', 'wrapup'] } } : {}),
       ...(state === undefined ? {} : { state }),
       ...(userId === undefined ? {} : { userId }),
+      ...(scriptVersionId === undefined ? {} : { scriptVersionId }),
     };
     const after = keysetWhere(query) as Prisma.SessionWhereInput | undefined;
     return tx.session.findMany({

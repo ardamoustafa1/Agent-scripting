@@ -1,4 +1,4 @@
-import { expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { NodeSchema, ScriptDocumentSchema } from '@verbis/script-schema';
 import { minimalScript } from '@verbis/script-schema/fixtures';
@@ -550,4 +550,139 @@ it('returns current monthly usage and reconciles stale reservations without refu
   expect(f.tx.$executeRaw.mock.calls.some(([sql]) => sql.join('').includes('tokens=tokens-'))).toBe(
     false,
   );
+});
+
+describe('navigate (ADR-0052 E4)', () => {
+  const twoPages = () => {
+    const doc = ScriptDocumentSchema.parse(minimalScript());
+    const first = doc.pages[0]!;
+    doc.pages.push({
+      ...structuredClone(first),
+      id: 'refunds',
+      name: 'Refunds',
+      layout: { ...structuredClone(first.layout), id: 'refunds-root', children: [] },
+    });
+    return doc;
+  };
+  const ask = (f: ReturnType<typeof enabledService>) =>
+    requestContext.run(context, () =>
+      f.service.generate(
+        AiRequestSchema.parse({
+          requestId: request().requestId,
+          task: 'navigate',
+          sessionId: context.principal.id,
+        }),
+      ),
+    );
+  const setup = (output: unknown) => {
+    const f = enabledService(true, true);
+    f.runtime.document = () => twoPages();
+    vi.mocked(postJson).mockResolvedValue({
+      text: 'Synthetic masked transcript',
+      count: 0,
+      complete: true,
+    });
+    f.complete.mockResolvedValue({
+      text: JSON.stringify(output),
+      inputTokens: 8,
+      outputTokens: 4,
+    });
+    return f;
+  };
+
+  it('offers only the other pages of the pinned script and returns a reviewed suggestion', async () => {
+    const f = setup({ pageId: 'refunds', reason: 'Customer asks for a refund' });
+    const result = await ask(f);
+    expect(result).toMatchObject({
+      task: 'navigate',
+      requiresHumanApproval: true,
+      value: { pageId: 'refunds' },
+    });
+    const sent = (vi.mocked(postJson).mock.calls.at(-1)![2] as { text: string }).text;
+    // Only the page that is not currently shown is offered as a choice.
+    expect(sent).toContain('"pageChoices":[{"id":"refunds","name":"Refunds"}]');
+  });
+
+  it('accepts "no page fits" and refuses a page the script does not have or the one already shown', async () => {
+    expect(await ask(setup({ pageId: null, reason: 'Nothing fits' }))).toMatchObject({
+      value: { pageId: null },
+    });
+    await expect(ask(setup({ pageId: 'invented', reason: 'x' }))).rejects.toMatchObject({
+      code: 'VERBIS_AI_OUTPUT',
+    });
+    await expect(ask(setup({ pageId: 'home', reason: 'already here' }))).rejects.toMatchObject({
+      code: 'VERBIS_AI_OUTPUT',
+    });
+  });
+
+  it('is only available while the interaction is live', async () => {
+    const f = setup({ pageId: 'refunds', reason: 'x' });
+    f.row.state = 'wrapup';
+    await expect(ask(f)).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+    expect(f.complete).not.toHaveBeenCalled();
+  });
+});
+
+describe('notices (ADR-0052 E5)', () => {
+  const withNotices = () => {
+    const doc = ScriptDocumentSchema.parse(minimalScript());
+    doc.i18n.messages['en'] = {
+      ...doc.i18n.messages['en'],
+      'legal.text': 'This call may be recorded.',
+    };
+    doc.pages[0]!.layout.children = [
+      {
+        id: 'notice-recording',
+        type: 'scriptText',
+        props: { mustRead: true, textKey: 'legal.text' },
+        bindings: [],
+        events: {},
+      },
+    ] as never;
+    return doc;
+  };
+  const setup = (output: unknown) => {
+    const f = enabledService(true, true);
+    f.runtime.document = () => withNotices();
+    vi.mocked(postJson).mockResolvedValue({
+      text: 'Synthetic masked transcript',
+      count: 0,
+      complete: true,
+    });
+    f.complete.mockResolvedValue({ text: JSON.stringify(output), inputTokens: 8, outputTokens: 4 });
+    return f;
+  };
+  const ask = (f: ReturnType<typeof enabledService>) =>
+    requestContext.run(context, () =>
+      f.service.generate(
+        AiRequestSchema.parse({
+          requestId: request().requestId,
+          task: 'notices',
+          locale: 'en',
+          sessionId: context.principal.id,
+        }),
+      ),
+    );
+
+  it('sends the notice wording and returns only ids the script defines, as a suggestion', async () => {
+    const f = setup({ noticeIds: ['notice-recording'], reason: 'The operator read it out' });
+    const result = await ask(f);
+    expect(result).toMatchObject({
+      task: 'notices',
+      requiresHumanApproval: true,
+      value: { noticeIds: ['notice-recording'] },
+    });
+    const sent = (vi.mocked(postJson).mock.calls.at(-1)![2] as { text: string }).text;
+    expect(sent).toContain('This call may be recorded.');
+    expect(sent).toContain('noticeChoices');
+  });
+
+  it('accepts "none said" and refuses an invented notice id', async () => {
+    expect(await ask(setup({ noticeIds: [], reason: 'Nothing matched' }))).toMatchObject({
+      value: { noticeIds: [] },
+    });
+    await expect(ask(setup({ noticeIds: ['invented'], reason: 'x' }))).rejects.toMatchObject({
+      code: 'VERBIS_AI_OUTPUT',
+    });
+  });
 });

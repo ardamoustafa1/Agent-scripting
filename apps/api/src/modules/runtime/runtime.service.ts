@@ -1,19 +1,23 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { asSubject } from '@verbis/authz';
+import { ScriptDocumentSchema } from '@verbis/script-schema';
 
 import { NotFoundError } from '../../common/errors/domain-errors.js';
 import { toPage, type Page } from '../../common/pagination/pagination.js';
 import { TenantDb } from '../../infra/database/tenant-db.js';
 import { AuditService } from '../audit/audit.service.js';
 import { AuthzService } from '../authz/authz.service.js';
+import { decodeDocument } from '../scripts/document-storage.js';
 
+import { buildReplay } from './domain/replay.js';
 import { RuntimeEngineService } from './runtime-engine.service.js';
 import {
   type SessionDto,
   type SessionEventDto,
   type SessionEventListQuery,
   type SessionListQuery,
+  type SessionReplayDto,
   toSessionDto,
   toSessionEventDto,
 } from './runtime.dto.js';
@@ -120,4 +124,51 @@ export class RuntimeService {
     );
     return toPage(rows, query, toSessionEventDto, (row) => row.seq);
   }
+
+  /**
+   * Metadata-only path replay of one session over its pinned script version. Reading a real
+   * session's path is a sensitive read: it needs `read` on the session and is audited.
+   */
+  async replay(sessionId: string): Promise<SessionReplayDto> {
+    const session = await this.getSession(sessionId);
+    const tx = this.db.current(),
+      tenantId = this.db.tenantId();
+    const version = await tx.scriptVersion.findFirst({
+      where: { id: session.scriptVersionId, tenantId },
+      select: {
+        scriptId: true,
+        number: true,
+        document: true,
+        documentEncoding: true,
+        documentCompressed: true,
+      },
+    });
+    if (!version) throw new NotFoundError('Script version');
+    const document = ScriptDocumentSchema.parse(await decodeDocument(version));
+    const rows = await tx.sessionEvent.findMany({
+      where: { tenantId, sessionId },
+      orderBy: { seq: 'asc' },
+      take: REPLAY_EVENT_CAP + 1,
+      select: { seq: true, type: true, payload: true, occurredAt: true },
+    });
+    const replay = buildReplay(
+      rows,
+      document.pages.map((page) => ({ id: page.id, name: page.name })),
+      REPLAY_EVENT_CAP,
+    );
+    await this.audit.record(tx, {
+      action: 'runtime.session.replayViewed',
+      target: { type: 'Session', id: sessionId },
+      metadata: { steps: replay.steps.length, truncated: replay.truncated },
+    });
+    return {
+      sessionId,
+      scriptId: version.scriptId,
+      versionNumber: version.number,
+      state: session.state,
+      startedAt: session.startedAt,
+      ...replay,
+    };
+  }
 }
+const REPLAY_EVENT_CAP = 5000;

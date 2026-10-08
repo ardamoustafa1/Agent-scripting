@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { asSubject, authorIdsOf } from '@verbis/authz';
+import { mergeDocuments, ScriptDocumentSchema, type ScriptDocument } from '@verbis/script-schema';
 
 import { requestContext } from '../../common/context/request-context.js';
 import { DomainError, NotFoundError } from '../../common/errors/domain-errors.js';
@@ -48,6 +49,7 @@ interface LockedVersion {
   updatedBy: string;
   submittedBy: string | null;
   contributors: string[];
+  branch: string | null;
 }
 
 const VERSION_EVENT: Record<LifecycleAction, string> = {
@@ -80,6 +82,11 @@ export class VersionLifecycleService {
   async submit(scriptId: string, number: number, input: Partial<SubmitVersionInput>) {
     const tx = this.db.current();
     const version = await this.#lock(tx, scriptId, number);
+    if (typeof version.branch === 'string')
+      throw new DomainError(
+        'VERBIS_BRANCH_NOT_PUBLISHABLE',
+        `version ${String(number)} belongs to branch "${version.branch}"`,
+      );
     const semver = input.semver ?? version.semver;
     const changeNote = input.changeNote?.trim();
     if (!changeNote || changeNote.length > 4000)
@@ -347,6 +354,40 @@ export class VersionLifecycleService {
     };
   }
 
+  /**
+   * Three-way structural merge preview (DIFFERENTIATORS C3) of three existing versions of one
+   * script. Nothing is stored: the designer resolves conflicts and saves the result as a normal new
+   * version, which goes through the usual validation, review and audit.
+   */
+  async mergePreview(scriptId: string, input: { base: number; ours: number; theirs: number }) {
+    const tx = this.db.current();
+    await this.#authorizeRead(tx, scriptId);
+    const tenantId = this.db.tenantId();
+    const rows = await Promise.all(
+      [input.base, input.ours, input.theirs].map((n) =>
+        this.repository.findVersion(tx, tenantId, scriptId, n),
+      ),
+    );
+    const docs: ScriptDocument[] = [];
+    for (const row of rows) {
+      if (row === null) throw new NotFoundError('Script version');
+      const parsed = ScriptDocumentSchema.safeParse(await decodeDocument(row));
+      if (!parsed.success) throw new DomainError('VERBIS_SCRIPT_DOCUMENT_INVALID');
+      docs.push(parsed.data);
+    }
+    const [base, ours, theirs] = docs;
+    if (!base || !ours || !theirs) throw new NotFoundError('Script version');
+    const result = mergeDocuments(base, ours, theirs);
+    return {
+      base: input.base,
+      ours: input.ours,
+      theirs: input.theirs,
+      conflicts: result.conflicts,
+      issues: result.issues,
+      document: result.document,
+    };
+  }
+
   // ─── internals ──────────────────────────────────────────────────────────────
 
   async #authorizeRead(tx: TransactionClient, scriptId: string) {
@@ -363,7 +404,7 @@ export class VersionLifecycleService {
     await this.leases.assertWritable(this.db.tenantId(), scriptId, number);
     const rows = await tx.$queryRaw<LockedVersion[]>`
       SELECT id, number, state::text AS state, semver, checksum, review_round AS "reviewRound",
-             created_by AS "createdBy", updated_by AS "updatedBy", submitted_by AS "submittedBy", coalesce(source->'collaborationAuthors','[]'::jsonb) AS contributors
+             created_by AS "createdBy", updated_by AS "updatedBy", submitted_by AS "submittedBy", branch, coalesce(source->'collaborationAuthors','[]'::jsonb) AS contributors
         FROM script_versions
        WHERE tenant_id = ${this.db.tenantId()}::uuid AND script_id = ${scriptId}::uuid
          AND number = ${number} AND deleted_at IS NULL

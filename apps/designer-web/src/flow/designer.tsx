@@ -169,27 +169,31 @@ function FlowCanvas({
     edge = flow.edges.find((e) => e.id === selectedEdge),
     note = flow.designer?.notes.find((n) => n.id === selection[0]);
   const fields = ruleFields(state.document);
-  const groups: GraphNode[] = (flow.designer?.groups ?? []).flatMap((group) => {
-    const members = flow.nodes.filter((n) => group.nodes.includes(n.id));
-    if (!members.length) return [];
-    const positions = members.map((n) => n.position ?? { x: 0, y: 0 });
-    const x = Math.min(...positions.map((p) => p.x)) - 24;
-    const y = Math.min(...positions.map((p) => p.y)) - 40;
-    return [
-      {
-        id: group.id,
-        type: 'group',
-        position: temporary.get(group.id) ?? { x, y },
-        data: { label: group.label, kind: 'group', problems: [] },
-        zIndex: -1,
-        style: {
-          width: Math.max(...positions.map((p) => p.x)) - x + 244,
-          height: Math.max(...positions.map((p) => p.y)) - y + 124,
-        },
-        selected: selection.includes(group.id),
-      },
-    ];
-  });
+  const groups: GraphNode[] = useMemo(
+    () =>
+      (flow.designer?.groups ?? []).flatMap((group) => {
+        const members = flow.nodes.filter((n) => group.nodes.includes(n.id));
+        if (!members.length) return [];
+        const positions = members.map((n) => n.position ?? { x: 0, y: 0 });
+        const x = Math.min(...positions.map((p) => p.x)) - 24;
+        const y = Math.min(...positions.map((p) => p.y)) - 40;
+        return [
+          {
+            id: group.id,
+            type: 'group',
+            position: temporary.get(group.id) ?? { x, y },
+            data: { label: group.label, kind: 'group', problems: [] },
+            zIndex: -1,
+            style: {
+              width: Math.max(...positions.map((p) => p.x)) - x + 244,
+              height: Math.max(...positions.map((p) => p.y)) - y + 124,
+            },
+            selected: selection.includes(group.id),
+          },
+        ];
+      }),
+    [flow.designer?.groups, flow.nodes, temporary, selection],
+  );
   const traceNodes = trace?.nodes,
     traceCurrent = trace?.current;
   const selectedGroup = flow.designer?.groups.find((g) => g.id === selection[0]);
@@ -222,6 +226,7 @@ function FlowCanvas({
         ),
     [flow, temporary, selection, state.document, problems, traceNodes, traceCurrent],
   );
+  const canvasNodes = useMemo(() => [...groups, ...nodes], [groups, nodes]);
   const update = (next: FlowNode) => {
     if (readOnly) return;
     store.execute(() => {
@@ -408,7 +413,7 @@ function FlowCanvas({
       </div>
       <div className="fd-body">
         <ReactFlow
-          nodes={[...groups, ...nodes]}
+          nodes={canvasNodes}
           edges={flow.edges.map((e) => ({
             id: e.id,
             source: e.from,

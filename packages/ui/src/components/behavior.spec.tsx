@@ -9,7 +9,12 @@ import { UiProvider, BrandLogo } from '../provider.js';
 
 import { Button } from './button.js';
 import { Combobox, MultiSelect } from './combobox.js';
-import { CommandPalette } from './command-palette.js';
+import {
+  CommandPalette,
+  commandSearchText,
+  rankCommands,
+  scoreCommand,
+} from './command-palette.js';
 import { Tabs, Accordion, Toolbar, ToolbarButton } from './disclosure.js';
 import { Toast, ToastProvider, Avatar, Alert, Badge, Progress, Skeleton } from './feedback.js';
 import { Breadcrumb, EmptyState, Kbd, SplitPane } from './layout.js';
@@ -104,6 +109,43 @@ it('sheet has a named dialog, description and localized close action', async () 
   await userEvent.click(screen.getByRole('button', { name: 'Kapat' }));
   expect(screen.queryByRole('dialog')).toBeNull();
 });
+it('sheet restores focus to its trigger unless onCloseAutoFocus moves it elsewhere', async () => {
+  const moveFocus = (event: Event) => {
+    event.preventDefault();
+    screen.getByRole('button', { name: 'Elsewhere' }).focus();
+  };
+  const { rerender } = mount(
+    <>
+      <Sheet title="Panel" description="Ayrıntılar" trigger={<Button>Open</Button>}>
+        Content
+      </Sheet>
+      <Button>Elsewhere</Button>
+    </>,
+  );
+  await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Kapat' }));
+  await waitFor(() => {
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Open' }));
+  });
+  rerender(
+    <UiProvider i18n={i18n}>
+      <Sheet
+        title="Panel"
+        description="Ayrıntılar"
+        trigger={<Button>Open</Button>}
+        onCloseAutoFocus={moveFocus}
+      >
+        Content
+      </Sheet>
+      <Button>Elsewhere</Button>
+    </UiProvider>,
+  );
+  await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Kapat' }));
+  await waitFor(() => {
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Elsewhere' }));
+  });
+});
 it('menus run actions and skip disabled actions', async () => {
   const choose = vi.fn();
   mount(
@@ -156,6 +198,93 @@ it('command palette runs actions and closes; shortcuts do not consume text input
   await userEvent.keyboard('{Enter}');
   expect(choose).toHaveBeenCalledOnce();
   expect(screen.queryByRole('dialog')).toBeNull();
+});
+it('command palette matches Turkish text without diacritics, keywords and recent commands', async () => {
+  const health = vi.fn();
+  const ran = vi.fn();
+  const query = vi.fn();
+  function Demo() {
+    const [open, setOpen] = useState(true);
+    return (
+      <>
+        <Button
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          Reopen
+        </Button>
+        <CommandPalette
+          open={open}
+          onOpenChange={setOpen}
+          recent={['flow']}
+          onItemRun={ran}
+          onQueryChange={query}
+          items={[
+            { id: 'health', label: 'Sağlık panelini aç', onSelect: health },
+            { id: 'flow', label: 'Akış', group: 'Mod', onSelect: vi.fn() },
+            { id: 'node', label: 'Düğme', keywords: ['Karşılama sayfası'], onSelect: vi.fn() },
+          ]}
+        />
+      </>
+    );
+  }
+  mount(<Demo />);
+  const input = await screen.findByRole('combobox');
+  // Recent commands lead while the query is empty.
+  expect(screen.getByRole('group', { name: 'Son kullanılanlar' })).toBeTruthy();
+  await userEvent.type(input, 'saglik');
+  expect(query).toHaveBeenLastCalledWith('saglik');
+  expect(screen.queryByRole('group', { name: 'Son kullanılanlar' })).toBeNull();
+  expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Sağlık panelini aç']);
+  await userEvent.clear(input);
+  await userEvent.type(input, 'karsilama');
+  expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Düğme']);
+  await userEvent.clear(input);
+  await userEvent.type(input, 'saglik');
+  await userEvent.keyboard('{Enter}');
+  expect(health).toHaveBeenCalledOnce();
+  expect(ran).toHaveBeenCalledWith('health');
+  // Closing resets the query for the host as well.
+  expect(query).toHaveBeenLastCalledWith('');
+  await userEvent.click(screen.getByRole('button', { name: 'Reopen' }));
+  expect((await screen.findByRole<HTMLInputElement>('combobox')).value).toBe('');
+});
+it('scoreCommand ranks prefixes above contained terms above subsequences', () => {
+  expect(scoreCommand('Akışa git', '')).toBe(1);
+  expect(scoreCommand('Akışa git', 'akisa')).toBe(1);
+  expect(scoreCommand('Sayfaya git: Karşılama', 'karsi')).toBe(0.8);
+  expect(scoreCommand('Bileşen ekle düğme', 'ekle dug')).toBe(0.6);
+  expect(scoreCommand('Tam ekran', 'tmekr')).toBe(0.2);
+  expect(scoreCommand('Tam ekran', 'zzz')).toBe(0);
+  expect(commandSearchText(' İLERİ ')).toBe('ileri');
+  // One or two characters never match loosely ("v-a-li-d-ation" is not "ad").
+  expect(scoreCommand('Validation details', 'ad')).toBe(0);
+});
+it('rankCommands puts the top hit and its group first, keeping declared order without a query', () => {
+  const noop = vi.fn();
+  const items = [
+    {
+      id: 'health',
+      label: 'Open script health',
+      group: 'Script',
+      keywords: ['Validation details'],
+      onSelect: noop,
+    },
+    { id: 'keys', label: 'Keyboard shortcuts', group: 'Script', onSelect: noop },
+    { id: 'add-box', label: 'Add Box', group: 'Insert', onSelect: noop },
+    { id: 'go-add', label: 'Go to page: Address', group: 'Pages', onSelect: noop },
+  ];
+  expect(rankCommands(items, '').map((g) => [g.group, g.items.map((i) => i.id)])).toEqual([
+    ['Script', ['health', 'keys']],
+    ['Insert', ['add-box']],
+    ['Pages', ['go-add']],
+  ]);
+  expect(rankCommands(items, 'ad').map((g) => [g.group, g.items.map((i) => i.id)])).toEqual([
+    ['Insert', ['add-box']],
+    ['Pages', ['go-add']],
+  ]);
+  expect(rankCommands(items, 'zzz')).toEqual([]);
 });
 it('toast can be explicitly dismissed without waiting for timers', async () => {
   const change = vi.fn();

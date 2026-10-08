@@ -222,3 +222,102 @@ describe('analytics operational edge cases', () => {
     });
   });
 });
+
+describe('sequential A/B and guardrails (ADR-0048)', () => {
+  const experimentId = fixtureId(900);
+  /** One session per call; ids and clocks are derived from `n`, so the test is deterministic. */
+  function session(n: number, variant: 'A' | 'B', end: 'completed' | 'abandoned', read: boolean) {
+    const sessionId = fixtureId(1000 + n),
+      base = n * 100;
+    const common = { sessionId, variant, experimentId };
+    return [
+      fixtureFact(base, { ...common, eventId: fixtureId(5000 + base) }),
+      fixtureFact(base + 1, {
+        ...common,
+        eventId: fixtureId(5000 + base + 1),
+        type: 'page',
+        pageId: 'legal',
+        requiredReadIds: ['terms'],
+      }),
+      ...(read
+        ? [
+            fixtureFact(base + 2, {
+              ...common,
+              eventId: fixtureId(5000 + base + 2),
+              type: 'read',
+              pageId: 'legal',
+              nodeId: 'terms',
+            }),
+          ]
+        : []),
+      fixtureFact(base + 3, { ...common, eventId: fixtureId(5000 + base + 3), state: end }),
+    ];
+  }
+  const arm = (variant: 'A' | 'B', offset: number, total: number, done: number, read: number) =>
+    Array.from({ length: total }, (_, i) =>
+      session(offset + i, variant, i < done ? 'completed' : 'abandoned', i < read),
+    ).flat();
+
+  it('reports an always-valid p-value and flags only the arm that is worse on a guardrail', () => {
+    const result = aggregate([...arm('A', 0, 600, 360, 570), ...arm('B', 1000, 600, 450, 360)]);
+    const c = result.comparisons[0];
+    expect(c?.anytimePValue).not.toBeNull();
+    expect(c?.anytimeSignificant).toBe(true);
+    const compliance = result.guardrails?.find((g) => g.metric === 'compliance');
+    expect(compliance?.worse).toBe('B');
+    const abandonment = result.guardrails?.find((g) => g.metric === 'abandonment');
+    expect(abandonment?.metric).toBe('abandonment');
+  });
+  it('stays inconclusive on small arms', () => {
+    const result = aggregate([...arm('A', 0, 8, 4, 8), ...arm('B', 1000, 8, 6, 8)]);
+    expect(result.comparisons[0]?.anytimePValue).toBeNull();
+    expect(result.comparisons[0]?.anytimeSignificant).toBe(false);
+    expect(result.guardrails?.every((g) => g.worse === null)).toBe(true);
+  });
+  it('emits no guardrails outside experiments', () => {
+    expect(aggregate([fixtureFact(0), fixtureFact(1, { state: 'completed' })]).guardrails).toEqual(
+      [],
+    );
+  });
+});
+
+describe('version-outcome relation (F4)', () => {
+  const v = (n: number) => fixtureId(7000 + n);
+  function run(n: number, versionId: string, day: number, completed: boolean) {
+    const sessionId = fixtureId(8000 + n),
+      at = (s: number) => new Date(Date.UTC(2026, 9, day, 9, 0, s)).toISOString();
+    return [
+      fixtureFact(n * 10, { sessionId, versionId, eventId: fixtureId(9000 + n * 10), at: at(0) }),
+      fixtureFact(n * 10 + 1, {
+        sessionId,
+        versionId,
+        eventId: fixtureId(9000 + n * 10 + 1),
+        at: at(60),
+        state: completed ? 'completed' : 'abandoned',
+      }),
+    ];
+  }
+  it('orders versions by release time and compares each with the previous one of the same script', () => {
+    const rows = [
+      ...Array.from({ length: 200 }, (_, i) => run(i, v(1), 1, i < 80)).flat(),
+      ...Array.from({ length: 200 }, (_, i) => run(1000 + i, v(2), 3, i < 160)).flat(),
+    ];
+    const result = aggregate(rows.reverse());
+    expect(result.versions?.map((x) => x.versionId)).toEqual([v(1), v(2)]);
+    expect(result.versions?.[0]?.vsPrevious).toBeNull();
+    const second = result.versions?.[1];
+    expect(second?.vsPrevious).toMatchObject({ versionId: v(1), significant: true });
+    expect(second?.vsPrevious?.difference).toBeCloseTo(0.4, 5);
+    expect(Date.parse(second?.firstSeenAt ?? '')).toBeLessThan(
+      Date.parse(second?.lastSeenAt ?? ''),
+    );
+  });
+  it('does not compare versions of different scripts', () => {
+    const other = fixtureId(3000);
+    const rows = [
+      ...run(1, v(1), 1, true),
+      ...run(2, v(2), 2, true).map((f) => ({ ...f, scriptId: other })),
+    ];
+    expect(aggregate(rows).versions?.every((x) => x.vsPrevious === null)).toBe(true);
+  });
+});

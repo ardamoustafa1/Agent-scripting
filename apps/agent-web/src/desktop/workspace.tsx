@@ -17,6 +17,7 @@ import {
   Badge,
   Skeleton,
   Dialog,
+  Checkbox,
   useTheme,
   THEMES,
   type Theme,
@@ -32,6 +33,7 @@ import { useLaunchOffers } from '../launch/use-launch-offers.js';
 import { api, View, type Desktop } from './api.js';
 import { FailureNotice } from './failure-notice.js';
 import { type AgentFailure } from './failure.js';
+import { describeTarget, shortcutIntent } from './navigation.js';
 import { DraftVault } from './vault.js';
 import './styles.css';
 
@@ -56,6 +58,8 @@ const Sessions = z.object({
 const Preferences = z.object({
   size: z.enum(['small', 'medium', 'large']),
   density: z.enum(['comfortable', 'compact']),
+  /** Focus mode (DIFFERENTIATORS D2); older stored preferences default to off. */
+  focus: z.boolean().default(false),
 });
 function readPreferences() {
   try {
@@ -195,6 +199,31 @@ export function AgentWorkspace() {
   });
   const embedded = window.self !== window.top;
   const selected = active ?? ids[0] ?? null;
+  // Workspace shortcuts: Alt+F focus mode, Alt+1…9 switch interaction.
+  const tabOrder = ids.join(',');
+  useEffect(() => {
+    const key = (event: KeyboardEvent) => {
+      const intent = shortcutIntent(event, describeTarget(event.target));
+      if (intent?.type === 'focusMode') {
+        event.preventDefault();
+        setPrefs((previous) => ({ ...previous, focus: !previous.focus }));
+      }
+      if (intent?.type === 'tab') {
+        const target = tabOrder.split(',')[intent.index];
+        if (!target) return;
+        event.preventDefault();
+        setActive(target);
+        setUnread((previous) => previous.filter((id) => id !== target));
+        requestAnimationFrame(() => {
+          document.getElementById(`tab-${target}`)?.focus();
+        });
+      }
+    };
+    document.addEventListener('keydown', key);
+    return () => {
+      document.removeEventListener('keydown', key);
+    };
+  }, [tabOrder]);
   if (path === '/launch') return <LaunchPage navigate={navigate} />;
   if (path === LINKED_PATH) return <GenesysLinkedPage />;
   if (auth.isPending) return <Skeleton height="80vh" />;
@@ -236,6 +265,7 @@ export function AgentWorkspace() {
         className={`ag-workspace ${embedded ? 'ag-embedded' : ''}`}
         data-density={embedded ? 'compact' : prefs.density}
         data-size={prefs.size}
+        data-focus={prefs.focus}
       >
         <a
           className="vb-skip-link"
@@ -447,6 +477,13 @@ export function AgentWorkspace() {
               value,
               label: t(`agent.desktop.densities.${value}`),
             }))}
+          />
+          <Checkbox
+            label={t('agent.desktop.focusModeSetting')}
+            checked={prefs.focus}
+            onCheckedChange={(checked) => {
+              setPrefs((previous) => ({ ...previous, focus: checked === true }));
+            }}
           />
           <Select
             label={t('common.theme.label')}

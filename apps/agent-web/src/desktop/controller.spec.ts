@@ -150,3 +150,14 @@ describe('script personalization context', () => {
     controller.dispose();
   });
 });
+describe('probable notices (ADR-0052 E5)', () => {
+  it('records AI "probably said" marks without touching the runtime acknowledgement', () => {
+    const f = fixture();
+    expect(f.controller.getSnapshot().probablySaid).toEqual([]);
+    f.controller.markProbablySaid(['notice-a']);
+    f.controller.markProbablySaid(['notice-a', 'notice-b']);
+    expect(f.controller.getSnapshot().probablySaid).toEqual(['notice-a', 'notice-b']);
+    expect(f.controller.runtime.store.get('runtime.read.notice-a')).not.toBe(true);
+    f.controller.dispose();
+  });
+});

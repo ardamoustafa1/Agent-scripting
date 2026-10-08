@@ -1,5 +1,6 @@
 import { useEffect, useState, useSyncExternalStore, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 import { useAbility } from '@verbis/authz/react';
 import type { DataSourceRequest } from '@verbis/core-runtime';
@@ -32,14 +33,25 @@ import { JsonField } from '../integrations/json-field.js';
 import { useWorkspace } from '../workspace/context.js';
 
 import { PreviewController } from './controller.js';
+import { CoveragePanel, type CoverageTrace } from './coverage-panel.js';
 import { DevicePreview } from './device.js';
 import { previewLint } from './lint.js';
 import { RegressionPanel } from './regression-panel.js';
+import { sampleFromSchema } from './sample.js';
 import './styles.css';
 
 const FlowDesigner = lazy(() =>
   import('../flow/designer.js').then((m) => ({ default: m.FlowDesigner })),
 );
+const SampleSources = z.object({
+  data: z.array(
+    z.object({
+      key: z.string(),
+      version: z.number().int(),
+      definition: z.object({ outputSchema: z.record(z.string(), z.unknown()).default({}) }),
+    }),
+  ),
+});
 const none = () => () => undefined;
 const zero = () => 0;
 function textValue(value: unknown, fallback = ''): string {
@@ -96,6 +108,47 @@ export function PreviewStudio({
   const [theme, setTheme] = useState<Theme>('light'),
     [width, setWidth] = useState(1280),
     [height, setHeight] = useState(800);
+  const [coverageTrace, setCoverageTrace] = useState<CoverageTrace | null>(null);
+  const [samples, setSamples] = useState<
+    Record<string, { state: 'loading' | 'done' | 'missing' | 'failed'; generation: number }>
+  >({});
+  const fillSample = async (source: (typeof state.document.dataSources)[number]) => {
+    const key = source.ref.replace(/^tenant-datasource:/, '');
+    const generation = (samples[source.id]?.generation ?? 0) + 1;
+    setSamples((before) => ({ ...before, [source.id]: { state: 'loading', generation } }));
+    try {
+      const page = await request(
+        `/v1/data-sources?limit=20&q=${encodeURIComponent(key)}`,
+        SampleSources,
+      );
+      const row = page.data.find((candidate) => candidate.key === key);
+      if (!row) {
+        setSamples((before) => ({ ...before, [source.id]: { state: 'missing', generation } }));
+        return;
+      }
+      const sample = JsonValueSchema.parse(sampleFromSchema(row.definition.outputSchema));
+      const outputs = Object.fromEntries(
+        Object.entries(source.outputs).map(([name, output]) => [
+          name,
+          project(sample, output.path),
+        ]),
+      );
+      setMocks((before) => ({
+        ...before,
+        [source.id]: PreviewMockSchema.parse({
+          ...before[source.id],
+          kind: 'success',
+          delayMs: 0,
+          outputs,
+        }),
+      }));
+      setSamples((before) => ({ ...before, [source.id]: { state: 'done', generation } }));
+    } catch {
+      setSamples((before) => ({ ...before, [source.id]: { state: 'failed', generation } }));
+    }
+  };
+  const [watches, setWatches] = useState<string[]>([]),
+    [watchDraft, setWatchDraft] = useState('');
   const [tab, setTab] = useState('context'),
     [saveDialog, setSaveDialog] = useState(false),
     [name, setName] = useState(''),
@@ -208,6 +261,15 @@ export function PreviewStudio({
           disabled={!runtime?.executor.debugger.paused}
         >
           {t('designer.preview.step')}
+        </Button>
+        <Button
+          variant="secondary"
+          disabled={!controller || controller.timeline.filter((row) => row.snapshot).length < 2}
+          onClick={() => {
+            controller?.stepBack();
+          }}
+        >
+          {t('designer.preview.stepBack')}
         </Button>
         <Select
           label={t('designer.preview.device')}
@@ -409,7 +471,29 @@ export function PreviewStudio({
                             }));
                           }}
                         />
+                        {ability.can('read', 'Integration') && (
+                          <div className="pv-sample">
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              loading={samples[source.id]?.state === 'loading'}
+                              onClick={() => {
+                                void fillSample(source);
+                              }}
+                            >
+                              {t('designer.preview.sampleFromSchema')}
+                            </Button>
+                            <span role="status">
+                              {samples[source.id] && samples[source.id]?.state !== 'loading'
+                                ? t(
+                                    `designer.preview.sample.${samples[source.id]?.state ?? 'done'}`,
+                                  )
+                                : ''}
+                            </span>
+                          </div>
+                        )}
                         <JsonField
+                          key={`${source.id}-${String(samples[source.id]?.generation ?? 0)}`}
                           label={t('designer.preview.mockOutputs')}
                           value={mocks[source.id]?.outputs ?? {}}
                           change={(value) => {
@@ -433,6 +517,59 @@ export function PreviewStudio({
                 content: (
                   <div className="pv-panel">
                     <p>{t('designer.preview.watchHelp')}</p>
+                    <form
+                      className="pv-watch-form"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        const expression = watchDraft.trim();
+                        if (expression && !watches.includes(expression) && watches.length < 20)
+                          setWatches([...watches, expression]);
+                        setWatchDraft('');
+                      }}
+                    >
+                      <Input
+                        label={t('designer.preview.watchExpression')}
+                        value={watchDraft}
+                        maxLength={500}
+                        onChange={(e) => {
+                          setWatchDraft(e.target.value);
+                        }}
+                      />
+                      <Button type="submit" variant="secondary" size="sm">
+                        {t('designer.preview.addWatch')}
+                      </Button>
+                    </form>
+                    {watches.length > 0 && (
+                      <ul className="pv-watches" aria-label={t('designer.preview.watchList')}>
+                        {watches.map((expression) => {
+                          const result = controller?.watch(expression);
+                          return (
+                            <li key={expression}>
+                              <code>{expression}</code>
+                              <output>
+                                {!result
+                                  ? '—'
+                                  : result.status === 'masked'
+                                    ? t('designer.preview.masked')
+                                    : result.status === 'error'
+                                      ? t('designer.preview.watchError')
+                                      : JSON.stringify(result.value)}
+                              </output>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                aria-label={t('designer.preview.removeWatch', { expression })}
+                                onClick={() => {
+                                  setWatches(watches.filter((value) => value !== expression));
+                                }}
+                              >
+                                {t('designer.preview.remove')}
+                              </Button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
                     {state.document.variables.map((variable) => (
                       <div key={variable.key}>
                         <Badge>{variable.scope}</Badge>
@@ -523,6 +660,17 @@ export function PreviewStudio({
                 ),
               },
               {
+                value: 'coverage',
+                label: t('designer.coverage.tab'),
+                content: (
+                  <CoveragePanel
+                    store={store}
+                    editable={versionState === 'draft'}
+                    onTrace={setCoverageTrace}
+                  />
+                ),
+              },
+              {
                 value: 'scenarios',
                 label: t('designer.preview.scenarios'),
                 content: (
@@ -586,15 +734,17 @@ export function PreviewStudio({
             store={store}
             readOnly
             openPage={() => undefined}
-            {...(controller
-              ? {
-                  trace: {
-                    nodes: controller.visitedNodes,
-                    edges: controller.visitedEdges,
-                    current: controller.currentNode,
-                  },
-                }
-              : {})}
+            {...(tab === 'coverage' && coverageTrace
+              ? { trace: coverageTrace }
+              : controller
+                ? {
+                    trace: {
+                      nodes: controller.visitedNodes,
+                      edges: controller.visitedEdges,
+                      current: controller.currentNode,
+                    },
+                  }
+                : {})}
           />
         </Suspense>
       </details>
@@ -643,6 +793,24 @@ export function PreviewStudio({
               >
                 {t('designer.preview.jump')}
               </Button>
+              {(() => {
+                const changes = controller.changes(row.id);
+                return changes.length > 0 ? (
+                  <ul className="pv-changes" aria-label={t('designer.preview.changes')}>
+                    {changes.map((change) => (
+                      <li key={change.variable}>
+                        <code>{change.variable}</code>{' '}
+                        {change.masked
+                          ? t('designer.preview.changedMasked')
+                          : t('designer.preview.changedValue', {
+                              before: JSON.stringify(change.before),
+                              after: JSON.stringify(change.after),
+                            })}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null;
+              })()}
             </li>
           ))}
         </ol>

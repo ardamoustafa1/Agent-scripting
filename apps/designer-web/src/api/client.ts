@@ -202,6 +202,7 @@ export const VersionsSchema = z.object({
       state: z.string(),
       createdAt: z.string(),
       createdBy: z.string().nullable().optional(),
+      branch: z.string().nullable().optional(),
     }),
   ),
   page: z.object({ nextCursor: z.string().nullable() }),

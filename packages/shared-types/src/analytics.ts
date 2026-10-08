@@ -115,8 +115,67 @@ export const AnalyticsDashboardSchema = z
         pValue: z.number().nullable(),
         significant: z.boolean(),
         reason: z.enum(['sufficient', 'insufficient']),
+        /** Always-valid (mSPRT) p-value, safe to read at any time; ADR-0048. */
+        anytimePValue: z.number().nullable().optional(),
+        anytimeSignificant: z.boolean().optional(),
       }),
     ),
+    /**
+     * Per-published-version outcomes in release order (DIFFERENTIATORS F4). Observational: the
+     * comparison with the previous version is confounded by time and traffic mix, so it is a
+     * pointer for investigation, not proof that the release caused the change.
+     */
+    versions: z
+      .array(
+        z.object({
+          versionId: z.string(),
+          scriptId: z.string(),
+          firstSeenAt: z.iso.datetime(),
+          lastSeenAt: z.iso.datetime(),
+          sessions: z.number(),
+          completed: z.number(),
+          completionRate: z.number(),
+          meanDurationMs: z.number().nullable(),
+          vsPrevious: z
+            .object({
+              versionId: z.string(),
+              difference: z.number(),
+              durationDeltaMs: z.number().nullable(),
+              anytimePValue: z.number().nullable(),
+              significant: z.boolean(),
+            })
+            .nullable(),
+        }),
+      )
+      .optional(),
+    /** Ranked, thresholded optimization pointers (DIFFERENTIATORS E7); fixed kinds, no free text. */
+    insights: z
+      .array(
+        z.object({
+          kind: z.enum(['dropOff', 'slowPage', 'errorNode', 'slowSource', 'failingSource']),
+          target: z.string(),
+          value: z.number(),
+          baseline: z.number().nullable(),
+          samples: z.number().int(),
+          impact: z.number().int(),
+        }),
+      )
+      .optional(),
+    /** Guardrail metrics are compared separately from the primary metric (ADR-0048). */
+    guardrails: z
+      .array(
+        z.object({
+          experimentId: z.string(),
+          a: z.string(),
+          b: z.string(),
+          metric: z.enum(['abandonment', 'compliance']),
+          difference: z.number(),
+          pValue: z.number().nullable(),
+          /** Arm key that is significantly worse on this metric, or null. */
+          worse: z.string().nullable(),
+        }),
+      )
+      .optional(),
     active: z.array(
       z.object({
         sessionId: z.string(),

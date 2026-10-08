@@ -22,6 +22,7 @@ import {
   Keyboard,
   Maximize2,
   Minimize2,
+  PanelRight,
 } from 'lucide-react';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,20 +34,27 @@ import { Button, Select, Badge, Dialog, Alert } from '@verbis/ui';
 
 import { request, ApiError } from '../api/client.js';
 import { CollaborationPanel } from '../lifecycle/collaboration.js';
+import { useContributeCommands } from '../workspace/commands.js';
 import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
 
 import { Canvas } from './canvas.js';
+import { EDIT_ACTIONS, editorCommands, isApplePlatform, type EditAction } from './commands.js';
 import { DataSources } from './data-sources.js';
 import { dragAnnouncements, dragInstructions, dragLabel } from './drag-a11y.js';
 import { DropGuides, measureNodes } from './drop-guides.js';
 import { resolveDrop } from './drop-position.js';
+import { HealthPanel } from './health-panel.js';
 import { HeatmapContext, useHeatmap } from './heatmap.js';
 import { Inspector } from './inspector.js';
 import { LeftPanel } from './layers.js';
 import { LinkedScreens } from './linked-screens.js';
+import { LivePane } from './live-pane.js';
 import { ReuseScreen } from './reuse-screen.js';
 import { EditorDocumentSchema, EditorStore, useEditor } from './store.js';
+import { SuggestMode } from './suggest-mode.js';
+
+import type { IssueTarget } from './health.js';
 import '../flow/styles.css';
 import './editor.css';
 
@@ -62,6 +70,22 @@ const RuleManager = lazy(() =>
 const VariableManager = lazy(() =>
   import('../flow/variable-manager.js').then((m) => ({ default: m.VariableManager })),
 );
+
+const LIVE_PREFERENCE = 'verbis.editor.liveView';
+function readLivePreference(): boolean {
+  try {
+    return localStorage.getItem(LIVE_PREFERENCE) === 'on';
+  } catch {
+    return false;
+  }
+}
+function writeLivePreference(on: boolean) {
+  try {
+    localStorage.setItem(LIVE_PREFERENCE, on ? 'on' : 'off');
+  } catch {
+    /* A per-viewer convenience only. */
+  }
+}
 
 const actionIcons = {
   undo: Undo2,
@@ -109,7 +133,7 @@ export default function EditorPage() {
   return <Editor key={version.data.id} version={version.data} scriptId={id ?? ''} />;
 }
 export function Editor({ version, scriptId }: { version: Version; scriptId: string }) {
-  const { t } = useTranslation(),
+  const { t, i18n } = useTranslation(),
     { session } = useWorkspace();
   const [store] = useState(
     () =>
@@ -125,8 +149,11 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
   const state = useEditor(store),
     [mode, setMode] = useState('screen'),
     [collaborating, setCollaborating] = useState(false),
+    [suggesting, setSuggesting] = useState(false),
     [help, setHelp] = useState(false),
     [expanded, setExpanded] = useState(false),
+    [live, setLive] = useState(readLivePreference),
+    [healthOpen, setHealthOpen] = useState(false),
     [ghost, setGhost] = useState<string | null>(null),
     [placed, setPlaced] = useState(''),
     [save, setSave] = useState('saved'),
@@ -148,6 +175,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
   useEffect(() => {
     if (
       collaborating ||
+      suggesting ||
       !dirty ||
       version.state !== 'draft' ||
       conflict.current ||
@@ -199,7 +227,17 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
     return () => {
       clearTimeout(timer);
     };
-  }, [state.document, dirty, save, session.csrfToken, scriptId, store, version, collaborating]);
+  }, [
+    state.document,
+    dirty,
+    save,
+    session.csrfToken,
+    scriptId,
+    store,
+    version,
+    collaborating,
+    suggesting,
+  ]);
   useEffect(() => {
     const unload = (event: BeforeUnloadEvent) => {
       if (dirty) {
@@ -380,6 +418,93 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
         }),
       );
   };
+  const actionDisabled = (action: EditAction) =>
+    version.state !== 'draft' ||
+    state.writeSuspended ||
+    (mode !== 'screen' && action !== 'undo' && action !== 'redo') ||
+    (action === 'undo' && !state.history) ||
+    (action === 'redo' && !state.future) ||
+    (action === 'copy' && !selectionRoots.length) ||
+    (action === 'paste' && !store.canPaste(target())) ||
+    (action === 'delete' && !editableChildren) ||
+    ((action === 'duplicate' || action === 'group') && !commonParent) ||
+    (action === 'ungroup' &&
+      (!editableChildren ||
+        selectionRoots.length !== 1 ||
+        store.node(selectionRoots[0] ?? '')?.type !== 'box'));
+  const runAction = (action: EditAction) => {
+    store.execute(() => {
+      if (action === 'delete') store.remove();
+      else if (action === 'paste') {
+        const parent = target();
+        if (parent) store.paste(parent);
+      } else store[action]();
+    });
+  };
+  const goTo = (goal: IssueTarget) => {
+    setMode(goal.mode);
+    if (goal.mode !== 'screen') return;
+    store.setView({ pageId: goal.pageId });
+    if (goal.nodeId) store.select(goal.nodeId);
+    requestAnimationFrame(() => {
+      document.getElementById('editor-canvas')?.focus({ preventScroll: true });
+      document.querySelector('.ed-selection')?.scrollIntoView({ block: 'nearest' });
+    });
+  };
+  const insertComponent = (type: string) => {
+    let parent = target();
+    while (parent && !store.canDrop(parent, type)) parent = store.location(parent)?.parent?.id;
+    const destination = parent;
+    if (destination)
+      store.execute(() => {
+        store.insert(type, destination);
+      });
+  };
+  const toggleLive = () => {
+    setLive((value) => {
+      writeLivePreference(!value);
+      return !value;
+    });
+  };
+  useContributeCommands('editor', (query) =>
+    editorCommands(
+      {
+        t: (key, options) => t(key, options ?? {}),
+        store,
+        locale: i18n.resolvedLanguage ?? i18n.language,
+        apple: isApplePlatform(),
+        mode,
+        setMode,
+        editable:
+          version.state === 'draft' &&
+          !state.writeSuspended &&
+          !store.readonlyPages.has(state.pageId) &&
+          ability.can('update', 'Script'),
+        actionDisabled,
+        runAction,
+        insert: insertComponent,
+        addBlock: (block, name) => {
+          store.execute(() => {
+            store.addBlock(block, name);
+          });
+        },
+        goTo,
+        live,
+        toggleLive,
+        expanded,
+        toggleExpanded: () => {
+          setExpanded((value) => !value);
+        },
+        openHealth: () => {
+          setHealthOpen(true);
+        },
+        openShortcuts: () => {
+          setHelp(true);
+        },
+      },
+      query,
+    ),
+  );
   const selected = state.selection[0];
   const ancestors: string[] = [];
   let loc = selected ? store.location(selected) : undefined;
@@ -411,14 +536,20 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
           <Badge tone={save === 'saved' ? 'success' : 'warning'}>
             {t(`designer.editor.${save}`)}
           </Badge>
+          <HealthPanel
+            store={store}
+            document={state.document}
+            fieldProblems={state.fieldProblems}
+            open={healthOpen}
+            onOpenChange={setHealthOpen}
+            onNavigate={goTo}
+          />
         </div>
         <div className="ed-commands">
           {version.state === 'draft' &&
             ability.can('update', 'Script') &&
             ability.can('read', 'Integration') && <DataSources store={store} />}
-          {(
-            ['undo', 'redo', 'copy', 'paste', 'duplicate', 'delete', 'group', 'ungroup'] as const
-          ).map((action) => (
+          {EDIT_ACTIONS.map((action) => (
             <Button
               key={action}
               className="ed-command"
@@ -426,29 +557,9 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
               title={t(`designer.editor.${action}`)}
               size="sm"
               variant="ghost"
-              disabled={
-                version.state !== 'draft' ||
-                state.writeSuspended ||
-                (mode !== 'screen' && action !== 'undo' && action !== 'redo') ||
-                (action === 'undo' && !state.history) ||
-                (action === 'redo' && !state.future) ||
-                (action === 'copy' && !selectionRoots.length) ||
-                (action === 'paste' && !store.canPaste(target())) ||
-                (action === 'delete' && !editableChildren) ||
-                ((action === 'duplicate' || action === 'group') && !commonParent) ||
-                (action === 'ungroup' &&
-                  (!editableChildren ||
-                    selectionRoots.length !== 1 ||
-                    store.node(selectionRoots[0] ?? '')?.type !== 'box'))
-              }
+              disabled={actionDisabled(action)}
               onClick={() => {
-                store.execute(() => {
-                  if (action === 'delete') store.remove();
-                  else if (action === 'paste') {
-                    const parent = target();
-                    if (parent) store.paste(parent);
-                  } else store[action]();
-                });
+                runAction(action);
               }}
             >
               {(() => {
@@ -501,6 +612,32 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
                 }
               }}
             />
+          )}
+          {!collaborating && version.state === 'draft' && ability.can('read', 'Script') && (
+            <SuggestMode
+              scriptId={scriptId}
+              number={version.number}
+              store={store}
+              suggesting={suggesting}
+              canEnter={!dirty && save === 'saved'}
+              onSuggestingChange={setSuggesting}
+              onRestored={() => {
+                setSaved(store.getSnapshot().document);
+                setSave('saved');
+              }}
+            />
+          )}
+          {mode === 'screen' && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="ed-live-toggle"
+              aria-pressed={live}
+              startIcon={<PanelRight size={16} aria-hidden />}
+              onClick={toggleLive}
+            >
+              {t('designer.live.toggle')}
+            </Button>
           )}
           <Button
             className="ed-command"
@@ -603,6 +740,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
           </span>
           <fieldset
             className="ed-grid"
+            data-live={live}
             disabled={state.writeSuspended || store.readonlyPages.has(state.pageId)}
           >
             <legend className="vb-sr-only">{t('designer.editor.title')}</legend>
@@ -610,6 +748,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
             <HeatmapContext.Provider value={heatmap.rows}>
               <Canvas store={store} heatControl={heatmap.control} />
             </HeatmapContext.Provider>
+            {live && <LivePane store={store} />}
             <Inspector store={store} />
           </fieldset>
           <DragOverlay>

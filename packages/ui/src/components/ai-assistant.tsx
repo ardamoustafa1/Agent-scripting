@@ -201,7 +201,11 @@ export function AiAssistant({
                       ? 'ai.copy'
                       : result.task === 'objection'
                         ? 'ai.focus'
-                        : 'ai.apply',
+                        : result.task === 'navigate'
+                          ? 'ai.goto'
+                          : result.task === 'notices'
+                            ? 'ai.markSaid'
+                            : 'ai.apply',
               )}
             </Button>
           )}

@@ -9,6 +9,8 @@ export * from './lifecycle.js';
 export * from './admin.js';
 
 export * from './analytics.js';
+export * from './trust-center.js';
 
 export * from './ai.js';
 export * from './cti-identities.js';
+export * from './suggestions.js';

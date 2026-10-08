@@ -41,12 +41,26 @@ export function mockDataSource(sources: TestScenario['dataSources']) {
       : structuredClone(mock.outputs);
   };
 }
+export interface ScenarioCoverage {
+  /** Flow nodes reached, as `<flowId>:<nodeId>` (ids are unique only within a flow). */
+  nodes: string[];
+  /** Flow edges taken, as `<flowId>:<edgeId>`. */
+  edges: string[];
+}
+/** Where the run stopped, so a generated scenario can assert what actually happened. */
+export interface ScenarioObservation {
+  page: string | null;
+  ended: boolean;
+  outcome?: string;
+}
 export interface ScenarioResult {
   id: string;
   passed: boolean;
   durationMs: number;
   assertions: { path: string; passed: boolean }[];
   code?: string;
+  coverage: ScenarioCoverage;
+  observed: ScenarioObservation;
 }
 /** Executes the exact action/flow/validation engine with mock-only ports, never external side effects. */
 export async function runScenario(
@@ -58,13 +72,22 @@ export async function runScenario(
   const scenario = TestScenarioSchema.parse(input);
   const began = Date.now();
   let outcome: string | undefined;
+  const nodes = new Set<string>(),
+    edges = new Set<string>();
   const runtime = new Runtime({
     document,
     registry,
     session: scenario.context,
     simulation: true,
     simulationTimers: false,
-    ports: { sessionEvent: () => undefined, now: () => 0 },
+    ports: {
+      sessionEvent: (event) => {
+        if (event.action !== 'flow' || event.flow === undefined) return;
+        if (event.node !== undefined) nodes.add(`${event.flow}:${event.node}`);
+        if (event.edge !== undefined) edges.add(`${event.flow}:${event.edge}`);
+      },
+      now: () => 0,
+    },
     simulationPorts: {
       dataSource: mockDataSource(scenario.dataSources),
       command: (action) => {
@@ -78,7 +101,14 @@ export async function runScenario(
   const timer = setTimeout(() => {
     deadline.abort();
   }, timeoutMs);
-  const result: ScenarioResult = { id: scenario.id, passed: false, durationMs: 0, assertions: [] };
+  const result: ScenarioResult = {
+    id: scenario.id,
+    passed: false,
+    durationMs: 0,
+    assertions: [],
+    coverage: { nodes: [], edges: [] },
+    observed: { page: null, ended: false },
+  };
   try {
     await abortable(
       (async () => {
@@ -152,6 +182,13 @@ export async function runScenario(
     result.code = error instanceof RuntimeProblem ? error.code : 'VERBIS_PREVIEW_SCENARIO_FAILED';
   } finally {
     clearTimeout(timer);
+    const page = runtime.store.get('runtime.page');
+    result.observed = {
+      page: typeof page === 'string' ? page : null,
+      ended: runtime.store.get('runtime.ended') === true,
+      ...(outcome === undefined ? {} : { outcome }),
+    };
+    result.coverage = { nodes: [...nodes], edges: [...edges] };
     runtime.dispose();
     result.durationMs = Date.now() - began;
   }

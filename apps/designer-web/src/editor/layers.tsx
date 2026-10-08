@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Input, Button, Tabs, Badge } from '@verbis/ui';
 
+import { BLOCK_IDS } from './blocks.js';
 import { findComponents, searchText } from './search.js';
 import { editorRegistry, useEditor, type EditorStore } from './store.js';
 
@@ -424,6 +425,34 @@ export function LeftPanel({ store }: { store: EditorStore }) {
           >
             {t('designer.editor.addPage')}
           </Button>
+          <section className="ed-blocks" aria-labelledby="ed-blocks-title">
+            <h2 id="ed-blocks-title">{t('designer.blocks.title')}</h2>
+            <p>{t('designer.blocks.help')}</p>
+            <ul>
+              {BLOCK_IDS.map((block) => (
+                <li key={block}>
+                  <div>
+                    <strong>{t(`designer.blocks.items.${block}.name`)}</strong>
+                    <span>{t(`designer.blocks.items.${block}.description`)}</span>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    aria-label={t('designer.blocks.add', {
+                      block: t(`designer.blocks.items.${block}.name`),
+                    })}
+                    onClick={() => {
+                      store.execute(() => {
+                        store.addBlock(block, t(`designer.blocks.items.${block}.name`));
+                      });
+                    }}
+                  >
+                    {t('designer.blocks.addShort')}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
       )}
     </aside>
