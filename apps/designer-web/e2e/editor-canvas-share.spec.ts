@@ -78,3 +78,33 @@ test('the flow canvas stays usable on a 1280x720 screen', async ({ page }) => {
   });
   expect(rows).toBeLessThan(100);
 });
+
+test('side panels can be dragged to any width, keep it after reload and reset on double-click', async ({
+  page,
+}) => {
+  await open(page, 1440, 800);
+  const left = page.getByRole('separator', { name: 'Resize components panel' });
+  const right = page.getByRole('separator', { name: 'Resize properties panel' });
+  const before = (await size(page, '.ed-left'))!.width;
+  const box = (await left.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + 200);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 120, box.y + 200, { steps: 6 });
+  await page.mouse.up();
+  const widened = (await size(page, '.ed-left'))!.width;
+  expect(widened).toBeGreaterThan(before + 100);
+  // The inspector narrows from its inner edge and the canvas absorbs the change.
+  await right.focus();
+  await page.keyboard.press('End');
+  expect(Number(await right.getAttribute('aria-valuenow'))).toBeGreaterThan(500);
+  await page.reload();
+  await expect(page.locator('.ed-palette-item').first()).toBeVisible();
+  expect(Math.abs((await size(page, '.ed-left'))!.width - widened)).toBeLessThan(2);
+  await page.getByRole('separator', { name: 'Resize components panel' }).dblclick();
+  expect(Math.abs((await size(page, '.ed-left'))!.width - before)).toBeLessThan(2);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
+});

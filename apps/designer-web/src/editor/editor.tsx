@@ -24,7 +24,15 @@ import {
   Minimize2,
   PanelRight,
 } from 'lucide-react';
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBlocker, useParams } from 'react-router-dom';
 import { z } from 'zod';
@@ -50,6 +58,7 @@ import { Inspector } from './inspector.js';
 import { LeftPanel } from './layers.js';
 import { LinkedScreens } from './linked-screens.js';
 import { LivePane } from './live-pane.js';
+import { loadPanels, PanelResizer, savePanels, type PanelSize } from './panel-resizer.js';
 import { ReuseScreen } from './reuse-screen.js';
 import { EditorDocumentSchema, EditorStore, useEditor } from './store.js';
 import { SuggestMode } from './suggest-mode.js';
@@ -140,6 +149,11 @@ export default function EditorPage() {
   return <Editor key={version.data.id} version={version.data} scriptId={id ?? ''} />;
 }
 export function Editor({ version, scriptId }: { version: Version; scriptId: string }) {
+  const [panels, setPanels] = useState<PanelSize>(loadPanels);
+  useEffect(() => {
+    savePanels(panels);
+  }, [panels]);
+
   const { t, i18n } = useTranslation(),
     { session } = useWorkspace();
   const [store] = useState(
@@ -765,14 +779,38 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
           <fieldset
             className="ed-grid"
             data-live={live}
+            style={
+              {
+                '--ed-left': `${String(panels.left)}px`,
+                '--ed-right': `${String(panels.right)}px`,
+              } as CSSProperties
+            }
             disabled={state.writeSuspended || store.readonlyPages.has(state.pageId)}
           >
             <legend className="vb-sr-only">{t('designer.editor.title')}</legend>
             <LeftPanel store={store} />
+            {!live && (
+              <PanelResizer
+                side="left"
+                size={panels.left}
+                onChange={(left) => {
+                  setPanels((p) => ({ ...p, left }));
+                }}
+              />
+            )}
             <HeatmapContext.Provider value={heatmap.rows}>
               <Canvas store={store} heatControl={heatmap.control} />
             </HeatmapContext.Provider>
             {live && <LivePane store={store} />}
+            {!live && (
+              <PanelResizer
+                side="right"
+                size={panels.right}
+                onChange={(right) => {
+                  setPanels((p) => ({ ...p, right }));
+                }}
+              />
+            )}
             <Inspector store={store} />
           </fieldset>
           <DragOverlay>

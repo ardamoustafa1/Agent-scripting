@@ -1790,3 +1790,9 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - Palet: bileşen başına ikon karosu, gerçek placeholder'lı arama, okunur ekleme ipucu. Boş özellik paneli (ekran ve akış): ikon + başlık + açıklama + ipucu.
 - Küçük pencerede akış araç çubuğu artık kaydırmak yerine sarıyor (Otomatik yerleşim/Grup/Sil her zaman erişilebilir).
 - Kural oluşturucu: koşul grubu başlığı, iç içe grup görsel hiyerarşisi (kesik çizgili iç grup), satır kartları, kesik çizgili "ekle" eylemleri, kompakt grup işleci.
+
+## 2026-10-08 — Editör: yeniden boyutlandırılabilir yan paneller
+- Bileşen paneli (180–480px) ve özellikler paneli (220–560px) ayırıcıdan sürüklenerek ayarlanır; boyutlar `localStorage`'da saklanır (engelliyse oturumluk), çift tık/Enter varsayılana döner.
+- Klavye: ok tuşları ±16px (Shift ±64), Home/End uçlara; ARIA `separator` (pencere bölücü deseni), `aria-valuenow/min/max`, tr+en etiket. Canlı panel açıkken ve ≤900px'te gizli.
+- Palet etiketleri artık kesilmeden kırılır ("T.C. kimlik numarası").
+- Varsayılan genişlikler 212/252px (tuval ≥%65 koruması geçerli).

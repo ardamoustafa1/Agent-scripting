@@ -350,3 +350,59 @@
   background: var(--vb-color-surface);
   color: var(--vb-color-text-muted);
 }
+
+/* Resizable side panels ---------------------------------------------------- */
+@media (min-width: 901px) {
+  .ed-workspace .ed-grid {
+    position: relative;
+  }
+  .ed-workspace .ed-grid:not([data-live='true']) {
+    grid-template-columns: var(--ed-left, 212px) minmax(0, 1fr) var(--ed-right, 252px);
+  }
+  .ed-resizer {
+    position: absolute;
+    inset-block: 0;
+    z-index: 4;
+    inline-size: 12px;
+    cursor: col-resize;
+    touch-action: none;
+  }
+  .ed-resizer[data-side='left'] {
+    inset-inline-start: calc(var(--ed-left, 212px) - 6px);
+  }
+  .ed-resizer[data-side='right'] {
+    inset-inline-end: calc(var(--ed-right, 252px) - 6px);
+  }
+  .ed-resizer::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 5px;
+    inline-size: 2px;
+    border-radius: 1px;
+    background: transparent;
+  }
+  .ed-resizer:hover::after,
+  .ed-resizer[data-dragging='true']::after {
+    background: var(--vb-color-info);
+  }
+  .ed-resizer:focus-visible {
+    outline: none;
+  }
+  .ed-resizer:focus-visible::after {
+    inline-size: 4px;
+    inset-inline-start: 4px;
+    background: var(--vb-color-focus);
+  }
+}
+@media (max-width: 900px) {
+  .ed-resizer {
+    display: none;
+  }
+}
+.ed-workspace .ed-palette-item .vb-button {
+  white-space: normal;
+  text-align: start;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
