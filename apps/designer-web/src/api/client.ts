@@ -207,3 +207,9 @@ export const VersionsSchema = z.object({
   ),
   page: z.object({ nextCursor: z.string().nullable() }),
 });
+
+/** Client errors (4xx) are final answers: retrying a 403 only delays the explanation. */
+export function shouldRetryQuery(failureCount: number, error: unknown): boolean {
+  if (error instanceof ApiError && error.status >= 400 && error.status < 500) return false;
+  return failureCount < 1;
+}

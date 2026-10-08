@@ -35,7 +35,7 @@ import {
   type UpdateScriptInput,
   type VersionListQuery,
 } from './scripts.dto.js';
-import { ScriptsRepository } from './scripts.repository.js';
+import { ScriptsRepository, type ScriptRow } from './scripts.repository.js';
 import { SharedScreensService } from './shared-screens.service.js';
 
 import type { TransactionClient } from '../../infra/database/prisma.service.js';
@@ -58,14 +58,52 @@ export class ScriptsService {
     @Inject(SharedScreensService) private readonly sharedScreens: SharedScreensService,
   ) {}
 
+  /**
+   * Lists only scripts the caller may read. Instance scope (`campaignIds`) cannot be expressed in
+   * SQL, so rows are checked in keyset batches until a full page of visible scripts is found; a
+   * scoped designer therefore never sees a script they could not open.
+   */
   async list(query: ScriptListQuery): Promise<Page<ScriptDto>> {
-    const rows = await this.repository.list(this.db.current(), this.db.tenantId(), query);
-    return toPage(rows, query, toScriptDto, (row, field) => row[field]);
+    const tx = this.db.current(),
+      tenantId = this.db.tenantId();
+    const visible: ScriptRow[] = [];
+    let scan: ScriptListQuery = { ...query, limit: 100 };
+    while (visible.length <= query.limit) {
+      const rows = await this.repository.list(tx, tenantId, scan);
+      const assignments = rows.length
+        ? await tx.assignment.findMany({
+            where: { tenantId, deletedAt: null, scriptId: { in: rows.map((r) => r.id) } },
+            select: { scriptId: true, campaignId: true },
+          })
+        : [];
+      const batch = rows.slice(0, 100);
+      for (const row of batch) {
+        const campaignIds = assignments
+          .filter((a) => a.scriptId === row.id)
+          .map((a) => a.campaignId);
+        if (this.authz.can('read', asSubject('Script', { id: row.id, campaignIds })))
+          visible.push(row);
+        if (visible.length > query.limit) break;
+      }
+      const last = batch.at(-1);
+      if (rows.length <= 100 || last === undefined || visible.length > query.limit) break;
+      const raw = last[query.sort.field];
+      scan = {
+        ...scan,
+        cursor: {
+          s: `${query.sort.direction === 'desc' ? '-' : ''}${query.sort.field}`,
+          v: raw instanceof Date ? raw.toISOString() : raw,
+          id: last.id,
+        },
+      };
+    }
+    return toPage(visible, query, toScriptDto, (row, field) => row[field]);
   }
 
   async get(id: string): Promise<ScriptDto> {
     const row = await this.repository.find(this.db.current(), this.db.tenantId(), id);
     if (row === null) throw new NotFoundError('Script');
+    await this.authorizeRead(id);
     return toScriptDto(row);
   }
 

@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { useAbility } from '@verbis/authz/react';
 import { Alert, Badge, Button, Input, Textarea, Select, Dialog } from '@verbis/ui';
 
-import { request, VersionsSchema, ResourceSchema, ApiError } from '../api/client.js';
+import { request, VersionsSchema, ResourceSchema } from '../api/client.js';
 import { EditorDocumentSchema, EditorStore } from '../editor/store.js';
 import { previewLint } from '../preview/lint.js';
 import { RegressionPanel } from '../preview/regression-panel.js';
@@ -18,6 +18,7 @@ import { Loading, Failure } from '../workspace/states.js';
 import { draftFromChanges } from './change-summary-text.js';
 import { summarizeChanges } from './change-summary.js';
 import { Comments } from './comments.js';
+import { releaseErrorKey } from './errors.js';
 import { ReleaseRisk } from './release-risk.js';
 import { Suggestions } from './suggestions.js';
 import { VisualDiff } from './visual-diff.js';
@@ -33,6 +34,8 @@ const Reviews = z.array(
     createdAt: z.string(),
   }),
 );
+const SEMVER = /^\d+\.\d+\.\d+(-[\w.-]+)?$/;
+
 export default function ReleasePage() {
   const [searchParams] = useSearchParams();
   const { id = '', number = '1' } = useParams(),
@@ -64,7 +67,7 @@ export default function ReleasePage() {
     queryFn: ({ signal }) => request(`/v1/scripts/${id}`, ResourceSchema, { signal }),
   });
   const [baseline, setBaseline] = useState(''),
-    [semver, setSemver] = useState(''),
+    [semver, setSemver] = useState('1.0.0'),
     [note, setNote] = useState(''),
     [comment, setComment] = useState(''),
     [at, setAt] = useState(''),
@@ -140,11 +143,7 @@ export default function ReleasePage() {
       setRollbackOpen(false);
       await client.invalidateQueries({ queryKey: ['workspace'] });
     } catch (failure) {
-      setError(
-        failure instanceof ApiError && failure.code === 'VERBIS_AUTHZ_SCOPE_MISSING'
-          ? 'designer.workspace.scopeMissing'
-          : 'designer.lifecycle.failed',
-      );
+      setError(releaseErrorKey(failure, 'designer.lifecycle.failed'));
     } finally {
       setBusy(false);
     }
@@ -260,6 +259,7 @@ export default function ReleasePage() {
                   setSemver(e.target.value);
                 }}
                 placeholder="1.0.0"
+                inputMode="numeric"
               />
               <Button
                 variant="secondary"
@@ -296,11 +296,23 @@ export default function ReleasePage() {
               />
               <Button
                 loading={busy}
-                disabled={!note.trim() || !/^\d+\.\d+\.\d+(-[\w.-]+)?$/.test(semver)}
+                disabled={!note.trim() || !SEMVER.test(semver)}
+                aria-describedby={
+                  !note.trim() || !SEMVER.test(semver) ? 'lc-submit-hint' : undefined
+                }
                 onClick={() => void command('submit', { semver, changeNote: note })}
               >
                 {t('designer.lifecycle.submit')}
               </Button>
+              {(!note.trim() || !SEMVER.test(semver)) && (
+                <p id="lc-submit-hint" className="lc-hint">
+                  {t(
+                    !SEMVER.test(semver)
+                      ? 'designer.lifecycle.submitHintSemver'
+                      : 'designer.lifecycle.submitHintNote',
+                  )}
+                </p>
+              )}
             </>
           )}
           {version.state === 'in_review' && (

@@ -1270,6 +1270,15 @@ export const tr: Catalog = {
       context: 'Ek veri (JSON)',
       resolveContext: 'Bağlamı çözümle',
       closePanel: 'Kapat',
+      errors: {
+        sod: 'Bu sürümü siz yazdınız; onayı başka bir kişi vermeli. Başka bir onaylayıcıdan incelemesini ve yayınlamasını isteyin.',
+        forbidden:
+          'Rolünüz bu script için bu işleme izin vermiyor. Kampanya kapsamınızı yöneticinizle kontrol edin.',
+        stale: 'Bu sürümü bu sırada başka biri değiştirdi. Sayfayı yenileyip tekrar deneyin.',
+        session: 'Oturumunuz sona erdi. Devam etmek için yeniden giriş yapın.',
+      },
+      submitHintSemver: 'Göndermek için 1.0.0 biçiminde bir sürüm girin (ana.alt.yama).',
+      submitHintNote: 'Göndermek için değişiklik notuna yapılan değişikliği yazın.',
       insights: {
         title: 'Deney nasıl gidiyor?',
         help: 'Bu atamanın canlı kanıtları. Kaydedene kadar hiçbir şey değişmez.',

@@ -166,3 +166,19 @@ it('opens regression outside table cells in an accessible dialog and returns foc
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 });
+
+it('explains missing access instead of a loading skeleton when the versions are forbidden', async () => {
+  const f = await setup({
+    [`${base}/versions?limit=100&sort=-number`]: Response.json(
+      {
+        type: 'https://errors.verbis.io/authz/forbidden',
+        title: 'Forbidden',
+        status: 403,
+        code: 'VERBIS_AUTHZ_FORBIDDEN',
+      },
+      { status: 403 },
+    ),
+  });
+  expect(await screen.findByText(f.label('workspace.denied'))).toBeTruthy();
+  expect(screen.queryByLabelText(f.label('workspace.loading'))).toBeNull();
+});

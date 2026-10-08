@@ -114,6 +114,7 @@ async function main(): Promise<void> {
           },
         });
       }
+      await seedDevTeam(tx, tenant.id, roleIds);
       await seedKeycloakIdp(tx, tenant.id);
       await seedSimulator(tx, tenant.id);
       await seedHubClient(tx, tenant.id);
@@ -129,6 +130,72 @@ async function main(): Promise<void> {
 }
 
 type Tx = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
+
+/**
+ * The dev realm's designer and agent. They are pre-created (and linked by verified email at the
+ * first SSO login) so the designer is usable straight away: campaign-scoped roles with an empty
+ * scope grant nothing, which left a fresh dev designer unable to open any script. `*` covers every
+ * campaign of this local tenant only; real tenants assign explicit campaign scopes.
+ */
+const DEV_TEAM = [
+  {
+    id: '01928f3a-0000-7000-8000-00000000d102',
+    email: 'designer@verbis.test',
+    displayName: 'Dev Designer',
+    roles: [
+      ['script_designer', { campaignIds: '*' }],
+      ['script_approver', { campaignIds: '*' }],
+    ],
+  },
+  {
+    id: '01928f3a-0000-7000-8000-00000000d103',
+    email: 'agent@verbis.test',
+    displayName: 'Dev Agent',
+    roles: [['agent', {}]],
+  },
+] as const;
+
+async function seedDevTeam(tx: Tx, tenantId: string, roleIds: Record<string, string>) {
+  for (const member of DEV_TEAM) {
+    const user =
+      (await tx.user.findFirst({
+        where: { tenantId, email: { equals: member.email, mode: 'insensitive' }, deletedAt: null },
+      })) ??
+      (await tx.user.create({
+        data: {
+          id: member.id,
+          tenantId,
+          email: member.email,
+          displayName: member.displayName,
+          status: 'active',
+          createdBy: SEED,
+          updatedBy: SEED,
+        },
+      }));
+    for (const [roleName, scope] of member.roles) {
+      const roleId = roleIds[roleName];
+      if (roleId === undefined) continue;
+      // The dev team's scope is fixed on purpose: re-running the seed restores it.
+      const existing = await tx.userRole.findFirst({
+        where: { userId: user.id, roleId, source: 'manual', deletedAt: null },
+      });
+      if (existing === null)
+        await tx.userRole.create({
+          data: {
+            tenantId,
+            userId: user.id,
+            roleId,
+            source: 'manual',
+            scope,
+            createdBy: SEED,
+            updatedBy: SEED,
+          },
+        });
+      else
+        await tx.userRole.update({ where: { id: existing.id }, data: { scope, updatedBy: SEED } });
+    }
+  }
+}
 
 /**
  * OIDC IdP for the dev Keycloak realm: JIT provisioning, Keycloak groups → system roles, and the

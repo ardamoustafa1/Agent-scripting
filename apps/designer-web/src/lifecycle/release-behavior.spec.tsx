@@ -224,3 +224,32 @@ it('marks the current production head and cancels rollback without posting', asy
   expect(screen.queryByRole('dialog')).toBeNull();
   expect(f.requests.some((r) => r.path.endsWith('/rollback'))).toBe(false);
 });
+
+const problem = (status: number, code: string) =>
+  Response.json({ type: 'https://errors.verbis.io/x', title: 'x', status, code }, { status });
+it.each([
+  ['VERBIS_AUTHZ_SOD_VIOLATION', 403, 'lifecycle.errors.sod'],
+  ['VERBIS_AUTHZ_FORBIDDEN', 403, 'lifecycle.errors.forbidden'],
+  ['VERBIS_HTTP_PRECONDITION_FAILED', 412, 'lifecycle.errors.stale'],
+  ['VERBIS_AUTH_UNAUTHENTICATED', 401, 'lifecycle.errors.session'],
+])('tells the user why a release command failed: %s', async (code, status, key) => {
+  const f = await setup('in_review', { [`POST ${base}/withdraw`]: problem(status, code) });
+  fireEvent.click(screen.getByRole('button', { name: f.label('lifecycle.withdraw') }));
+  expect((await screen.findByRole('alert')).textContent).toContain(f.label(key));
+});
+it('prefills the version and explains what is still missing before a draft can be submitted', async () => {
+  const f = await setup('draft');
+  const semver = screen.getByLabelText<HTMLInputElement>(f.label('lifecycle.semver'));
+  expect(semver.value).toBe('1.0.0');
+  expect(screen.getByText(f.label('lifecycle.submitHintNote'))).toBeTruthy();
+  fireEvent.change(semver, { target: { value: '1.0' } });
+  expect(screen.getByText(f.label('lifecycle.submitHintSemver'))).toBeTruthy();
+  const submit = screen.getByRole('button', { name: f.label('lifecycle.submit') });
+  expect(submit.getAttribute('aria-describedby')).toBe('lc-submit-hint');
+  fireEvent.change(semver, { target: { value: '1.2.3' } });
+  fireEvent.change(screen.getByLabelText(f.label('lifecycle.changeNote')), {
+    target: { value: 'Synthetic note' },
+  });
+  expect(submit.hasAttribute('disabled')).toBe(false);
+  expect(screen.queryByText(f.label('lifecycle.submitHintNote'))).toBeNull();
+});

@@ -489,3 +489,9 @@
 .lc-conflicts p {
   margin: 0;
 }
+
+.lc-hint {
+  margin: 0;
+  font-size: var(--vb-font-size-sm);
+  color: var(--vb-color-text-muted);
+}

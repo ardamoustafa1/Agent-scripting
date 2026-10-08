@@ -1807,3 +1807,11 @@ Bulunup düzeltilenler:
 - `assignment-conflicts` OpenAPI yanıtı dizi olarak düzeltildi (önceki tur).
 Yerel ortam bulguları (kod değil): `.env`'de `HUB_TRUSTED_JWKS`/`HUB_TENANTS` boştu → hub, API'nin servis token'ını reddediyordu (403 `connector-dead-letters`, simülatör 404). `pnpm dev:bootstrap` bunu kurar; çalıştırıldı.
 Açık UX bulguları: script detayında `/versions` 403 olunca sonsuz iskelet (yetki mesajı yok); onay reddinde genel "kontrol başarısız" (SoD nedeni gösterilmiyor); "İncelemeye gönder" semver boşken sebepsiz pasif; scriptler listesi, scope'u olmayan tasarımcıya açılamayacak scriptleri gösteriyor; dev `designer` kullanıcısına seed kampanya kapsamı verilmemiş.
+
+## 2026-10-08 — Elle test bulgularının kapatılması (yetki mesajları, kapsam, semver)
+- **Script listesi/detayı yetkiye göre**: `GET /v1/scripts` artık yalnız çağıranın okuyabileceği scriptleri döner (kampanya kapsamı; keyset toplu tarama ile sayfa dolana kadar), `GET /v1/scripts/{id}` kapsam dışı için 403 verir. Birim testi `scripts-read-scope.spec.ts`.
+- **403/4xx sorguları tekrar denenmiyor** (`shouldRetryQuery`): yetki yoksa "erişim yok" ekranı beklemeden gelir (sonsuz iskelet algısı kalktı).
+- **Yayın komutlarında neden gösterilir**: görev ayrımı ("sürümü siz yazdınız, başka biri onaylamalı"), yetki, eski sürüm (409/412) ve oturum süresi mesajları (`releaseErrorKey`); yayın paneli ve regresyon paneli aynı eşlemeyi kullanır.
+- **İncelemeye gönder**: semver varsayılanı `1.0.0` (artık gerçek değer), pasifken neyin eksik olduğunu söyleyen ipucu + `aria-describedby`.
+- **Dev tasarımcı/ajan**: seed, `designer@verbis.test` ve `agent@verbis.test` kullanıcılarını önceden oluşturur (ilk SSO'da e-postayla eşleşir); tasarımcıya tüm kampanyalar için (`campaignIds: '*'`) script_designer + script_approver verir. Yeniden çalıştırma kapsamı geri yükler. Jokerin biçimi dizi değil `'*'` dizesidir.
+- **Radix açılır listeleri**: doğru koordinatla gerçek tıklamayla açılıyor (`aria-expanded=true`); önceki "açılmadı" gözlemi çift tıklamaydı.

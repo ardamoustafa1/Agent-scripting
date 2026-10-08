@@ -8,6 +8,7 @@ import { RegressionReportSchema } from '@verbis/shared-types';
 import { Button, Alert, Badge, Textarea } from '@verbis/ui';
 
 import { request } from '../api/client.js';
+import { releaseErrorKey } from '../lifecycle/errors.js';
 import { useWorkspace } from '../workspace/context.js';
 
 import './regression.css';
@@ -46,7 +47,7 @@ function RegressionPanelContent({
   const identity = `${scriptId}:${number}:${documentVersion ?? 'unknown'}`;
   const [reportIdentity, setReportIdentity] = useState('');
   const [busy, setBusy] = useState(false),
-    [error, setError] = useState(false),
+    [error, setError] = useState<string | null>(null),
     [comment, setComment] = useState(''),
     [done, setDone] = useState(false);
   const lifetime = useRef({ active: true });
@@ -62,7 +63,7 @@ function RegressionPanelContent({
     const ticket = ++generation.current;
     const scope = lifetime.current;
     setBusy(true);
-    setError(false);
+    setError(null);
     if (action === 'regression') setReport(null);
     try {
       const path = `/v1/scripts/${scriptId}/versions/${number}/${action}`;
@@ -84,8 +85,9 @@ function RegressionPanelContent({
         setDone(true);
         await client.invalidateQueries({ queryKey: ['workspace'] });
       }
-    } catch {
-      if (scope.active && ticket === generation.current) setError(true);
+    } catch (failure) {
+      if (scope.active && ticket === generation.current)
+        setError(releaseErrorKey(failure, 'designer.preview.failed'));
     } finally {
       if (scope.active && ticket === generation.current) setBusy(false);
     }
@@ -110,7 +112,7 @@ function RegressionPanelContent({
         {t('designer.preview.runScenarios')}
       </Button>
       {dirty && <Alert title={t('designer.preview.saveFirst')} tone="warning" />}
-      {error && <Alert title={t('designer.preview.failed')} tone="danger" />}
+      {error && <Alert title={t(error)} tone="danger" />}
       {report && documentVersion !== undefined && report.version !== documentVersion && (
         <Alert title={t('designer.preview.staleReport')} tone="warning" />
       )}

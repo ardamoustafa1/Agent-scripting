@@ -1261,6 +1261,15 @@ export const en = {
       context: 'Attached data (JSON)',
       resolveContext: 'Resolve context',
       closePanel: 'Close',
+      errors: {
+        sod: 'You wrote this version, so someone else must approve it. Ask another approver to review and publish it.',
+        forbidden:
+          'Your role is not allowed to do this for this script. Check your campaign scope with an administrator.',
+        stale: 'Someone else changed this version in the meantime. Reload the page and try again.',
+        session: 'Your session expired. Sign in again to continue.',
+      },
+      submitHintSemver: 'Enter a version like 1.0.0 (major.minor.patch) to submit.',
+      submitHintNote: 'Describe the change in the change note to submit.',
       insights: {
         title: 'How is this experiment doing?',
         help: 'Live evidence for this assignment. Nothing changes until you save.',

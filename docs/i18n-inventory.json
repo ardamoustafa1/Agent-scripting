@@ -1882,6 +1882,10 @@
     "designer.lifecycle.draftFromChanges",
     "designer.lifecycle.draftFromChangesHint",
     "designer.lifecycle.editAssignment",
+    "designer.lifecycle.errors.forbidden",
+    "designer.lifecycle.errors.session",
+    "designer.lifecycle.errors.sod",
+    "designer.lifecycle.errors.stale",
     "designer.lifecycle.export",
     "designer.lifecycle.failed",
     "designer.lifecycle.flowDiff",
@@ -1983,6 +1987,8 @@
     "designer.lifecycle.sources.builtin",
     "designer.lifecycle.sources.tenant",
     "designer.lifecycle.submit",
+    "designer.lifecycle.submitHintNote",
+    "designer.lifecycle.submitHintSemver",
     "designer.lifecycle.summary.components",
     "designer.lifecycle.summary.dataSourcesAdded",
     "designer.lifecycle.summary.dataSourcesChanged",
@@ -4591,6 +4597,10 @@
     "designer.lifecycle.draftFromChanges",
     "designer.lifecycle.draftFromChangesHint",
     "designer.lifecycle.editAssignment",
+    "designer.lifecycle.errors.forbidden",
+    "designer.lifecycle.errors.session",
+    "designer.lifecycle.errors.sod",
+    "designer.lifecycle.errors.stale",
     "designer.lifecycle.export",
     "designer.lifecycle.failed",
     "designer.lifecycle.flowDiff",
@@ -4692,6 +4702,8 @@
     "designer.lifecycle.sources.builtin",
     "designer.lifecycle.sources.tenant",
     "designer.lifecycle.submit",
+    "designer.lifecycle.submitHintNote",
+    "designer.lifecycle.submitHintSemver",
     "designer.lifecycle.summary.components",
     "designer.lifecycle.summary.dataSourcesAdded",
     "designer.lifecycle.summary.dataSourcesChanged",
@@ -6468,15 +6480,11 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 190
+      "line": 189
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 203
-    },
-    {
-      "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 274
+      "line": 202
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
@@ -6484,15 +6492,23 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 383
+      "line": 274
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 406
+      "line": 309
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/release.tsx",
+      "line": 395
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
       "line": 418
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/release.tsx",
+      "line": 430
     },
     {
       "file": "apps/designer-web/src/lifecycle/replay.tsx",
@@ -6684,15 +6700,19 @@
     },
     {
       "file": "apps/designer-web/src/preview/regression-panel.tsx",
-      "line": 124
+      "line": 115
     },
     {
       "file": "apps/designer-web/src/preview/regression-panel.tsx",
-      "line": 137
+      "line": 126
     },
     {
       "file": "apps/designer-web/src/preview/regression-panel.tsx",
-      "line": 144
+      "line": 139
+    },
+    {
+      "file": "apps/designer-web/src/preview/regression-panel.tsx",
+      "line": 146
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
