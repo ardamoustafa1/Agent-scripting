@@ -43,8 +43,10 @@ test.beforeEach(async ({ page }) => {
   });
 });
 async function openMode(page: Page, mode: string) {
-  await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
-  await page.getByRole('option', { name: mode, exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Editor', exact: true })
+    .getByRole('button', { name: mode, exact: true })
+    .click();
 }
 test('add, arrange, drag and undo a flow node; Page double-click opens its canvas', async ({
   page,

@@ -1268,6 +1268,7 @@ export const tr: Catalog = {
         'Resolver, bu bağlam için seçilen sürümü ve eleme gerekçelerini gösterir. Runtime oturumu açılmaz.',
       context: 'Ek veri (JSON)',
       resolveContext: 'Bağlamı çözümle',
+      closePanel: 'Kapat',
       insights: {
         title: 'Deney nasıl gidiyor?',
         help: 'Bu atamanın canlı kanıtları. Kaydedene kadar hiçbir şey değişmez.',
@@ -1457,6 +1458,7 @@ export const tr: Catalog = {
       branchHelp:
         'Durum geri yüklendi. Yeni bir senaryo kaydetmek için yeniden başlat; iptal edilen aksiyon devamları yeniden oynatılmaz.',
       title: 'Önizleme ve debugger',
+      groups: { run: 'Çalıştırma denetimi', environment: 'Cihaz ve dil' },
       simulation: 'Simülasyon • dış komutlar mock',
       restart: 'Yeniden başlat',
       resume: 'Devam et',
@@ -1726,6 +1728,7 @@ export const tr: Catalog = {
       reuseScreen: 'Ekrandan alt akış oluştur',
       connectTarget: 'Hedef düğüm',
       connect: 'Düğümleri bağla',
+      groups: { flow: 'Akış', add: 'Adım ekle', arrange: 'Düzen' },
       a11yNode:
         'Enter ile seçin. Konum için X/Y alanlarını, bağlantı için hedef seçiciyi kullanın.',
       a11yEdge: 'Bağlantıyı düzenlemek için Enter tuşuna basın.',
@@ -2419,6 +2422,7 @@ export const tr: Catalog = {
       reorder: 'Yeniden sırala',
       actionParameters: 'Aksiyon parametreleri',
       delete: 'Sil',
+      groups: { history: 'Geçmiş', clipboard: 'Pano ve silme', structure: 'Gruplama' },
       undo: 'Geri al',
       redo: 'Yinele',
       copy: 'Kopyala',

@@ -224,3 +224,168 @@
   border-color: var(--vb-color-primary);
   box-shadow: 0 0 0 2px var(--vb-color-primary);
 }
+
+/* Toolbar: three labelled groups on one calm row -------------------------- */
+.fd-tools {
+  gap: var(--vb-space-4);
+  padding: var(--vb-space-2) var(--vb-space-4);
+  background: var(--vb-color-surface-raised);
+}
+.fd-tool-group {
+  display: flex;
+  align-items: center;
+  gap: var(--vb-space-1);
+}
+.fd-tool-group + .fd-tool-group {
+  padding-inline-start: var(--vb-space-4);
+  border-inline-start: 1px solid var(--vb-color-border);
+}
+.fd-arrange {
+  margin-inline-start: auto;
+}
+.fd-tool-label {
+  margin-inline-end: var(--vb-space-1);
+  font-size: var(--vb-font-size-xs);
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--vb-color-text-muted);
+}
+.fd-add .vb-button {
+  min-block-size: 32px;
+  padding-inline: 10px;
+  border: 1px solid var(--vb-color-border);
+  background: var(--vb-color-surface);
+  color: var(--vb-color-text);
+  white-space: nowrap;
+}
+.fd-add .vb-button::before {
+  content: '+';
+  margin-inline-end: 4px;
+  color: var(--vb-color-text-muted);
+}
+.fd-add .vb-button:hover:not(:disabled) {
+  border-color: var(--vb-color-info);
+  background: var(--vb-color-info-soft);
+  color: var(--vb-color-info);
+}
+.fd-add .vb-button:disabled {
+  opacity: 0.45;
+}
+.fd-arrange .vb-button {
+  min-block-size: 32px;
+  white-space: nowrap;
+}
+
+/* Cards: compact enough to read a real flow at a glance -------------------- */
+.fd-node {
+  min-width: 11rem;
+  max-width: 14rem;
+  padding: var(--vb-space-3) var(--vb-space-4);
+  border-radius: var(--vb-radius-md);
+  box-shadow: var(--vb-shadow-sm);
+}
+.fd-node-title {
+  gap: var(--vb-space-1);
+}
+.fd-node-title strong {
+  font-size: var(--vb-font-size-md, 15px);
+  font-weight: 650;
+}
+.react-flow__handle {
+  inline-size: 10px;
+  block-size: 10px;
+}
+.react-flow.react-flow .react-flow__edge-path {
+  stroke-width: 1.75;
+}
+.react-flow.react-flow .react-flow__minimap {
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  overflow: hidden;
+  box-shadow: var(--vb-shadow-sm);
+  margin: var(--vb-space-3);
+}
+.react-flow.react-flow .react-flow__minimap-node {
+  fill: var(--vb-color-primary);
+  stroke: none;
+}
+.react-flow.react-flow .react-flow__minimap-mask {
+  fill: var(--xy-minimap-mask-background-color-default);
+}
+.react-flow.react-flow .react-flow__controls {
+  margin: var(--vb-space-3);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  overflow: hidden;
+  box-shadow: var(--vb-shadow-sm);
+}
+.fd-properties {
+  inline-size: auto;
+  padding: var(--vb-space-5);
+}
+
+.fd-tools {
+  flex-wrap: wrap;
+  overflow-x: visible;
+  row-gap: var(--vb-space-2);
+}
+.fd-tools > .fd-tool-group:first-child .vb-button {
+  min-block-size: 36px;
+}
+
+.fd-tools {
+  gap: var(--vb-space-2) var(--vb-space-3);
+  padding-block: var(--vb-space-2);
+}
+.fd-tools .vb-form-field > label {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+.fd-tools .vb-select-trigger {
+  min-block-size: 32px;
+  min-inline-size: 7rem;
+}
+.fd-tools > .fd-tool-group:first-child .vb-button {
+  min-block-size: 32px;
+  padding-inline: 10px;
+  white-space: nowrap;
+}
+.fd-tool-group + .fd-tool-group {
+  padding-inline-start: var(--vb-space-3);
+}
+.fd-add .vb-button {
+  padding-inline: 8px;
+  font-size: var(--vb-font-size-sm);
+}
+.fd-add .vb-button::before {
+  margin-inline-end: 2px;
+}
+.fd-tool-label {
+  display: none;
+}
+.fd-add .vb-button {
+  padding-inline: 7px;
+}
+.fd-add .vb-button::before {
+  content: none;
+}
+.fd-tool-group {
+  gap: 2px;
+}
+.fd-tools > .fd-tool-group:first-child .vb-button {
+  background: var(--vb-color-surface);
+  color: var(--vb-color-text);
+  border: 1px solid var(--vb-color-border);
+}
+.fd-arrange .vb-button {
+  padding-inline: 10px;
+}
+.fd-tool-label {
+  display: inline;
+}

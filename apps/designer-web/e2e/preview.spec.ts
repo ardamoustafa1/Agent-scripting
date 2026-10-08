@@ -43,8 +43,10 @@ test.beforeEach(async ({ page }) => {
 });
 async function preview(page: Page) {
   await page.goto(`/scripts/${scriptId}/versions/1/edit`);
-  await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
-  await page.getByRole('option', { name: 'Preview / debugger', exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Editor', exact: true })
+    .getByRole('button', { name: 'Preview / debugger', exact: true })
+    .click();
   await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
   await page.getByRole('combobox', { name: 'Language', exact: true }).last().click();
   await page.getByRole('option', { name: 'English', exact: true }).click();

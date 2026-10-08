@@ -13,8 +13,10 @@ const script = required('DESIGNER_E2E_SCRIPT_ID');
 const number = required('DESIGNER_E2E_DRAFT_NUMBER');
 test.use({ locale: 'en-US', trace: 'off', screenshot: 'off', video: 'off' });
 const mode = async (page: Page, name: string) => {
-  await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
-  await page.getByRole('option', { name, exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Editor', exact: true })
+    .getByRole('button', { name: name, exact: true })
+    .click();
 };
 test('two isolated browsers synchronize edits, flush and retain them after reconnect', async ({
   browser,

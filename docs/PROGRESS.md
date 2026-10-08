@@ -1764,3 +1764,13 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - Testler: davranış (designer 4, agent-web 3), axe + taşma e2e (designer 3 tema × 2 genişlik, agent 2 genişlik), i18n tr+en.
 - Karar bekliyor: ajan "bağlam aktarımı" (`POST /v1/sessions/{id}/transfer`) ekranı yapılmadı — alıcı oturumun id'si ve sequence'ı bir ajan tarafından keşfedilemiyor (liste yalnız gözetmen yetkisiyle); ajan için güvenli bir "aktarım hedefi" okuma ucu (yeni API + denetim) gerekir.
 - Takip: Linux görsel temel çizgileri (`visual-baselines`) yeniden üretilecek; "oturumlarım" yalnız yönetim kabuğunda.
+
+## 2026-10-08 — Betik düzenleyicisi yeniden tasarım: çalışma alanı, akış, önizleme (UI/UX)
+- Başlık tek ince çubuğa indi (belge adı + kayıt/sağlık durumu + gruplanmış komutlar); mod sekmeleri ve ekip/iş birliği aynı satırda; boş satırlar kalktı, tuval ~%40 büyüdü (800px yükseklikte 560px).
+- "Ekip ve yorumlar" artık sayfayı aşağı itmiyor: sağdan kayan panel (Kapat düğmesi + Esc).
+- Akış: araç çubuğu gruplu ("Akış / Adım ekle / Düzen"), tek satır, kartlar kompakt, bağlantılar dik açılı (smoothstep), küçük akışlar 1x'ten fazla yakınlaşmıyor, mini harita/kontroller token'lı çerçeve.
+- Önizleme: çalıştırma ve cihaz/dil denetimleri gruplu, yapışkan araç çubuğu, yan panel yapışkan, sahne ortalı.
+- Mod seçici (Select) geniş ekranda sekmelerle çoğaldığı için gizlendi (dar ekranda duruyor); e2e testleri sekme düğmelerini kullanıyor.
+- Not: designer e2e `vite preview` ile `dist` sunar; e2e öncesi `pnpm build` şart (eski dist ile geçen testler yanıltıcıydı).
+- Bilinen, bu değişiklikten bağımsız: script-detail-design görsel testleri "Dallar yüklenemedi" nedeniyle kırmızı (fixture'da branches ucu yok).
+- Takip: Linux görsel temel çizgileri yeniden üretilecek; mini harita düğümleri çizmiyor (kök neden araştırılacak); kurallar/değişkenler sekmelerinin boş durumları.

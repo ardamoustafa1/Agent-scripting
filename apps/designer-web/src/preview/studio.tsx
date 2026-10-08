@@ -236,96 +236,102 @@ export function PreviewStudio({
     <section className="pv-studio" aria-label={t('designer.preview.title')}>
       <div className="pv-toolbar">
         <Badge tone="info">{t('designer.preview.simulation')}</Badge>
+        <div role="group" className="pv-run" aria-label={t('designer.preview.groups.run')}>
+          <Button
+            onClick={() => {
+              setRun((value) => value + 1);
+            }}
+          >
+            {t('designer.preview.restart')}
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              runtime?.executor.debugger.paused ? controller?.resume() : controller?.pause()
+            }
+          >
+            {t(
+              runtime?.executor.debugger.paused
+                ? 'designer.preview.resume'
+                : 'designer.preview.pause',
+            )}
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => controller?.step()}
+            disabled={!runtime?.executor.debugger.paused}
+          >
+            {t('designer.preview.step')}
+          </Button>
+          <Button
+            variant="secondary"
+            disabled={!controller || controller.timeline.filter((row) => row.snapshot).length < 2}
+            onClick={() => {
+              controller?.stepBack();
+            }}
+          >
+            {t('designer.preview.stepBack')}
+          </Button>
+        </div>
+        <div role="group" className="pv-env" aria-label={t('designer.preview.groups.environment')}>
+          <Select
+            label={t('designer.preview.device')}
+            value={String(width)}
+            options={[375, 768, 1280, 1920].map((size) => ({
+              value: String(size),
+              label: `${size}px`,
+            }))}
+            onValueChange={(value) => {
+              setWidth(Number(value));
+            }}
+          />
+          <Input
+            label={t('designer.preview.width')}
+            type="number"
+            min={320}
+            max={1920}
+            value={width}
+            onChange={(e) => {
+              setWidth(Math.max(320, Math.min(1920, Number(e.target.value))));
+            }}
+          />
+          <Input
+            label={t('designer.preview.height')}
+            type="number"
+            min={320}
+            max={1200}
+            value={height}
+            onChange={(e) => {
+              setHeight(Math.max(320, Math.min(1200, Number(e.target.value))));
+            }}
+          />
+          <Select
+            label={t('designer.preview.theme')}
+            value={theme}
+            options={['light', 'dark', 'high-contrast'].map((value) => ({
+              value,
+              label: t(`common.theme.${value}`),
+            }))}
+            onValueChange={(value) => {
+              setTheme(value as Theme);
+            }}
+          />
+          <Select
+            label={t('designer.preview.language')}
+            value={context.locale}
+            options={[
+              { value: 'tr', label: t('common.locale.tr') },
+              { value: 'en', label: t('common.locale.en') },
+            ]}
+            onValueChange={(value) => {
+              updateContext({ ...context, locale: value });
+              setRun((v) => v + 1);
+            }}
+          />
+        </div>
         <Button
-          onClick={() => {
-            setRun((value) => value + 1);
-          }}
-        >
-          {t('designer.preview.restart')}
-        </Button>
-        <Button
+          className="pv-save"
           variant="secondary"
-          onClick={() =>
-            runtime?.executor.debugger.paused ? controller?.resume() : controller?.pause()
-          }
-        >
-          {t(
-            runtime?.executor.debugger.paused
-              ? 'designer.preview.resume'
-              : 'designer.preview.pause',
-          )}
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={() => controller?.step()}
-          disabled={!runtime?.executor.debugger.paused}
-        >
-          {t('designer.preview.step')}
-        </Button>
-        <Button
-          variant="secondary"
-          disabled={!controller || controller.timeline.filter((row) => row.snapshot).length < 2}
-          onClick={() => {
-            controller?.stepBack();
-          }}
-        >
-          {t('designer.preview.stepBack')}
-        </Button>
-        <Select
-          label={t('designer.preview.device')}
-          value={String(width)}
-          options={[375, 768, 1280, 1920].map((size) => ({
-            value: String(size),
-            label: `${size}px`,
-          }))}
-          onValueChange={(value) => {
-            setWidth(Number(value));
-          }}
-        />
-        <Input
-          label={t('designer.preview.width')}
-          type="number"
-          min={320}
-          max={1920}
-          value={width}
-          onChange={(e) => {
-            setWidth(Math.max(320, Math.min(1920, Number(e.target.value))));
-          }}
-        />
-        <Input
-          label={t('designer.preview.height')}
-          type="number"
-          min={320}
-          max={1200}
-          value={height}
-          onChange={(e) => {
-            setHeight(Math.max(320, Math.min(1200, Number(e.target.value))));
-          }}
-        />
-        <Select
-          label={t('designer.preview.theme')}
-          value={theme}
-          options={['light', 'dark', 'high-contrast'].map((value) => ({
-            value,
-            label: t(`common.theme.${value}`),
-          }))}
-          onValueChange={(value) => {
-            setTheme(value as Theme);
-          }}
-        />
-        <Select
-          label={t('designer.preview.language')}
-          value={context.locale}
-          options={[
-            { value: 'tr', label: t('common.locale.tr') },
-            { value: 'en', label: t('common.locale.en') },
-          ]}
-          onValueChange={(value) => {
-            updateContext({ ...context, locale: value });
-            setRun((v) => v + 1);
-          }}
-        />
-        <Button
           disabled={
             versionState !== 'draft' ||
             scenarios.length >= 20 ||

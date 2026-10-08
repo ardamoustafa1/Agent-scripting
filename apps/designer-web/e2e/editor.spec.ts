@@ -422,8 +422,10 @@ test('creates a script from scratch, drags a component, builds decision/service 
   await page.mouse.up();
   await expect(page.locator('[data-editor-node]')).toHaveCount(before + 1);
   const mode = async (name: string) => {
-    await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
-    await page.getByRole('option', { name, exact: true }).click();
+    await page
+      .getByRole('navigation', { name: 'Editor', exact: true })
+      .getByRole('button', { name: name, exact: true })
+      .click();
   };
   await mode('Rules');
   await page.getByRole('button', { name: 'Add rule', exact: true }).click();

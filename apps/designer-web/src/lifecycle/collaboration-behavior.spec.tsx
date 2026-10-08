@@ -436,3 +436,16 @@ it('follows a colleague to their page without selecting, and stops on local inpu
     f.i18n.t('designer.collaboration.followEnded', { name: 'Synthetic peer' }),
   );
 });
+
+it('shows team and comments in a side drawer that closes with its button and with Escape', async () => {
+  const f = await setup();
+  const open = screen.getByRole('button', { name: f.label('lifecycle.team') });
+  fireEvent.click(open);
+  const drawer = screen.getByRole('complementary', { name: f.label('lifecycle.team') });
+  expect(within(drawer).getByText(f.label('lifecycle.collaborationHelp'))).toBeTruthy();
+  fireEvent.click(within(drawer).getByRole('button', { name: f.label('lifecycle.closePanel') }));
+  expect(screen.queryByRole('complementary', { name: f.label('lifecycle.team') })).toBeNull();
+  fireEvent.click(open);
+  fireEvent.keyDown(document, { key: 'Escape' });
+  expect(screen.queryByRole('complementary', { name: f.label('lifecycle.team') })).toBeNull();
+});

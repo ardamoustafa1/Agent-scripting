@@ -64,8 +64,10 @@ test('the rail opens collapsed on the editor and can be expanded for the visit',
 
 test('the flow canvas stays usable on a 1280x720 screen', async ({ page }) => {
   await open(page, 1280, 720);
-  await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
-  await page.getByRole('option', { name: 'Flow', exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Editor', exact: true })
+    .getByRole('button', { name: 'Flow', exact: true })
+    .click();
   await expect(page.locator('.react-flow')).toBeVisible();
   const flow = await size(page, '.react-flow');
   expect(flow?.height ?? 0).toBeGreaterThanOrEqual(280);

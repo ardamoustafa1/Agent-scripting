@@ -384,6 +384,16 @@ export function CollaborationPanel({
       document.removeEventListener('keydown', stop, true);
     };
   }, [following, t]);
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', close);
+    return () => {
+      document.removeEventListener('keydown', close);
+    };
+  }, [open]);
   const leave = async () => {
     setStatus('saving');
     store.setWriteSuspended(true);
@@ -552,7 +562,19 @@ export function CollaborationPanel({
         </>
       )}
       {open && (
-        <>
+        <aside className="lc-drawer" aria-label={t('designer.lifecycle.team')}>
+          <header className="lc-drawer-head">
+            <h2>{t('designer.lifecycle.team')}</h2>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              {t('designer.lifecycle.closePanel')}
+            </Button>
+          </header>
           <p>{t('designer.lifecycle.collaborationHelp')}</p>
           {!!recoveries.data?.length && (
             <Select
@@ -574,7 +596,7 @@ export function CollaborationPanel({
               window.location.reload();
             }}
           />
-        </>
+        </aside>
       )}
     </>
   );

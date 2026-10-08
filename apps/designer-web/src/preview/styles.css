@@ -174,3 +174,108 @@
   font-size: var(--vb-font-size-sm);
   color: var(--vb-color-text-muted);
 }
+
+/* Studio workbench: compact sticky controls, a dominant stage, a calm side panel. */
+.pv-studio {
+  flex: 1;
+  min-block-size: 0;
+  overflow: auto;
+  align-content: start;
+  padding: var(--vb-space-4);
+  gap: var(--vb-space-4);
+}
+.pv-toolbar {
+  position: sticky;
+  inset-block-start: calc(-1 * var(--vb-space-4));
+  z-index: 5;
+  align-items: end;
+  gap: var(--vb-space-3) var(--vb-space-5);
+  padding: var(--vb-space-3) var(--vb-space-4);
+  box-shadow: var(--vb-shadow-sm);
+}
+.pv-run,
+.pv-env {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--vb-space-2);
+}
+.pv-env {
+  padding-inline-start: var(--vb-space-5);
+  border-inline-start: 1px solid var(--vb-color-border);
+}
+.pv-run .vb-button,
+.pv-save {
+  min-block-size: 36px;
+  white-space: nowrap;
+}
+.pv-save {
+  margin-inline-start: auto;
+}
+.pv-toolbar .vb-badge {
+  align-self: center;
+}
+.pv-toolbar .vb-form-field {
+  inline-size: 6.75rem;
+}
+.pv-toolbar .vb-form-field > label {
+  font-size: var(--vb-font-size-xs);
+  color: var(--vb-color-text-muted);
+}
+.pv-layout {
+  grid-template-columns: minmax(22rem, 28rem) minmax(0, 1fr);
+  align-items: start;
+}
+.pv-sidebar {
+  position: sticky;
+  inset-block-start: 5.5rem;
+  max-block-size: calc(100dvh - 17rem);
+}
+.pv-sidebar .vb-tab-list {
+  gap: 2px;
+  padding: var(--vb-space-2) var(--vb-space-2) 0;
+}
+.pv-sidebar .vb-tab {
+  padding-inline: var(--vb-space-2);
+  font-size: var(--vb-font-size-sm);
+}
+.pv-stage {
+  background: var(--vb-color-surface);
+  background-image: radial-gradient(var(--vb-color-border) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+.pv-device-scroll {
+  display: grid;
+  justify-content: center;
+  padding: var(--vb-space-4);
+}
+@media (max-width: 900px) {
+  .pv-toolbar {
+    position: static;
+  }
+  .pv-env {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+  .pv-save {
+    margin-inline-start: 0;
+  }
+  .pv-sidebar {
+    position: static;
+    max-block-size: none;
+  }
+}
+.pv-toolbar {
+  gap: var(--vb-space-3) var(--vb-space-4);
+}
+.pv-toolbar .vb-form-field {
+  inline-size: 6rem;
+}
+.pv-env {
+  padding-inline-start: var(--vb-space-4);
+}
+.pv-toolbar .vb-badge {
+  max-inline-size: 11rem;
+  white-space: normal;
+  line-height: 1.25;
+}

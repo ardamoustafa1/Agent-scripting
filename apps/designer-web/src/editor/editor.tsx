@@ -39,7 +39,7 @@ import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
 
 import { Canvas } from './canvas.js';
-import { EDIT_ACTIONS, editorCommands, isApplePlatform, type EditAction } from './commands.js';
+import { type EDIT_ACTIONS, editorCommands, isApplePlatform, type EditAction } from './commands.js';
 import { DataSources } from './data-sources.js';
 import { dragAnnouncements, dragInstructions, dragLabel } from './drag-a11y.js';
 import { DropGuides, measureNodes } from './drop-guides.js';
@@ -57,6 +57,7 @@ import { SuggestMode } from './suggest-mode.js';
 import type { IssueTarget } from './health.js';
 import '../flow/styles.css';
 import './editor.css';
+import './workbench.css';
 
 const PreviewStudio = lazy(() =>
   import('../preview/studio.js').then((m) => ({ default: m.PreviewStudio })),
@@ -99,6 +100,12 @@ const actionIcons = {
 };
 
 type Version = z.infer<typeof EditorDocumentSchema>;
+const ACTION_GROUPS = [
+  { id: 'history', actions: ['undo', 'redo'] },
+  { id: 'clipboard', actions: ['copy', 'paste', 'duplicate', 'delete'] },
+  { id: 'structure', actions: ['group', 'ungroup'] },
+] as const satisfies readonly { id: string; actions: readonly (typeof EDIT_ACTIONS)[number][] }[];
+
 export default function EditorPage() {
   const { id, number } = useParams();
   const { session, environment } = useWorkspace();
@@ -549,24 +556,33 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
           {version.state === 'draft' &&
             ability.can('update', 'Script') &&
             ability.can('read', 'Integration') && <DataSources store={store} />}
-          {EDIT_ACTIONS.map((action) => (
-            <Button
-              key={action}
-              className="ed-command"
-              aria-label={t(`designer.editor.${action}`)}
-              title={t(`designer.editor.${action}`)}
-              size="sm"
-              variant="ghost"
-              disabled={actionDisabled(action)}
-              onClick={() => {
-                runAction(action);
-              }}
+          {ACTION_GROUPS.map(({ id, actions }) => (
+            <div
+              key={id}
+              role="group"
+              className="ed-cluster"
+              aria-label={t(`designer.editor.groups.${id}`)}
             >
-              {(() => {
-                const Icon = actionIcons[action];
-                return <Icon size={17} aria-hidden />;
-              })()}
-            </Button>
+              {actions.map((action) => (
+                <Button
+                  key={action}
+                  className="ed-command"
+                  aria-label={t(`designer.editor.${action}`)}
+                  title={t(`designer.editor.${action}`)}
+                  size="sm"
+                  variant="ghost"
+                  disabled={actionDisabled(action)}
+                  onClick={() => {
+                    runAction(action);
+                  }}
+                >
+                  {(() => {
+                    const Icon = actionIcons[action];
+                    return <Icon size={17} aria-hidden />;
+                  })()}
+                </Button>
+              ))}
+            </div>
           ))}
           {!collaborating && version.state === 'draft' && ability.can('read', 'Screen') && (
             <ReuseScreen
@@ -634,9 +650,10 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
               className="ed-live-toggle"
               aria-pressed={live}
               startIcon={<PanelRight size={16} aria-hidden />}
+              title={t('designer.live.toggle')}
               onClick={toggleLive}
             >
-              {t('designer.live.toggle')}
+              <span className="ed-btn-label">{t('designer.live.toggle')}</span>
             </Button>
           )}
           <Button
@@ -658,44 +675,49 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
             startIcon={
               expanded ? <Minimize2 size={16} aria-hidden /> : <Maximize2 size={16} aria-hidden />
             }
+            title={t(expanded ? 'designer.editor.exitFullscreen' : 'designer.editor.fullscreen')}
             onClick={() => {
               setExpanded((value) => !value);
             }}
           >
-            {t(expanded ? 'designer.editor.exitFullscreen' : 'designer.editor.fullscreen')}
+            <span className="ed-btn-label">
+              {t(expanded ? 'designer.editor.exitFullscreen' : 'designer.editor.fullscreen')}
+            </span>
           </Button>
         </div>
       </header>
-      <nav className="ed-mode-shortcuts" aria-label={t('designer.flow.tool')}>
-        {['screen', 'flow', 'rules', 'variables', 'preview'].map((value) => (
-          <Button
-            key={value}
-            size="sm"
-            variant="ghost"
-            aria-pressed={mode === value}
-            onClick={() => {
-              setMode(value);
+      <div className="ed-modebar">
+        <nav className="ed-mode-shortcuts" aria-label={t('designer.flow.tool')}>
+          {['screen', 'flow', 'rules', 'variables', 'preview'].map((value) => (
+            <Button
+              key={value}
+              size="sm"
+              variant="ghost"
+              aria-pressed={mode === value}
+              onClick={() => {
+                setMode(value);
+              }}
+            >
+              {t(`designer.flow.tools.${value}`)}
+            </Button>
+          ))}
+        </nav>
+        {version.state === 'draft' && (
+          <CollaborationPanel
+            store={store}
+            scriptId={scriptId}
+            number={version.number}
+            ready={!dirty && save === 'saved'}
+            onActive={setCollaborating}
+            onSaved={(version) => {
+              etag.current = version;
+              setDocumentRevision(version);
+              setSaved(store.getSnapshot().document);
+              setSave('saved');
             }}
-          >
-            {t(`designer.flow.tools.${value}`)}
-          </Button>
-        ))}
-      </nav>
-      {version.state === 'draft' && (
-        <CollaborationPanel
-          store={store}
-          scriptId={scriptId}
-          number={version.number}
-          ready={!dirty && save === 'saved'}
-          onActive={setCollaborating}
-          onSaved={(version) => {
-            etag.current = version;
-            setDocumentRevision(version);
-            setSaved(store.getSnapshot().document);
-            setSave('saved');
-          }}
-        />
-      )}
+          />
+        )}
+      </div>
       {state.message && <Alert title={t(state.message)} tone="danger" />}
       {save === 'conflict' && <Alert title={t('designer.editor.conflict')} tone="danger" />}
       <nav className="ed-breadcrumb" aria-label={t('designer.editor.breadcrumb')}>

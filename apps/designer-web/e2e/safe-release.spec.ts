@@ -81,8 +81,10 @@ test('coverage measures the saved scenarios of a template and paints the flow', 
     testScenarios: TEMPLATE_SCENARIOS.survey,
   });
   await open(page, survey);
-  await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
-  await page.getByRole('option', { name: 'Preview / debugger', exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Editor', exact: true })
+    .getByRole('button', { name: 'Preview / debugger', exact: true })
+    .click();
   await page.getByRole('tab', { name: 'Coverage' }).click();
   await page.getByRole('button', { name: 'Measure coverage' }).click();
   await expect(page.getByText(/^100% of branches tested/)).toBeVisible();
@@ -97,8 +99,10 @@ test('coverage measures the saved scenarios of a template and paints the flow', 
 
 test('the debugger steps back and shows what a step changed', async ({ page }) => {
   await open(page);
-  await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
-  await page.getByRole('option', { name: 'Preview / debugger', exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Editor', exact: true })
+    .getByRole('button', { name: 'Preview / debugger', exact: true })
+    .click();
   const stepBack = page.getByRole('button', { name: 'Step back' });
   await expect(stepBack).toBeVisible();
   await page.getByRole('tab', { name: 'Variables', exact: true }).click();

@@ -1259,6 +1259,7 @@ export const en = {
         'The resolver shows the selected version and rejection reasons for this context.',
       context: 'Attached data (JSON)',
       resolveContext: 'Resolve context',
+      closePanel: 'Close',
       insights: {
         title: 'How is this experiment doing?',
         help: 'Live evidence for this assignment. Nothing changes until you save.',
@@ -1448,6 +1449,7 @@ export const en = {
       branchHelp:
         'State restored. Restart to record a new scenario; cancelled action continuations are not replayed.',
       title: 'Preview and debugger',
+      groups: { run: 'Run controls', environment: 'Device and language' },
       simulation: 'Simulation • external commands mocked',
       restart: 'Restart',
       resume: 'Continue',
@@ -1711,6 +1713,7 @@ export const en = {
       reuseScreen: 'Create subflow from screen',
       connectTarget: 'Target node',
       connect: 'Connect nodes',
+      groups: { flow: 'Flow', add: 'Add step', arrange: 'Arrange' },
       a11yNode:
         'Press Enter to select. Use X/Y controls to position and target selector to connect.',
       a11yEdge: 'Press Enter to edit this connection.',
@@ -2391,6 +2394,7 @@ export const en = {
       reorder: 'Reorder',
       actionParameters: 'Action parameters',
       delete: 'Delete',
+      groups: { history: 'History', clipboard: 'Clipboard and delete', structure: 'Grouping' },
       undo: 'Undo',
       redo: 'Redo',
       copy: 'Copy',

@@ -75,8 +75,10 @@ for (const theme of ['dark', 'high-contrast'])
     page,
   }) => {
     await open(page, theme, 1440);
-    await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
-    await page.getByRole('option', { name: 'Flow', exact: true }).click();
+    await page
+      .getByRole('navigation', { name: 'Editor', exact: true })
+      .getByRole('button', { name: 'Flow', exact: true })
+      .click();
     await expect(page.locator('.react-flow__controls-button').first()).toBeVisible();
     const styles = await page.evaluate(() => {
       const read = (selector: string) => {
@@ -107,8 +109,10 @@ for (const theme of ['dark', 'high-contrast'])
 test('flow chrome remains visible with OS forced colors enabled', async ({ page }) => {
   await page.emulateMedia({ forcedColors: 'active' });
   await open(page, 'high-contrast', 1440);
-  await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
-  await page.getByRole('option', { name: 'Flow', exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Editor', exact: true })
+    .getByRole('button', { name: 'Flow', exact: true })
+    .click();
   const control = page.locator('.react-flow__controls-button').first();
   await expect(control).toBeVisible();
   const colors = await control.evaluate((element) => ({

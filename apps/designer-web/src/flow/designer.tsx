@@ -154,7 +154,7 @@ function FlowCanvas({
   useEffect(() => {
     if (!fitRevision) return;
     const frame = requestAnimationFrame(() => {
-      void canvas.current?.fitView({ padding: 0.2 });
+      void canvas.current?.fitView({ padding: 0.25, maxZoom: 1 });
     });
     return () => {
       cancelAnimationFrame(frame);
@@ -273,149 +273,177 @@ function FlowCanvas({
   return (
     <section className="fd-workspace">
       <div className="fd-tools">
-        <SubflowImport store={store} disabled={readOnly} onImported={setFlowId} />
-        <Select
-          label={t('designer.flow.title')}
-          value={flow.id}
-          options={[state.document.flow, ...state.document.subflows].map((f) => ({
-            value: f.id,
-            label: f.name ?? f.id,
-          }))}
-          onValueChange={(value) => {
-            setFlowId(value);
-            setSelection([]);
-            setEdge(null);
-            setTemporary(new Map());
-          }}
-        />
-        {(
-          [
-            'start',
-            'page',
-            'decision',
-            'dataSource',
-            'setVariable',
-            'subflow',
-            'transfer',
-            'end',
-          ] as const
-        ).map((type) => (
+        <div role="group" className="fd-tool-group" aria-label={t('designer.flow.groups.flow')}>
+          <SubflowImport store={store} disabled={readOnly} onImported={setFlowId} />
+          <Select
+            label={t('designer.flow.title')}
+            value={flow.id}
+            options={[state.document.flow, ...state.document.subflows].map((f) => ({
+              value: f.id,
+              label: f.name ?? f.id,
+            }))}
+            onValueChange={(value) => {
+              setFlowId(value);
+              setSelection([]);
+              setEdge(null);
+              setTemporary(new Map());
+            }}
+          />
+        </div>
+        <div
+          role="group"
+          className="fd-tool-group fd-add"
+          aria-label={t('designer.flow.groups.add')}
+        >
+          <span className="fd-tool-label" aria-hidden>
+            {t('designer.flow.groups.add')}
+          </span>
+          {(
+            [
+              'start',
+              'page',
+              'decision',
+              'dataSource',
+              'setVariable',
+              'subflow',
+              'transfer',
+              'end',
+            ] as const
+          ).map((type) => (
+            <Button
+              key={type}
+              size="sm"
+              variant="ghost"
+              disabled={
+                readOnly ||
+                (type === 'dataSource' && !state.document.dataSources.length) ||
+                (type === 'setVariable' &&
+                  !state.document.variables.some((v) => v.scope !== 'global')) ||
+                (type === 'subflow' && !state.document.subflows.some((f) => f.id !== flow.id))
+              }
+              onClick={() => {
+                store.execute(() => {
+                  addFlowNode(store, flow.id, type, `flow-${crypto.randomUUID()}`);
+                });
+              }}
+            >
+              {t(`designer.flow.types.${type}`)}
+            </Button>
+          ))}
+        </div>
+        <div
+          role="group"
+          className="fd-tool-group fd-arrange"
+          aria-label={t('designer.flow.groups.arrange')}
+        >
           <Button
-            key={type}
-            size="sm"
-            variant="ghost"
-            disabled={
-              readOnly ||
-              (type === 'dataSource' && !state.document.dataSources.length) ||
-              (type === 'setVariable' &&
-                !state.document.variables.some((v) => v.scope !== 'global')) ||
-              (type === 'subflow' && !state.document.subflows.some((f) => f.id !== flow.id))
-            }
+            variant="secondary"
+            disabled={readOnly}
+            loading={layingOut}
+            onClick={() => {
+              const snapshot = store.getSnapshot().document,
+                revision = ++layoutVersion.current;
+              setLayingOut(true);
+              void layoutEngine()
+                .then((elk) =>
+                  elk.layout({
+                    id: flow.id,
+                    layoutOptions: {
+                      'elk.algorithm': 'layered',
+                      'elk.direction': 'DOWN',
+                      'elk.spacing.nodeNode': '90',
+                      'elk.layered.spacing.nodeNodeBetweenLayers': '140',
+                      'elk.spacing.edgeNode': '40',
+                      'elk.spacing.edgeEdge': '30',
+                    },
+                    children: flow.nodes.map((n) => ({ id: n.id, width: 220, height: 100 })),
+                    edges: flow.edges.map((e) => ({
+                      id: e.id,
+                      sources: [e.from],
+                      targets: [e.to],
+                    })),
+                  }),
+                )
+                .then((graph) => {
+                  if (
+                    layoutVersion.current !== revision ||
+                    store.getSnapshot().document !== snapshot
+                  )
+                    return;
+                  mutateFlow(store, flow.id, (f) => {
+                    for (const child of graph.children ?? []) {
+                      const node = f.nodes.find((n) => n.id === child.id);
+                      if (node) node.position = { x: child.x ?? 0, y: child.y ?? 0 };
+                    }
+                  });
+                  setTemporary(new Map());
+                  setFitRevision((previous) => previous + 1);
+                })
+                .catch(() => {
+                  store.execute(() => {
+                    throw new Error('VERBIS_LAYOUT');
+                  });
+                })
+                .finally(() => {
+                  setLayingOut(false);
+                });
+            }}
+          >
+            {t('designer.flow.layout')}
+          </Button>
+          <Button
+            variant="secondary"
+            disabled={readOnly}
             onClick={() => {
               store.execute(() => {
-                addFlowNode(store, flow.id, type, `flow-${crypto.randomUUID()}`);
+                mutateFlow(store, flow.id, (f) => {
+                  f.designer ??= { groups: [], notes: [] };
+                  f.designer.notes.push({
+                    id: `note-${crypto.randomUUID()}`,
+                    text: t('designer.flow.newNote'),
+                    position: { x: 50, y: 50 },
+                  });
+                });
               });
             }}
           >
-            {t(`designer.flow.types.${type}`)}
+            {t('designer.flow.note')}
           </Button>
-        ))}
-        <Button
-          disabled={readOnly}
-          loading={layingOut}
-          onClick={() => {
-            const snapshot = store.getSnapshot().document,
-              revision = ++layoutVersion.current;
-            setLayingOut(true);
-            void layoutEngine()
-              .then((elk) =>
-                elk.layout({
-                  id: flow.id,
-                  layoutOptions: {
-                    'elk.algorithm': 'layered',
-                    'elk.direction': 'DOWN',
-                    'elk.spacing.nodeNode': '90',
-                    'elk.layered.spacing.nodeNodeBetweenLayers': '140',
-                    'elk.spacing.edgeNode': '40',
-                    'elk.spacing.edgeEdge': '30',
-                  },
-                  children: flow.nodes.map((n) => ({ id: n.id, width: 220, height: 100 })),
-                  edges: flow.edges.map((e) => ({ id: e.id, sources: [e.from], targets: [e.to] })),
-                }),
-              )
-              .then((graph) => {
-                if (layoutVersion.current !== revision || store.getSnapshot().document !== snapshot)
-                  return;
+          <Button
+            variant="secondary"
+            disabled={readOnly || selection.length < 2}
+            onClick={() => {
+              store.execute(() => {
                 mutateFlow(store, flow.id, (f) => {
-                  for (const child of graph.children ?? []) {
-                    const node = f.nodes.find((n) => n.id === child.id);
-                    if (node) node.position = { x: child.x ?? 0, y: child.y ?? 0 };
-                  }
-                });
-                setTemporary(new Map());
-                setFitRevision((previous) => previous + 1);
-              })
-              .catch(() => {
-                store.execute(() => {
-                  throw new Error('VERBIS_LAYOUT');
-                });
-              })
-              .finally(() => {
-                setLayingOut(false);
-              });
-          }}
-        >
-          {t('designer.flow.layout')}
-        </Button>
-        <Button
-          disabled={readOnly}
-          onClick={() => {
-            store.execute(() => {
-              mutateFlow(store, flow.id, (f) => {
-                f.designer ??= { groups: [], notes: [] };
-                f.designer.notes.push({
-                  id: `note-${crypto.randomUUID()}`,
-                  text: t('designer.flow.newNote'),
-                  position: { x: 50, y: 50 },
+                  f.designer ??= { groups: [], notes: [] };
+                  for (const g of f.designer.groups)
+                    g.nodes = g.nodes.filter((id) => !selection.includes(id));
+                  f.designer.groups.push({
+                    id: `group-${crypto.randomUUID()}`,
+                    label: t('designer.flow.group'),
+                    nodes: [...selection].filter((id) => f.nodes.some((n) => n.id === id)),
+                  });
                 });
               });
-            });
-          }}
-        >
-          {t('designer.flow.note')}
-        </Button>
-        <Button
-          disabled={readOnly || selection.length < 2}
-          onClick={() => {
-            store.execute(() => {
-              mutateFlow(store, flow.id, (f) => {
-                f.designer ??= { groups: [], notes: [] };
-                for (const g of f.designer.groups)
-                  g.nodes = g.nodes.filter((id) => !selection.includes(id));
-                f.designer.groups.push({
-                  id: `group-${crypto.randomUUID()}`,
-                  label: t('designer.flow.group'),
-                  nodes: [...selection].filter((id) => f.nodes.some((n) => n.id === id)),
-                });
-              });
-            });
-          }}
-        >
-          {t('designer.flow.group')}
-        </Button>
-        <Button
-          disabled={readOnly || (!selection.length && !selectedEdge)}
-          variant="ghost"
-          onClick={remove}
-        >
-          {t('designer.editor.delete')}
-        </Button>
+            }}
+          >
+            {t('designer.flow.group')}
+          </Button>
+          <Button
+            disabled={readOnly || (!selection.length && !selectedEdge)}
+            variant="ghost"
+            onClick={remove}
+          >
+            {t('designer.editor.delete')}
+          </Button>
+        </div>
       </div>
       <div className="fd-body">
         <ReactFlow
           nodes={canvasNodes}
           edges={flow.edges.map((e) => ({
             id: e.id,
+            type: 'smoothstep',
             source: e.from,
             target: e.to,
             sourceHandle:
@@ -560,11 +588,13 @@ function FlowCanvas({
             'handle.ariaLabel': t('designer.flow.handle'),
           }}
           fitView
+          fitViewOptions={{ maxZoom: 1, padding: 0.25 }}
+          minZoom={0.2}
           aria-label={t('designer.flow.canvas')}
         >
           <Background color="var(--vb-color-border)" />
           {flow.nodes.length > 1 && (
-            <MiniMap nodeColor="var(--vb-color-primary)" maskColor="var(--vb-color-bg)" />
+            <MiniMap pannable zoomable style={{ inlineSize: 156, blockSize: 100 }} />
           )}
           <Controls />
         </ReactFlow>
