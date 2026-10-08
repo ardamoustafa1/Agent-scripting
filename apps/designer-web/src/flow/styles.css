@@ -7,15 +7,21 @@
 .fd-tools {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  /* One scrollable row: wrapping into three rows left the canvas ~240px high at 1280x720. */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  flex-shrink: 0;
   gap: var(--vb-space-2);
-  padding: var(--vb-space-3);
+  padding: var(--vb-space-2) var(--vb-space-3);
   border-block-end: 1px solid var(--vb-color-border);
+}
+.fd-tools > * {
+  flex-shrink: 0;
 }
 .fd-body {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 20rem;
+  grid-template-columns: minmax(0, 1fr) 17rem;
   min-height: 0;
   background: var(--vb-color-bg);
 }

@@ -1744,3 +1744,10 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - Açık: tuval üstü (node bazında) görsel çözücü, dal üstünde birden çok sürüm.
 
 - **Öneri tuval katmanı (C2 devamı):** `script-schema/suggest.ts` `suggestionTargets` (işlem yollarını mevcut belgede yürüyüp en derindeki yerleşim düğümüne, yoksa sayfaya eşler), `editor/suggest-marks.ts` (küçük dış durum), `Frame`'de işaret, panelde "Tuvalde göster/gizle" (yalnız açık öneri ve belge verildiyse). Testler: script-schema 392, designer birim 582, Playwright `suggestions.spec` 3.
+
+## 2026-10-08 — Düzenleyici alanı: "dünyanın en iyisi" için ölçülebilir hedef (DIFFERENTIATORS §0.1)
+
+- **Ölçüm (gerçek editör, Playwright):** tuval genişliği/çalışma alanı 1440 px'te **%57**, 1280 px'te %50 (hedef ≥ %65); akış tuvali 1280×720'de **236 px** yükseklikte (araç satırı üç satıra sarılıyordu).
+- **Değişiklik:** düzenleyici rotasında kenar çubuğu ziyaret boyunca daraltılmış açılır (kayıtlı tercihe dokunulmaz, "Genişlet" ile açılır); sol panel 15 → 13 rem, sağ panel 19 → 17 rem, akış özellikler paneli 20 → 17 rem; akış araç satırı sarılmak yerine yatay kayar.
+- **Sonuç:** 1440 px'te tuval **%66,6**, 1280 px'te %62, akış tuvali 1280×720'de 292 px (1440×900'de 420 → 487 px). Kalıcı koruma: `e2e/editor-canvas-share.spec.ts` (≥%65 @1440, rayın ziyaret başına daralması, akış tuvali ≥280 px ve tek satırlık araç çubuğu).
+- Hâlâ açık: 720 px yükseklikte sayfa 6 px dikey taşıyor (çalışma alanı min 40 rem); Screen modunda tuval 323 px yüksekliğinde. Linux görsel baseline'ları yeniden üretilmeli.

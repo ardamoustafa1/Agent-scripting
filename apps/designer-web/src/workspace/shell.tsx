@@ -116,6 +116,11 @@ export default function Shell({
       return false;
     }
   });
+  // The editor needs the width for the canvas, so its route starts with the rail collapsed. That
+  // choice is per visit (`editorRailOpen`) and never overwrites the saved preference.
+  const [editorRailOpen, setEditorRailOpen] = useState(false);
+  const isEditorRoute = /^\/scripts\/[^/]+\/versions\/[^/]+\/edit\/?$/.test(location.pathname);
+  const railCollapsed = isEditorRoute ? !editorRailOpen : sidebarCollapsed;
   const [create, setCreate] = useState<'campaigns' | 'scripts' | null>(null);
   const [tenantSwitch, setTenantSwitch] = useState(false);
   const [tour, setTour] = useState(() =>
@@ -219,8 +224,8 @@ export default function Shell({
       <CommandRegistryProvider registry={registry}>
         <div
           className="dw-workspace"
-          data-sidebar-collapsed={sidebarCollapsed}
-          data-editor-route={/^\/scripts\/[^/]+\/versions\/[^/]+\/edit\/?$/.test(location.pathname)}
+          data-sidebar-collapsed={railCollapsed}
+          data-editor-route={isEditorRoute}
         >
           <a className="vb-skip-link" href="#workspace-content" tabIndex={0}>
             {t('common.skipToContent')}
@@ -240,7 +245,7 @@ export default function Shell({
               </NavLink>
               <Tooltip
                 content={t(
-                  sidebarCollapsed
+                  railCollapsed
                     ? 'designer.workspace.expandSidebar'
                     : 'designer.workspace.collapseSidebar',
                 )}
@@ -248,14 +253,18 @@ export default function Shell({
                 <IconButton
                   className="dw-rail-toggle"
                   label={t(
-                    sidebarCollapsed
+                    railCollapsed
                       ? 'designer.workspace.expandSidebar'
                       : 'designer.workspace.collapseSidebar',
                   )}
-                  aria-expanded={!sidebarCollapsed}
+                  aria-expanded={!railCollapsed}
                   aria-controls="workspace-navigation"
                   onClick={() => {
-                    const collapsed = !sidebarCollapsed;
+                    const collapsed = !railCollapsed;
+                    if (isEditorRoute) {
+                      setEditorRailOpen(!collapsed);
+                      return;
+                    }
                     setSidebarCollapsed(collapsed);
                     try {
                       localStorage.setItem('verbis.sidebar.collapsed', String(collapsed));
@@ -264,7 +273,7 @@ export default function Shell({
                     }
                   }}
                 >
-                  {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+                  {railCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
                 </IconButton>
               </Tooltip>
             </div>
