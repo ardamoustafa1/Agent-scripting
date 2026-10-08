@@ -233,15 +233,17 @@
 }
 
 /* Compact windows (laptops, split screens): trade chrome for canvas. ------- */
-.ed-workspace .ed-modebar {
-  flex-wrap: nowrap;
-}
-.ed-workspace .ed-modebar .ed-mode-shortcuts {
-  flex: 1 1 auto;
-  min-inline-size: 0;
-}
-.ed-workspace .ed-modebar .lc-presence {
-  flex-shrink: 0;
+@media (min-width: 901px) {
+  .ed-workspace .ed-modebar {
+    flex-wrap: nowrap;
+  }
+  .ed-workspace .ed-modebar .ed-mode-shortcuts {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+  .ed-workspace .ed-modebar .lc-presence {
+    flex-shrink: 0;
+  }
 }
 @media (min-width: 901px) and (max-width: 1320px) {
   .ed-workspace .ed-toolbar {
