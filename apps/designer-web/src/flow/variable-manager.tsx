@@ -1,3 +1,4 @@
+import { Variable as VariableIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +12,7 @@ import {
   IdentifierSchema,
   type Variable,
 } from '@verbis/script-schema';
-import { Button, Input, Textarea, Select, DataTable, Dialog, Alert } from '@verbis/ui';
+import { Button, Input, Textarea, Select, DataTable, Dialog, Alert, EmptyState } from '@verbis/ui';
 
 import { useEditor, type EditorStore } from '../editor/store.js';
 
@@ -219,98 +220,113 @@ export function VariableManager({
   const variable = draft ?? state.document.variables.find((v) => v.key === selected);
   return (
     <section className="fd-manager">
-      <h2>{t('designer.variables.title')}</h2>
-      <Button
-        disabled={readOnly}
-        onClick={() => {
-          let index = 1;
-          while (state.document.variables.some((v) => v.key === `variable${index}`)) index++;
-          setSelected(null);
-          setDraft(
-            VariableSchema.parse({
-              key: `variable${index}`,
-              type: 'string',
-              scope: 'session',
-              default: '',
-            }),
-          );
-        }}
-      >
-        {t('designer.variables.add')}
-      </Button>
-      <DataTable
-        label={t('designer.variables.title')}
-        data={state.document.variables}
-        getRowId={(v) => v.key}
-        columns={[
-          {
-            id: 'key',
-            header: t('designer.variables.name'),
-            accessor: (v) => v.key,
-            cell: (v) => (
-              <Button
-                disabled={readOnly}
-                variant="ghost"
-                onClick={() => {
-                  setSelected(v.key);
-                }}
-              >
-                {v.key}
-              </Button>
-            ),
-          },
-          {
-            id: 'type',
-            header: t('designer.workspace.kind'),
-            accessor: (v) => t(`designer.variables.types.${v.type}`),
-          },
-          {
-            id: 'scope',
-            header: t('designer.workspace.scope'),
-            accessor: (v) => t(`designer.variables.scopes.${v.scope}`),
-          },
-          {
-            id: 'pii',
-            header: t('designer.workspace.classification'),
-            accessor: (v) => t(`designer.variables.classifications.${v.classification}`),
-          },
-          {
-            id: 'default',
-            header: t('designer.variables.default'),
-            accessor: (v) =>
-              v.pii || v.classification === 'pci' ? '••••' : JSON.stringify(v.default ?? null),
-          },
-          {
-            id: 'uses',
-            header: t('designer.variables.usageCount'),
-            accessor: (v) => variableUses(state.document, v.key).length,
-          },
-        ]}
-      />
-      <Dialog
-        open={!!variable}
-        onOpenChange={(open) => {
-          if (!open) {
-            setSelected(null);
-            setDraft(null);
-          }
-        }}
-        title={t(draft ? 'designer.variables.add' : 'designer.variables.edit')}
-        description={t('designer.variables.renameDescription')}
-      >
-        {variable && (
-          <VariableForm
-            key={draft ? `new:${variable.key}` : variable.key}
-            variable={variable}
-            store={store}
-            isNew={!!draft}
-            close={() => {
+      <div className="rb-manager-content">
+        <header className="fd-manager-head">
+          <div>
+            <h2>{t('designer.variables.title')}</h2>
+            <p>{t('designer.variables.intro')}</p>
+          </div>
+          <Button
+            disabled={readOnly}
+            onClick={() => {
+              let index = 1;
+              while (state.document.variables.some((v) => v.key === `variable${index}`)) index++;
               setSelected(null);
-              setDraft(null);
+              setDraft(
+                VariableSchema.parse({
+                  key: `variable${index}`,
+                  type: 'string',
+                  scope: 'session',
+                  default: '',
+                }),
+              );
             }}
+          >
+            {t('designer.variables.add')}
+          </Button>
+        </header>
+        {state.document.variables.length === 0 ? (
+          <EmptyState
+            icon={<VariableIcon size={24} />}
+            title={t('designer.variables.emptyTitle')}
+            description={t('designer.variables.emptyBody')}
+          />
+        ) : (
+          <DataTable
+            label={t('designer.variables.title')}
+            data={state.document.variables}
+            getRowId={(v) => v.key}
+            columns={[
+              {
+                id: 'key',
+                header: t('designer.variables.name'),
+                accessor: (v) => v.key,
+                cell: (v) => (
+                  <Button
+                    disabled={readOnly}
+                    variant="ghost"
+                    onClick={() => {
+                      setSelected(v.key);
+                    }}
+                  >
+                    {v.key}
+                  </Button>
+                ),
+              },
+              {
+                id: 'type',
+                header: t('designer.workspace.kind'),
+                accessor: (v) => t(`designer.variables.types.${v.type}`),
+              },
+              {
+                id: 'scope',
+                header: t('designer.workspace.scope'),
+                accessor: (v) => t(`designer.variables.scopes.${v.scope}`),
+              },
+              {
+                id: 'pii',
+                header: t('designer.workspace.classification'),
+                accessor: (v) => t(`designer.variables.classifications.${v.classification}`),
+              },
+              {
+                id: 'default',
+                header: t('designer.variables.default'),
+                accessor: (v) =>
+                  v.pii || v.classification === 'pci' ? '••••' : JSON.stringify(v.default ?? null),
+              },
+              {
+                id: 'uses',
+                header: t('designer.variables.usageCount'),
+                accessor: (v) => variableUses(state.document, v.key).length,
+              },
+            ]}
           />
         )}
-      </Dialog>
+        <Dialog
+          open={!!variable}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelected(null);
+              setDraft(null);
+            }
+          }}
+          title={t(draft ? 'designer.variables.add' : 'designer.variables.edit')}
+          description={t('designer.variables.renameDescription')}
+        >
+          {variable && (
+            <VariableForm
+              key={draft ? `new:${variable.key}` : variable.key}
+              variable={variable}
+              store={store}
+              isNew={!!draft}
+              close={() => {
+                setSelected(null);
+                setDraft(null);
+              }}
+            />
+          )}
+        </Dialog>
+      </div>
     </section>
   );
 }

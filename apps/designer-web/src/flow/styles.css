@@ -389,3 +389,30 @@
 .fd-tool-label {
   display: inline;
 }
+
+.fd-manager-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--vb-space-4);
+  flex-wrap: wrap;
+}
+.fd-manager-head h2 {
+  margin: 0;
+}
+.fd-manager-head p {
+  margin: var(--vb-space-1) 0 0;
+  max-inline-size: 60ch;
+  color: var(--vb-color-text-muted);
+}
+.fd-manager .vb-empty {
+  padding-block: var(--vb-space-8);
+  border: 1px dashed var(--vb-color-border-strong);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface);
+}
+@media (max-width: 1560px) {
+  .fd-tool-label {
+    display: none;
+  }
+}

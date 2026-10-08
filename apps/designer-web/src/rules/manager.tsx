@@ -1,7 +1,8 @@
+import { Braces } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Input, Select, Alert } from '@verbis/ui';
+import { Button, Input, Select, Alert, EmptyState } from '@verbis/ui';
 
 import { useEditor, type EditorStore } from '../editor/store.js';
 
@@ -22,17 +23,11 @@ export function RuleManager({
   return (
     <section className="fd-manager">
       <div className="rb-manager-content">
-        <h2>{t('designer.rules.title')}</h2>
-        <div className="rb-manager-toolbar">
-          <Select
-            label={t('designer.rules.title')}
-            value={selected}
-            options={state.document.rules.map((r) => ({
-              value: r.id,
-              label: r.description ?? r.id,
-            }))}
-            onValueChange={setSelected}
-          />
+        <header className="fd-manager-head">
+          <div>
+            <h2>{t('designer.rules.title')}</h2>
+            <p>{t('designer.rules.intro')}</p>
+          </div>
           <Button
             disabled={readOnly}
             onClick={() => {
@@ -51,7 +46,26 @@ export function RuleManager({
           >
             {t('designer.rules.add')}
           </Button>
-        </div>
+        </header>
+        {state.document.rules.length === 0 ? (
+          <EmptyState
+            icon={<Braces size={24} />}
+            title={t('designer.rules.emptyTitle')}
+            description={t('designer.rules.emptyBody')}
+          />
+        ) : (
+          <div className="rb-manager-toolbar">
+            <Select
+              label={t('designer.rules.title')}
+              value={selected}
+              options={state.document.rules.map((r) => ({
+                value: r.id,
+                label: r.description ?? r.id,
+              }))}
+              onValueChange={setSelected}
+            />
+          </div>
+        )}
         {rule && (
           <fieldset disabled={readOnly}>
             <Input

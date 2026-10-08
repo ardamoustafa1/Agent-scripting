@@ -1774,3 +1774,9 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - Not: designer e2e `vite preview` ile `dist` sunar; e2e öncesi `pnpm build` şart (eski dist ile geçen testler yanıltıcıydı).
 - Bilinen, bu değişiklikten bağımsız: script-detail-design görsel testleri "Dallar yüklenemedi" nedeniyle kırmızı (fixture'da branches ucu yok).
 - Takip: Linux görsel temel çizgileri yeniden üretilecek; mini harita düğümleri çizmiyor (kök neden araştırılacak); kurallar/değişkenler sekmelerinin boş durumları.
+
+## 2026-10-08 — Kurallar/Değişkenler boş durumları ve akış mini haritası
+- Kurallar ve Değişkenler: başlık + açıklama + "ekle" düğmesi üstte, boş durumda yönlendirici EmptyState (tr+en), Değişkenler sayfası da Kurallar ile aynı genişlikte.
+- Mini harita kök neden: kontrollü `nodes` kullanıcı nesnelerinde boyut olmadığı için xyflow `MiniMapNodes` hiçbir düğümü çizmiyordu (`nodeHasDimensions`); düğümlere `initialWidth/initialHeight` verildi, boyut `style.width/height` ile ayarlandı. e2e: 3 düğüm → 3 dikdörtgen.
+- Akış araç çubuğunun "Adım ekle" etiketi yalnız ≥1560px'te görünür (1440'ta tek satır).
+- Not: `editor.spec` palet testleri paralel koşuda ara sıra zaman aşımına düşüyor (tek başına geçiyor).

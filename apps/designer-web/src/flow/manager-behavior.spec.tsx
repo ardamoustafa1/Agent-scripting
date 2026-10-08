@@ -271,3 +271,12 @@ it('explains which field failed: invalid name, taken name, wrong default type, e
   });
   expect(store.getSnapshot().document.variables.map((v) => v.key)).toEqual(['taken', 'fresh']);
 });
+
+it('explains an empty variable list and still lets the designer add the first variable', async () => {
+  const store = new EditorStore(minimalScript());
+  const f = await mountDesigner(<VariableManager store={store} />);
+  expect(screen.getByText(f.label('variables.emptyTitle'))).toBeTruthy();
+  expect(screen.getByText(f.label('variables.intro'))).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: f.label('variables.add') }));
+  expect(await screen.findByRole('dialog')).toBeTruthy();
+});

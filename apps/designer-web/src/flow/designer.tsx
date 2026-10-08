@@ -203,6 +203,9 @@ function FlowCanvas({
         .map<GraphNode>((node, index) => ({
           id: node.id,
           type: 'verbis',
+          // The mini map only draws nodes whose user object carries a size.
+          initialWidth: 190,
+          initialHeight: 92,
           position: temporary.get(node.id) ??
             node.position ?? { x: (index % 3) * 260, y: Math.floor(index / 3) * 160 },
           className: traceNodes?.has(node.id) ? 'fd-visited' : '',
@@ -219,6 +222,8 @@ function FlowCanvas({
           (flow.designer?.notes ?? []).map((note) => ({
             id: note.id,
             type: 'note',
+            initialWidth: 190,
+            initialHeight: 92,
             position: temporary.get(note.id) ?? note.position,
             data: { label: note.text, kind: 'note', problems: [] },
             selected: selection.includes(note.id),
@@ -594,7 +599,7 @@ function FlowCanvas({
         >
           <Background color="var(--vb-color-border)" />
           {flow.nodes.length > 1 && (
-            <MiniMap pannable zoomable style={{ inlineSize: 156, blockSize: 100 }} />
+            <MiniMap pannable zoomable style={{ width: 156, height: 100 }} />
           )}
           <Controls />
         </ReactFlow>

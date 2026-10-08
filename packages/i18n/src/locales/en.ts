@@ -1768,6 +1768,11 @@ export const en = {
       },
     },
     rules: {
+      intro:
+        'Rules decide who gets what: describe a situation once and reuse it across screens and flows.',
+      emptyTitle: 'No rules yet',
+      emptyBody:
+        'Add your first rule to react to the channel, queue, language or any customer data.',
       assignment: 'Assignment conditions',
       abTargeting: 'A/B targeting',
       assignmentDescription:
@@ -1813,6 +1818,11 @@ export const en = {
       },
     },
     variables: {
+      intro:
+        'Variables hold the data a conversation needs. Classify personal data so it is protected everywhere.',
+      emptyTitle: 'No variables yet',
+      emptyBody:
+        'Add a variable to capture or show data such as a name, an order number or a choice.',
       title: 'Variable manager',
       name: 'Variable name',
       pii: 'Personal data (PII)',

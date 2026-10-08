@@ -55,6 +55,8 @@ test('add, arrange, drag and undo a flow node; Page double-click opens its canva
   await openMode(page, 'Flow');
   await page.getByRole('button', { name: 'Decision', exact: true }).click();
   await expect(page.locator('.react-flow__node-verbis')).toHaveCount(3);
+  // The mini map draws one rectangle per step instead of an empty frame.
+  await expect(page.locator('.react-flow__minimap-node')).toHaveCount(3);
   await expect(page.locator('.fd-node-issues')).not.toHaveCount(0);
   await page.getByRole('button', { name: 'Auto layout', exact: true }).click();
   // ELK is asynchronous. Starting a drag before layout completes cancels that

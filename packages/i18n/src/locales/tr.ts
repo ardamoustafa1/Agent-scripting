@@ -1783,6 +1783,11 @@ export const tr: Catalog = {
       },
     },
     rules: {
+      intro:
+        'Kurallar kime ne gösterileceğini belirler: bir durumu bir kez tanımlayın, ekran ve akışlarda yeniden kullanın.',
+      emptyTitle: 'Henüz kural yok',
+      emptyBody:
+        'Kanala, kuyruğa, dile ya da herhangi bir müşteri verisine göre davranmak için ilk kuralınızı ekleyin.',
       assignment: 'Atama koşulları',
       abTargeting: 'A/B hedeflemesi',
       assignmentDescription:
@@ -1828,6 +1833,11 @@ export const tr: Catalog = {
       },
     },
     variables: {
+      intro:
+        'Değişkenler bir görüşmenin ihtiyaç duyduğu veriyi tutar. Kişisel veriyi sınıflandırın, her yerde korunsun.',
+      emptyTitle: 'Henüz değişken yok',
+      emptyBody:
+        'Ad, sipariş numarası ya da seçim gibi verileri almak veya göstermek için bir değişken ekleyin.',
       title: 'Değişken yöneticisi',
       name: 'Değişken adı',
       pii: 'Kişisel veri (PII)',
