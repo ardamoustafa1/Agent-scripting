@@ -1780,3 +1780,8 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - Mini harita kök neden: kontrollü `nodes` kullanıcı nesnelerinde boyut olmadığı için xyflow `MiniMapNodes` hiçbir düğümü çizmiyordu (`nodeHasDimensions`); düğümlere `initialWidth/initialHeight` verildi, boyut `style.width/height` ile ayarlandı. e2e: 3 düğüm → 3 dikdörtgen.
 - Akış araç çubuğunun "Adım ekle" etiketi yalnız ≥1560px'te görünür (1440'ta tek satır).
 - Not: `editor.spec` palet testleri paralel koşuda ara sıra zaman aşımına düşüyor (tek başına geçiyor).
+
+## 2026-10-08 — Editör: küçük pencere (1000×600) uyumu ve akış adımı ikonları
+- Ölçüm artık 1000×600 ve 1280×720'de de yapılıyor (gerçek kullanıcı penceresi); akış tuvali 140px → ~335px.
+- Kısa ekranda (<780px) editör rotasında üst kabuk çubuğu gizlenir; ≤1320px'te komutlar başlığın altına sarar, akış araç çubuğu tek kaydırılabilir satır, "adım ekle" düğmeleri ikon (ad ekran okuyucuda ve ipucunda), mini harita ≤1100px'te gizli.
+- Akış adımları tür ikonlu (başlat/sayfa/karar/veri kaynağı/değişken/alt akış/aktarım/bitiş) ve yumuşak renkli ikon karoları; breadcrumb yalnız Ekran modunda.

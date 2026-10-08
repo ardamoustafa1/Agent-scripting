@@ -12,6 +12,17 @@ import {
   type NodeProps,
   type NodeChange,
 } from '@xyflow/react';
+import {
+  ArrowRightLeft,
+  Database,
+  Flag,
+  GitBranch,
+  LayoutTemplate,
+  Play,
+  Variable as VariableIcon,
+  Workflow,
+  type LucideIcon,
+} from 'lucide-react';
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -52,13 +63,31 @@ interface Data extends Record<string, unknown> {
   problems: readonly string[];
 }
 type GraphNode = CanvasNode<Data>;
+const KIND_ICONS: Record<string, LucideIcon> = {
+  start: Play,
+  page: LayoutTemplate,
+  decision: GitBranch,
+  dataSource: Database,
+  setVariable: VariableIcon,
+  subflow: Workflow,
+  transfer: ArrowRightLeft,
+  end: Flag,
+};
 function FlowCard({ data }: NodeProps<GraphNode>) {
   const { t } = useTranslation();
   return (
-    <div className="fd-node">
+    <div className="fd-node" data-kind={data.kind}>
       {data.kind !== 'start' && <Handle type="target" position={Position.Top} />}
       <div className="fd-node-title">
-        <Badge>{t(`designer.flow.types.${data.kind}`)}</Badge>
+        <span className="fd-kind">
+          <span className="fd-kind-icon" aria-hidden>
+            {(() => {
+              const Icon = KIND_ICONS[data.kind] ?? LayoutTemplate;
+              return <Icon size={14} />;
+            })()}
+          </span>
+          {t(`designer.flow.types.${data.kind}`)}
+        </span>
         <strong>{data.label}</strong>
       </div>
       {data['visited'] === true && (
@@ -319,6 +348,11 @@ function FlowCanvas({
               key={type}
               size="sm"
               variant="ghost"
+              title={t(`designer.flow.types.${type}`)}
+              startIcon={(() => {
+                const Icon = KIND_ICONS[type] ?? LayoutTemplate;
+                return <Icon size={14} aria-hidden />;
+              })()}
               disabled={
                 readOnly ||
                 (type === 'dataSource' && !state.document.dataSources.length) ||
@@ -332,7 +366,7 @@ function FlowCanvas({
                 });
               }}
             >
-              {t(`designer.flow.types.${type}`)}
+              <span className="fd-add-label">{t(`designer.flow.types.${type}`)}</span>
             </Button>
           ))}
         </div>

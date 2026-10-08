@@ -720,20 +720,22 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
       </div>
       {state.message && <Alert title={t(state.message)} tone="danger" />}
       {save === 'conflict' && <Alert title={t('designer.editor.conflict')} tone="danger" />}
-      <nav className="ed-breadcrumb" aria-label={t('designer.editor.breadcrumb')}>
-        {ancestors.map((id) => (
-          <Button
-            key={id}
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              store.select(id);
-            }}
-          >
-            {store.node(id)?.type} /
-          </Button>
-        ))}
-      </nav>
+      {mode === 'screen' && (
+        <nav className="ed-breadcrumb" aria-label={t('designer.editor.breadcrumb')}>
+          {ancestors.map((id) => (
+            <Button
+              key={id}
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                store.select(id);
+              }}
+            >
+              {store.node(id)?.type} /
+            </Button>
+          ))}
+        </nav>
+      )}
       {mode === 'screen' && store.readonlyPages.has(state.pageId) && (
         <Alert title={t('designer.editor.linkedReadonly')} tone="warning" />
       )}

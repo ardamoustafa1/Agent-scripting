@@ -416,3 +416,92 @@
     display: none;
   }
 }
+
+/* Step kinds: an icon tile carries the meaning, colour only reinforces it. */
+.fd-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vb-space-2);
+  font-size: var(--vb-font-size-xs);
+  font-weight: 600;
+  color: var(--vb-color-text-muted);
+}
+.fd-kind-icon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 24px;
+  block-size: 24px;
+  border-radius: var(--vb-radius-sm, 6px);
+  background: var(--vb-color-surface);
+  color: var(--vb-color-text);
+  border: 1px solid var(--vb-color-border);
+}
+.fd-node[data-kind='start'] .fd-kind-icon,
+.fd-node[data-kind='end'] .fd-kind-icon {
+  background: var(--vb-color-success-soft);
+  color: var(--vb-color-success);
+  border-color: transparent;
+}
+.fd-node[data-kind='decision'] .fd-kind-icon,
+.fd-node[data-kind='transfer'] .fd-kind-icon {
+  background: var(--vb-color-warning-soft);
+  color: var(--vb-color-warning);
+  border-color: transparent;
+}
+.fd-node[data-kind='page'] .fd-kind-icon,
+.fd-node[data-kind='subflow'] .fd-kind-icon {
+  background: var(--vb-color-info-soft);
+  color: var(--vb-color-info);
+  border-color: transparent;
+}
+.fd-node[data-kind='dataSource'] .fd-kind-icon,
+.fd-node[data-kind='setVariable'] .fd-kind-icon {
+  background: var(--vb-color-surface);
+  color: var(--vb-color-text);
+}
+.fd-add .vb-button {
+  gap: 6px;
+}
+.fd-add .vb-button svg {
+  color: var(--vb-color-text-muted);
+}
+.fd-add .vb-button:hover:not(:disabled) svg {
+  color: currentColor;
+}
+
+/* Small windows: keep every toolbar to one scrollable row so the canvas stays usable. */
+@media (max-width: 1320px) {
+  .fd-tools {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .fd-tools > * {
+    flex-shrink: 0;
+  }
+  .fd-arrange {
+    margin-inline-start: 0;
+  }
+}
+@media (max-width: 1100px) {
+  .react-flow.react-flow .react-flow__minimap {
+    display: none;
+  }
+}
+
+@media (max-width: 1320px) {
+  .fd-add-label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  .fd-add .vb-button {
+    inline-size: 34px;
+    padding-inline: 0;
+    justify-content: center;
+  }
+}
