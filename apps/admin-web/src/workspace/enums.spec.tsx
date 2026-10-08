@@ -109,3 +109,18 @@ it('describes every system role in both catalogs and in the roles table', async 
   expect(screen.getByText('Synthetic custom purpose')).toBeTruthy();
   expect(screen.queryByText('script_approver')).toBeNull();
 });
+
+// A page header showed the raw key `adminWorkspace.intros.serviceClients` once; every registered
+// page needs its label and intro in both catalogs.
+it('has a label and an intro for every registered admin page in both catalogs', async () => {
+  const { adminPageIds } = await import('./workspace.js');
+  for (const locale of ['tr', 'en'] as const) {
+    const i18n = await createI18n(locale);
+    for (const id of adminPageIds) {
+      for (const key of [`adminWorkspace.${id}`, `adminWorkspace.intros.${id}`]) {
+        expect(i18n.exists(key), `${locale}: ${key}`).toBe(true);
+        expect(i18n.t(key), `${locale}: ${key}`).not.toBe(key);
+      }
+    }
+  }
+});

@@ -112,7 +112,7 @@ for (const theme of ['light', 'dark']) {
     }, theme);
     await page.goto('/#systemHealth');
     await expect(page.getByRole('heading', { level: 1, name: 'Sistem sağlığı' })).toBeVisible();
-    await expect(page.locator('.aw-json').first()).toHaveValue(/"status": "ok"/);
+    await expect(page.getByText('Genel durum: Çalışıyor')).toBeVisible();
     await expect(page.locator('.aw-stats strong').filter({ hasText: /^7$/ })).toBeVisible();
     await expect(page.getByText(/25\.0%/)).toBeVisible();
     await page.evaluate('document.fonts.ready.then(() => undefined)');

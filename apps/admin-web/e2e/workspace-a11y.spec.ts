@@ -64,8 +64,90 @@ const trust = {
   },
   privacy: { open: 2, processed: 5, oldestOpenAt: '2026-09-20T09:00:00.000Z' },
 };
+const samlProvider = '01990000-0000-7000-8000-000000000004';
 const fixtures: Record<string, unknown> = {
   '/api/v1/trust-center': trust,
+  '/api/v1/audit-checkpoints': [
+    {
+      id: 'cp-1',
+      seq: '1200',
+      hash: 'a'.repeat(64),
+      sessionHeadsDigest: 'b'.repeat(64),
+      sessionHeadsCount: 7,
+      prevCheckpointId: null,
+      keyId: 'audit-key-1',
+      signature: 'sig',
+      signedAt: '2026-10-05T06:00:00.000Z',
+    },
+  ],
+  '/api/v1/audit-checkpoints/keys': {
+    keys: [{ kty: 'OKP', crv: 'Ed25519', kid: 'audit-key-1', x: 'abc' }],
+  },
+  '/api/v1/service-clients': [
+    {
+      id: tenant,
+      version: 2,
+      clientId: tenant,
+      name: 'Raporlama aktarımı',
+      authMethod: 'client_secret_basic',
+      scopes: ['read:Report', 'export:Report'],
+      status: 'active',
+      certificateThumbprint: null,
+      lastUsedAt: null,
+      tokenEndpoint: 'https://api.example.test/oauth2/acme/token',
+    },
+  ],
+  '/api/v1/me/sessions': {
+    data: [
+      {
+        id: user,
+        kind: 'sso',
+        protocol: 'oidc',
+        idpId: null,
+        app: 'admin',
+        createdAt: '2026-10-08T08:00:00Z',
+        lastSeenAt: '2026-10-08T09:00:00Z',
+        expiresAt: '2026-10-08T18:00:00Z',
+        ip: '10.0.0.5',
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/141.0 Safari/537.36',
+        current: true,
+      },
+    ],
+  },
+  '/api/v1/channels': { data: [{ id: tenant, type: 'voice', provider: 'genesys' }] },
+  '/api/v1/analytics/event-counts': {
+    data: [{ eventType: 'verbis.runtime.session.started.v1', day: '2026-10-07', count: 9 }],
+  },
+  '/api/health/ready': { status: 'ok', version: '1.0.0', checks: { database: { status: 'up' } } },
+  [`/api/v1/identity-providers/${samlProvider}`]: {
+    id: samlProvider,
+    version: 3,
+    displayName: 'Kurumsal SAML',
+    protocol: 'saml',
+    status: 'active',
+    jitProvisioning: false,
+    scimEnabled: false,
+    endpoints: { metadata: 'https://api.example.test/auth/saml/acme/idp/metadata' },
+    config: {
+      roleMapping: { rules: [], defaultRoles: [] },
+      spCredentials: [
+        {
+          id: tenant,
+          use: 'signing',
+          state: 'active',
+          certificate: 'MIIBAAAA',
+          notAfter: '2099-10-20T00:00:00Z',
+        },
+        {
+          id: user,
+          use: 'signing',
+          state: 'next',
+          certificate: 'MIIBBBBB',
+          notAfter: '2099-12-20T00:00:00Z',
+        },
+      ],
+    },
+  },
   '/api/v1/tenant': { id: tenant, name: 'A11y fixture', settings: {}, version: 1 },
   '/api/v1/analytics/dashboard': dashboard,
   '/api/v1/analytics/schedules': [],
@@ -121,7 +203,18 @@ const axe = (page: Page) =>
 test.use({ locale: 'tr-TR' });
 for (const theme of ['light', 'dark', 'high-contrast'])
   for (const width of [390, 1440])
-    for (const route of ['users', 'analytics', 'identity', 'branding', 'trust'])
+    for (const route of [
+      'users',
+      'analytics',
+      'identity',
+      'branding',
+      'trust',
+      'serviceClients',
+      'compliance',
+      'mySessions',
+      'systemHealth',
+      'connectors',
+    ])
       test(`${route} ${theme} ${width}px has no axe violations`, async ({ page }) => {
         await workspace(page, theme);
         await page.setViewportSize({ width, height: 900 });
@@ -131,7 +224,17 @@ for (const theme of ['light', 'dark', 'high-contrast'])
           await expect(page.getByText('Kimlik sağlayıcı').first()).toBeAttached();
         if (route === 'analytics') await expect(page.locator('.vb-analytics-kpis')).toBeVisible();
         if (route === 'identity') await expect(page.getByText('Keycloak').first()).toBeAttached();
-        if (route === 'trust') await expect(page.getByText('Dikkat gerekli').first()).toBeVisible();
+        if (route === 'trust') {
+          await expect(page.getByText('Dikkat gerekli').first()).toBeVisible();
+          await expect(page.getByText('audit-key-1').first()).toBeAttached();
+        }
+        if (route === 'serviceClients')
+          await expect(page.getByText('Raporlama aktarımı').first()).toBeAttached();
+        if (route === 'compliance')
+          await expect(page.getByRole('button', { name: 'Kaydı oluştur' })).toBeVisible();
+        if (route === 'mySessions') await expect(page.getByText('Bu cihaz')).toBeVisible();
+        if (route === 'systemHealth')
+          await expect(page.getByText(/Veritabanı/).first()).toBeVisible();
         const { violations } = await axe(page).analyze();
         expect(
           violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`),
@@ -140,6 +243,39 @@ for (const theme of ['light', 'dark', 'high-contrast'])
           true,
         );
       });
+// SAML service-provider certificates (rotate: add, promote, remove) in every theme and width.
+for (const theme of ['light', 'dark', 'high-contrast'])
+  for (const width of [390, 1440])
+    test(`SAML certificates ${theme} ${width}px have no axe violations`, async ({ page }) => {
+      await workspace(page, theme);
+      await page.route('**/api/v1/identity-providers', (route) =>
+        route.fulfill({
+          json: [
+            { id: samlProvider, displayName: 'Kurumsal SAML', protocol: 'saml', status: 'active' },
+          ],
+        }),
+      );
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/#identity');
+      await page.getByRole('button', { name: 'Tüm satırları göster' }).first().click();
+      await page
+        .getByRole('row')
+        .filter({ hasText: 'Kurumsal SAML' })
+        .getByRole('button', { name: 'Ayrıntılar', exact: true })
+        .click();
+      const section = page.getByRole('region', { name: 'SAML hizmet sağlayıcı sertifikaları' });
+      await expect(section).toBeVisible();
+      await expect(section.getByRole('button', { name: 'Etkinleştir' })).toBeVisible();
+      await section.getByRole('button', { name: 'Etkinleştir' }).click();
+      await expect(section.getByRole('button', { name: 'Onayla' })).toBeVisible();
+      const { violations } = await axe(page).analyze();
+      expect(
+        violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`),
+      ).toEqual([]);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+    });
 // V-02: the brand preview rendered as a white light-theme block inside dark/high-contrast pages.
 for (const theme of ['dark', 'high-contrast'])
   test(`brand preview follows the ${theme} theme`, async ({ page }) => {

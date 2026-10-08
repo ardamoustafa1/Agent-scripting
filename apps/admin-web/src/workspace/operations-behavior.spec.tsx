@@ -325,9 +325,11 @@ it.each([null, 0.125])(
       },
     });
     await screen.findByText('synthetic.event');
+    // Readiness is a labelled list, not a JSON dump: the failing dependency is named and says so.
     expect(
-      screen.getByRole<HTMLTextAreaElement>('textbox', { name: f.label('details') }).value,
-    ).toContain('database');
+      screen.getByText(`${f.label('ops.check.database')}: ${f.label('ops.state.down')}`),
+    ).toBeDefined();
+    expect(screen.queryByRole('textbox', { name: f.label('details') })).toBeNull();
     if (errorRate === null)
       expect(screen.getByText(new RegExp(f.label('noSamples')))).toBeDefined();
     else expect(screen.getByText(/12.5%/)).toBeDefined();

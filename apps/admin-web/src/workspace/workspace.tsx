@@ -11,6 +11,9 @@ import {
   Palette,
   PhoneCall,
   Activity,
+  Bot,
+  FileCheck2,
+  MonitorSmartphone,
   LogOut,
   PanelLeft,
   Layers3,
@@ -33,6 +36,9 @@ import './workspace.css';
 const AiSettings = lazy(() => import('./ai-page.js'));
 const Analytics = lazy(() => import('./analytics-page.js'));
 const Trust = lazy(() => import('./trust-page.js'));
+const ServiceClients = lazy(() => import('./clients-page.js'));
+const Compliance = lazy(() => import('./compliance-page.js'));
+const MySessions = lazy(() => import('./sessions-page.js'));
 const Tenants = lazy(() =>
   import('./tenant-pages.js').then((module) => ({ default: module.Tenants })),
 );
@@ -80,14 +86,26 @@ const pages = [
   { id: 'connectors', subject: 'Connector', action: 'manage', icon: Plug, view: Connectors },
   { id: 'secrets', subject: 'Secret', action: 'manage', icon: KeyRound, view: Secrets },
   { id: 'ai', subject: 'Tenant', action: 'manage', icon: Activity, view: AiSettings },
+  { id: 'serviceClients', subject: 'Tenant', action: 'manage', icon: Bot, view: ServiceClients },
   { id: 'audit', subject: 'Audit', action: 'read', icon: ScrollText, view: Audit },
   { id: 'trust', subject: 'Audit', action: 'read', icon: ShieldCheck, view: Trust },
+  { id: 'compliance', subject: 'Audit', action: 'export', icon: FileCheck2, view: Compliance },
   { id: 'security', subject: 'Tenant', action: 'manage', icon: LockKeyhole, view: Security },
   { id: 'data', subject: 'Tenant', action: 'manage', icon: Database, view: DataManagement },
   { id: 'branding', subject: 'Tenant', action: 'manage', icon: Palette, view: Branding },
   { id: 'simulator', subject: 'Connector', action: 'manage', icon: PhoneCall, view: Simulator },
   { id: 'systemHealth', subject: 'Connector', action: 'read', icon: Activity, view: Health },
+  {
+    id: 'mySessions',
+    subject: 'Report',
+    action: 'read',
+    icon: MonitorSmartphone,
+    view: MySessions,
+    always: true,
+  },
 ] as const;
+/** Ids of every registered page; the catalogs must carry a label and an intro for each. */
+export const adminPageIds: readonly string[] = pages.map((page) => page.id);
 export class WorkspaceBoundary extends Component<
   { children: ReactNode; message: string },
   { failed: boolean }
@@ -183,7 +201,7 @@ function Authenticated({ session }: { session: AuthSession }) {
       (page) =>
         (page.id !== 'tenants' ||
           (session.user.authMethod === 'sso' && grants.data?.roles.includes('super_admin'))) &&
-        canAccess(ability, page.action, page.subject),
+        ('always' in page || canAccess(ability, page.action, page.subject)),
     );
   const active = allowed.find((page) => page.id === route) ?? allowed[0],
     View = active?.view;

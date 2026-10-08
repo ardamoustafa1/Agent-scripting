@@ -239,10 +239,13 @@ export function SaveForm({
   children,
   onSave,
   disabled = false,
+  submitLabel,
 }: {
   children: ReactNode;
   onSave: () => Promise<unknown>;
   disabled?: boolean;
+  /** Button text when "Save" is wrong (for example "Create"). */
+  submitLabel?: string;
 }) {
   const l = useLabels(),
     [busy, setBusy] = useState(false),
@@ -271,7 +274,7 @@ export function SaveForm({
       {children}
       <div>
         <Button type="submit" loading={busy} disabled={disabled}>
-          {l('save')}
+          {submitLabel ?? l('save')}
         </Button>
       </div>
       <Feedback error={error} success={saved} />

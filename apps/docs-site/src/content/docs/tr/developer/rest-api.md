@@ -5313,7 +5313,9 @@ Locally redacted, quota-reserved AI suggestion; SSO and instance permission requ
                 "translate",
                 "reply",
                 "objection",
-                "summary"
+                "summary",
+                "navigate",
+                "notices"
               ]
             },
             "locale": {
@@ -5403,7 +5405,9 @@ Locally redacted, quota-reserved AI suggestion; SSO and instance permission requ
                   "translate",
                   "reply",
                   "objection",
-                  "summary"
+                  "summary",
+                  "navigate",
+                  "notices"
                 ]
               },
               "requiresHumanApproval": {
@@ -24519,6 +24523,269 @@ Requires: update:Script
 }
 ```
 
+## GET /v1/scripts/{id}/branches
+
+List the branches of a script (each has one working version)
+
+Requires: read:Script
+
+```json
+{
+  "operationId": "Branches.list",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Branches",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScriptBranch"
+            }
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## POST /v1/scripts/{id}/branches
+
+Create a branch as a copy of a mainline version
+
+Requires: update:Script
+
+```json
+{
+  "operationId": "Branches.create",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/CreateBranch"
+        }
+      }
+    }
+  },
+  "responses": {
+    "201": {
+      "description": "The branch",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/ScriptBranch"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## POST /v1/scripts/{id}/branches/{name}/merge
+
+Merge the branch into a new mainline draft; every conflict needs an explicit choice, nothing is auto-resolved
+
+Requires: update:Script
+
+```json
+{
+  "operationId": "Branches.merge",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "name",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      }
+    },
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/BranchMerge"
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "The new mainline draft",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/CreatedScriptVersion"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## GET /v1/scripts/{id}/branches/{name}/merge-preview
+
+What merging the branch into the current mainline would do; stores nothing
+
+Requires: read:Script
+
+```json
+{
+  "operationId": "Branches.preview",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "name",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      }
+    },
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Merge preview",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/BranchMergePreview"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## POST /v1/scripts/{id}/merge-preview
 
 Three-way structural merge preview of three versions (base, ours, theirs); stores nothing, conflicts are reported, never hidden
@@ -26576,6 +26843,311 @@ Requires: update:Script
 }
 ```
 
+## POST /v1/scripts/{id}/versions/{number}/suggestions
+
+Propose a change to a draft as RFC 6902 operations (suggestion mode)
+
+Requires: read:Script
+
+```json
+{
+  "operationId": "Team.suggest",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "number",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 9007199254740991
+      }
+    },
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/SuggestionInput"
+        }
+      }
+    }
+  },
+  "responses": {
+    "201": {
+      "description": "Suggestion",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/Suggestion"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## GET /v1/scripts/{id}/versions/{number}/suggestions
+
+List suggestions of a version; open ones that no longer apply are stale
+
+Requires: read:Script
+
+```json
+{
+  "operationId": "Team.listSuggestions",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "number",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 9007199254740991
+      }
+    },
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Suggestions",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Suggestion"
+            }
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## POST /v1/scripts/{id}/versions/{number}/suggestions/{suggestion}/accept
+
+Apply a suggestion to the draft; stale suggestions are refused
+
+Requires: update:Script
+
+```json
+{
+  "operationId": "Team.acceptSuggestion",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "suggestion",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    },
+    {
+      "name": "number",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 9007199254740991
+      }
+    },
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Accepted suggestion",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/Suggestion"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## POST /v1/scripts/{id}/versions/{number}/suggestions/{suggestion}/reject
+
+Reject a suggestion with an optional reason
+
+Requires: update:Script
+
+```json
+{
+  "operationId": "Team.rejectSuggestion",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "suggestion",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    },
+    {
+      "name": "number",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 9007199254740991
+      }
+    },
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/SuggestionDecision"
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Rejected suggestion",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/Suggestion"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## GET /v1/scripts/{id}/versions/{number}/team-members
 
 List up to 100 active tenant members who can read the script
@@ -27453,6 +28025,18 @@ Requires: read:Session
     },
     {
       "name": "userId",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      },
+      "description": "UUIDv7 identifier"
+    },
+    {
+      "name": "scriptVersionId",
       "in": "query",
       "required": false,
       "schema": {
@@ -29662,6 +30246,61 @@ Requires: update:Session
 }
 ```
 
+## GET /v1/sessions/{id}/replay
+
+Metadata-only path replay of a session over its pinned script version (audited)
+
+Requires: read:Session
+
+```json
+{
+  "operationId": "Runtime.replay",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "The session path",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/SessionReplay"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## POST /v1/sessions/{id}/secure-field
 
 Accept a provider-verified token receipt for a PCI field
@@ -31241,6 +31880,18 @@ Requires: read:Session
     },
     {
       "name": "userId",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      },
+      "description": "UUIDv7 identifier"
+    },
+    {
+      "name": "scriptVersionId",
       "in": "query",
       "required": false,
       "schema": {
@@ -34693,7 +35344,8 @@ Requires: update:User
         "type": "string",
         "enum": [
           "review",
-          "mention"
+          "mention",
+          "suggestion"
         ]
       },
       "createdAt": {
@@ -35041,6 +35693,114 @@ Requires: update:User
         "additionalProperties": false
       }
     ]
+  },
+  "BranchMerge": {
+    "type": "object",
+    "properties": {
+      "resolutions": {
+        "default": {},
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "additionalProperties": {
+          "type": "string",
+          "enum": [
+            "ours",
+            "theirs"
+          ]
+        }
+      }
+    },
+    "additionalProperties": false
+  },
+  "BranchMergePreview": {
+    "type": "object",
+    "properties": {
+      "branch": {
+        "type": "string"
+      },
+      "baseNumber": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "mainlineNumber": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "branchNumber": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "conflicts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "both-changed",
+                "deleted-vs-changed",
+                "duplicate-id"
+              ]
+            },
+            "base": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "ours": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "theirs": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "path",
+            "kind",
+            "base",
+            "ours",
+            "theirs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "issues": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "canMerge": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "branch",
+      "baseNumber",
+      "mainlineNumber",
+      "branchNumber",
+      "conflicts",
+      "issues",
+      "canMerge"
+    ],
+    "additionalProperties": false
   },
   "BreakGlassAccount": {
     "type": "object",
@@ -35949,6 +36709,26 @@ Requires: update:User
     ],
     "additionalProperties": false
   },
+  "CreateBranch": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "fromNumber": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 9007199254740991
+      }
+    },
+    "required": [
+      "name",
+      "fromNumber"
+    ],
+    "additionalProperties": false
+  },
   "CreateCampaign": {
     "type": "object",
     "properties": {
@@ -36296,6 +37076,12 @@ Requires: update:User
       "createdBy": {
         "type": "string"
       },
+      "branch": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
       "migratedFrom": {
         "type": "array",
         "items": {
@@ -36367,6 +37153,7 @@ Requires: update:User
       "retiredAt",
       "reviewRound",
       "createdBy",
+      "branch",
       "migratedFrom",
       "warnings"
     ],
@@ -38841,6 +39628,37 @@ Requires: update:User
       }
     ]
   },
+  "Inlinefbc378f59d": {
+    "anyOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "number"
+      },
+      {
+        "type": "boolean"
+      },
+      {
+        "type": "null"
+      },
+      {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Inlinefbc378f59d"
+        }
+      },
+      {
+        "type": "object",
+        "propertyNames": {
+          "type": "string"
+        },
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Inlinefbc378f59d"
+        }
+      }
+    ]
+  },
   "InstantiateTemplate": {
     "type": "object",
     "properties": {
@@ -41244,6 +42062,57 @@ Requires: update:User
     ],
     "additionalProperties": false
   },
+  "ScriptBranch": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "versionNumber": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 9007199254740991
+      },
+      "parentNumber": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "state": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+      },
+      "createdBy": {
+        "type": "string"
+      },
+      "mergedInto": {
+        "anyOf": [
+          {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "name",
+      "versionNumber",
+      "parentNumber",
+      "state",
+      "createdAt",
+      "createdBy",
+      "mergedInto"
+    ],
+    "additionalProperties": false
+  },
   "ScriptDocument": {
     "type": "object",
     "properties": {
@@ -42346,6 +43215,12 @@ Requires: update:User
       "createdBy": {
         "type": "string"
       },
+      "branch": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
       "screens": {
         "type": "array",
         "items": {
@@ -42412,6 +43287,7 @@ Requires: update:User
       "retiredAt",
       "reviewRound",
       "createdBy",
+      "branch",
       "screens",
       "document"
     ],
@@ -42751,6 +43627,12 @@ Requires: update:User
       },
       "createdBy": {
         "type": "string"
+      },
+      "branch": {
+        "type": [
+          "string",
+          "null"
+        ]
       }
     },
     "required": [
@@ -42772,7 +43654,8 @@ Requires: update:User
       "approvedAt",
       "retiredAt",
       "reviewRound",
-      "createdBy"
+      "createdBy",
+      "branch"
     ],
     "additionalProperties": false
   },
@@ -43342,6 +44225,283 @@ Requires: update:User
     "required": [
       "data",
       "page"
+    ],
+    "additionalProperties": false
+  },
+  "SessionReplay": {
+    "type": "object",
+    "properties": {
+      "sessionId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      },
+      "scriptId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      },
+      "versionNumber": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "state": {
+        "type": "string",
+        "enum": [
+          "launching",
+          "paused",
+          "active",
+          "wrapup",
+          "completed",
+          "abandoned",
+          "expired"
+        ]
+      },
+      "startedAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+      },
+      "durationMs": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      },
+      "steps": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "seq": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "atMs": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "kind": {
+                  "type": "string",
+                  "const": "page"
+                },
+                "pageId": {
+                  "type": "string"
+                },
+                "pageName": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "seq",
+                "atMs",
+                "kind",
+                "pageId",
+                "pageName"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "seq": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "atMs": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "kind": {
+                  "type": "string",
+                  "const": "field"
+                },
+                "variable": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "seq",
+                "atMs",
+                "kind",
+                "variable",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "seq": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "atMs": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "kind": {
+                  "type": "string",
+                  "const": "state"
+                },
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "seq",
+                "atMs",
+                "kind",
+                "from",
+                "to"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "seq": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "atMs": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "kind": {
+                  "type": "string",
+                  "const": "timer"
+                },
+                "timerId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "seq",
+                "atMs",
+                "kind",
+                "timerId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "seq": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "atMs": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "kind": {
+                  "type": "string",
+                  "const": "other"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "seq",
+                "atMs",
+                "kind",
+                "type"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "pages": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "pageId": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "visits": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "dwellMs": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "pageId",
+            "name",
+            "visits",
+            "dwellMs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "unreached": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "truncated": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "sessionId",
+      "scriptId",
+      "versionNumber",
+      "state",
+      "startedAt",
+      "durationMs",
+      "steps",
+      "pages",
+      "unreached",
+      "truncated"
     ],
     "additionalProperties": false
   },
@@ -43928,6 +45088,203 @@ Requires: update:User
       }
     },
     "additionalProperties": false
+  },
+  "Suggestion": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
+      "scriptId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
+      "versionNumber": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 9007199254740991
+      },
+      "title": {
+        "type": "string"
+      },
+      "note": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "operations": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SuggestionOperation"
+        }
+      },
+      "state": {
+        "type": "string",
+        "enum": [
+          "open",
+          "accepted",
+          "rejected",
+          "stale"
+        ]
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+      },
+      "createdBy": {
+        "type": "string"
+      },
+      "decidedAt": {
+        "anyOf": [
+          {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "decidedBy": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "decisionReason": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "scriptId",
+      "versionNumber",
+      "title",
+      "note",
+      "operations",
+      "state",
+      "createdAt",
+      "createdBy",
+      "decidedAt",
+      "decidedBy",
+      "decisionReason"
+    ],
+    "additionalProperties": false
+  },
+  "SuggestionDecision": {
+    "type": "object",
+    "properties": {
+      "reason": {
+        "type": "string",
+        "maxLength": 500
+      }
+    },
+    "additionalProperties": false
+  },
+  "SuggestionInput": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 120
+      },
+      "note": {
+        "type": "string",
+        "maxLength": 1000
+      },
+      "operations": {
+        "minItems": 1,
+        "maxItems": 200,
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SuggestionOperation"
+        }
+      }
+    },
+    "required": [
+      "title",
+      "operations"
+    ],
+    "additionalProperties": false
+  },
+  "SuggestionOperation": {
+    "oneOf": [
+      {
+        "type": "object",
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "add"
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 512,
+            "pattern": "^(\\/[^/]*)+$"
+          },
+          "value": {
+            "$ref": "#/components/schemas/Inline113ae44d83"
+          }
+        },
+        "required": [
+          "op",
+          "path",
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "replace"
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 512,
+            "pattern": "^(\\/[^/]*)+$"
+          },
+          "value": {
+            "$ref": "#/components/schemas/Inlinefbc378f59d"
+          }
+        },
+        "required": [
+          "op",
+          "path",
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "remove"
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 512,
+            "pattern": "^(\\/[^/]*)+$"
+          }
+        },
+        "required": [
+          "op",
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    ]
   },
   "Tenant": {
     "type": "object",

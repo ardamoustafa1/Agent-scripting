@@ -13,7 +13,6 @@ import { SimulatorSection } from '../simulator/simulator-section.js';
 import { useCan } from './access.js';
 import {
   RowSchema,
-  RecordSchema,
   useResource,
   useWrite,
   record,
@@ -25,6 +24,7 @@ import {
   type Row,
 } from './api.js';
 import { DeadLettersSection } from './dead-letters-section.js';
+import { ChannelList, EventFlow, ReadinessChecks } from './health-extras.js';
 import {
   Card,
   Field,
@@ -65,6 +65,7 @@ export function Connectors() {
         </Button>
       </Card>
       {selected ? <ConnectorDetail key={selected.id} id={selected.id} /> : <ConnectorEditor />}
+      <ChannelList />
       {can('update', 'User') ? <UserMapping /> : null}
       {can('read', 'Campaign') && can('update', 'Campaign') ? <QueueMapping /> : null}
       {can('manage', 'Connector') && can('update', 'Campaign') ? (
@@ -552,13 +553,11 @@ export function Simulator() {
 }
 export function Health() {
   const l = useLabels(),
-    can = useCan(),
-    ready = useResource('/health/ready', RecordSchema, true);
+    can = useCan();
   return (
     <>
       <Card title={l('systemHealth')}>
-        <Feedback error={ready.error} />
-        {ready.data ? <JsonView value={ready.data} /> : null}
+        <ReadinessChecks />
         <p>{l('realMetrics')}</p>
         <ResourceList
           path="/v1/connectors"
@@ -568,6 +567,7 @@ export function Health() {
         />
       </Card>
       {can('read', 'Audit') ? <OperationalMetrics /> : null}
+      {can('read', 'Report') ? <EventFlow /> : null}
       <DeadLettersSection />
       {can('manage', 'Outbox') ? <Outbox /> : null}
     </>

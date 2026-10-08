@@ -1,6 +1,7 @@
 import { Readable } from 'node:stream';
 
 import { Controller, Get, HttpCode, Inject, Optional, Post, Res } from '@nestjs/common';
+import { z } from 'zod';
 
 import { ZBody, ZQuery } from '../../common/validation/zod.js';
 import { TenantDb } from '../../infra/database/tenant-db.js';
@@ -30,7 +31,6 @@ import { MASK_VALUE } from './core/masking.js';
 
 import type { CheckpointVerifier } from './core/checkpoint-signer.js';
 import type { FastifyReply } from 'fastify';
-import type { z } from 'zod';
 
 @ApiTag('audit')
 @Controller('v1')
@@ -123,7 +123,7 @@ export class AuditController {
   }
 
   @ApiOperation({ summary: 'Signed checkpoints (latest 100)' })
-  @ApiResponse(200, 'Checkpoints', CheckpointSchema)
+  @ApiResponse(200, 'Checkpoints', z.array(CheckpointSchema))
   @Can('read', 'Audit')
   @Get('audit-checkpoints')
   async checkpoints() {

@@ -16,6 +16,10 @@ export const ADMIN_ENUMS = {
     'pending_mfa',
   ],
   protocol: ['oidc', 'saml', 'local'],
+  clientAuth: ['client_secret_basic', 'client_secret_post', 'tls_client_auth'],
+  channelType: ['voice', 'chat', 'email', 'sms', 'whatsapp', 'social', 'video', 'callback'],
+  spUse: ['signing', 'encryption'],
+  spState: ['active', 'next', 'retired'],
   adapterType: [
     'generic',
     'genesys_cloud',

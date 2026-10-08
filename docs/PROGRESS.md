@@ -1751,3 +1751,8 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - **Değişiklik:** düzenleyici rotasında kenar çubuğu ziyaret boyunca daraltılmış açılır (kayıtlı tercihe dokunulmaz, "Genişlet" ile açılır); sol panel 15 → 13 rem, sağ panel 19 → 17 rem, akış özellikler paneli 20 → 17 rem; akış araç satırı sarılmak yerine yatay kayar.
 - **Sonuç:** 1440 px'te tuval **%66,6**, 1280 px'te %62, akış tuvali 1280×720'de 292 px (1440×900'de 420 → 487 px). Kalıcı koruma: `e2e/editor-canvas-share.spec.ts` (≥%65 @1440, rayın ziyaret başına daralması, akış tuvali ≥280 px ve tek satırlık araç çubuğu).
 - Hâlâ açık: 720 px yükseklikte sayfa 6 px dikey taşıyor (çalışma alanı min 40 rem); Screen modunda tuval 323 px yüksekliğinde. Linux görsel baseline'ları yeniden üretilmeli.
+
+## 2026-10-08 — Yönetim ekranları: arka ucu olup ekranı olmayan her şey (UI tamamlama, aşama 1)
+- admin-web: API istemcileri (oluştur/düzenle/gizli anahtar döndür/sil, izin listesi + hızlı seçim), SAML SP sertifikaları (ekle/terfi/kaldır, süre uyarısı, PEM indirme), KVKK işleme kaydı (denetimli üretim, filtre, CSV/JSON), denetim kontrol noktaları + JWKS, oturumlarım (tek/diğerlerini sonlandır), hazırlık kontrolleri, olay akışı, kanal listesi.
+- Her sayfa için başlık/giriş metni sözleşme testi, davranış testleri, 3 tema × 2 genişlikte axe e2e; NATS tüketici düzeltmesi (`event-consumers.service`) dahil.
+- Takip: tasarımcı (A/B dağılımı + kanary, atama çakışmaları), ajan (kayıt duraklat/sürdür, aktarım) ekranları; Linux görsel temel çizgileri (`visual-baselines`) yeniden üretilecek.

@@ -23,6 +23,7 @@ import {
   csv,
   type Row,
 } from './api.js';
+import { SpCredentials } from './sp-credentials.js';
 import {
   Card,
   Field,
@@ -314,6 +315,7 @@ function IdpEditor({ row }: { row: Row }) {
       />
       {probe ? <JsonView value={probe} /> : null}
       <JsonView value={row['endpoints']} />
+      {row['protocol'] === 'saml' ? <SpCredentials row={row} /> : null}
       <h3>{l('scimTokens')}</h3>
       <Field label={l('expiresInDays')} type="number" value={expiry} onChange={setExpiry} />
       <Action

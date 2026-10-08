@@ -28,6 +28,21 @@ function isEventHandler(value: unknown): value is EventHandler {
   );
 }
 
+/** JetStream answers `consumer already exists` (error code 10148) when `add` meets another config. */
+export function isConsumerExists(error: unknown): boolean {
+  if (typeof error !== 'object' || error === null) return false;
+  const candidate = error as {
+    message?: unknown;
+    code?: unknown;
+    apiError?: () => { err_code?: number };
+  };
+  const code = typeof candidate.apiError === 'function' ? candidate.apiError().err_code : undefined;
+  return (
+    code === 10148 ||
+    (typeof candidate.message === 'string' && /consumer already exists/i.test(candidate.message))
+  );
+}
+
 export function toDelivery(msg: JsMsg): Delivery {
   const headers: Record<string, string> = {};
   if (msg.headers !== undefined)
@@ -95,25 +110,46 @@ export class EventConsumersService implements OnApplicationBootstrap, OnApplicat
     if (!this.env.EVENT_CONSUMERS_ENABLED) return;
     for (const handler of this.handlers()) {
       if (handler.enabled === false) continue;
-      void this.start(handler).catch(() => {
-        this.#logger.warn(`Consumer ${handler.name} could not start; retrying in 5s`);
-        if (!this.#stopped) setTimeout(() => void this.start(handler), 5_000).unref();
-      });
+      this.run(handler);
     }
+  }
+
+  /**
+   * Starts a handler and, when it ends or cannot start, retries every 5 s until shutdown. A failed
+   * attempt must never escape as an unhandled rejection: that would take the whole API down.
+   */
+  private run(handler: EventHandler): void {
+    void this.start(handler).catch((error: unknown) => {
+      this.#logger.warn(
+        `Consumer ${handler.name} could not start (${error instanceof Error ? error.message : 'unknown error'}); retrying in 5s`,
+      );
+      if (!this.#stopped)
+        setTimeout(() => {
+          this.run(handler);
+        }, 5_000).unref();
+    });
   }
 
   /** Ensures the durable consumer and processes messages until shutdown. */
   async start(handler: EventHandler): Promise<void> {
     await this.nats.ensureStreams();
     const jsm = await this.nats.manager();
-    await jsm.consumers.add(handler.stream, {
+    const config = {
       durable_name: handler.name,
       ack_policy: AckPolicy.Explicit,
       deliver_policy: DeliverPolicy.All,
       filter_subjects: [...handler.filterSubjects],
       ack_wait: 30_000_000_000,
       max_deliver: (handler.maxDeliver ?? 5) + 1,
-    });
+    };
+    try {
+      await jsm.consumers.add(handler.stream, config);
+    } catch (error) {
+      // A durable consumer left behind by an earlier version with another configuration: bring it
+      // up to date instead of failing forever.
+      if (!isConsumerExists(error)) throw error;
+      await jsm.consumers.update(handler.stream, handler.name, config);
+    }
     const js = await this.nats.jetstream();
     const consumer = await js.consumers.get(handler.stream, handler.name);
     const messages = await consumer.consume({ max_messages: 50 });

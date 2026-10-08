@@ -5,6 +5,7 @@ import { TrustCenterSchema, type TrustCenter } from '@verbis/shared-types';
 import { Alert, SelectField, StatusBadge, type Status } from '@verbis/ui';
 
 import { useResource } from './api.js';
+import { CheckpointsSection } from './checkpoints-section.js';
 
 const WINDOWS = ['7', '30', '90'] as const;
 const STATUS: Record<TrustCenter['chain']['status'], Status> = {
@@ -121,6 +122,7 @@ export default function TrustCenterPage() {
           />
         </dl>
       </article>
+      <CheckpointsSection />
       <p>
         {t('trust.generated')} <time dateTime={data.generatedAt}>{time(data.generatedAt)}</time>
       </p>

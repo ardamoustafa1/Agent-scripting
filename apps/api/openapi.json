@@ -6576,7 +6576,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuditCheckpoint"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditCheckpoint"
+                  }
                 }
               }
             }
