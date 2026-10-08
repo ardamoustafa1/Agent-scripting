@@ -1756,3 +1756,11 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - admin-web: API istemcileri (oluştur/düzenle/gizli anahtar döndür/sil, izin listesi + hızlı seçim), SAML SP sertifikaları (ekle/terfi/kaldır, süre uyarısı, PEM indirme), KVKK işleme kaydı (denetimli üretim, filtre, CSV/JSON), denetim kontrol noktaları + JWKS, oturumlarım (tek/diğerlerini sonlandır), hazırlık kontrolleri, olay akışı, kanal listesi.
 - Her sayfa için başlık/giriş metni sözleşme testi, davranış testleri, 3 tema × 2 genişlikte axe e2e; NATS tüketici düzeltmesi (`event-consumers.service`) dahil.
 - Takip: tasarımcı (A/B dağılımı + kanary, atama çakışmaları), ajan (kayıt duraklat/sürdür, aktarım) ekranları; Linux görsel temel çizgileri (`visual-baselines`) yeniden üretilecek.
+
+## 2026-10-08 — Tasarımcı ve ajan ekranları: deney kanıtı, çakışmalar, kayıt kontrolü (UI tamamlama, aşama 2)
+- designer-web (atamalar): A/B atama düzenlenirken "Deney nasıl gidiyor?" bölümü (`/v1/assignments/{id}/allocation` kol olasılıkları + `/rollout` kanarya kararı, gerekçe, ihlal edilen koruma ölçütleri, önerilen dağılım); kampanya seçilince "Çakışan atamalar" (`/v1/campaigns/{id}/assignment-conflicts`: şiddet, öncelik, hangi kuralın kazandığı, örtüşen koşullar).
+- API sözleşme düzeltmesi: `assignment-conflicts` yanıtı OpenAPI'de tek nesne görünüyordu, gerçekte dizi; `z.array(ConflictSchema)` yapıldı, openapi/istemci tipleri/docs yeniden üretildi.
+- agent-web (sesli, aktif, yazılabilir oturum): başlıkta "Kaydı duraklat/sürdür" (`POST /v1/sessions/{id}/recording`); platform onayı eşzamansız olduğundan arayüz yalnızca "istek gönderildi" der.
+- Testler: davranış (designer 4, agent-web 3), axe + taşma e2e (designer 3 tema × 2 genişlik, agent 2 genişlik), i18n tr+en.
+- Karar bekliyor: ajan "bağlam aktarımı" (`POST /v1/sessions/{id}/transfer`) ekranı yapılmadı — alıcı oturumun id'si ve sequence'ı bir ajan tarafından keşfedilemiyor (liste yalnız gözetmen yetkisiyle); ajan için güvenli bir "aktarım hedefi" okuma ucu (yeni API + denetim) gerekir.
+- Takip: Linux görsel temel çizgileri (`visual-baselines`) yeniden üretilecek; "oturumlarım" yalnız yönetim kabuğunda.

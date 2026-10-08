@@ -6642,7 +6642,10 @@ Requires: read:Audit
       "content": {
         "application/json": {
           "schema": {
-            "$ref": "#/components/schemas/AuditCheckpoint"
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditCheckpoint"
+            }
           }
         }
       }
@@ -8240,7 +8243,10 @@ Requires: read:Campaign
       "content": {
         "application/json": {
           "schema": {
-            "$ref": "#/components/schemas/AssignmentConflict"
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssignmentConflict"
+            }
           }
         }
       }

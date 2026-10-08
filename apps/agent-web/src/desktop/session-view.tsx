@@ -1,5 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import {
+  Mic,
+  MicOff,
   Phone,
   MessageSquare,
   Mail,
@@ -379,6 +381,24 @@ function Interaction({
         <Badge tone={s.online ? 'success' : 'warning'}>
           {t(`agent.desktop.states.${s.view.state}`)}
         </Badge>
+        {c.desktop.interaction.channel === 'voice' && s.view.state === 'active' && !s.readOnly && (
+          <Button
+            variant="secondary"
+            disabled={busy || !s.online}
+            onClick={() => void run(() => c.setRecording(s.recordingPaused !== true))}
+          >
+            {s.recordingPaused === true ? (
+              <Mic size={16} aria-hidden />
+            ) : (
+              <MicOff size={16} aria-hidden />
+            )}
+            {t(
+              s.recordingPaused === true
+                ? 'agent.desktop.recording.resume'
+                : 'agent.desktop.recording.pause',
+            )}
+          </Button>
+        )}
         <Button
           variant="ghost"
           aria-label={t('agent.desktop.sidebar')}
@@ -394,6 +414,18 @@ function Interaction({
       </p>
       <div className="ag-announcements" aria-live="polite">
         {!s.online && <Alert tone="warning" title={t('agent.desktop.offline')} />}{' '}
+        {s.recordingPaused !== null && (
+          <Alert
+            tone={s.recordingPaused ? 'warning' : 'info'}
+            title={t(
+              s.recordingPaused
+                ? 'agent.desktop.recording.pausedTitle'
+                : 'agent.desktop.recording.resumedTitle',
+            )}
+          >
+            <p>{t('agent.desktop.recording.hint')}</p>
+          </Alert>
+        )}
         {s.draftSaving && <p role="status">{t('agent.desktop.savingDraft')}</p>}
         {s.pending > 0 && <p role="status">{t('agent.desktop.pending', { count: s.pending })}</p>}
         {s.readOnly && !complete && (

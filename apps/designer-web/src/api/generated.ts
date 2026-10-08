@@ -189,6 +189,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/auth/session/status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Session probe that answers 200 {authenticated:false} when signed out (no 401) */
+    get: operations['Auth.sessionStatus'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/health': {
     parameters: {
       query?: never;
@@ -1139,6 +1156,46 @@ export interface paths {
     patch: operations['Assignments.update'];
     trace?: never;
   };
+  '/v1/assignments/{id}/allocation': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Bandit (Thompson sampling) traffic advice for an A/B assignment: proposed weights, never applied; guardrail-breached arms get none
+     * @description Requires: read:Assignment
+     */
+    get: operations['Assignments.allocation'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/assignments/{id}/rollout': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Canary rollout verdict: hold, advance (advisory) or rollback, from always-valid analytics. Apply a proposal with PATCH variants.
+     * @description Requires: read:Assignment
+     */
+    get: operations['Assignments.rollout'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/assignments/batch': {
     parameters: {
       query?: never;
@@ -1548,6 +1605,26 @@ export interface paths {
      * @description Requires: read:Channel
      */
     get: operations['Connectors.listChannels'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/compliance/processing-record': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Record of processing derived from the published scripts (classified variables, origins, destinations); the export is audited
+     * @description Requires: export:Audit
+     */
+    get: operations['Compliance.processingRecord'];
     put?: never;
     post?: never;
     delete?: never;
@@ -2751,6 +2828,90 @@ export interface paths {
     patch: operations['Scripts.update'];
     trace?: never;
   };
+  '/v1/scripts/{id}/branches': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * List the branches of a script (each has one working version)
+     * @description Requires: read:Script
+     */
+    get: operations['Branches.list'];
+    put?: never;
+    /**
+     * Create a branch as a copy of a mainline version
+     * @description Requires: update:Script
+     */
+    post: operations['Branches.create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/scripts/{id}/branches/{name}/merge': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Merge the branch into a new mainline draft; every conflict needs an explicit choice, nothing is auto-resolved
+     * @description Requires: update:Script
+     */
+    post: operations['Branches.merge'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/scripts/{id}/branches/{name}/merge-preview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * What merging the branch into the current mainline would do; stores nothing
+     * @description Requires: read:Script
+     */
+    get: operations['Branches.preview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/scripts/{id}/merge-preview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Three-way structural merge preview of three versions (base, ours, theirs); stores nothing, conflicts are reported, never hidden
+     * @description Requires: read:Script
+     */
+    post: operations['Scripts.mergePreview'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/scripts/{id}/rollback': {
     parameters: {
       query?: never;
@@ -3185,6 +3346,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/scripts/{id}/versions/{number}/suggestions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * List suggestions of a version; open ones that no longer apply are stale
+     * @description Requires: read:Script
+     */
+    get: operations['Team.listSuggestions'];
+    put?: never;
+    /**
+     * Propose a change to a draft as RFC 6902 operations (suggestion mode)
+     * @description Requires: read:Script
+     */
+    post: operations['Team.suggest'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/scripts/{id}/versions/{number}/suggestions/{suggestion}/accept': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Apply a suggestion to the draft; stale suggestions are refused
+     * @description Requires: update:Script
+     */
+    post: operations['Team.acceptSuggestion'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/scripts/{id}/versions/{number}/suggestions/{suggestion}/reject': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Reject a suggestion with an optional reason
+     * @description Requires: update:Script
+     */
+    post: operations['Team.rejectSuggestion'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/scripts/{id}/versions/{number}/team-members': {
     parameters: {
       query?: never;
@@ -3518,6 +3743,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/sessions/{id}/desktop/feedback': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Owner flags a script page with a fixed reason; designers see it as a comment
+     * @description Requires: read:Session
+     */
+    post: operations['AgentDesktop.feedback'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/sessions/{id}/desktop/telemetry': {
     parameters: {
       query?: never;
@@ -3612,6 +3857,26 @@ export interface paths {
      * @description Requires: update:Session
      */
     post: operations['RuntimeCommands.release'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/sessions/{id}/replay': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Metadata-only path replay of a session over its pinned script version (audited)
+     * @description Requires: read:Session
+     */
+    get: operations['Runtime.replay'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -4071,6 +4336,26 @@ export interface paths {
     patch: operations['Tenancy.updateSettings'];
     trace?: never;
   };
+  '/v1/trust-center': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Trust center: audit-chain verification, launch security counters, sensitive-access counts and privacy request backlog (aggregates only)
+     * @description Requires: read:Audit
+     */
+    get: operations['TrustCenter.summary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/users': {
     parameters: {
       query?: never;
@@ -4252,6 +4537,8 @@ export interface components {
           type: 'submitOutcome';
           outcome: string;
           notes?: components['schemas']['Value'];
+          /** @enum {string} */
+          completion?: 'complete' | 'early';
         }
       | {
           /** @constant */
@@ -4332,6 +4619,31 @@ export interface components {
             [key: string]: components['schemas']['Value'];
           };
         };
+    AgentFeedbackInput: {
+      pageId: string;
+      reason: components['schemas']['AgentFeedbackReason'];
+    };
+    /** @enum {string} */
+    AgentFeedbackReason: 'confusing' | 'incorrect' | 'missingStep' | 'tooLong';
+    AgentFeedbackResult: {
+      /** @constant */
+      recorded: true;
+      /** Format: uuid */
+      threadId: string;
+    };
+    AllocationReport: {
+      /** Format: uuid */
+      assignmentId: string;
+      allocation: {
+        /** @enum {string} */
+        reason: 'ok' | 'insufficient-sessions' | 'no-eligible-arm';
+        arms: {
+          key: string;
+          probabilityBest: number;
+          weight: number;
+        }[];
+      };
+    };
     AnalyticsDashboard: {
       /** Format: date-time */
       generatedAt: string;
@@ -4407,6 +4719,46 @@ export interface components {
         significant: boolean;
         /** @enum {string} */
         reason: 'sufficient' | 'insufficient';
+        anytimePValue?: number | null;
+        anytimeSignificant?: boolean;
+      }[];
+      versions?: {
+        versionId: string;
+        scriptId: string;
+        /** Format: date-time */
+        firstSeenAt: string;
+        /** Format: date-time */
+        lastSeenAt: string;
+        sessions: number;
+        completed: number;
+        completionRate: number;
+        meanDurationMs: number | null;
+        vsPrevious: {
+          versionId: string;
+          difference: number;
+          durationDeltaMs: number | null;
+          anytimePValue: number | null;
+          significant: boolean;
+        } | null;
+      }[];
+      insights?: {
+        /** @enum {string} */
+        kind: 'dropOff' | 'slowPage' | 'errorNode' | 'slowSource' | 'failingSource';
+        target: string;
+        value: number;
+        baseline: number | null;
+        samples: number;
+        impact: number;
+      }[];
+      guardrails?: {
+        experimentId: string;
+        a: string;
+        b: string;
+        /** @enum {string} */
+        metric: 'abandonment' | 'compliance';
+        difference: number;
+        pValue: number | null;
+        worse: string | null;
       }[];
       active: {
         sessionId: string;
@@ -4664,7 +5016,7 @@ export interface components {
       scriptId: string;
       number: number;
       /** @enum {string} */
-      kind: 'review' | 'mention';
+      kind: 'review' | 'mention' | 'suggestion';
       createdAt: string;
       /** Format: uuid */
       threadId?: string;
@@ -4695,6 +5047,39 @@ export interface components {
       };
       csrfToken: string;
     };
+    AuthSessionStatus:
+      | {
+          /** @constant */
+          authenticated: false;
+        }
+      | {
+          user: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            tenantId: string;
+            /** @enum {string} */
+            authMethod: 'sso' | 'break_glass';
+          };
+          session: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: 'sso' | 'break_glass';
+            /** @enum {string} */
+            protocol: 'oidc' | 'saml' | 'local';
+            idpId: string | null;
+            app: string;
+            createdAt: string;
+            lastSeenAt: string;
+            expiresAt: string;
+            ip: string;
+            userAgent: string;
+          };
+          csrfToken: string;
+          /** @constant */
+          authenticated: true;
+        };
     BatchAssignments: {
       creates?: components['schemas']['CreateAssignment'][];
       updates?: {
@@ -4717,6 +5102,28 @@ export interface components {
           prop: string;
           variable: string;
         };
+    BranchMerge: {
+      /** @default {} */
+      resolutions: {
+        [key: string]: 'ours' | 'theirs';
+      };
+    };
+    BranchMergePreview: {
+      branch: string;
+      baseNumber: number;
+      mainlineNumber: number;
+      branchNumber: number;
+      conflicts: {
+        path: string;
+        /** @enum {string} */
+        kind: 'both-changed' | 'deleted-vs-changed' | 'duplicate-id';
+        base: string | null;
+        ours: string | null;
+        theirs: string | null;
+      }[];
+      issues: string[];
+      canMerge: boolean;
+    };
     BreakGlassAccount: {
       /** Format: uuid */
       userId: string;
@@ -4958,6 +5365,10 @@ export interface components {
       expression?: components['schemas']['RoutingPredicate'] | null;
       variants?: components['schemas']['AbVariants'] | null;
     };
+    CreateBranch: {
+      name: string;
+      fromNumber: number;
+    };
     CreateCampaign: {
       name: string;
       code?: string;
@@ -5045,6 +5456,7 @@ export interface components {
       retiredAt: string | null;
       reviewRound: number;
       createdBy: string;
+      branch: string | null;
       migratedFrom: string[];
       warnings: {
         /** @enum {string} */
@@ -5585,6 +5997,8 @@ export interface components {
           /** @constant */
           type: 'end';
           outcome?: string;
+          /** @enum {string} */
+          completion?: 'complete' | 'early';
           disposition?: string;
         };
     FramePolicy: {
@@ -5695,6 +6109,7 @@ export interface components {
       };
     };
     Inline113ae44d83: DesignerJson;
+    Inlinefbc378f59d: DesignerJson;
     InstantiateTemplate: {
       name: string;
       description?: string;
@@ -5853,6 +6268,26 @@ export interface components {
       rules: unknown[][];
       separationOfDuties: boolean;
     };
+    MergePreview: {
+      base: number;
+      ours: number;
+      theirs: number;
+      conflicts: {
+        path: string;
+        /** @enum {string} */
+        kind: 'both-changed' | 'deleted-vs-changed' | 'duplicate-id';
+        base: unknown;
+        ours: unknown;
+        theirs: unknown;
+      }[];
+      issues: string[];
+      document: unknown | null;
+    };
+    MergePreviewRequest: {
+      base: number;
+      ours: number;
+      theirs: number;
+    };
     Node: {
       id: string;
       type: string;
@@ -5900,6 +6335,9 @@ export interface components {
         text: string;
         mentions: string[];
         createdAt: string;
+        feedback?: {
+          reason: components['schemas']['AgentFeedbackReason'];
+        };
       }[];
       version: number;
     };
@@ -6015,6 +6453,25 @@ export interface components {
         code?: string;
       }[];
     };
+    ProcessingRecord: {
+      /** Format: date-time */
+      generatedAt: string;
+      scripts: number;
+      unreadable: number;
+      truncated: boolean;
+      rows: {
+        scriptId: string;
+        scriptName: string;
+        versionNumber: number;
+        variable: string;
+        /** @enum {string} */
+        classification: 'pii' | 'pci';
+        origins: string;
+        destinations: string;
+        persisted: boolean;
+        attention: boolean;
+      }[];
+    };
     PublishSharedScreenVersion: {
       semver: string;
       changeNote: string;
@@ -6092,6 +6549,35 @@ export interface components {
       targetNumber: number;
       /** Format: uuid */
       expectedCurrentVersionId: string;
+    };
+    RolloutReport: {
+      /** Format: uuid */
+      assignmentId: string;
+      stableSessions: number;
+      canarySessions: number;
+      windowDays: number;
+      decision: {
+        /** @enum {string} */
+        action: 'none' | 'hold' | 'advance' | 'rollback';
+        /** @enum {string} */
+        reason:
+          | 'not-a-rollout'
+          | 'not-started'
+          | 'complete'
+          | 'guardrail-breached'
+          | 'completion-dropped'
+          | 'insufficient-sessions'
+          | 'no-harm-detected';
+        breached: string[];
+        from: number | null;
+        to: number | null;
+        proposal?: {
+          key: string;
+          weight: number;
+          /** Format: uuid */
+          pinnedVersionId?: string;
+        }[];
+      };
     };
     RotateSpCredential: {
       /** @enum {string} */
@@ -6253,6 +6739,16 @@ export interface components {
       status: 'draft' | 'active' | 'archived';
       tags: string[];
       currentVersionId: string | null;
+    };
+    ScriptBranch: {
+      name: string;
+      versionNumber: number;
+      parentNumber: number;
+      state: string;
+      /** Format: date-time */
+      createdAt: string;
+      createdBy: string;
+      mergedInto: number | null;
     };
     /**
      * Verbis script document
@@ -6517,6 +7013,7 @@ export interface components {
       retiredAt: string | null;
       reviewRound: number;
       createdBy: string;
+      branch: string | null;
       screens: {
         /** Format: uuid */
         sharedScreenId: string;
@@ -6609,6 +7106,7 @@ export interface components {
       retiredAt: string | null;
       reviewRound: number;
       createdBy: string;
+      branch: string | null;
     };
     SecretMetadata: {
       /**
@@ -6753,6 +7251,75 @@ export interface components {
         nextCursor: string | null;
         sort: string;
       };
+    };
+    SessionReplay: {
+      /**
+       * Format: uuid
+       * @description UUIDv7 identifier
+       */
+      sessionId: string;
+      /**
+       * Format: uuid
+       * @description UUIDv7 identifier
+       */
+      scriptId: string;
+      versionNumber: number;
+      /** @enum {string} */
+      state: 'launching' | 'paused' | 'active' | 'wrapup' | 'completed' | 'abandoned' | 'expired';
+      /** Format: date-time */
+      startedAt: string;
+      durationMs: number;
+      steps: (
+        | {
+            seq: number;
+            atMs: number;
+            /** @constant */
+            kind: 'page';
+            pageId: string;
+            pageName: string | null;
+          }
+        | {
+            seq: number;
+            atMs: number;
+            /** @constant */
+            kind: 'field';
+            variable: string;
+            value: string;
+          }
+        | {
+            seq: number;
+            atMs: number;
+            /** @constant */
+            kind: 'state';
+            from: string;
+            to: string;
+          }
+        | {
+            seq: number;
+            atMs: number;
+            /** @constant */
+            kind: 'timer';
+            timerId: string;
+          }
+        | {
+            seq: number;
+            atMs: number;
+            /** @constant */
+            kind: 'other';
+            type: string;
+          }
+      )[];
+      pages: {
+        pageId: string;
+        name: string;
+        visits: number;
+        dwellMs: number;
+      }[];
+      unreached: {
+        id: string;
+        name: string;
+      }[];
+      truncated: boolean;
     };
     SessionSettings: {
       idleTimeoutMinutes?: number;
@@ -6917,6 +7484,50 @@ export interface components {
       emphasis?: 'low' | 'normal' | 'high';
       scroll?: boolean;
     };
+    Suggestion: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      scriptId: string;
+      versionNumber: number;
+      title: string;
+      note: string | null;
+      operations: components['schemas']['SuggestionOperation'][];
+      /** @enum {string} */
+      state: 'open' | 'accepted' | 'rejected' | 'stale';
+      /** Format: date-time */
+      createdAt: string;
+      createdBy: string;
+      decidedAt: string | null;
+      decidedBy: string | null;
+      decisionReason: string | null;
+    };
+    SuggestionDecision: {
+      reason?: string;
+    };
+    SuggestionInput: {
+      title: string;
+      note?: string;
+      operations: components['schemas']['SuggestionOperation'][];
+    };
+    SuggestionOperation:
+      | {
+          /** @constant */
+          op: 'add';
+          path: string;
+          value: components['schemas']['Inline113ae44d83'];
+        }
+      | {
+          /** @constant */
+          op: 'replace';
+          path: string;
+          value: components['schemas']['Inlinefbc378f59d'];
+        }
+      | {
+          /** @constant */
+          op: 'remove';
+          path: string;
+        };
     Tenant: {
       /**
        * Format: uuid
@@ -6981,6 +7592,47 @@ export interface components {
       /** @default false */
       autoStart: boolean;
       onElapsed: components['schemas']['Action'][];
+    };
+    TrustCenter: {
+      /** Format: date-time */
+      generatedAt: string;
+      windowDays: number;
+      chain: {
+        /** @enum {string} */
+        status: 'healthy' | 'attention' | 'broken';
+        valid: boolean;
+        checked: number;
+        headSeq: string | null;
+        breaks: number;
+        truncated: boolean;
+        signaturesVerified: boolean;
+        checkpointsChecked: number;
+        latestCheckpoint: {
+          seq: string;
+          /** Format: date-time */
+          signedAt: string;
+        } | null;
+        checkpointAgeHours: number | null;
+      };
+      launch: {
+        issued: number;
+        redeemed: number;
+        denied: number;
+        anomalies: number;
+        urlParamsRejected: number;
+      };
+      sensitiveAccess: {
+        auditExports: number;
+        secretMetadataViews: number;
+        secretUsageReads: number;
+        userProfileViews: number;
+        privacyExports: number;
+      };
+      privacy: {
+        open: number;
+        processed: number;
+        oldestOpenAt: string | null;
+      };
     };
     UpdateAssignment: {
       priority?: number;
@@ -8157,6 +8809,42 @@ export interface operations {
           'RateLimit-Limit'?: string;
           /** @description Requests left in the current window */
           'RateLimit-Remaining'?: string;
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Auth.sessionStatus': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Signed-in session or {authenticated:false} */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthSessionStatus'];
+        };
+      };
+      /** @description Too many session checks (RFC 7807, VERBIS_HTTP_RATE_LIMITED); shares the /auth/session budget. Clients must not treat this as a signed-out state. */
+      429: {
+        headers: {
           [name: string]: unknown;
         };
         content?: never;
@@ -10176,7 +10864,16 @@ export interface operations {
           /** Format: uuid */
           requestId: string;
           /** @enum {string} */
-          task: 'draft' | 'improve' | 'scenarios' | 'translate' | 'reply' | 'objection' | 'summary';
+          task:
+            | 'draft'
+            | 'improve'
+            | 'scenarios'
+            | 'translate'
+            | 'reply'
+            | 'objection'
+            | 'summary'
+            | 'navigate'
+            | 'notices';
           /**
            * @default tr
            * @enum {string}
@@ -10214,7 +10911,15 @@ export interface operations {
             callId: string;
             /** @enum {string} */
             task:
-              'draft' | 'improve' | 'scenarios' | 'translate' | 'reply' | 'objection' | 'summary';
+              | 'draft'
+              | 'improve'
+              | 'scenarios'
+              | 'translate'
+              | 'reply'
+              | 'objection'
+              | 'summary'
+              | 'navigate'
+              | 'notices';
             /** @constant */
             requiresHumanApproval: true;
             value: unknown;
@@ -10708,6 +11413,68 @@ export interface operations {
       };
     };
   };
+  'Assignments.allocation': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Allocation advice */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AllocationReport'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Assignments.rollout': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Rollout verdict */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['RolloutReport'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
   'Assignments.batch': {
     parameters: {
       query?: never;
@@ -10759,7 +11526,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuditCheckpoint'];
+          'application/json': components['schemas']['AuditCheckpoint'][];
         };
       };
       /** @description Error (RFC 7807) */
@@ -11506,7 +12273,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AssignmentConflict'];
+          'application/json': components['schemas']['AssignmentConflict'][];
         };
       };
       /** @description Error (RFC 7807) */
@@ -11541,6 +12308,37 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['ChannelPage'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Compliance.processingRecord': {
+    parameters: {
+      query?: {
+        format?: 'csv' | 'json';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Processing record (JSON) or CSV file */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ProcessingRecord'];
         };
       };
       /** @description Error (RFC 7807) */
@@ -17487,6 +18285,175 @@ export interface operations {
       };
     };
   };
+  'Branches.list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Branches */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ScriptBranch'][];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Branches.create': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateBranch'];
+      };
+    };
+    responses: {
+      /** @description The branch */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ScriptBranch'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Branches.merge': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        name: string;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BranchMerge'];
+      };
+    };
+    responses: {
+      /** @description The new mainline draft */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CreatedScriptVersion'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Branches.preview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        name: string;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Merge preview */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BranchMergePreview'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Scripts.mergePreview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MergePreviewRequest'];
+      };
+    };
+    responses: {
+      /** @description Merge preview */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MergePreview'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
   'Team.rollback': {
     parameters: {
       query?: never;
@@ -18363,6 +19330,144 @@ export interface operations {
       };
     };
   };
+  'Team.listSuggestions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: number;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Suggestions */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Suggestion'][];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Team.suggest': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: number;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SuggestionInput'];
+      };
+    };
+    responses: {
+      /** @description Suggestion */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Suggestion'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Team.acceptSuggestion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        suggestion: string;
+        number: number;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Accepted suggestion */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Suggestion'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Team.rejectSuggestion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        suggestion: string;
+        number: number;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SuggestionDecision'];
+      };
+    };
+    responses: {
+      /** @description Rejected suggestion */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Suggestion'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
   'Team.members': {
     parameters: {
       query?: never;
@@ -18784,6 +19889,8 @@ export interface operations {
           'launching' | 'paused' | 'active' | 'wrapup' | 'completed' | 'abandoned' | 'expired';
         /** @description UUIDv7 identifier */
         userId?: string;
+        /** @description UUIDv7 identifier */
+        scriptVersionId?: string;
       };
       header?: never;
       path?: never;
@@ -19266,6 +20373,41 @@ export interface operations {
       };
     };
   };
+  'AgentDesktop.feedback': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AgentFeedbackInput'];
+      };
+    };
+    responses: {
+      /** @description Recorded on the page comment thread */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AgentFeedbackResult'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
   'AgentDesktop.telemetry': {
     parameters: {
       query?: never;
@@ -19554,6 +20696,37 @@ export interface operations {
               };
             };
           };
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Runtime.replay': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description The session path */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SessionReplay'];
         };
       };
       /** @description Error (RFC 7807) */
@@ -20269,6 +21442,8 @@ export interface operations {
           'launching' | 'paused' | 'active' | 'wrapup' | 'completed' | 'abandoned' | 'expired';
         /** @description UUIDv7 identifier */
         userId?: string;
+        /** @description UUIDv7 identifier */
+        scriptVersionId?: string;
       };
       header?: never;
       path?: never;
@@ -20586,6 +21761,37 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['Tenant'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'TrustCenter.summary': {
+    parameters: {
+      query?: {
+        days?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Trust center summary */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TrustCenter'];
         };
       };
       /** @description Error (RFC 7807) */

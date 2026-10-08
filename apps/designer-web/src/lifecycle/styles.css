@@ -448,3 +448,44 @@
     0 0 0 2px var(--vb-color-surface-raised),
     0 0 0 4px var(--lc-peer, var(--vb-color-primary));
 }
+
+.lc-insights {
+  display: grid;
+  gap: var(--vb-space-2);
+  padding: var(--vb-space-3);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+}
+.lc-insights h3,
+.lc-insights h4,
+.lc-insights p {
+  margin: 0;
+}
+.lc-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+.lc-table th,
+.lc-table td {
+  padding: var(--vb-space-2);
+  text-align: start;
+  border-block-end: 1px solid var(--vb-color-border);
+}
+.lc-conflicts {
+  display: grid;
+  gap: var(--vb-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lc-conflicts li {
+  display: grid;
+  gap: var(--vb-space-1);
+  padding: var(--vb-space-3);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  overflow-wrap: anywhere;
+}
+.lc-conflicts p {
+  margin: 0;
+}

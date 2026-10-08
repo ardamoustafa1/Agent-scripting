@@ -28,6 +28,8 @@ import { request, PageSchema, VersionsSchema } from '../api/client.js';
 import { RuleBuilder, containsExpression } from '../rules/builder.js';
 import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
+
+import { ConflictList, VariantInsights } from './assignment-insights.js';
 import './styles.css';
 
 const Row = z.object({
@@ -383,6 +385,7 @@ export default function AssignmentsPage() {
               />
             </>
           )}
+          {editing?.variants && <VariantInsights assignmentId={editing.id} />}
           <RuleBuilder
             allowExpressions={false}
             value={condition}
@@ -436,6 +439,19 @@ export default function AssignmentsPage() {
           )}
         </article>
       </div>
+      {priorityCampaign !== 'all' && (
+        <ConflictList
+          campaignId={priorityCampaign}
+          nameOf={(assignmentId) => {
+            const found = rows.find((r) => r.id === assignmentId);
+            return (
+              scripts.data?.data.find((x) => x.id === found?.scriptId)?.name ??
+              found?.scriptId ??
+              assignmentId
+            );
+          }}
+        />
+      )}
       <article className="lc-card">
         <h2>{t('designer.lifecycle.resolver')}</h2>
         <p>{t('designer.lifecycle.resolverHelp')}</p>

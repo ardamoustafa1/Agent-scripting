@@ -48,6 +48,18 @@ async function setup(extra: Record<string, unknown> = {}) {
         page: { nextCursor: null },
       },
       '/v1/script-resolutions': { scriptId, number: 3, synthetic: true },
+      [`/v1/campaigns/${campaignId}/assignment-conflicts`]: [],
+      [`/v1/assignments/${tenantId}/allocation`]: {
+        assignmentId: tenantId,
+        allocation: { reason: 'insufficient-sessions', arms: [] },
+      },
+      [`/v1/assignments/${tenantId}/rollout`]: {
+        assignmentId: tenantId,
+        stableSessions: 0,
+        canarySessions: 0,
+        windowDays: 7,
+        decision: { action: 'none', reason: 'not-a-rollout', breached: [], from: null, to: null },
+      },
       ...extra,
     },
     { path: `/scripts/${scriptId}/assignments`, route: '/scripts/:id/assignments' },
@@ -217,4 +229,93 @@ it('explains campaign permission when a designer cannot save assignments', async
   );
   expect(await screen.findByText(f.label('editor.assignmentPermission'))).toBeTruthy();
   expect(f.requests.some((r) => r.method === 'POST')).toBe(false);
+});
+
+const allocationPath = `/v1/assignments/${tenantId}/allocation`;
+const rolloutPath = `/v1/assignments/${tenantId}/rollout`;
+const conflictsPath = `/v1/campaigns/${campaignId}/assignment-conflicts`;
+
+it('shows which arm is winning and the canary verdict while editing an experiment', async () => {
+  const f = await setup({
+    [allocationPath]: {
+      assignmentId: tenantId,
+      allocation: {
+        reason: 'ok',
+        arms: [
+          { key: 'a', probabilityBest: 0.18, weight: 4000 },
+          { key: 'b', probabilityBest: 0.82, weight: 6000 },
+        ],
+      },
+    },
+    [rolloutPath]: {
+      assignmentId: tenantId,
+      stableSessions: 120,
+      canarySessions: 40,
+      windowDays: 7,
+      decision: {
+        action: 'rollback',
+        reason: 'guardrail-breached',
+        breached: ['abandonRate'],
+        from: 2000,
+        to: 0,
+        proposal: [
+          { key: 'a', weight: 10000 },
+          { key: 'b', weight: 0 },
+        ],
+      },
+    },
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.label('editor.apply') }));
+  expect(await screen.findByText('82%')).toBeTruthy();
+  expect(screen.getByText('Arm B', { selector: 'th' })).toBeTruthy();
+  expect(screen.getByText(f.label('lifecycle.insights.action.rollback'))).toBeTruthy();
+  expect(screen.getByText(f.label('lifecycle.insights.reason.guardrail-breached'))).toBeTruthy();
+  expect(screen.getByText(/abandonRate/)).toBeTruthy();
+});
+
+it('explains an experiment that has no evidence yet instead of showing numbers', async () => {
+  const f = await setup({
+    [allocationPath]: {
+      assignmentId: tenantId,
+      allocation: { reason: 'insufficient-sessions', arms: [] },
+    },
+    [rolloutPath]: {
+      assignmentId: tenantId,
+      stableSessions: 0,
+      canarySessions: 0,
+      windowDays: 7,
+      decision: { action: 'none', reason: 'not-a-rollout', breached: [], from: null, to: null },
+    },
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.label('editor.apply') }));
+  expect(
+    await screen.findByText(f.label('lifecycle.insights.allocationReason.insufficient-sessions')),
+  ).toBeTruthy();
+  expect(screen.getByText(f.label('lifecycle.insights.reason.not-a-rollout'))).toBeTruthy();
+});
+
+it('lists overlapping assignments of the chosen campaign with the winning rule', async () => {
+  const f = await setup({
+    [conflictsPath]: [
+      {
+        assignmentIds: [tenantId, campaignId],
+        priority: 20,
+        severity: 'certain',
+        resolvedBy: 'specificity',
+        overlap: { 'interaction.channel': ['voice', 'chat'] },
+      },
+    ],
+  });
+  await choose(f.label('lifecycle.priorityCampaign'), 'Synthetic campaign');
+  expect(await screen.findByText(f.label('lifecycle.conflicts.severity.certain'))).toBeTruthy();
+  expect(
+    screen.getByText(new RegExp(f.label('lifecycle.conflicts.resolvedBy.specificity'))),
+  ).toBeTruthy();
+  expect(screen.getByText(/interaction\.channel = voice, chat/)).toBeTruthy();
+});
+
+it('confirms when a campaign has no overlapping assignments', async () => {
+  const f = await setup();
+  await choose(f.label('lifecycle.priorityCampaign'), 'Synthetic campaign');
+  expect(await screen.findByText(f.label('lifecycle.conflicts.none'))).toBeTruthy();
 });

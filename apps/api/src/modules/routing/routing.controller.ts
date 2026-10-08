@@ -1,4 +1,5 @@
 import { Controller, Get, HttpCode, Inject, Post } from '@nestjs/common';
+import { z } from 'zod';
 
 import { asSubject } from '@verbis/authz';
 
@@ -42,7 +43,7 @@ export class RoutingController {
   }
 
   @ApiOperation({ summary: 'Equal-priority assignments of a campaign whose contexts overlap' })
-  @ApiResponse(200, 'Conflicts', ConflictSchema)
+  @ApiResponse(200, 'Conflicts', z.array(ConflictSchema))
   @Can('read', 'Campaign')
   @Get('campaigns/:id/assignment-conflicts')
   conflicts(@ZParam('id', UuidSchema) id: string) {

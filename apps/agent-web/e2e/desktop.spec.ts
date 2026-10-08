@@ -207,3 +207,44 @@ for (const theme of ['light', 'dark']) {
     await expect(page).toHaveScreenshot(`agent-web-${theme}.png`, { fullPage: true });
   });
 }
+
+for (const width of [320, 1440])
+  test(`recording control stays reachable without overflow at ${String(width)}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await desktop(page);
+    const sent = page.waitForRequest(
+      (request) => request.method() === 'POST' && request.url().endsWith('/recording'),
+    );
+    await page.route('**/api/v1/sessions/*/recording', (route) =>
+      route.fulfill({
+        status: 201,
+        json: {
+          id,
+          state: 'active',
+          sequence: 2,
+          readOnly: false,
+          snapshot: { variables: {}, currentPage: 'home', history: [], timers: {} },
+        },
+      }),
+    );
+    await page.getByRole('button', { name: /^Pause recording$|^Kaydı duraklat$/ }).click();
+    expect((await sent).postDataJSON()).toMatchObject({ paused: true });
+    await expect(page.getByText(/Recording pause requested|Kayıt duraklatma isteği/)).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /^Resume recording$|^Kaydı sürdür$/ }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1,
+      ),
+    ).toBe(true);
+    expect(
+      (
+        await new AxeBuilder({ page })
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
+    ).toEqual([]);
+  });

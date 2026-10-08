@@ -788,3 +788,34 @@ it('keeps the feedback dialog open with an error when sending fails', async () =
   );
   await within(dialog).findByText(i18n.t('agent.desktop.feedbackFailed'));
 });
+
+it('pauses and resumes call recording with the writer claim and says the platform applies it', async () => {
+  const f = await mount();
+  fireEvent.click(
+    await screen.findByRole('button', { name: i18n.t('agent.desktop.recording.pause') }),
+  );
+  expect(await screen.findByText(i18n.t('agent.desktop.recording.pausedTitle'))).toBeDefined();
+  const pause = f.requests.find((r) => r.path.endsWith('/recording'));
+  expect(pause?.body).toMatchObject({ paused: true, writeToken: 'synthetic-writer' });
+  fireEvent.click(
+    await screen.findByRole('button', { name: i18n.t('agent.desktop.recording.resume') }),
+  );
+  expect(await screen.findByText(i18n.t('agent.desktop.recording.resumedTitle'))).toBeDefined();
+  expect(f.requests.filter((r) => r.path.endsWith('/recording')).at(-1)?.body).toMatchObject({
+    paused: false,
+  });
+});
+
+it('offers no recording control on non-voice channels or in read-only sessions', async () => {
+  await mount('active', 'chat');
+  expect(
+    screen.queryByRole('button', { name: i18n.t('agent.desktop.recording.pause') }),
+  ).toBeNull();
+});
+
+it('hides the recording control when the session is read-only', async () => {
+  await mount('active', 'voice', false, { readOnly: true });
+  expect(
+    screen.queryByRole('button', { name: i18n.t('agent.desktop.recording.pause') }),
+  ).toBeNull();
+});

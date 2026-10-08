@@ -38,6 +38,8 @@ export interface AgentState {
   writeback: Desktop['writeback'];
   /** Notices an AI check judged as probably said; never counts as confirmation (ADR-0052 E5). */
   probablySaid: readonly string[];
+  /** What this tab last asked the telephony platform for; the platform confirms asynchronously. */
+  recordingPaused: boolean | null;
 }
 /** One independent controller per securely launched interaction; writes remain server sequenced. */
 export class AgentController {
@@ -79,6 +81,7 @@ export class AgentController {
       readOnly: true,
       note: '',
       probablySaid: [],
+      recordingPaused: null,
       disposition: '',
       callbackAt: '',
       notice: null,
@@ -647,6 +650,20 @@ export class AgentController {
         signal,
       );
       this.accept(view);
+    });
+  }
+  /** Asks the connector to pause or resume call recording (e.g. while a card number is spoken). */
+  setRecording(paused: boolean) {
+    return this.serial(async () => {
+      await this.flush();
+      if (!this.state.online || this.state.readOnly) throw new AgentError(503, 'VERBIS_OFFLINE');
+      this.accept(
+        await api(`/v1/sessions/${this.id}/recording`, View, this.csrf, {
+          ...this.claim(),
+          paused,
+        }),
+      );
+      this.publish({ recordingPaused: paused });
     });
   }
   async wrapup() {
