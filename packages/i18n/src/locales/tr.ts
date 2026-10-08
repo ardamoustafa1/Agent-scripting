@@ -1717,7 +1717,12 @@ export const tr: Catalog = {
         'deleted-vs-changed': 'bir tarafta silindi, diğerinde değişti',
         'duplicate-id': 'aynı kimlikle iki farklı öğe',
       },
-      resolveFirst: 'Bunları dalda çözün, sonra yeniden birleştirin.',
+      chooseHelp:
+        'Her çakışma için hangi tarafın korunacağını seçin. Sizin yerinize hiçbir şey seçilmez.',
+      chooseFor: '{{path}} için hangi sürüm korunsun',
+      mainlineSide: 'Ana hat',
+      branchSide: 'Dal',
+      absent: '(yok)',
       invalidResult: 'Birleştirilmiş script geçerli olmazdı.',
       mergeConfirm: 'Birleştir',
     },

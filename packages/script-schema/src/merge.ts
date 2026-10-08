@@ -9,6 +9,7 @@ import { ScriptDocumentSchema, type ScriptDocument } from './schema/document.js'
  * Pure and deterministic. The result is validated against the document schema.
  */
 export type ConflictKind = 'both-changed' | 'deleted-vs-changed' | 'duplicate-id';
+export type ConflictSide = 'ours' | 'theirs';
 export interface MergeConflict {
   /** JSON-pointer-like location, e.g. `/variables/customerName` or `/pages/home/layout/btn-next`. */
   readonly path: string;
@@ -16,6 +17,8 @@ export interface MergeConflict {
   readonly base: unknown;
   readonly ours: unknown;
   readonly theirs: unknown;
+  /** Set when the caller chose a side for this conflict (it is then applied, not provisional). */
+  readonly resolution?: ConflictSide;
 }
 export interface MergeResult {
   /** Null only when the merged structure cannot be parsed as a document at all. */
@@ -43,8 +46,19 @@ const isRecord = (v: Json): v is Record<string, Json> =>
 class Merger {
   readonly conflicts: MergeConflict[] = [];
 
-  conflict(path: string, kind: ConflictKind, base: Json, ours: Json, theirs: Json): void {
-    this.conflicts.push({ path, kind, base, ours, theirs });
+  constructor(private readonly resolutions: Readonly<Record<string, ConflictSide>> = {}) {}
+
+  /** Records a conflict and returns the side the caller chose for it, if any. */
+  conflict(
+    path: string,
+    kind: ConflictKind,
+    base: Json,
+    ours: Json,
+    theirs: Json,
+  ): ConflictSide | undefined {
+    const resolution = Object.hasOwn(this.resolutions, path) ? this.resolutions[path] : undefined;
+    this.conflicts.push({ path, kind, base, ours, theirs, ...(resolution ? { resolution } : {}) });
+    return resolution;
   }
 
   /** Whole-value merge. `undefined` means "absent". */
@@ -52,7 +66,7 @@ class Merger {
     if (same(ours, theirs)) return ours;
     if (same(ours, base)) return theirs;
     if (same(theirs, base)) return ours;
-    this.conflict(
+    const side = this.conflict(
       path,
       base !== undefined && (ours === undefined || theirs === undefined)
         ? 'deleted-vs-changed'
@@ -61,7 +75,7 @@ class Merger {
       ours,
       theirs,
     );
-    return ours;
+    return side === 'theirs' ? theirs : ours;
   }
 
   /** Field-by-field merge of plain objects; nested objects recurse, everything else is a value. */
@@ -109,7 +123,9 @@ class Merger {
       if (oi && ti) {
         out.push(
           bi === undefined && !same(oi, ti)
-            ? (this.conflict(at, 'duplicate-id', undefined, oi, ti), oi)
+            ? this.conflict(at, 'duplicate-id', undefined, oi, ti) === 'theirs'
+              ? ti
+              : oi
             : item(at, bi, oi, ti),
         );
       } else {
@@ -119,10 +135,11 @@ class Merger {
         else if (same(survivor, bi))
           continue; // deleted on one side, untouched on the other
         else {
-          this.conflict(at, 'deleted-vs-changed', bi, oi, ti);
-          if (oi)
-            out.push(oi); // provisional: keep the side that still has it
-          else if (ti) out.push(ti);
+          const side = this.conflict(at, 'deleted-vs-changed', bi, oi, ti);
+          // Chosen side wins (a deleted side removes the item); unresolved: keep the side that
+          // still has it, provisionally.
+          const chosen = side === 'ours' ? oi : side === 'theirs' ? ti : (oi ?? ti);
+          if (chosen) out.push(chosen);
         }
       }
     }
@@ -184,8 +201,10 @@ export function mergeDocuments(
   base: ScriptDocument,
   ours: ScriptDocument,
   theirs: ScriptDocument,
+  /** Chosen side per conflict path (as reported by an earlier call); anything else stays provisional. */
+  resolutions: Readonly<Record<string, ConflictSide>> = {},
 ): MergeResult {
-  const m = new Merger();
+  const m = new Merger(resolutions);
   const b = base as unknown as Record<string, Json>,
     o = ours as unknown as Record<string, Json>,
     t = theirs as unknown as Record<string, Json>;

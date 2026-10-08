@@ -24613,7 +24613,7 @@
         "tags": [
           "script-branches"
         ],
-        "summary": "Merge the branch into a new mainline draft; conflicts are refused, never auto-resolved",
+        "summary": "Merge the branch into a new mainline draft; every conflict needs an explicit choice, nothing is auto-resolved",
         "description": "Requires: update:Script",
         "parameters": [
           {
@@ -24638,6 +24638,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BranchMerge"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "The new mainline draft",
@@ -35697,6 +35707,27 @@
           }
         ]
       },
+      "BranchMerge": {
+        "type": "object",
+        "properties": {
+          "resolutions": {
+            "default": {},
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "maxLength": 512
+            },
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "ours",
+                "theirs"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "BranchMergePreview": {
         "type": "object",
         "properties": {
@@ -35734,9 +35765,24 @@
                     "duplicate-id"
                   ]
                 },
-                "base": {},
-                "ours": {},
-                "theirs": {}
+                "base": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "ours": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "theirs": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
               },
               "required": [
                 "path",

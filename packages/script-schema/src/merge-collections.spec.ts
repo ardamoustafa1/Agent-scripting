@@ -233,3 +233,88 @@ describe('mergeDocuments / ordering and flow internals', () => {
     expect(result.issues[0]).toMatch(/^id: .+/);
   });
 });
+
+describe('mergeDocuments / resolutions', () => {
+  const pageName = (doc: ScriptDocument) => doc.pages[0]?.name;
+  const conflicted = () => {
+    const ours = clone(),
+      theirs = clone();
+    if (ours.pages[0]) ours.pages[0].name = 'Ours';
+    if (theirs.pages[0]) theirs.pages[0].name = 'Theirs';
+    return { ours, theirs, path: `/pages/${base.pages[0]?.id ?? ''}/name` };
+  };
+
+  it('applies the chosen side of a both-changed conflict and marks it resolved', () => {
+    const { ours, theirs, path } = conflicted();
+    const theirsWins = mergeDocuments(base, ours, theirs, { [path]: 'theirs' });
+    expect(pageName(theirsWins.document!)).toBe('Theirs');
+    expect(theirsWins.conflicts).toEqual([expect.objectContaining({ path, resolution: 'theirs' })]);
+    const oursWins = mergeDocuments(base, ours, theirs, { [path]: 'ours' });
+    expect(pageName(oursWins.document!)).toBe('Ours');
+    expect(oursWins.conflicts[0]?.resolution).toBe('ours');
+    // Unresolved stays provisional in favour of ours, without a resolution marker.
+    const open = mergeDocuments(base, ours, theirs);
+    expect(pageName(open.document!)).toBe('Ours');
+    expect(open.conflicts[0]).not.toHaveProperty('resolution');
+  });
+
+  it('lets the chosen side win a delete-versus-change conflict, including the deletion', () => {
+    const id = String(items(base, 'rules')[0]?.['id']);
+    const deleting = clone();
+    setItems(
+      deleting,
+      'rules',
+      items(deleting, 'rules').filter((r) => r['id'] !== id),
+    );
+    const changing = clone();
+    Object.assign(items(changing, 'rules')[0] ?? {}, { description: 'changed' });
+    const path = `/rules/${id}`;
+    // ours deleted, theirs changed.
+    const keepsChange = mergeDocuments(base, deleting, changing, { [path]: 'theirs' });
+    expect(keepsChange.document?.rules.some((r) => r.id === id)).toBe(true);
+    const keepsDeletion = mergeDocuments(base, deleting, changing, { [path]: 'ours' });
+    expect(keepsDeletion.document?.rules.some((r) => r.id === id)).toBe(false);
+    // ours changed, theirs deleted.
+    expect(
+      mergeDocuments(base, changing, deleting, { [path]: 'theirs' }).document?.rules.some(
+        (r) => r.id === id,
+      ),
+    ).toBe(false);
+    expect(
+      mergeDocuments(base, changing, deleting, { [path]: 'ours' }).document?.rules.some(
+        (r) => r.id === id,
+      ),
+    ).toBe(true);
+  });
+
+  it('picks the chosen item when two different items were added under one id', () => {
+    const lean = clone();
+    setItems(lean, 'rules', []);
+    const baseLean = ScriptDocumentSchema.parse(lean);
+    const a = { ...structuredClone(items(base, 'rules')[0]), description: 'ours item' },
+      b = { ...structuredClone(items(base, 'rules')[0]), description: 'theirs item' };
+    const ours = structuredClone(baseLean),
+      theirs = structuredClone(baseLean);
+    setItems(ours, 'rules', [a]);
+    setItems(theirs, 'rules', [b]);
+    const path = `/rules/${String(a.id)}`;
+    expect(
+      mergeDocuments(baseLean, ours, theirs, { [path]: 'theirs' }).document?.rules[0]?.description,
+    ).toBe('theirs item');
+    expect(
+      mergeDocuments(baseLean, ours, theirs, { [path]: 'ours' }).document?.rules[0]?.description,
+    ).toBe('ours item');
+  });
+
+  it('ignores resolutions for paths that are not conflicts, including prototype keys', () => {
+    const { ours, theirs, path } = conflicted();
+    const result = mergeDocuments(base, ours, theirs, {
+      '/nothing/here': 'theirs',
+      ['__proto__']: 'theirs',
+      constructor: 'theirs',
+    } as never);
+    expect(pageName(result.document!)).toBe('Ours');
+    expect(result.conflicts).toEqual([expect.objectContaining({ path })]);
+    expect(result.conflicts[0]).not.toHaveProperty('resolution');
+  });
+});

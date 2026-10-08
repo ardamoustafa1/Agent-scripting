@@ -9,6 +9,7 @@ import { Can } from '../authz/permissions.js';
 import { BranchesService, BranchNameSchema } from './branches.service.js';
 import {
   BranchMergePreviewSchema,
+  BranchMergeSchema,
   BranchSchema,
   CreateBranchSchema,
   CreatedVersionSchema,
@@ -51,13 +52,17 @@ export class BranchesController {
 
   @ApiOperation({
     summary:
-      'Merge the branch into a new mainline draft; conflicts are refused, never auto-resolved',
+      'Merge the branch into a new mainline draft; every conflict needs an explicit choice, nothing is auto-resolved',
   })
   @ApiResponse(200, 'The new mainline draft', CreatedVersionSchema)
   @Can('update', 'Script')
   @HttpCode(200)
   @Post(':name/merge')
-  merge(@ZParam('id', UuidSchema) id: string, @ZParam('name', BranchNameSchema) name: string) {
-    return this.branches.merge(id, name);
+  merge(
+    @ZParam('id', UuidSchema) id: string,
+    @ZParam('name', BranchNameSchema) name: string,
+    @ZBody(BranchMergeSchema) body: z.output<typeof BranchMergeSchema>,
+  ) {
+    return this.branches.merge(id, name, body.resolutions);
   }
 }

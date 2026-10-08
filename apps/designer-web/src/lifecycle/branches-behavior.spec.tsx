@@ -68,7 +68,7 @@ it('tells the user when a branch name is taken', async () => {
   expect(await screen.findByText(f.label('branches.problem.exists'))).toBeTruthy();
 });
 
-it('shows the conflicts and blocks the merge until they are resolved', async () => {
+it('shows both versions of every conflict and merges only after each one has a chosen side', async () => {
   const f = await mount({
     [base]: [branch('november')],
     [`${base}/november/merge-preview`]: {
@@ -76,20 +76,61 @@ it('shows the conflicts and blocks the merge until they are resolved', async () 
       baseNumber: 2,
       mainlineNumber: 5,
       branchNumber: 4,
-      conflicts: [{ path: '/pages/home/name', kind: 'both-changed' }],
+      conflicts: [
+        {
+          path: '/pages/home/name',
+          kind: 'both-changed',
+          base: '"Home"',
+          ours: '"Mainline name"',
+          theirs: '"Branch name"',
+        },
+        {
+          path: '/rules/r1',
+          kind: 'deleted-vs-changed',
+          base: '{"id":"r1"}',
+          ours: null,
+          theirs: '{"id":"r1","x":1}',
+        },
+      ],
       issues: [],
-      canMerge: false,
+      canMerge: true,
     },
+    [`POST ${base}/november/merge`]: { number: 6 },
   });
   fireEvent.click(await screen.findByRole('button', { name: f.label('branches.merge') }));
   const dialog = await screen.findByRole('dialog');
   expect(await within(dialog).findByText('/pages/home/name')).toBeTruthy();
-  expect(within(dialog).getByText(f.label('branches.resolveFirst'))).toBeTruthy();
+  const merge = within(dialog).getByRole<HTMLButtonElement>('button', {
+    name: f.label('branches.mergeConfirm'),
+  });
+  expect(merge.disabled).toBe(true);
+  // Both versions of the first conflict, and the absent side of the second, are shown.
+  fireEvent.click(
+    within(dialog).getByRole('radio', {
+      name: new RegExp(`${f.label('branches.branchSide')}: "Branch name"`),
+    }),
+  );
+  expect(merge.disabled).toBe(true);
   expect(
-    within(dialog).getByRole<HTMLButtonElement>('button', {
-      name: f.label('branches.mergeConfirm'),
-    }).disabled,
-  ).toBe(true);
+    within(dialog).getByRole('radio', {
+      name: new RegExp(`${f.label('branches.mainlineSide')}: "Mainline name"`),
+    }),
+  ).toBeTruthy();
+  fireEvent.click(
+    within(dialog).getByRole('radio', {
+      name: new RegExp(
+        `${f.label('branches.mainlineSide')}: \\${f.label('branches.absent').slice(0, 1)}`,
+      ),
+    }),
+  );
+  await waitFor(() => {
+    expect(merge.disabled).toBe(false);
+  });
+  fireEvent.click(merge);
+  await screen.findByRole('link', { name: f.label('branches.openMerged') });
+  expect(f.requests.find((r) => r.path.endsWith('/merge'))?.body).toEqual({
+    resolutions: { '/pages/home/name': 'theirs', '/rules/r1': 'ours' },
+  });
 });
 
 it('merges a clean branch and links to the new mainline draft', async () => {
@@ -114,7 +155,7 @@ it('merges a clean branch and links to the new mainline draft', async () => {
   fireEvent.click(confirm);
   const link = await screen.findByRole('link', { name: f.label('branches.openMerged') });
   expect(link.getAttribute('href')).toBe(`/scripts/${scriptId}/versions/6/edit`);
-  expect(f.requests.find((r) => r.path.endsWith('/merge'))?.body).toEqual({});
+  expect(f.requests.find((r) => r.path.endsWith('/merge'))?.body).toEqual({ resolutions: {} });
 });
 
 it('hides creation and merge from users who cannot edit the script', async () => {

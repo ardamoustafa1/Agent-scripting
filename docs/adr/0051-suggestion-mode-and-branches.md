@@ -70,11 +70,15 @@ Suggestions (part 1) are accepted and implemented with these choices for the ope
   starts from a mainline version (a branch cannot start from a branch).
 - **A branch can never be submitted or published** (`VERBIS_BRANCH_NOT_PUBLISHABLE` in `submit`),
   so every release still passes review, SoD and the publication gate as a mainline version.
-- **Merge** = `mergeDocuments(parent version, current mainline head, branch version)`. With any
-  conflict the merge is **refused** (`VERBIS_BRANCH_CONFLICT`, listing paths); the author resolves
-  it in the branch and merges again. A clean merge creates a **new mainline draft** through the
-  normal `createVersion` (validation, projection, `script.version.created`) plus
-  `script.branch.merged`; the branch records `mergedIntoNumber` and cannot be merged twice.
-  A visual per-node conflict resolver is not built.
+- **Merge** = `mergeDocuments(parent version, current mainline head, branch version, resolutions)`.
+  Every conflict needs an **explicit choice of side** (`ours` = mainline, `theirs` = branch, per
+  conflict path from the preview); nothing is resolved for the author. A merge with any
+  unresolved conflict is refused (`VERBIS_BRANCH_CONFLICT`, listing the open paths) and a
+  resolution for a path that is not a conflict is a validation error. The chosen side wins
+  literally, including a deletion. A clean or fully resolved merge creates a **new mainline
+  draft** through the normal `createVersion` (validation, projection, `script.version.created`)
+  plus `script.branch.merged` (the audit diff lists `path=side`); the branch records
+  `mergedIntoNumber` and cannot be merged twice. The designer's merge dialog shows the mainline
+  and branch version of each conflict and enables "Merge" once every conflict has a side.
 - Routes: `GET/POST /v1/scripts/:id/branches`, `GET .../:name/merge-preview`,
   `POST .../:name/merge`. Branch creation needs `update` on the script; reading needs `read`.

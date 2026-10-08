@@ -172,7 +172,7 @@ describe('script branches (ADR-0051 C3)', () => {
     expect(actions).toEqual(['script.branch.created', 'script.branch.merged']);
   });
 
-  it('refuses to merge when both sides changed the same thing, and reports where', async () => {
+  it('needs an explicit choice for every conflict, then applies exactly that choice', async () => {
     const s = await script();
     expect((await branch(s, 'redesign', 1)).statusCode).toBe(201);
     await s.edit(2, (doc) => {
@@ -187,24 +187,77 @@ describe('script branches (ADR-0051 C3)', () => {
         url: `${s.base}/branches/redesign/merge-preview`,
         headers: s.headers,
       })
-    ).json<{ canMerge: boolean; conflicts: { path: string; kind: string }[] }>();
-    expect(preview.canMerge).toBe(false);
+    ).json<{
+      conflicts: { path: string; kind: string; ours: string; theirs: string; base: string }[];
+    }>();
     expect(preview.conflicts).toHaveLength(1);
-    expect(preview.conflicts[0]).toMatchObject({ kind: 'both-changed' });
-    expect(preview.conflicts[0]?.path).toMatch(/^\/pages\/.+\/name$/);
-    const merge = await app.inject({
-      method: 'POST',
-      url: `${s.base}/branches/redesign/merge`,
-      headers: s.headers,
-      payload: {},
+    const conflict = preview.conflicts[0];
+    expect(conflict).toMatchObject({
+      kind: 'both-changed',
+      ours: '"Mainline name"',
+      theirs: '"Branch name"',
     });
-    expect(merge.statusCode).toBe(409);
-    expect(merge.json<{ code: string; errors: { path: string }[] }>()).toMatchObject({
+    const path = conflict?.path ?? '';
+    expect(path).toMatch(/^\/pages\/.+\/name$/);
+    const merge = (resolutions: Record<string, string>) =>
+      app.inject({
+        method: 'POST',
+        url: `${s.base}/branches/redesign/merge`,
+        headers: s.headers,
+        payload: { resolutions },
+      });
+
+    // Nothing chosen: refused, listing what needs a choice, and nothing is created.
+    const refused = await merge({});
+    expect(refused.statusCode).toBe(409);
+    expect(refused.json<{ code: string; errors: { path: string }[] }>()).toMatchObject({
       code: 'VERBIS_BRANCH_CONFLICT',
+      errors: [{ path }],
     });
-    // Nothing was created.
+    // A resolution for something that is not a conflict is a client error, also creating nothing.
+    expect((await merge({ [path]: 'theirs', '/pages/none/name': 'ours' })).statusCode).toBe(400);
+    expect((await merge({ [path]: 'both' })).statusCode).toBe(400);
     expect(await owner.scriptVersion.count({ where: { scriptId: s.scriptId, branch: null } })).toBe(
       2,
+    );
+
+    // Choosing the branch applies the branch's text.
+    const merged = await merge({ [path]: 'theirs' });
+    expect(merged.statusCode).toBe(200);
+    expect((await s.get(merged.json<{ number: number }>().number)).document.pages[0]?.name).toBe(
+      'Branch name',
+    );
+    const audit = await owner.auditEvent.findFirst({
+      where: { tenantId: s.tenant.tenantId, action: 'script.branch.merged' },
+    });
+    expect(JSON.stringify(audit?.diff)).toContain(`${path}=theirs`);
+  });
+
+  it('keeps the mainline text when the mainline side is chosen', async () => {
+    const s = await script();
+    expect((await branch(s, 'alt', 1)).statusCode).toBe(201);
+    await s.edit(2, (doc) => {
+      if (doc.pages[0]) doc.pages[0].name = 'Branch name';
+    });
+    await s.newMainline((doc) => {
+      if (doc.pages[0]) doc.pages[0].name = 'Mainline name';
+    });
+    const path = (
+      await app.inject({
+        method: 'GET',
+        url: `${s.base}/branches/alt/merge-preview`,
+        headers: s.headers,
+      })
+    ).json<{ conflicts: { path: string }[] }>().conflicts[0]?.path;
+    const merged = await app.inject({
+      method: 'POST',
+      url: `${s.base}/branches/alt/merge`,
+      headers: s.headers,
+      payload: { resolutions: { [path ?? '']: 'ours' } },
+    });
+    expect(merged.statusCode).toBe(200);
+    expect((await s.get(merged.json<{ number: number }>().number)).document.pages[0]?.name).toBe(
+      'Mainline name',
     );
   });
 

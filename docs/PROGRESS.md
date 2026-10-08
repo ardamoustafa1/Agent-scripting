@@ -1735,3 +1735,10 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - `notices` AI görevi (`ai/notices.ts` bildirim seçenekleri, `safety.ts` çıktı `{noticeIds, reason}`, sunucuda kimlik doğrulaması), ajan panelinde "Okunmuş olabilir olarak işaretle", kontrol listesinde onay yerine geçmeyen işaret (`AgentState.probablySaid`). i18n tr+en.
 - Testler: API AI birim 70/70 (yeni: `notices.spec` 3, servis 2, çıktı 1), agent-web 195/195 (yeni 2), ui 123/123; OpenAPI güncel.
 - Açık: canlı transkript akışı + gecikme bütçesi, D5 PII açma (ürün kararı: ajanın müşteri adını varsayılan görmemesi çağrı akışını bozar), gerçek sağlayıcıyla doğruluk ölçümü.
+
+## 2026-10-08 — Dallarda çakışma çözümü (DIFFERENTIATORS C3 devamı)
+
+- `mergeDocuments(..., resolutions)`: çakışma yoluna göre `ours`/`theirs`; seçilen taraf aynen uygulanır (silme dahil), çözülen çakışma `resolution` taşır; bilinmeyen/prototip anahtarlar yok sayılır. `POST .../branches/:name/merge` gövdesi `{resolutions}`; seçilmemiş çakışma `VERBIS_BRANCH_CONFLICT` (açık yollar listelenir), çakışma olmayan yol için doğrulama hatası; önizleme çakışma başına ata/ana hat/dal özetini döndürür. Denetim farkı `yol=taraf` listesini taşır.
+- Arayüz: birleştirme diyaloğunda her çakışma için iki sürümün özeti ve seçim; "Birleştir" tüm çakışmalar seçilince açılır. i18n tr+en.
+- Testler: script-schema 389/389 (yeni 4, kapsama %96,9/%93,4), gerçek Postgres `branches.int` 4/4 (açık seçim, bilinmeyen yol, `ours`/`theirs`, denetim), API birim 1838, designer birim 5 + Playwright `branches.spec` (axe).
+- Açık: tuval üstü (node bazında) görsel çözücü, dal üstünde birden çok sürüm.

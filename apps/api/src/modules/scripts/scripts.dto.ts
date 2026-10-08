@@ -287,12 +287,21 @@ export const BranchMergePreviewSchema = z
       z.object({
         path: z.string(),
         kind: z.enum(['both-changed', 'deleted-vs-changed', 'duplicate-id']),
-        base: z.unknown(),
-        ours: z.unknown(),
-        theirs: z.unknown(),
+        /** Short JSON excerpts (null = absent) of the common ancestor, the mainline and the branch. */
+        base: z.string().nullable(),
+        ours: z.string().nullable(),
+        theirs: z.string().nullable(),
       }),
     ),
     issues: z.array(z.string()),
+    /** True when every conflict (none, or each one resolved) would let the merge go through. */
     canMerge: z.boolean(),
   })
   .meta({ id: 'BranchMergePreview' });
+export const BranchMergeSchema = z
+  .strictObject({
+    /** Chosen side per conflict path from the preview: `ours` = mainline, `theirs` = branch. */
+    resolutions: z.record(z.string().max(512), z.enum(['ours', 'theirs'])).default({}),
+  })
+  .refine((value) => Object.keys(value.resolutions).length <= 200, 'at most 200 resolutions')
+  .meta({ id: 'BranchMerge' });

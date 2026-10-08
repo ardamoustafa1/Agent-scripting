@@ -13,7 +13,9 @@ import {
 test.use({ locale: 'en-US' });
 
 const sent: { method: string; path: string; body: unknown }[] = [];
-test('creates a branch and shows merge conflicts without allowing the merge', async ({ page }) => {
+test('creates a branch and merges only after a side is chosen for each conflict', async ({
+  page,
+}) => {
   sent.length = 0;
   await page.addInitScript(
     ({ tenant, user }) => {
@@ -59,9 +61,17 @@ test('creates a branch and shows merge conflicts without allowing the merge', as
               baseNumber: 1,
               mainlineNumber: 2,
               branchNumber: 3,
-              conflicts: [{ path: '/pages/home/name', kind: 'both-changed' }],
+              conflicts: [
+                {
+                  path: '/pages/home/name',
+                  kind: 'both-changed',
+                  base: '"Home"',
+                  ours: '"Mainline name"',
+                  theirs: '"Branch name"',
+                },
+              ],
               issues: [],
-              canMerge: false,
+              canMerge: true,
             }
           : fixtureResponse(url.pathname + url.search);
     await route.fulfill({
@@ -87,8 +97,11 @@ test('creates a branch and shows merge conflicts without allowing the merge', as
 
   await panel.getByRole('button', { name: 'Merge into mainline', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Merge branch redesign' });
-  await expect(dialog.getByText('/pages/home/name')).toBeVisible();
-  await expect(dialog.getByRole('button', { name: 'Merge', exact: true })).toBeDisabled();
+  await expect(dialog.getByText('/pages/home/name').first()).toBeVisible();
+  const merge = dialog.getByRole('button', { name: 'Merge', exact: true });
+  await expect(merge).toBeDisabled();
+  await dialog.getByRole('radio', { name: /Branch: "Branch name"/ }).click();
+  await expect(merge).toBeEnabled();
   await expect.poll(() => page.evaluate(() => document.getAnimations().length)).toBe(0);
   expect(
     (await new AxeBuilder({ page }).include('[role="dialog"]').analyze()).violations.map(
@@ -96,4 +109,8 @@ test('creates a branch and shows merge conflicts without allowing the merge', as
     ),
   ).toEqual([]);
   expect(sent.filter((r) => r.path.endsWith('/merge'))).toEqual([]);
+  await merge.click();
+  await expect
+    .poll(() => sent.find((r) => r.path.endsWith('/merge'))?.body)
+    .toEqual({ resolutions: { '/pages/home/name': 'theirs' } });
 });

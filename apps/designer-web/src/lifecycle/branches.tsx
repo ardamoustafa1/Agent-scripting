@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
 import { useAbility } from '@verbis/authz/react';
-import { Alert, Badge, Button, Dialog, Input, Select } from '@verbis/ui';
+import { Alert, Badge, Button, Dialog, Input, Radio, Select } from '@verbis/ui';
 
 import { ApiError, request } from '../api/client.js';
 import { useWorkspace } from '../workspace/context.js';
@@ -24,7 +24,15 @@ const Preview = z.object({
   baseNumber: z.number(),
   mainlineNumber: z.number(),
   branchNumber: z.number(),
-  conflicts: z.array(z.object({ path: z.string(), kind: z.string() })),
+  conflicts: z.array(
+    z.object({
+      path: z.string(),
+      kind: z.string(),
+      base: z.string().nullable(),
+      ours: z.string().nullable(),
+      theirs: z.string().nullable(),
+    }),
+  ),
   issues: z.array(z.string()),
   canMerge: z.boolean(),
 });
@@ -53,6 +61,7 @@ export function Branches({
     [busy, setBusy] = useState(false),
     [problem, setProblem] = useState(''),
     [merging, setMerging] = useState<string | null>(null),
+    [choices, setChoices] = useState<Record<string, 'ours' | 'theirs'>>({}),
     [mergedAs, setMergedAs] = useState<number | null>(null);
   const base = `/v1/scripts/${scriptId}/branches`,
     key = [
@@ -107,7 +116,7 @@ export function Branches({
       const created = await request(`${base}/${merging}/merge`, Merged, {
         method: 'POST',
         csrf: session.csrfToken,
-        body: {},
+        body: { resolutions: choices },
       });
       setMergedAs(created.number);
       setMerging(null);
@@ -160,6 +169,7 @@ export function Branches({
                 variant="secondary"
                 onClick={() => {
                   setProblem('');
+                  setChoices({});
                   setMerging(branch.name);
                 }}
               >
@@ -229,17 +239,34 @@ export function Branches({
                   tone="warning"
                   title={t('designer.branches.conflicts', { count: preview.data.conflicts.length })}
                 />
-                <ul aria-label={t('designer.branches.conflictList')}>
-                  {preview.data.conflicts.map((conflict) => (
-                    <li key={conflict.path}>
+                <p>{t('designer.branches.chooseHelp')}</p>
+                {preview.data.conflicts.map((conflict) => (
+                  <fieldset key={conflict.path}>
+                    <legend>
                       <code>{conflict.path}</code> ·{' '}
                       {t(`designer.branches.kind.${conflict.kind}`, {
                         defaultValue: conflict.kind,
                       })}
-                    </li>
-                  ))}
-                </ul>
-                <p>{t('designer.branches.resolveFirst')}</p>
+                    </legend>
+                    <Radio
+                      label={t('designer.branches.chooseFor', { path: conflict.path })}
+                      value={choices[conflict.path] ?? ''}
+                      onValueChange={(value) => {
+                        setChoices({ ...choices, [conflict.path]: value as 'ours' | 'theirs' });
+                      }}
+                      options={[
+                        {
+                          value: 'ours',
+                          label: `${t('designer.branches.mainlineSide')}: ${conflict.ours ?? t('designer.branches.absent')}`,
+                        },
+                        {
+                          value: 'theirs',
+                          label: `${t('designer.branches.branchSide')}: ${conflict.theirs ?? t('designer.branches.absent')}`,
+                        },
+                      ]}
+                    />
+                  </fieldset>
+                ))}
               </>
             )}
             {preview.data.conflicts.length === 0 && preview.data.issues.length > 0 && (
@@ -252,7 +279,11 @@ export function Branches({
         )}
         <Button
           loading={busy}
-          disabled={busy || !preview.data?.canMerge}
+          disabled={
+            busy ||
+            !preview.data?.canMerge ||
+            preview.data.conflicts.some((conflict) => choices[conflict.path] === undefined)
+          }
           onClick={() => void merge()}
         >
           {t('designer.branches.mergeConfirm')}

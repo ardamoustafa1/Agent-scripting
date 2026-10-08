@@ -2,7 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { z } from 'zod';
 
 import { asSubject } from '@verbis/authz';
-import { mergeDocuments, ScriptDocumentSchema, type ScriptDocument } from '@verbis/script-schema';
+import {
+  mergeDocuments,
+  ScriptDocumentSchema,
+  type ConflictSide,
+  type ScriptDocument,
+} from '@verbis/script-schema';
 
 import { requestContext } from '../../common/context/request-context.js';
 import { DomainError, NotFoundError } from '../../common/errors/domain-errors.js';
@@ -33,6 +38,13 @@ export interface BranchDto {
   /** Number of the mainline version the branch was merged into, once merged. */
   mergedInto: number | null;
 }
+
+/** A short, bounded JSON excerpt for the conflict list (null = absent). */
+const excerpt = (value: unknown): string | null => {
+  if (value === undefined) return null;
+  const text = JSON.stringify(value);
+  return text.length > 300 ? `${text.slice(0, 300)}…` : text;
+};
 
 const Source = z.looseObject({ mergedIntoNumber: z.number().int().optional() });
 
@@ -222,9 +234,15 @@ export class BranchesService {
       baseNumber: branch.parent?.number ?? 0,
       mainlineNumber: head.number,
       branchNumber: branch.number,
-      conflicts: result.conflicts,
+      conflicts: result.conflicts.map((c) => ({
+        path: c.path,
+        kind: c.kind,
+        base: excerpt(c.base),
+        ours: excerpt(c.ours),
+        theirs: excerpt(c.theirs),
+      })),
       issues: result.issues,
-      canMerge: result.conflicts.length === 0 && result.document !== null,
+      canMerge: result.document !== null,
     };
   }
 
@@ -233,17 +251,30 @@ export class BranchesService {
    * resolves them in the branch and merges again. The new draft goes through the normal review,
    * approval and publication gate.
    */
-  async merge(scriptId: string, name: string) {
+  async merge(
+    scriptId: string,
+    name: string,
+    resolutions: Readonly<Record<string, ConflictSide>> = {},
+  ) {
     this.authz.authorize('update', await this.subject(scriptId));
     const { branch, head, base, ours, theirs } = await this.documents(scriptId, name);
     if (Source.safeParse(branch.source ?? {}).data?.mergedIntoNumber !== undefined)
       throw new DomainError('VERBIS_BRANCH_MERGED', `Branch "${name}" was already merged`);
-    const result = mergeDocuments(base, ours, theirs);
-    if (result.conflicts.length > 0)
+    const found = mergeDocuments(base, ours, theirs).conflicts.map((c) => c.path);
+    const unknown = Object.keys(resolutions).filter((path) => !found.includes(path));
+    if (unknown.length > 0)
+      throw new DomainError(
+        'VERBIS_VALIDATION_FAILED',
+        'Resolutions refer to paths that are not conflicts',
+        unknown.slice(0, 50).map((path) => ({ path, message: 'not a conflict' })),
+      );
+    const result = mergeDocuments(base, ours, theirs, resolutions);
+    const open = result.conflicts.filter((c) => c.resolution === undefined);
+    if (open.length > 0)
       throw new DomainError(
         'VERBIS_BRANCH_CONFLICT',
-        `${String(result.conflicts.length)} conflict(s)`,
-        result.conflicts.slice(0, 50).map((c) => ({ path: c.path, message: c.kind })),
+        `${String(open.length)} conflict(s) need a choice`,
+        open.slice(0, 50).map((c) => ({ path: c.path, message: c.kind })),
       );
     if (result.document === null)
       throw new DomainError(
@@ -289,6 +320,7 @@ export class BranchesService {
         branchVersion: branch.number,
         mainlineBase: head.number,
         newVersion: created.number,
+        resolved: result.conflicts.map((c) => `${c.path}=${c.resolution ?? ''}`),
       },
       metadata: { actor: this.actor() },
     });
