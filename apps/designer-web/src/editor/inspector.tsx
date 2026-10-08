@@ -1,6 +1,6 @@
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { ArrowUp, ArrowDown, MoveVertical } from 'lucide-react';
+import { ArrowUp, ArrowDown, MousePointerClick, MoveVertical } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -339,7 +339,17 @@ export function Inspector({ store }: { store: EditorStore }) {
   const node = state.selection[0] ? store.node(state.selection[0]) : undefined;
   const [event, setEvent] = useState('');
   const [prop, setProp] = useState('');
-  if (!node) return <p className="ed-muted">{t('designer.editor.selectHint')}</p>;
+  if (!node)
+    return (
+      <div className="ed-inspector-empty">
+        <span className="ed-inspector-empty-icon" aria-hidden>
+          <MousePointerClick size={22} />
+        </span>
+        <strong>{t('designer.editor.selectTitle')}</strong>
+        <p className="ed-muted">{t('designer.editor.selectHint')}</p>
+        <small>{t('designer.editor.selectTip')}</small>
+      </div>
+    );
   const definition = editorRegistry.get(node.type),
     variables = state.document.variables.map((v) => v.key);
   const update = (work: Parameters<EditorStore['update']>[1]) => {

@@ -1785,3 +1785,8 @@ kabul dilimleri [doğrulama kaydında](verification/DATA_ACCESS_2026-10-06.md) l
 - Ölçüm artık 1000×600 ve 1280×720'de de yapılıyor (gerçek kullanıcı penceresi); akış tuvali 140px → ~335px.
 - Kısa ekranda (<780px) editör rotasında üst kabuk çubuğu gizlenir; ≤1320px'te komutlar başlığın altına sarar, akış araç çubuğu tek kaydırılabilir satır, "adım ekle" düğmeleri ikon (ad ekran okuyucuda ve ipucunda), mini harita ≤1100px'te gizli.
 - Akış adımları tür ikonlu (başlat/sayfa/karar/veri kaynağı/değişken/alt akış/aktarım/bitiş) ve yumuşak renkli ikon karoları; breadcrumb yalnız Ekran modunda.
+
+## 2026-10-08 — Editör cilası: bileşen paleti, boş inspector, kural oluşturucu
+- Palet: bileşen başına ikon karosu, gerçek placeholder'lı arama, okunur ekleme ipucu. Boş özellik paneli (ekran ve akış): ikon + başlık + açıklama + ipucu.
+- Küçük pencerede akış araç çubuğu artık kaydırmak yerine sarıyor (Otomatik yerleşim/Grup/Sil her zaman erişilebilir).
+- Kural oluşturucu: koşul grubu başlığı, iç içe grup görsel hiyerarşisi (kesik çizgili iç grup), satır kartları, kesik çizgili "ekle" eylemleri, kompakt grup işleci.

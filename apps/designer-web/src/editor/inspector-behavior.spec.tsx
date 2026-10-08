@@ -146,6 +146,8 @@ it('disables properties on linked screens and shows an empty inspector with no s
   f.store.selectParent();
   await waitFor(() => {
     expect(screen.getByText(f.label('editor.selectHint'))).toBeTruthy();
+    expect(screen.getByText(f.label('editor.selectTitle'))).toBeTruthy();
+    expect(screen.getByText(f.label('editor.selectTip'))).toBeTruthy();
   });
 });
 it('uses the declared icon enumeration instead of incompatible visual icon names', async () => {

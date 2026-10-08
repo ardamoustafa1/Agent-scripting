@@ -898,7 +898,15 @@ function FlowCanvas({
                 }}
               />
             )}
-            {!selected && !edge && !note && <p>{t('designer.editor.selectHint')}</p>}
+            {!selected && !edge && !note && (
+              <div className="ed-inspector-empty">
+                <span className="ed-inspector-empty-icon" aria-hidden>
+                  <Workflow size={22} />
+                </span>
+                <strong>{t('designer.flow.selectTitle')}</strong>
+                <p>{t('designer.editor.selectHint')}</p>
+              </div>
+            )}
             {flow.designer?.groups.map((group) => (
               <div key={group.id}>
                 <Badge>{group.label}</Badge>

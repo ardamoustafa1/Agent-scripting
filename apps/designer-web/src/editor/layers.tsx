@@ -1,6 +1,27 @@
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { ChevronRight, ChevronDown, GripVertical } from 'lucide-react';
+import {
+  AlertTriangle,
+  Box,
+  CheckSquare,
+  ChevronDown,
+  ChevronRight,
+  CircleDot,
+  Component,
+  FileText,
+  GripVertical,
+  Heading,
+  ListChecks,
+  MessageSquareQuote,
+  MousePointerClick,
+  Plug,
+  Search,
+  ShieldCheck,
+  SquarePen,
+  ToggleLeft,
+  Type,
+  type LucideIcon,
+} from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,6 +31,29 @@ import { BLOCK_IDS } from './blocks.js';
 import { findComponents, searchText } from './search.js';
 import { editorRegistry, useEditor, type EditorStore } from './store.js';
 
+const COMPONENT_ICONS: Record<string, LucideIcon> = {
+  box: Box,
+  button: MousePointerClick,
+  webService: Plug,
+  scriptText: MessageSquareQuote,
+  privacyNotice: ShieldCheck,
+  explicitConsent: ShieldCheck,
+  callout: AlertTriangle,
+  alert: AlertTriangle,
+  objectionHandler: MessageSquareQuote,
+  checklist: ListChecks,
+  checkboxGroup: ListChecks,
+  checkbox: CheckSquare,
+  toggle: ToggleLeft,
+  radioGroup: CircleDot,
+  text: Type,
+  heading: Heading,
+  richContent: FileText,
+  textInput: SquarePen,
+  textArea: SquarePen,
+  numberInput: SquarePen,
+  currencyInput: SquarePen,
+};
 function PaletteItem({ type, insert }: { type: string; insert: () => void }) {
   const { t } = useTranslation();
   const label = t(`designer.editor.componentNames.${type}`, { defaultValue: type });
@@ -33,6 +77,12 @@ function PaletteItem({ type, insert }: { type: string; insert: () => void }) {
             drag.listeners?.['onKeyDown']?.(event);
         }}
       >
+        <span className="ed-palette-icon" aria-hidden>
+          {(() => {
+            const Icon = COMPONENT_ICONS[type] ?? Component;
+            return <Icon size={16} />;
+          })()}
+        </span>
         {label}
       </Button>
     </div>
@@ -187,12 +237,16 @@ export function LeftPanel({ store }: { store: EditorStore }) {
         <>
           <Input
             label={t('designer.editor.search')}
+            placeholder={t('designer.editor.searchPlaceholder')}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
             }}
           />
-          <p>{t('designer.editor.insertionTarget', { name: page?.name ?? '' })}</p>
+          <p className="ed-palette-hint">
+            <Search size={14} aria-hidden />
+            {t('designer.editor.insertionTarget', { name: page?.name ?? '' })}
+          </p>
           <div className="ed-palette">
             {categories.map((category) => (
               <section key={category}>

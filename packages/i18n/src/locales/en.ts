@@ -1714,6 +1714,7 @@ export const en = {
       connectTarget: 'Target node',
       connect: 'Connect nodes',
       groups: { flow: 'Flow', add: 'Add step', arrange: 'Arrange' },
+      selectTitle: 'Select a step',
       a11yNode:
         'Press Enter to select. Use X/Y controls to position and target selector to connect.',
       a11yEdge: 'Press Enter to edit this connection.',
@@ -2398,6 +2399,9 @@ export const en = {
       rules: 'Rules',
       search: 'Search components',
       selectHint: 'Select a component to edit its properties.',
+      searchPlaceholder: 'Search, e.g. button',
+      selectTitle: 'Nothing selected',
+      selectTip: 'Tip: drag components from the left panel onto the canvas.',
       operationFailed: 'Invalid operation. Check component rules and linked screen permissions.',
       invalidProps: 'Invalid property: {{property}}',
       invalidExpression: 'Check expression syntax.',

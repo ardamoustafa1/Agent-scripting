@@ -505,3 +505,71 @@
     justify-content: center;
   }
 }
+
+/* Small windows: wrap instead of hiding the right-hand actions. */
+@media (max-width: 1320px) {
+  .fd-tools {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    row-gap: var(--vb-space-2);
+  }
+  .fd-arrange {
+    margin-inline-start: auto;
+  }
+}
+
+/* Rule builder: readable hierarchy, compact controls ----------------------- */
+.rb-builder > .vb-button:first-child {
+  align-self: flex-end;
+  color: var(--vb-color-info);
+  font-weight: 550;
+}
+.rb-group {
+  gap: var(--vb-space-3);
+  padding: var(--vb-space-4);
+  border-radius: var(--vb-radius-lg);
+  background: var(--vb-color-surface);
+}
+.rb-group .rb-group {
+  background: var(--vb-color-surface-raised);
+  border-style: dashed;
+  border-color: var(--vb-color-border-strong);
+}
+.rb-group > legend {
+  padding-inline: var(--vb-space-2);
+  font-size: var(--vb-font-size-xs);
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vb-color-text-muted);
+}
+.rb-group > .vb-form-field {
+  max-inline-size: 16rem;
+}
+.rb-group > div:not(.rb-actions):not(.vb-form-field) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--vb-space-2) var(--vb-space-3);
+  padding: var(--vb-space-3);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  background: var(--vb-color-surface-raised);
+}
+.rb-group .rb-group > div:not(.rb-actions):not(.vb-form-field) {
+  background: var(--vb-color-surface);
+}
+.rb-actions .vb-button {
+  border: 1px dashed var(--vb-color-border-strong);
+  color: var(--vb-color-text);
+}
+.rb-actions .vb-button:hover:not(:disabled) {
+  border-style: solid;
+  border-color: var(--vb-color-info);
+  color: var(--vb-color-info);
+}
+@media (max-width: 700px) {
+  .rb-group > div:not(.rb-actions):not(.vb-form-field) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

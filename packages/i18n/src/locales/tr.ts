@@ -1729,6 +1729,7 @@ export const tr: Catalog = {
       connectTarget: 'Hedef düğüm',
       connect: 'Düğümleri bağla',
       groups: { flow: 'Akış', add: 'Adım ekle', arrange: 'Düzen' },
+      selectTitle: 'Bir adım seçin',
       a11yNode:
         'Enter ile seçin. Konum için X/Y alanlarını, bağlantı için hedef seçiciyi kullanın.',
       a11yEdge: 'Bağlantıyı düzenlemek için Enter tuşuna basın.',
@@ -2426,6 +2427,9 @@ export const tr: Catalog = {
       rules: 'Kurallar',
       search: 'Bileşen ara',
       selectHint: 'Özelliklerini düzenlemek için bir bileşen seçin.',
+      searchPlaceholder: 'Ara, örn. düğme',
+      selectTitle: 'Hiçbir şey seçili değil',
+      selectTip: 'İpucu: bileşenleri soldaki panelden tuvale sürükleyin.',
       operationFailed: 'İşlem geçersiz. Kuralları ve bağlı ekran izinlerini kontrol edin.',
       invalidProps: 'Geçersiz özellik: {{property}}',
       invalidExpression: 'İfade sözdizimini kontrol edin.',

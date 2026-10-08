@@ -271,3 +271,82 @@
     min-block-size: 40px;
   }
 }
+
+/* Palette: icon tiles, readable hint, real placeholder ---------------------- */
+.ed-workspace .ed-palette-item {
+  display: flex;
+  align-items: center;
+  gap: var(--vb-space-1);
+  padding-inline-start: var(--vb-space-1);
+  border-radius: var(--vb-radius-md);
+  min-block-size: 44px;
+}
+.ed-workspace .ed-palette-item .vb-button {
+  flex: 1;
+  justify-content: flex-start;
+  gap: var(--vb-space-3);
+  font-weight: 550;
+}
+.ed-palette-icon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: var(--vb-radius-sm, 6px);
+  background: var(--vb-color-info-soft);
+  color: var(--vb-color-info);
+}
+.ed-workspace .ed-palette h2 {
+  margin-block: var(--vb-space-4) var(--vb-space-1);
+  padding-inline: var(--vb-space-1);
+  letter-spacing: 0.06em;
+}
+.ed-palette-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--vb-space-2);
+  margin: 0;
+  font-size: var(--vb-font-size-xs);
+  color: var(--vb-color-text-muted);
+}
+.ed-palette-hint svg {
+  flex-shrink: 0;
+  margin-block-start: 2px;
+}
+.ed-workspace .ed-left .vb-form-field {
+  padding-block-end: var(--vb-space-2);
+}
+
+/* Empty inspector --------------------------------------------------------- */
+.ed-inspector-empty {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--vb-space-2);
+  padding: var(--vb-space-8) var(--vb-space-5);
+  text-align: center;
+  color: var(--vb-color-text-muted);
+}
+.ed-inspector-empty strong {
+  color: var(--vb-color-text);
+  font-size: var(--vb-font-size-md, 15px);
+}
+.ed-inspector-empty p {
+  margin: 0;
+  max-inline-size: 28ch;
+}
+.ed-inspector-empty small {
+  max-inline-size: 30ch;
+  font-size: var(--vb-font-size-xs);
+}
+.ed-inspector-empty-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 48px;
+  block-size: 48px;
+  margin-block-end: var(--vb-space-2);
+  border-radius: var(--vb-radius-lg);
+  border: 1px dashed var(--vb-color-border-strong);
+  background: var(--vb-color-surface);
+  color: var(--vb-color-text-muted);
+}
