@@ -337,8 +337,16 @@ for (const theme of ['light', 'dark']) {
     }, theme);
     await page.goto(`/scripts/${scriptId}/versions/1/edit`);
     await expect(page.locator('[data-editor-node="home-root"]')).toBeAttached();
+    await expect(page.locator('.ed-runtime [data-editor-node="btn-next"] button')).toBeVisible();
+    await expect(page.locator('.ed-runtime [data-editor-node="btn-next"] button')).toBeInViewport();
+    await page.screenshot({ path: test.info().outputPath('canvas-before-comparison.png') });
     await page.evaluate('document.fonts.ready.then(() => undefined)');
-    await expect(page).toHaveScreenshot(`designer-web-${theme}.png`, { fullPage: true });
+    // Compare the visible viewport so the inert preview remains in the capture.
+    // Retain the independent raw image as evidence of the painted canvas.
+    await expect(page).toHaveScreenshot(`designer-web-${theme}.png`, {
+      fullPage: false,
+      animations: 'allow',
+    });
   });
 }
 

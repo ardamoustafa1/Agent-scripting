@@ -58,6 +58,8 @@ for (const { theme, width, locale } of cases) {
           });
         if (url.pathname === `/api/v1/scripts/${scriptId}/versions/1`)
           return route.fulfill({ json: { document: { variables: [] } } });
+        if (url.pathname === `/api/v1/scripts/${scriptId}/branches`)
+          return route.fulfill({ json: [] });
         return route.fulfill({ json: fixtureResponse(url.pathname + url.search) });
       },
     );
@@ -81,7 +83,12 @@ for (const { theme, width, locale } of cases) {
       if (state === 'empty') {
         await expect(page.locator('.dw-script-empty')).toBeVisible();
         await expect(page.locator('.dw-script-panel table')).toHaveCount(0);
-      } else await expect(page.locator('.dw-script-panel table')).toBeVisible();
+      } else {
+        await expect(page.locator('.dw-script-panel table')).toBeVisible();
+        await expect(
+          page.getByText(locale === 'tr' ? 'Henüz dal yok.' : 'No branches yet.', { exact: true }),
+        ).toBeVisible();
+      }
       const overflow = await page.evaluate(() =>
         [...document.querySelectorAll('*')]
           .filter((el) => el.getBoundingClientRect().right > innerWidth + 1)
