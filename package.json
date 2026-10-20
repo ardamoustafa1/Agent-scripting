@@ -43,7 +43,7 @@
     "test:flaky": "node scripts/playwright-lanes.mjs flaky",
     "test:quarantine": "node scripts/playwright-lanes.mjs quarantine",
     "test:visual": "node scripts/playwright-lanes.mjs visual",
-    "test:policy": "node --test scripts/collaboration-routing.spec.mjs scripts/coverage-gate.spec.mjs scripts/flaky-policy.spec.mjs infra/k6/profile.spec.mjs scripts/k6-preflight.spec.mjs scripts/quality-gates.spec.mjs scripts/secret-scan.spec.mjs scripts/dev-bootstrap.spec.mjs scripts/dev-mtls-proxy.spec.mjs",
+    "test:policy": "node --test scripts/collaboration-routing.spec.mjs scripts/coverage-gate.spec.mjs scripts/flaky-policy.spec.mjs infra/k6/profile.spec.mjs scripts/k6-preflight.spec.mjs scripts/quality-gates.spec.mjs scripts/secret-scan.spec.mjs scripts/dev-bootstrap.spec.mjs scripts/dev-mtls-proxy.spec.mjs scripts/dependency-security.spec.mjs",
     "quarantine:check": "node scripts/flaky-policy.mjs",
     "test:live": "node scripts/live-acceptance.mjs",
     "test:typecheck": "tsc -p tests/tsconfig.json --noEmit && tsc -p tests/verification/tsconfig.json --noEmit",
@@ -91,6 +91,8 @@
       "mysql2": "^3.23.1",
       "basic-ftp": "^6.2.1",
       "http-cache-semantics": "4.3.0",
+      "postcss-selector-parser": "7.1.6",
+      "mammoth>argparse": "2.0.1",
       "vitest@4.1.10": "4.1.11",
       "@vitest/mocker@4.1.10": "4.1.11",
       "@vitest/coverage-v8@4.1.10": "4.1.11"
