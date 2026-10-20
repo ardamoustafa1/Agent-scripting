@@ -248,8 +248,10 @@ afterAll(async () => {
   await owner.$disconnect();
 });
 const mode = async (page: Page, name: string) => {
-  await page.getByRole('combobox', { name: 'Editor', exact: true }).click();
-  await page.getByRole('option', { name, exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Editor', exact: true })
+    .getByRole('button', { name, exact: true })
+    .click();
 };
 /** Names the elements wider than the viewport so CI failures say what overflowed. */
 const WIDE_ELEMENTS = `(() => {
@@ -602,13 +604,16 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
         'connectors',
         'secrets',
         'ai',
+        'serviceClients',
         'audit',
         'trust',
+        'compliance',
         'security',
         'data',
         'branding',
         'simulator',
         'systemHealth',
+        'mySessions',
       ],
       [
         'analytics',
@@ -624,10 +629,10 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
       ],
       true,
     ],
-    ['security_auditor', ['audit', 'trust'], [], false],
+    ['security_auditor', ['audit', 'trust', 'compliance', 'mySessions'], [], false],
     [
       'script_designer',
-      [],
+      ['mySessions'],
       [
         'campaigns',
         'scripts',
@@ -642,33 +647,33 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
     ],
     [
       'script_approver',
-      [],
+      ['mySessions'],
       ['campaigns', 'scripts', 'screens', 'variables', 'templates', 'releases'],
       false,
     ],
     [
       'integration_engineer',
-      ['connectors', 'secrets', 'simulator', 'systemHealth'],
+      ['connectors', 'secrets', 'simulator', 'systemHealth', 'mySessions'],
       ['campaigns', 'integrations'],
       false,
     ],
     [
       'campaign_manager',
-      ['analytics', 'users'],
+      ['analytics', 'users', 'mySessions'],
       ['analytics', 'campaigns', 'scripts', 'variables', 'templates', 'releases'],
       false,
     ],
     [
       'supervisor',
-      ['analytics', 'users'],
+      ['analytics', 'users', 'mySessions'],
       ['analytics', 'campaigns', 'scripts', 'variables', 'templates', 'releases'],
       false,
     ],
-    ['agent', [], ['scripts', 'screens', 'variables', 'templates', 'releases'], false],
-    ['report_viewer', ['analytics'], ['analytics'], false],
+    ['agent', ['mySessions'], ['scripts', 'screens', 'variables', 'templates', 'releases'], false],
+    ['report_viewer', ['analytics', 'mySessions'], ['analytics'], false],
     [
       'api_client',
-      ['analytics'],
+      ['analytics', 'mySessions'],
       ['analytics', 'campaigns', 'scripts', 'screens', 'variables', 'templates', 'releases'],
       false,
     ],
