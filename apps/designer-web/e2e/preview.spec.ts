@@ -56,6 +56,41 @@ async function preview(page: Page) {
       .getByRole('button', { name: 'Next', exact: true }),
   ).toBeVisible();
 }
+for (const width of [390, 768])
+  test(`preview stacks controls and keeps its device usable at ${width}px`, async ({
+    page,
+  }, info) => {
+    await page.setViewportSize({ width, height: 900 });
+    await preview(page);
+    const sidebar = await page.locator('.pv-sidebar').boundingBox();
+    const stage = await page.locator('.pv-stage').boundingBox();
+    expect(sidebar).not.toBeNull();
+    expect(stage).not.toBeNull();
+    expect(stage!.y).toBeGreaterThanOrEqual(sidebar!.y + sidebar!.height);
+    expect(stage!.width).toBeGreaterThan(200);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+    await page.screenshot({ path: info.outputPath(`preview-${width}.png`), fullPage: true });
+  });
+
+test('compact editor retains visible collaboration connection feedback', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`/scripts/${scriptId}/versions/1/edit`);
+  await expect(
+    page.getByRole('button', { name: 'Join collaborative editing', exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('.lc-presence .vb-badge')).toBeVisible();
+});
+test('mobile editor keeps collaboration actions within its workspace', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.goto(`/scripts/${scriptId}/versions/1/edit`);
+  const join = page.getByRole('button', { name: 'Join collaborative editing', exact: true });
+  await expect(join).toBeVisible();
+  const button = await join.boundingBox();
+  const workspace = await page.locator('.ed-workspace').boundingBox();
+  expect(button!.x + button!.width).toBeLessThanOrEqual(workspace!.x + workspace!.width);
+});
 test('runs actual runtime in a device frame and restores a selected state', async ({ page }) => {
   await preview(page);
   await page

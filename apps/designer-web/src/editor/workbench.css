@@ -122,7 +122,9 @@
   margin-inline-start: auto;
   padding: 0;
   border: 0;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 .ed-workspace .ed-breadcrumb:empty {
   display: none;
@@ -243,6 +245,7 @@
   }
   .ed-workspace .ed-modebar .lc-presence {
     flex-shrink: 0;
+    flex-wrap: nowrap;
   }
 }
 @media (min-width: 901px) and (max-width: 1320px) {
@@ -255,9 +258,6 @@
   }
   .ed-workspace .ed-identity .ed-document-title {
     max-inline-size: 14ch;
-  }
-  .ed-workspace .ed-modebar .lc-presence .vb-badge {
-    display: none;
   }
 }
 @media (min-width: 901px) and (max-height: 780px) {

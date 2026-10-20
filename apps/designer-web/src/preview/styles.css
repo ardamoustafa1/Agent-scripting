@@ -250,6 +250,9 @@
   padding: var(--vb-space-4);
 }
 @media (max-width: 900px) {
+  .pv-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .pv-toolbar {
     position: static;
   }
