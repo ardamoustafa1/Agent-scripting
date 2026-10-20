@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 import { editorFixture } from '../editor/fixtures.js';
 import { mountDesigner } from '../fixtures.spec.helpers.js';
-import { scriptFixture, scriptId } from '../test-fixtures.js';
+import { campaignFixture, pageFixture, scriptFixture, scriptId } from '../test-fixtures.js';
 
 import AiStudio from './ai.js';
 
@@ -27,6 +27,7 @@ it.each([false, 'unavailable'] as const)(
 it('creates a reviewed draft from the validated AI document with CSRF and navigates to its script', async () => {
   const document = editorFixture().document;
   const f = await mountDesigner(<AiStudio />, {
+    'GET /v1/campaigns?limit=100&sort=name': pageFixture([campaignFixture]),
     '/v1/ai/status': { enabled: true },
     'POST /v1/ai/suggestions': {
       callId: scriptId,
@@ -46,6 +47,13 @@ it('creates a reviewed draft from the validated AI document with CSRF and naviga
   fireEvent.click(screen.getByRole('button', { name: f.i18n.t('ai.generate') }));
   const accept = await screen.findByRole('button', { name: f.i18n.t('ai.accept') });
   expect(f.requests.some((r) => r.path === '/v1/scripts')).toBe(false);
+  expect(accept.hasAttribute('disabled')).toBe(true);
+  fireEvent.change(await screen.findByLabelText(f.label('workspace.createCampaign')), {
+    target: { value: campaignFixture.id },
+  });
+  await waitFor(() => {
+    expect(accept.hasAttribute('disabled')).toBe(false);
+  });
   fireEvent.click(accept);
   await waitFor(() => {
     expect(f.router.state.location.pathname).toBe(`/scripts/${scriptId}`);
@@ -53,6 +61,7 @@ it('creates a reviewed draft from the validated AI document with CSRF and naviga
   expect(f.requests.find((r) => r.path === '/v1/scripts')!.body).toEqual({
     name: document.meta.name,
     tags: document.meta.tags,
+    campaignId: campaignFixture.id,
   });
   const save = f.requests.find((r) => r.path.endsWith('/versions'))!;
   expect(save.body).toEqual({ document });
@@ -98,6 +107,62 @@ it.each([{ text: 'Synthetic improvement' }, { synthetic: true }])(
     expect(f.requests.some((r) => r.path === '/v1/scripts')).toBe(false);
   },
 );
+
+it('retries a failed AI version save without creating another script or changing its idempotency key', async () => {
+  const document = editorFixture().document;
+  const f = await mountDesigner(<AiStudio />, {
+    'GET /v1/campaigns?limit=100&sort=name': pageFixture([campaignFixture]),
+    '/v1/ai/status': { enabled: true },
+    'POST /v1/ai/suggestions': {
+      callId: scriptId,
+      task: 'draft',
+      requiresHumanApproval: true,
+      value: document,
+      inputTokens: 10,
+      outputTokens: 5,
+      maskedCount: 0,
+    },
+    'POST /v1/scripts': scriptFixture,
+    [`POST /v1/scripts/${scriptId}/versions`]: Response.json(
+      { code: 'VERBIS_HTTP_UNAVAILABLE' },
+      { status: 503 },
+    ),
+  });
+  const campaign = await screen.findByLabelText(f.label('workspace.createCampaign'));
+  await waitFor(() => {
+    expect(campaign.hasAttribute('disabled')).toBe(false);
+  });
+  fireEvent.change(campaign, {
+    target: { value: campaignFixture.id },
+  });
+  fireEvent.change(screen.getByLabelText(f.i18n.t('ai.source')), {
+    target: { value: 'Synthetic retry' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.i18n.t('ai.generate') }));
+  const accept = await screen.findByRole('button', { name: f.i18n.t('ai.accept') });
+  await waitFor(() => {
+    expect(accept.hasAttribute('disabled')).toBe(false);
+  });
+  fireEvent.click(accept);
+  await screen.findByText(f.i18n.t('ai.error'));
+  f.responses[`POST /v1/scripts/${scriptId}/versions`] = {};
+  await waitFor(() => {
+    expect(
+      screen.getByRole('button', { name: f.i18n.t('ai.accept') }).hasAttribute('disabled'),
+    ).toBe(false);
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.i18n.t('ai.accept') }));
+  await waitFor(() => {
+    expect(f.router.state.location.pathname).toBe(`/scripts/${scriptId}`);
+  });
+  expect(f.requests.filter((r) => r.path === '/v1/scripts')).toHaveLength(1);
+  const versions = f.requests.filter((r) => r.path.endsWith('/versions'));
+  expect(versions).toHaveLength(2);
+  const firstKey = new Headers(versions[0]!.init?.headers).get('idempotency-key');
+  expect(firstKey).toBeTruthy();
+  expect(new Headers(versions[1]!.init?.headers).get('idempotency-key')).toBe(firstKey);
+  expect(screen.queryByText(f.i18n.t('ai.error'))).toBeNull();
+});
 
 it.each([
   ['en', 'Retry'],

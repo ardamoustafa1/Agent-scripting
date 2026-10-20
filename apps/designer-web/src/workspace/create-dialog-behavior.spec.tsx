@@ -142,8 +142,7 @@ it('starts a script from a tested template and opens its first version', async (
     target: { value: 'Synthetic survey' },
   });
   fireEvent.click(screen.getByRole('radio', { name: f.label('workspace.startWith.template') }));
-  // The campaign is chosen by the template flow, so its field is gone.
-  expect(screen.queryByRole('combobox', { name: f.label('workspace.createCampaign') })).toBeNull();
+  await chooseCampaign(f.label('workspace.createCampaign'));
   const create = screen.getByRole('button', { name: f.label('workspace.create') });
   expect(create.hasAttribute('disabled')).toBe(true);
   const picker = await screen.findByRole('combobox', {
@@ -163,5 +162,5 @@ it('starts a script from a tested template and opens its first version', async (
   expect(f.router.state.location.pathname).toBe(`/scripts/${scriptFixture.id}/versions/1/edit`);
   const request = f.requests.find((r) => r.method === 'POST')!;
   expect(request.path).toBe('/v1/templates/builtin-nps-survey/instantiate');
-  expect(request.body).toEqual({ name: 'Synthetic survey' });
+  expect(request.body).toEqual({ name: 'Synthetic survey', campaignId: campaignFixture.id });
 });

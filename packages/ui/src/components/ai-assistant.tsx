@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AiRequestSchema, type AiRequest, type AiSuggestion } from '@verbis/shared-types';
@@ -14,9 +14,11 @@ export function AiAssistant({
   review,
   onAccept,
   allowedTasks,
+  draftTarget,
 }: {
   mode: 'designer' | 'agent';
   allowedTasks?: readonly AiRequest['task'][];
+  draftTarget?: { control: ReactNode; ready: boolean };
   generate: (input: AiRequest) => Promise<AiSuggestion>;
   review?: boolean;
   onAccept?: (value: unknown, task: AiRequest['task']) => Promise<void>;
@@ -109,6 +111,7 @@ export function AiAssistant({
       />
       {mode === 'designer' && task === 'draft' && (
         <>
+          {draftTarget?.control}
           <Input
             type="file"
             label={t('ai.file')}
@@ -161,12 +164,27 @@ export function AiAssistant({
       {result && (
         <>
           <h3>{t('ai.output')}</h3>
+          {/* Scrollable output needs keyboard focus to review a long suggestion. */}
+          {/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- Keyboard access to scrollable output */}
           <pre
             aria-label={t('ai.preview')}
-            style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}
+            role="region"
+            tabIndex={0}
+            style={{
+              whiteSpace: 'pre-wrap',
+              overflowWrap: 'anywhere',
+              minInlineSize: 0,
+              maxBlockSize: '24rem',
+              overflow: 'auto',
+              padding: 'var(--vb-space-3)',
+              border: '1px solid var(--vb-color-border)',
+              borderRadius: 'var(--vb-radius-md)',
+              background: 'var(--vb-color-bg)',
+            }}
           >
             {JSON.stringify(result.value, null, 2)}
           </pre>
+          {/* eslint-enable jsx-a11y/no-noninteractive-tabindex */}
           <p>
             {t('ai.usageSummary', {
               tokens: result.inputTokens + result.outputTokens,
@@ -175,8 +193,14 @@ export function AiAssistant({
           </p>
           {onAccept && (
             <Button
-              disabled={accepted || busy || review === false}
+              disabled={
+                accepted ||
+                busy ||
+                review === false ||
+                (result.task === 'draft' && draftTarget?.ready === false)
+              }
               onClick={() => {
+                setFailed(false);
                 setBusy(true);
                 void onAccept(result.value, result.task)
                   .then(() => {

@@ -112,6 +112,7 @@ it('handles acceptance failure without marking a suggestion accepted', async () 
   });
   fireEvent.click(screen.getByRole('button', { name: 'ai.copy' }));
   await screen.findByText('ai.saved');
+  expect(screen.queryByText('ai.error')).toBeNull();
 });
 it('validates scenario JSON before sending and preserves its structure', async () => {
   const generate = vi.fn().mockResolvedValue({

@@ -1,23 +1,22 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useId, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
-import { asSubject } from '@verbis/authz';
-import { useCan, useAbility } from '@verbis/authz/react';
+import { useCan } from '@verbis/authz/react';
 import { Button, Dialog, Input, Textarea, Alert, Radio, Select } from '@verbis/ui';
 
 import {
   request,
   ResourceSchema,
-  PageSchema,
   ApiError,
   type CreateCampaign,
   type CreateScript,
 } from '../api/client.js';
 
 import { useWorkspace } from './context.js';
+import { CreateCampaignPicker, useCreateCampaigns } from './create-campaign.js';
 
 const TemplateList = z.array(z.object({ id: z.string(), name: z.string(), builtIn: z.boolean() }));
 const Instantiated = z.object({
@@ -38,7 +37,6 @@ export function CreateDialog({
   const { session } = useWorkspace();
   const navigate = useNavigate();
   const query = useQueryClient();
-  const ability = useAbility();
   const allowed = useCan('create', kind === 'campaigns' ? 'Campaign' : 'Script');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -58,43 +56,23 @@ export function CreateDialog({
     queryFn: ({ signal }) => request('/v1/templates', TemplateList, { signal }),
   });
   const fromTemplate = kind === 'scripts' && start === 'template';
-  const campaignFieldId = useId();
-  const campaigns = useQuery({
-    queryKey: [
-      'workspace',
-      session.user.tenantId,
-      session.user.id,
-      session.session.id,
-      'create-campaigns',
-    ],
-    enabled: open && allowed && kind === 'scripts',
-    queryFn: async ({ signal }) => {
-      const rows = [];
-      let cursor: string | null = null;
-      do {
-        const params = new URLSearchParams({ limit: '100', sort: 'name' });
-        if (cursor) params.set('cursor', cursor);
-        const page = await request(`/v1/campaigns?${params}`, PageSchema, { signal });
-        rows.push(...page.data);
-        cursor = page.page.nextCursor;
-      } while (cursor);
-      return rows.filter(
-        (c) =>
-          c.status !== 'archived' &&
-          ability.can('read', asSubject('Campaign', { id: c.id })) &&
-          ability.can('create', asSubject('Script', { campaignIds: [c.id] })),
-      );
-    },
-  });
+  const campaigns = useCreateCampaigns(open && allowed && kind === 'scripts');
   const selectedCampaign = campaigns.data?.some((c) => c.id === campaignId) === true;
   const submission = useRef<{ payload: string; key: string } | null>(null);
   const instantiate = useMutation({
-    mutationFn: () =>
-      request(`/v1/templates/${encodeURIComponent(templateId)}/instantiate`, Instantiated, {
+    mutationFn: () => {
+      if (!allowed || !selectedCampaign) throw new ApiError(403, 'VERBIS_AUTHZ_SCOPE_MISSING');
+      const body = { name, campaignId, ...(description.trim() ? { description } : {}) };
+      const payload = JSON.stringify({ templateId, ...body });
+      if (submission.current?.payload !== payload)
+        submission.current = { payload, key: crypto.randomUUID() };
+      return request(`/v1/templates/${encodeURIComponent(templateId)}/instantiate`, Instantiated, {
         method: 'POST',
         csrf: session.csrfToken,
-        body: { name, ...(description.trim() ? { description } : {}) },
-      }),
+        body,
+        idempotencyKey: submission.current.key,
+      });
+    },
     onSuccess: (value) => {
       void query.invalidateQueries({ queryKey: ['workspace', session.user.tenantId] });
       onOpenChange(false);
@@ -136,6 +114,7 @@ export function CreateDialog({
       void navigate(`/${kind}/${item.id}`);
     },
   });
+  const failure = fromTemplate ? instantiate.error : create.error;
   return (
     <Dialog
       open={open && allowed}
@@ -203,48 +182,15 @@ export function CreateDialog({
             )}
           </>
         )}
-        {kind === 'scripts' && !fromTemplate && (
-          <>
-            <div className="vb-form-field">
-              <label htmlFor={campaignFieldId}>{t('designer.workspace.createCampaign')}</label>
-              <select
-                id={campaignFieldId}
-                className="vb-input"
-                value={campaignId}
-                onChange={(event) => {
-                  setCampaignId(event.target.value);
-                }}
-                disabled={campaigns.isPending || campaigns.isError}
-                required
-              >
-                <option value="">{t('ui.select')}</option>
-                {(campaigns.data ?? []).map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <p>{t('designer.workspace.createCampaignHelp')}</p>
-            {campaigns.isError && (
-              <Alert tone="danger" title={t('designer.workspace.error')}>
-                <Button variant="secondary" onClick={() => void campaigns.refetch()}>
-                  {t('designer.workspace.retry')}
-                </Button>
-              </Alert>
-            )}
-            {campaigns.data?.length === 0 && (
-              <Alert tone="warning" title={t('designer.workspace.noCreateCampaign')} />
-            )}
-          </>
+        {kind === 'scripts' && (
+          <CreateCampaignPicker campaigns={campaigns} value={campaignId} onChange={setCampaignId} />
         )}
-        {instantiate.isError && <Alert tone="danger" title={t('designer.workspace.error')} />}
-        {create.isError && (
+        {failure && (
           <Alert
             tone="danger"
             title={t(
-              create.error instanceof ApiError && create.error.status === 403
-                ? create.error.code === 'VERBIS_AUTHZ_SCOPE_MISSING'
+              failure instanceof ApiError && failure.status === 403
+                ? failure.code === 'VERBIS_AUTHZ_SCOPE_MISSING'
                   ? 'designer.workspace.scopeMissing'
                   : 'designer.workspace.createForbidden'
                 : 'designer.workspace.error',
@@ -255,7 +201,9 @@ export function CreateDialog({
           type="submit"
           loading={create.isPending || instantiate.isPending}
           disabled={
-            !name.trim() || (fromTemplate ? !templateId : kind === 'scripts' && !selectedCampaign)
+            !name.trim() ||
+            (kind === 'scripts' && !selectedCampaign) ||
+            (fromTemplate && !templateId)
           }
         >
           {t('designer.workspace.create')}
