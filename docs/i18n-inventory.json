@@ -2127,6 +2127,7 @@
     "designer.preview.phases.started",
     "designer.preview.phases.waiting",
     "designer.preview.publish",
+    "designer.preview.recordingBlocked",
     "designer.preview.regression",
     "designer.preview.regressionHelp",
     "designer.preview.remove",
@@ -4842,6 +4843,7 @@
     "designer.preview.phases.started",
     "designer.preview.phases.waiting",
     "designer.preview.publish",
+    "designer.preview.recordingBlocked",
     "designer.preview.regression",
     "designer.preview.regressionHelp",
     "designer.preview.remove",
@@ -5432,7 +5434,7 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 1177,
+  "literalKeyCount": 1178,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
@@ -6604,7 +6606,7 @@
     },
     {
       "file": "apps/designer-web/src/pages/ai.tsx",
-      "line": 28
+      "line": 41
     },
     {
       "file": "apps/designer-web/src/pages/campaign-settings.tsx",
@@ -6716,39 +6718,43 @@
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 253
+      "line": 259
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 313
+      "line": 319
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 386
+      "line": 393
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 467
+      "line": 474
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 494
+      "line": 501
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 637
+      "line": 644
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 658
+      "line": 665
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 660
+      "line": 667
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 773
+      "line": 780
+    },
+    {
+      "file": "apps/designer-web/src/preview/studio.tsx",
+      "line": 839
     },
     {
       "file": "apps/designer-web/src/rules/assignment-rule.tsx",
@@ -6784,15 +6790,15 @@
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
-      "line": 143
+      "line": 122
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
-      "line": 193
+      "line": 172
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
-      "line": 245
+      "line": 191
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
@@ -7740,19 +7746,19 @@
     },
     {
       "file": "packages/ui/src/components/ai-assistant.tsx",
-      "line": 72
+      "line": 74
     },
     {
       "file": "packages/ui/src/components/ai-assistant.tsx",
-      "line": 82
+      "line": 84
     },
     {
       "file": "packages/ui/src/components/ai-assistant.tsx",
-      "line": 93
+      "line": 95
     },
     {
       "file": "packages/ui/src/components/ai-assistant.tsx",
-      "line": 193
+      "line": 217
     },
     {
       "file": "packages/ui/src/components/analytics-dashboard.tsx",

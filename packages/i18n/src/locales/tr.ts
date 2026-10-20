@@ -1520,6 +1520,8 @@ export const tr: Catalog = {
       syntheticHelp:
         'Başlangıç girdileri, mock’lar, etkileşimler ve beklenen sayfa/sonuç kaydedilir. Canlı çağrı veya hassas değişken kaydı saklanamaz.',
       syntheticConfirm: 'Tüm verilerin sentetik test verisi olduğunu onaylıyorum',
+      recordingBlocked:
+        'Bu oturum kaydedilemez: hassas değişken girdisi, canlı çağrı, geri yüklenmiş durum veya tamamlanmamış aksiyon içeriyor. Sentetik, hassas olmayan girdilerle yeniden başlatıp aksiyonları tamamladıktan sonra tekrar kaydedin.',
       regression: 'Yayın öncesi regresyon',
       scenariosRequired:
         'Kayıtlı regresyon senaryosu yok. İncelemeye gönderme, onay, yayın veya içe aktarma öncesinde en az bir başarılı senaryo ekleyin.',

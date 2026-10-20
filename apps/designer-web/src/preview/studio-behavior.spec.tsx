@@ -158,6 +158,31 @@ it('edits context JSON, diagnoses invalid context and allows a restart', async (
     expect(screen.queryByRole('alert')).toBeNull();
   });
 });
+it('explains rejected sensitive recordings inside the save dialog without persisting them', async () => {
+  const f = await setup();
+  json(f.label('preview.initialState'), '{"variables":{"privateValue":"synthetic"}}');
+  fireEvent.click(screen.getByRole('button', { name: f.label('preview.restart') }));
+  await waitFor(() => {
+    expect(
+      screen
+        .getByRole('button', { name: f.label('preview.saveScenario') })
+        .hasAttribute('disabled'),
+    ).toBe(false);
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.label('preview.saveScenario') }));
+  const dialog = await screen.findByRole('dialog');
+  fireEvent.change(within(dialog).getByLabelText(f.label('preview.scenarioName')), {
+    target: { value: 'Rejected sensitive recording' },
+  });
+  fireEvent.click(
+    within(dialog).getByRole('checkbox', { name: f.label('preview.syntheticConfirm') }),
+  );
+  fireEvent.click(within(dialog).getByRole('button', { name: f.label('preview.saveScenario') }));
+  expect((await within(dialog).findByRole('alert')).textContent).toContain(
+    f.label('preview.recordingBlocked'),
+  );
+  expect(f.store.getSnapshot().document.testScenarios ?? []).toHaveLength(0);
+});
 it('sets mock outcomes and debugger breakpoints without making live calls', async () => {
   const f = await setup();
   f.tab('dataSources');

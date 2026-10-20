@@ -153,6 +153,7 @@ export function PreviewStudio({
     [saveDialog, setSaveDialog] = useState(false),
     [name, setName] = useState(''),
     [synthetic, setSynthetic] = useState(false),
+    [recordingError, setRecordingError] = useState<'blocked' | 'failed' | null>(null),
     [error, setError] = useState(false);
   useSyncExternalStore(controller?.subscribe ?? none, controller?.getSnapshot ?? zero, zero);
   useEffect(() => {
@@ -219,6 +220,7 @@ export function PreviewStudio({
     controller.notify();
   };
   const saveScenario = () => {
+    setRecordingError(null);
     try {
       const scenario = controller?.scenario(name);
       if (!scenario || !synthetic) return;
@@ -228,8 +230,12 @@ export function PreviewStudio({
       setSaveDialog(false);
       setName('');
       setSynthetic(false);
-    } catch {
-      setError(true);
+    } catch (cause) {
+      setRecordingError(
+        cause instanceof Error && cause.message === 'VERBIS_PREVIEW_SYNTHETIC_ONLY'
+          ? 'blocked'
+          : 'failed',
+      );
     }
   };
   return (
@@ -343,6 +349,7 @@ export function PreviewStudio({
           }
           onClick={() => {
             setError(false);
+            setRecordingError(null);
             setSaveDialog(true);
           }}
         >
@@ -827,6 +834,16 @@ export function PreviewStudio({
         title={t('designer.preview.saveScenario')}
         description={t('designer.preview.syntheticHelp')}
       >
+        {recordingError && (
+          <Alert
+            title={t(
+              recordingError === 'blocked'
+                ? 'designer.preview.recordingBlocked'
+                : 'designer.preview.failed',
+            )}
+            tone="danger"
+          />
+        )}
         <Input
           label={t('designer.preview.scenarioName')}
           value={name}

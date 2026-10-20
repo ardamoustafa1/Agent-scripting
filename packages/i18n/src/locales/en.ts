@@ -1509,6 +1509,8 @@ export const en = {
       syntheticHelp:
         'Initial inputs, mocks, interactions and expected page/outcome are saved. Live calls and sensitive variable recordings cannot be saved.',
       syntheticConfirm: 'I confirm all data is synthetic test data',
+      recordingBlocked:
+        'This session cannot be saved: it includes sensitive variable inputs, a live call, a restored state or an unfinished action. Restart with synthetic, non-sensitive inputs and complete the actions before recording again.',
       regression: 'Pre-publication regression',
       scenariosRequired:
         'No regression scenarios are saved. Add at least one passing scenario before submitting, approving, publishing or importing.',
