@@ -318,6 +318,33 @@ it('creates and binds atomically inside the scoped designer’s campaign and exp
   expect(denied.statusCode).toBe(403);
   expect(denied.json()).toMatchObject({ code: 'VERBIS_AUTHZ_SCOPE_MISSING' });
   expect(await owner.script.count({ where: { tenantId: scoped.tenantId } })).toBe(0);
+  const fromTemplate = await call(
+    '/v1/templates/builtin-nps-survey/instantiate',
+    { name: 'Bound survey', campaignId: campaign.id },
+    scoped,
+    true,
+  );
+  expect(fromTemplate.statusCode, fromTemplate.body).toBe(201);
+  const templateScript = fromTemplate.json<{ script: { id: string } }>().script.id;
+  const templateVersion = await app.inject({
+    method: 'GET',
+    url: `/v1/scripts/${templateScript}/versions/1`,
+    headers: await scoped.auth(scoped.designerId),
+  });
+  expect(templateVersion.statusCode, templateVersion.body).toBe(200);
+  expect(
+    await owner.assignment.findMany({
+      where: { tenantId: scoped.tenantId, scriptId: templateScript, campaignId: campaign.id },
+    }),
+  ).toHaveLength(1);
+  const unboundTemplate = await call(
+    '/v1/templates/builtin-nps-survey/instantiate',
+    { name: 'Unbound survey' },
+    scoped,
+    true,
+  );
+  expect(unboundTemplate.statusCode).toBe(403);
+  expect(unboundTemplate.json()).toMatchObject({ code: 'VERBIS_AUTHZ_SCOPE_MISSING' });
   const created = await call(
     '/v1/scripts',
     { name: 'Bound', campaignId: campaign.id },

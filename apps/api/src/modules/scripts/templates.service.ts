@@ -48,8 +48,10 @@ export const InstantiateTemplateSchema = z
   .strictObject({
     name: z.string().trim().min(1).max(120),
     description: z.string().trim().max(2000).optional(),
+    campaignId: z.uuid().optional(),
   })
   .meta({ id: 'InstantiateTemplate' });
+export type InstantiateTemplateInput = z.output<typeof InstantiateTemplateSchema>;
 
 function sectorTemplate(sector: 'insurance' | 'ecommerce') {
   const document = minimalScript();
@@ -269,7 +271,7 @@ export class TemplatesService {
   }
 
   /** New script + draft version from a template (built-in or tenant). */
-  async instantiate(templateId: string, input: { name: string; description?: string | undefined }) {
+  async instantiate(templateId: string, input: InstantiateTemplateInput) {
     const builtIn = BUILT_IN.find((t) => t.id === templateId);
     let document: Record<string, unknown>;
     if (builtIn !== undefined) document = structuredClone(builtIn.document);
@@ -286,6 +288,7 @@ export class TemplatesService {
       name: input.name,
       tags: [],
       ...(input.description === undefined ? {} : { description: input.description }),
+      ...(input.campaignId === undefined ? {} : { campaignId: input.campaignId }),
     });
     const version = await this.scripts.createVersion(
       script.id,

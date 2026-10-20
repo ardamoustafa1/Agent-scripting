@@ -5,7 +5,7 @@ import { PackageImportRequestSchema } from '@verbis/shared-types';
 
 import { UuidSchema } from '../../common/dto.js';
 import { ZBody, ZParam, ZQuery } from '../../common/validation/zod.js';
-import { ApiOperation, ApiResponse, ApiTag } from '../../openapi/metadata.js';
+import { ApiOperation, ApiResponse, ApiTag, Idempotent } from '../../openapi/metadata.js';
 import { Can } from '../authz/permissions.js';
 
 import { PackageSchema } from './domain/package-format.js';
@@ -27,6 +27,7 @@ import {
   TEMPLATE_CATEGORIES,
   TemplatesService,
   type CreateTemplateInput,
+  type InstantiateTemplateInput,
 } from './templates.service.js';
 
 import type { FastifyReply } from 'fastify';
@@ -110,11 +111,12 @@ export class TemplatesController {
   @ApiOperation({ summary: 'Create a new script (draft version) from a template' })
   @ApiResponse(201, 'Script created')
   @Can('create', 'Script')
+  @Idempotent()
   @HttpCode(201)
   @Post(':id/instantiate')
   instantiate(
     @ZParam('id', z.string().min(1).max(64)) id: string,
-    @ZBody(InstantiateTemplateSchema) body: { name: string; description?: string },
+    @ZBody(InstantiateTemplateSchema) body: InstantiateTemplateInput,
   ) {
     return this.templates.instantiate(id, body);
   }

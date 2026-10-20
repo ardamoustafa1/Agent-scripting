@@ -1152,7 +1152,7 @@
       "controller": "PackagesController",
       "handler": "export",
       "file": "apps/api/src/modules/scripts/authoring.controller.ts",
-      "line": 128,
+      "line": 130,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1165,7 +1165,7 @@
       "controller": "PackagesController",
       "handler": "import",
       "file": "apps/api/src/modules/scripts/authoring.controller.ts",
-      "line": 147,
+      "line": 149,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1743,7 +1743,7 @@
       "controller": "SharedScreensController",
       "handler": "create",
       "file": "apps/api/src/modules/scripts/authoring.controller.ts",
-      "line": 47,
+      "line": 48,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1756,7 +1756,7 @@
       "controller": "SharedScreensController",
       "handler": "publish",
       "file": "apps/api/src/modules/scripts/authoring.controller.ts",
-      "line": 56,
+      "line": 57,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1825,7 +1825,7 @@
       "controller": "TemplatesController",
       "handler": "create",
       "file": "apps/api/src/modules/scripts/authoring.controller.ts",
-      "line": 101,
+      "line": 102,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1838,7 +1838,7 @@
       "controller": "TemplatesController",
       "handler": "instantiate",
       "file": "apps/api/src/modules/scripts/authoring.controller.ts",
-      "line": 110,
+      "line": 111,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [

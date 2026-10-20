@@ -5301,6 +5301,7 @@ export interface components {
       /** @enum {string} */
       status: 'draft' | 'active' | 'disabled' | 'error';
       health: unknown;
+      kind?: string;
     };
     ConnectorDeadLetterReplayRequest: {
       /** @default 100 */
@@ -6113,6 +6114,8 @@ export interface components {
     InstantiateTemplate: {
       name: string;
       description?: string;
+      /** Format: uuid */
+      campaignId?: string;
     };
     IssuedScimToken: {
       /** Format: uuid */
@@ -21632,7 +21635,10 @@ export interface operations {
   'Templates.instantiate': {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Makes the POST safely retryable for 24 hours (same key + same body ⇒ same response). */
+        'Idempotency-Key'?: string;
+      };
       path: {
         id: string;
       };

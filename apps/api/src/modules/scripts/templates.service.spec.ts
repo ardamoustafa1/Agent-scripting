@@ -66,6 +66,14 @@ function fixture() {
   return { service, scripts, tx, record, document, run };
 }
 describe('template authoring and tenant boundaries', () => {
+  it('carries the selected campaign into template creation so scoped authors can read their draft', async () => {
+    const f = fixture();
+    const campaignId = randomUUID();
+    await f.run(() =>
+      f.service.instantiate('builtin-nps-survey', { name: 'Scoped survey', campaignId }),
+    );
+    expect(f.scripts.create).toHaveBeenCalledWith({ name: 'Scoped survey', tags: [], campaignId });
+  });
   it('validates every shipped template during instantiation and preserves independent copies', async () => {
     const f = fixture();
     const templates = await f.service.list({});

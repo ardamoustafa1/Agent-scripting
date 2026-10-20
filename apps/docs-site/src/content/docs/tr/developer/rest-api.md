@@ -32304,6 +32304,16 @@ Requires: create:Script
         "minLength": 1,
         "maxLength": 64
       }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": false,
+      "description": "Makes the POST safely retryable for 24 hours (same key + same body ⇒ same response).",
+      "schema": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9._:-]{8,255}$"
+      }
     }
   ],
   "requestBody": {
@@ -39680,6 +39690,11 @@ Requires: update:User
       "description": {
         "type": "string",
         "maxLength": 2000
+      },
+      "campaignId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
       }
     },
     "required": [
