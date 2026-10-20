@@ -64,7 +64,7 @@ async function mockApi(page: Page) {
             {
               id: CONNECTOR,
               adapterType: 'generic',
-              config: { kind: 'simulator' },
+              kind: 'simulator',
               status: 'active',
             },
           ],

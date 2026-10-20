@@ -250,6 +250,15 @@ test('branding preview opens unsaved values, closes by keyboard and keeps the fo
   await expect(dialog.getByText('Unsaved synthetic brand')).toBeVisible();
   await expect(dialog.getByText('Unsaved agent title')).toBeVisible();
   await expect(dialog.getByText('Unsaved waiting text')).toBeVisible();
+  // Contrast is meaningful after the dialog and its backdrop finish fading in.
+  await expect
+    .poll(() => dialog.evaluate((element) => getComputedStyle(element).opacity))
+    .toBe('1');
+  await expect
+    .poll(() =>
+      page.locator('.vb-overlay').evaluate((element) => getComputedStyle(element).opacity),
+    )
+    .toBe('1');
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
