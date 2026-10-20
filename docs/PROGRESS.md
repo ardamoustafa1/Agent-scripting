@@ -2,8 +2,8 @@
 
 Related: [CLAUDE.md](../CLAUDE.md) · [ARCHITECTURE](ARCHITECTURE.md) · [DOMAIN](DOMAIN.md) · [SECURITY](SECURITY.md)
 
-**Current acceptance status (2026-10-06): local checks and dated evidence are recorded below; remote CI and disposable staging acceptance remain unverified.**
-See [REPO_QUALITY_2026-10-06](verification/REPO_QUALITY_2026-10-06.md), [FINAL_AUDIT](FINAL_AUDIT.md) and [ROADMAP](ROADMAP.md). The 2026-10-03 “tests not run” statement was historical, not the current status.
+**Current acceptance status (2026-10-11): local checks and live UI evidence are recorded below; remote CI on the reviewed changes and disposable staging acceptance remain unverified.**
+See [LIVE_UI_REVIEW_2026-10-11](verification/LIVE_UI_REVIEW_2026-10-11.md), [REPO_QUALITY_2026-10-06](verification/REPO_QUALITY_2026-10-06.md), [FINAL_AUDIT](FINAL_AUDIT.md) and [ROADMAP](ROADMAP.md). Earlier dated statements remain historical.
 
 **Completion criterion:** `✅ done` requires the applicable acceptance gates to pass in remote CI, with a run URL and dated evidence. Local passes and workflow wiring alone do not establish release readiness. Historical notes below retain their original dates and claims.
 
@@ -37,7 +37,7 @@ See [REPO_QUALITY_2026-10-06](verification/REPO_QUALITY_2026-10-06.md), [FINAL_A
 | 23 | Secure launch | LaunchIntent + opaque single-use codes ✅, s2s (mTLS) / embedded (platform-verified) / CTI-less JWS flows ✅, redeem + replay protection ✅, rate limit + anomaly audit ✅, preview sessions ✅, frame policy ✅, agent-web `/launch` ✅, integration + Playwright tests written (prompt 10) — remaining: remote CI acceptance, regenerate OpenAPI, connector-hub caller | SEC §4, ADR-0017 | 🟦 in progress |
 | 24 | Runtime session service | Sessions/state/events, realtime, multi-session and platform command bridge; local short-transaction fencing, recovery and push/ACK evidence below — remote CI, deployment and load acceptance pending | ARCH §4.3, ADR-0039 | 🟦 in progress |
 | 25 | agent-web | SSO/secure launch, omnichannel runtime, embedded layout, wrap-up/ACK, encrypted drafts/reconnect, preferences/keyboard and masked supervisor implemented; local unit/browser/performance evidence below; remote CI acceptance pending | AGENT_DESKTOP, ADR-0029 | 🟦 in progress |
-| 26 | designer-web: canvas | Studio shell and visual editor implemented: registry palette, virtual layers, common preview, patch history, binding/events/rules, draft save and WebService management with reviewed profiles; tests written; browser/a11y/performance verification pending | COMPETITIVE, ADR-0023, ADR-0024 | 🟦 in progress |
+| 26 | designer-web: canvas | Studio shell, palette/layers, common preview, patch history, binding/events/rules, draft save and WebService management implemented; local browser/a11y/performance and live editing evidence recorded 2026-10-11; remote CI acceptance pending | COMPETITIVE, ADR-0023, ADR-0024 | 🟦 in progress |
 | 27 | Component library & SDK | 67 registered screen types, Zod/i18n/property metadata, Storybook and unit/axe scenarios; reviewed bundle SDK + CLI + tenant enablement service; test execution and production host adapters pending | SCRIPT §4.1, ADR-0022 | 🟦 in progress |
 | 28 | Flow designer | React Flow + ELK, 8 node types, edge rules, badges, groups/comments, pinned subflow import; schema 1.1 migration and runtime actions; local test evidence below; remote CI acceptance pending | SCRIPT §7, ADR-0025 | 🟦 in progress |
 | 29 | No-code rule builder | Nested typed rules, expression conversion, node/decision/assignment/A-B eligibility; safe variable reference rename; local test evidence below; remote CI acceptance pending | SCRIPT §6, ADR-0025 | 🟦 in progress |
@@ -49,6 +49,26 @@ See [REPO_QUALITY_2026-10-06](verification/REPO_QUALITY_2026-10-06.md), [FINAL_A
 | 35 | Hardening & release | Observability, tests and deployment code authored: Docker/cosign, Helm HA stateless workloads, migration/canary, signed offline transport and DR; test execution, coverage/load, owner failover, image/cluster acceptance and restore evidence pending | SEC §9, docs/ops | 🟦 in progress |
 
 ## Log
+
+### 2026-10-20 — Canlıya hazırlık ve Awaken durum değerlendirmesi (kod değişmedi)
+
+- **Durum:** adım durumları değişmedi; hiçbir adım `✅ done` değil (uzak CI + staging kanıtı yok), adım 30 `⬜ todo`.
+- Yerel: `pnpm typecheck` 32/32 geçti (commit edilmemiş 70 dosyalık 2026-10-11 çalışmasıyla birlikte). Diğer yerel kapılar bu turda yeniden koşulmadı.
+- Uzak: `feat/differentiators-waves-1-3` `main`'in 35 commit önünde, uzağın 10 commit önünde; taslak PR'ın son CI'ı (2026-10-08) rota envanteri (policy) ve Linux editör görsel baseline'ları nedeniyle kırmızı. `main` üzerindeki zamanlanmış koşular her gün kırmızı: gerçek altyapı kabulü 339/345 (320 px taşma, rol beklentisi, nginx `/health`, WebKit simülatör; büyük kısmı dalda düzeltilmiş eski kod), canlı kabul `ADMIN_STATE` sırrı eksik olduğu için başlamıyor, mutation/stability kırmızı.
+- Awaken: eşleşmiş görev paketi hazır ama koşulmadı; üstünlük iddiası için kanıt yok ([DIFFERENTIATORS §3](DIFFERENTIATORS.md)).
+- **Takip:** bekleyen işi commit/push et, PR CI'ı yeşile çek ve `main`'e birleştir; staging + canlı kabul sırlarını kur; tek vendor pilot kapsamını sabitle; Awaken eşleşmiş görev ölçümünü koş.
+
+### 2026-10-11 — Canlı arayüz incelemesi ve kapsamlı yerel kabul
+
+- **Durum:** 3, 7, 11, 14, 26, 28, 32, 33, 34 ve 35. adımlar `🟦 in progress`; uzak CI ve gerçek staging kabulü olmadan `✅ done` yapılmadı. Ayrıntılı kanıt: [LIVE_UI_REVIEW_2026-10-11](verification/LIVE_UI_REVIEW_2026-10-11.md).
+- Gerçek Keycloak/BFF oturumuyla sentetik QA taslağı oluşturuldu; palet/katmanlar, kopyala/yapıştır, çoğalt/sil, geri al/yinele, kayıt, akış düzeni, önizleme ve tam ekran kullanıldı. NPS akışı tamamlandı; gerçek API üzerinde kayıtlı beş senaryo 5/5 geçti. Taslak yayımlanmadı.
+- Şablon ve AI taslakları yetkili kampanyayla oluşturuluyor; API şeması ve OpenAPI güncellendi. Tekrar denemeler idempotency anahtarını ve oluşturulmuş taslağı koruyor. Dar ekran önizleme sıralaması, laptop iş birliği rozeti, mobil katılma düğmesi ve açık kaydetme diyaloğundaki hata mesajı düzeltildi. TR/EN ve kapsam/CSRF kontrolleri korundu.
+- Yerel testler: 6.033 Vitest + 4 Docs testi geçti; dört gerçek Genesys sandbox sözleşmesi yapılandırma bulunmadığı için açıkça atlandı. Designer 307, Admin 92, Agent 45, Docs 12 tarayıcı testi geçti. Linux ilk tam turunda 299/307 geçti; eski editör referansları ve eksik dal yanıtı nedeniyle kalan sekiz görsel hata incelendi. Düzeltilen 22 Linux görsel testi ve 12 macOS görsel testi, snapshot güncellemesi kapalıyken geçti.
+- Build 19/19, lint 33/33, typecheck 32/32; kapsam eşiği, test kaynakları, 57 politika, 12 dağıtım, 3 denetim testi ve gizli bilgi taraması geçti. API satır/dal kapsamı %93,68/%86,59; Designer %92,28/%81,66. Eşikler düşürülmedi.
+- Üretim bağımlılık taramasındaki iki orta seviye uyarı kapatıldı: CSS ayrıştırıcı 7.1.6, Mammoth CLI ayrıştırıcısı 2.0.1. Yeni güvenlik testleri gerçek CLI yardımını ve 400 KB CSS seçicisini çalıştırıyor. Son `pnpm audit --prod` sıfır açık bildiriyor; etkilenen 70 AI testi, Docs test/build ve yeni testlerin lint'i tekrar geçti.
+- GitHub `test-staging` ortamı araştırıldı: adres/değişken/test oturumu yapılandırması yok, son dağıtım başarısız ve ortam URL'si boş. Makinede Kubernetes bağlamı ve projeye ait Vercel kurulumu bulunamadı. Yerel Keycloak 28080 portuyla çalışıyor; giriş bilgileri çıktılara veya repoya yazılmadı.
+- Gerçek altyapı doğrulamasının son turu **345/345** geçti; atlanan/bekleyen test yok. 45 rol/gezinti/ortak düzenleme testi, gerçek OIDC/SAML ve üç tarayıcıda sentetik ajan akışı kapsanıyor. Soğuk çizim Chromium/Firefox/WebKit'te 245/351/467 ms; sıcak çizim 186/308/214 ms, sayfa geçişi 41,1/24/25 ms. Mevcut 1.500/500/100 ms sınırları korundu. Son bağımlılık değişikliklerinden sonra Docs 12/12 tarayıcı testi tekrar geçti.
+- **Takip:** sentetik staging ve kısa ömürlü SSO oturumlarını kur; incelenen commit üzerinde uzak CI'ı geçir; gerçek vendor, yük ve geri yükleme kabulünü tarihli kanıtlarla tamamla. Awaken karşılaştırması eş koşullarda ölçüm gerektiriyor.
 
 ### Prompt 0 — 2026-10-01 — ✅ done
 - Created CLAUDE.md, ARCHITECTURE, DOMAIN, SCRIPT_MODEL, SECURITY, COMPETITIVE, PROGRESS and ADR-0001…0008.
