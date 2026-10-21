@@ -28,13 +28,18 @@ function storeWithFindings() {
   return store;
 }
 
-async function mount(store: EditorStore, onNavigate = vi.fn<(target: IssueTarget) => void>()) {
+async function mount(
+  store: EditorStore,
+  onNavigate = vi.fn<(target: IssueTarget) => void>(),
+  editable = false,
+) {
   const f = await mountDesigner(
     <HealthPanel
       store={store}
       document={store.getSnapshot().document}
       fieldProblems={0}
       onNavigate={onNavigate}
+      editable={editable}
     />,
   );
   const t = (key: string, options: Record<string, unknown> = {}) =>
@@ -95,4 +100,68 @@ it('routes variable findings to the variable editor', async () => {
   await waitFor(() => {
     expect(onNavigate).toHaveBeenCalledWith({ mode: 'variables' });
   });
+});
+
+/** A required field on `home` keeps its value in a page-scoped variable; the call then goes on. */
+function pageScopedStore() {
+  const input = minimalScript();
+  input.variables = [{ key: 'customerNo', type: 'string', scope: 'page', default: '' }];
+  input.pages[0]!.layout.children = [
+    {
+      id: 'customer-no',
+      type: 'textInput',
+      props: { required: true },
+      bindings: [{ prop: 'value', variable: 'customerNo' }],
+    },
+    ...(input.pages[0]!.layout.children ?? []),
+  ];
+  input.pages.push({ id: 'summary', name: 'Summary', layout: { id: 'summary-root', type: 'box' } });
+  input.flow.nodes = [
+    { id: 'n-home', type: 'page', page: 'home' },
+    { id: 'n-summary', type: 'page', page: 'summary' },
+    { id: 'n-end', type: 'end' },
+  ];
+  input.flow.edges = [
+    { id: 'e1', from: 'n-home', to: 'n-summary' },
+    { id: 'e2', from: 'n-summary', to: 'n-end' },
+  ];
+  return new EditorStore(input);
+}
+
+it('fixes a required field that would lose its page-scoped value with one click', async () => {
+  const store = pageScopedStore();
+  const { t } = await mount(store, vi.fn(), true);
+  fireEvent.click(screen.getByRole('button', { name: new RegExp(t('title')) }));
+  const sheet = await screen.findByRole('dialog', { name: t('title') });
+  expect(
+    within(sheet).getByText(
+      t('issues.pageScopedRequired', {
+        field: 'Customer no',
+        page: 'Home',
+        variable: 'Customer no',
+      }),
+    ),
+  ).toBeTruthy();
+  fireEvent.click(
+    within(sheet).getByRole('button', {
+      name: t('fixes.sessionScope', { variable: 'Customer no' }),
+    }),
+  );
+  const scope = () =>
+    store.getSnapshot().document.variables.find((v) => v.key === 'customerNo')?.scope;
+  expect(scope()).toBe('session');
+  // One undo step restores the page scope.
+  store.undo();
+  expect(scope()).toBe('page');
+});
+
+it('offers no fix on a version the user cannot change', async () => {
+  const { t } = await mount(pageScopedStore());
+  fireEvent.click(screen.getByRole('button', { name: new RegExp(t('title')) }));
+  const sheet = await screen.findByRole('dialog', { name: t('title') });
+  expect(
+    within(sheet).queryByRole('button', {
+      name: t('fixes.sessionScope', { variable: 'Customer no' }),
+    }),
+  ).toBeNull();
 });

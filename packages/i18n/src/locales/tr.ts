@@ -2446,6 +2446,11 @@ export const tr: Catalog = {
           'Metindeki {{name}} bu bileşende doldurulmuyor; ajan [{{name}}] görür. Değişkeni metne “Değişken ekle” ile yeniden ekleyin.',
         unusedSensitive:
           'Hassas "{{variable}}" değişkeni hiç kullanılmıyor. Kişisel veri gereksiz yere toplanmasın diye kaldırın.',
+        pageScopedRequired:
+          '“{{field}}” alanı (“{{page}}” sayfası) zorunlu, ama değeri sayfa kapsamlı “{{variable}}” değişkeninde. Ajan sonraki sayfaya geçince değer silinir ve görüşme kapatılamaz. Değişkeni oturum kapsamına alın.',
+      },
+      fixes: {
+        sessionScope: '“{{variable}}” değişkenini oturum kapsamına al',
       },
     },
     replay: {

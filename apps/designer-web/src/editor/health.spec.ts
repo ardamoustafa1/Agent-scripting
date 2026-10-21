@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { ScriptDocumentSchema, VariableSchema } from '@verbis/script-schema';
+import {
+  ScriptDocumentSchema,
+  VariableSchema,
+  type ScriptDocumentInput,
+} from '@verbis/script-schema';
 import { minimalScript } from '@verbis/script-schema/fixtures';
 
 import {
@@ -8,6 +12,7 @@ import {
   categoryOf,
   hygieneIssues,
   issueTarget,
+  pageScopedRequiredIssues,
   placeholderIssues,
   scriptHealth,
 } from './health.js';
@@ -206,4 +211,104 @@ it('flags text placeholders that nothing fills and skips custom params expressio
     ['designer.health.issues.placeholderUnknown', { name: 'bilinmeyen' }],
   ]);
   expect(hygieneIssues(doc).some((issue) => issue.code === 'VERBIS_LINT_PLACEHOLDER')).toBe(true);
+});
+
+describe('page-scoped required fields (ADR-0055)', () => {
+  /** Two pages: `home` asks for the customer number, then the flow goes on to `summary`. */
+  const twoPages = (
+    scope: 'page' | 'session',
+    field: Record<string, unknown> = { required: true },
+    edges: ScriptDocumentInput['flow']['edges'] = [
+      { id: 'e1', from: 'n-home', to: 'n-summary' },
+      { id: 'e2', from: 'n-summary', to: 'n-end' },
+    ],
+    change: (input: ScriptDocumentInput) => void = () => undefined,
+  ) => {
+    const input = minimalScript();
+    input.variables = [{ key: 'customerNo', type: 'string', scope, default: '' }];
+    input.pages[0]!.layout.children = [
+      {
+        id: 'customer-no',
+        type: 'textInput',
+        props: { labelKey: 'customer.label', ...field },
+        bindings: [{ prop: 'value', variable: 'customerNo' }],
+      },
+      ...(input.pages[0]!.layout.children ?? []),
+    ];
+    input.pages.push({
+      id: 'summary',
+      name: 'Summary',
+      layout: { id: 'summary-root', type: 'box' },
+    });
+    input.flow.nodes = [
+      { id: 'n-home', type: 'page', page: 'home' },
+      { id: 'n-summary', type: 'page', page: 'summary' },
+      { id: 'n-end', type: 'end' },
+    ];
+    input.flow.edges = edges;
+    input.i18n.messages['tr'] = { ...input.i18n.messages['tr'], 'customer.label': 'Müşteri no' };
+    change(input);
+    return ScriptDocumentSchema.parse(input);
+  };
+
+  it('fails a required field whose page-scoped value is gone once the call moves on', () => {
+    const issues = pageScopedRequiredIssues(twoPages('page'));
+    expect(issues).toEqual([
+      {
+        severity: 'error',
+        code: 'VERBIS_LINT_PAGE_SCOPED_REQUIRED',
+        path: '/variables/0',
+        messageKey: 'designer.health.issues.pageScopedRequired',
+        params: { field: 'Müşteri no', page: 'Home', variable: 'Customer no', key: 'customerNo' },
+      },
+    ]);
+    // Part of the hygiene checks the health panel and the release risk card read.
+    expect(hygieneIssues(twoPages('page')).map((i) => i.code)).toContain(
+      'VERBIS_LINT_PAGE_SCOPED_REQUIRED',
+    );
+    expect(categoryOf('VERBIS_LINT_PAGE_SCOPED_REQUIRED')).toBe('data');
+  });
+
+  it('accepts session scope and pages after which the call can only end', () => {
+    expect(pageScopedRequiredIssues(twoPages('session'))).toEqual([]);
+    const lastPage = twoPages('page', { required: true }, [
+      { id: 'e1', from: 'n-home', to: 'n-end' },
+    ]);
+    expect(pageScopedRequiredIssues(lastPage)).toEqual([]);
+    expect(pageScopedRequiredIssues(twoPages('page', {}))).toEqual([]);
+  });
+
+  it('leaves a conditionally required field to its condition', () => {
+    // E.g. the telecom OTP: required only until the code is verified, so leaving is safe.
+    const sometimes = twoPages('page', {}, undefined, (input) => {
+      input.pages[0]!.layout.children![0]!['requiredWhen'] = { $expr: '!vars.otpValid' };
+    });
+    expect(pageScopedRequiredIssues(sometimes)).toEqual([]);
+  });
+
+  it('follows decisions and data sources, and counts a navigate action as leaving', () => {
+    const viaDecision = twoPages(
+      'page',
+      { required: true },
+      [
+        { id: 'e1', from: 'n-home', to: 'n-check' },
+        { id: 'e2', from: 'n-check', to: 'n-summary', default: true },
+      ],
+      (input) => {
+        input.flow.nodes.push({ id: 'n-check', type: 'decision' });
+      },
+    );
+    expect(pageScopedRequiredIssues(viaDecision)).toHaveLength(1);
+    const navigating = twoPages(
+      'page',
+      { required: true },
+      [{ id: 'e1', from: 'n-home', to: 'n-end' }],
+      (input) => {
+        input.pages[0]!.layout.children![1]!['events'] = {
+          onPress: [{ type: 'navigate', page: 'summary' }],
+        };
+      },
+    );
+    expect(pageScopedRequiredIssues(navigating)).toHaveLength(1);
+  });
 });

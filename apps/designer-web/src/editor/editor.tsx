@@ -577,6 +577,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
             store={store}
             document={state.document}
             fieldProblems={state.fieldProblems}
+            editable={version.state === 'draft' && ability.can('update', 'Script')}
             open={healthOpen}
             onOpenChange={setHealthOpen}
             onNavigate={goTo}

@@ -891,6 +891,11 @@ button:focus-visible {
 .ed-health-go.vb-button {
   min-block-size: 24px;
 }
+.ed-health-fix.vb-button {
+  justify-self: start;
+  min-block-size: 24px;
+  margin-block-start: var(--vb-space-1);
+}
 @media (forced-colors: active) {
   .ed-health-value {
     stroke: CanvasText;

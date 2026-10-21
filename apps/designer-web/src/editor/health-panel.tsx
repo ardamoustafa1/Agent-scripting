@@ -92,11 +92,14 @@ export function HealthPanel({
   onNavigate,
   open: openProp,
   onOpenChange,
+  editable = false,
 }: {
   store: EditorStore;
   document: ScriptDocument;
   fieldProblems: number;
   onNavigate: (target: IssueTarget) => void;
+  /** A draft the user may change: offers one-click fixes where a finding has an obvious one. */
+  editable?: boolean;
   /** Optional control, e.g. opening the panel from the command palette. */
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -215,6 +218,29 @@ export function HealthPanel({
                         <span className="ed-health-message">
                           {t(issue.messageKey, issue.params ?? {})}
                           <span className="ed-health-where">{where(target, issue.path)}</span>
+                          {editable &&
+                            issue.code === 'VERBIS_LINT_PAGE_SCOPED_REQUIRED' &&
+                            typeof issue.params?.['key'] === 'string' && (
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                className="ed-health-fix"
+                                onClick={() => {
+                                  const key = issue.params?.['key'];
+                                  // Session scope keeps the value for the whole call.
+                                  store.execute(() => {
+                                    store.edit((d) => {
+                                      const variable = d.variables.find((v) => v.key === key);
+                                      if (variable) variable.scope = 'session';
+                                    });
+                                  });
+                                }}
+                              >
+                                {t('designer.health.fixes.sessionScope', {
+                                  variable: issue.params['variable'] ?? '',
+                                })}
+                              </Button>
+                            )}
                         </span>
                         {target && (
                           <Button

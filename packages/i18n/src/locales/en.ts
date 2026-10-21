@@ -2430,6 +2430,11 @@ export const en = {
           '{{name}} in this text is not filled on this component; the agent would read [{{name}}]. Insert it again with “Insert variable”.',
         unusedSensitive:
           'Sensitive variable "{{variable}}" is never used. Remove it so personal data is not collected without need.',
+        pageScopedRequired:
+          '“{{field}}” on page “{{page}}” is required, but its value lives in the page-scoped variable “{{variable}}”. The value is cleared when the agent moves to the next page, so the call cannot be closed. Move the variable to session scope.',
+      },
+      fixes: {
+        sessionScope: 'Move “{{variable}}” to session scope',
       },
     },
     replay: {

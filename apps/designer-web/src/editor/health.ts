@@ -1,5 +1,7 @@
 import { unusedVariables, walkNodes, type ScriptDocument } from '@verbis/script-schema';
 
+import { variableName } from '../flow/model.js';
+
 import { messageTokens, nodeTexts, parseParamsExpression } from './text-variables.js';
 
 import type { EditorIssue } from './store.js';
@@ -111,9 +113,97 @@ export function placeholderIssues(document: ScriptDocument): EditorIssue[] {
   return issues;
 }
 
+/** Pages after which the call can enter another page: by the flow, a subflow or a navigate action. */
+function pagesThatLeadOn(document: ScriptDocument): Set<string> {
+  const leading = new Set<string>();
+  for (const flow of [document.flow, ...document.subflows]) {
+    const byId = new Map(flow.nodes.map((node) => [node.id, node]));
+    for (const origin of flow.nodes) {
+      if (origin.type !== 'page') continue;
+      const seen = new Set([origin.id]);
+      const queue = flow.edges.filter((e) => e.from === origin.id).map((e) => e.to);
+      while (queue.length) {
+        const id = queue.shift() ?? '';
+        if (seen.has(id)) continue;
+        seen.add(id);
+        const node = byId.get(id);
+        // The end of a subflow returns to its caller, which usually goes on to more pages.
+        if (
+          !node ||
+          node.type === 'page' ||
+          node.type === 'subflow' ||
+          (node.type === 'end' && flow !== document.flow)
+        ) {
+          leading.add(origin.page);
+          break;
+        }
+        if (node.type === 'end' || node.type === 'transfer') continue;
+        queue.push(...flow.edges.filter((e) => e.from === id).map((e) => e.to));
+      }
+    }
+  }
+  const navigates = (value: unknown, from: string): boolean =>
+    Array.isArray(value)
+      ? value.some((item) => navigates(item, from))
+      : value !== null && typeof value === 'object'
+        ? ((value as Record<string, unknown>)['type'] === 'navigate' &&
+            (value as Record<string, unknown>)['page'] !== from) ||
+          Object.values(value).some((item) => navigates(item, from))
+        : false;
+  for (const page of document.pages) if (navigates(page.layout, page.id)) leading.add(page.id);
+  return leading;
+}
+/**
+ * Always-required fields that keep their value in a page-scoped variable (ADR-0055). Entering the
+ * next page clears the variable, so the call's completing outcome then fails on the empty field
+ * and the agent cannot close the call. Pages from which the call can only end are fine.
+ */
+export function pageScopedRequiredIssues(document: ScriptDocument): EditorIssue[] {
+  const scoped = new Map(
+    document.variables.flatMap((variable, index) =>
+      variable.scope === 'page' ? [[variable.key, index] as const] : [],
+    ),
+  );
+  if (!scoped.size) return [];
+  const leading = pagesThatLeadOn(document);
+  const messages = document.i18n.messages[document.i18n.defaultLocale] ?? {};
+  const issues: EditorIssue[] = [];
+  walkNodes(document, ({ node, pageId }) => {
+    // A `requiredWhen` condition is the author's own way out (e.g. "until the code is verified",
+    // the telecom template's OTP); only a field that is always required is a sure dead end.
+    if (node.props['required'] !== true || node.requiredWhen || !leading.has(pageId)) return true;
+    const binding = node.bindings.find(
+      (b) => (b.prop === 'value' || b.prop === 'checked') && 'variable' in b,
+    );
+    const key = binding && 'variable' in binding ? binding.variable : undefined;
+    const index = key === undefined ? undefined : scoped.get(key);
+    if (key === undefined || index === undefined) return true;
+    const labelKey = node.props['labelKey'];
+    const label = typeof labelKey === 'string' ? (messages[labelKey]?.trim() ?? '') : '';
+    issues.push({
+      severity: 'error',
+      code: 'VERBIS_LINT_PAGE_SCOPED_REQUIRED',
+      path: `/variables/${String(index)}`,
+      messageKey: 'designer.health.issues.pageScopedRequired',
+      params: {
+        field: label === '' ? variableName(document, key) : label,
+        page: document.pages.find((p) => p.id === pageId)?.name ?? pageId,
+        variable: variableName(document, key),
+        key,
+      },
+    });
+    return true;
+  });
+  return issues;
+}
+
 /** Editor issues plus document-wide hygiene checks that do not block saving. */
 export function hygieneIssues(document: ScriptDocument): EditorIssue[] {
-  return [...unusedVariableIssues(document), ...placeholderIssues(document)];
+  return [
+    ...unusedVariableIssues(document),
+    ...placeholderIssues(document),
+    ...pageScopedRequiredIssues(document),
+  ];
 }
 function unusedVariableIssues(document: ScriptDocument): EditorIssue[] {
   return unusedVariables(document).map(({ key, path, sensitive }) => ({
