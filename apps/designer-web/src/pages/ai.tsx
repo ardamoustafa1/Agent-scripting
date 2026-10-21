@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { Sparkles } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +8,7 @@ import { z } from 'zod';
 import { useCan } from '@verbis/authz/react';
 import { ScriptDocumentSchema } from '@verbis/script-schema';
 import { AiSuggestionSchema } from '@verbis/shared-types';
-import { AiAssistant, Alert, Button } from '@verbis/ui';
+import { AiAssistant, Alert, Button, EmptyState } from '@verbis/ui';
 
 import { request, ResourceSchema } from '../api/client.js';
 import { useWorkspace } from '../workspace/context.js';
@@ -37,9 +38,27 @@ export default function AiStudio() {
     return (
       <section>
         <h1>{t('ai.title')}</h1>
-        <Alert
-          title={t(status.isError ? 'ai.error' : status.isPending ? 'ai.loading' : 'ai.disabled')}
-        />
+        {status.data ? (
+          // Off is a state with a way forward: who turns it on, and what it then does.
+          <EmptyState
+            headingLevel={2}
+            icon={<Sparkles size={24} />}
+            title={t('designer.ai.offTitle')}
+            description={t('designer.ai.offDescription')}
+            action={
+              <>
+                <ul className="dw-ai-off-list">
+                  {(['draft', 'improve', 'scenarios', 'translate'] as const).map((task) => (
+                    <li key={task}>{t(`ai.${task}`)}</li>
+                  ))}
+                </ul>
+                <p>{t('designer.ai.offSafety')}</p>
+              </>
+            }
+          />
+        ) : (
+          <Alert title={t(status.isError ? 'ai.error' : 'ai.loading')} />
+        )}
         {status.isError && (
           <Button onClick={() => void status.refetch()}>{t('common.retry')}</Button>
         )}

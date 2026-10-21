@@ -17,8 +17,16 @@ it.each([false, 'unavailable'] as const)(
           : Response.json({ code: 'VERBIS_HTTP_UNAVAILABLE' }, { status: 503 }),
     });
     expect(
-      await screen.findByText(f.i18n.t(enabled === false ? 'ai.disabled' : 'ai.error')),
+      await screen.findByText(f.i18n.t(enabled === false ? 'designer.ai.offTitle' : 'ai.error')),
     ).toBeTruthy();
+    if (enabled === false) {
+      // Off explains who turns it on and what it then does, without the word "tenant".
+      expect(screen.getByText(f.i18n.t('designer.ai.offDescription'))).toBeTruthy();
+      expect(screen.getAllByRole('listitem')).toHaveLength(4);
+      for (const task of ['draft', 'improve', 'scenarios', 'translate'])
+        expect(screen.getByText(f.i18n.t(`ai.${task}`))).toBeTruthy();
+      expect(document.body.textContent).not.toMatch(/tenant/i);
+    }
     expect(screen.getByRole('heading', { level: 1, name: f.i18n.t('ai.title') })).toBeTruthy();
     expect(screen.queryByRole('button', { name: f.i18n.t('ai.generate') })).toBeNull();
     expect(f.requests).toHaveLength(1);

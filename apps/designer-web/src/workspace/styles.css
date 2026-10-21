@@ -305,6 +305,29 @@
   flex: none;
   color: var(--vb-color-primary);
 }
+/* What the AI assistant does once an administrator turns it on. */
+.dw-ai-off-list {
+  display: grid;
+  gap: var(--vb-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: start;
+  font-size: var(--vb-font-size-sm);
+}
+.dw-ai-off-list li {
+  display: flex;
+  gap: var(--vb-space-2);
+  align-items: center;
+}
+.dw-ai-off-list li::before {
+  content: '';
+  flex: none;
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 50%;
+  background: var(--vb-color-primary);
+}
 .dw-list-toolbar {
   display: flex;
   align-items: end;
