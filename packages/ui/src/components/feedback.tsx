@@ -14,7 +14,8 @@ const icons = {
   danger: CircleX,
 };
 export interface AlertProps {
-  title: string;
+  /** Optional: a script notice often is a single sentence with no heading. */
+  title?: string;
   children?: ReactNode;
   tone?: Tone;
 }
@@ -24,7 +25,7 @@ export function Alert({ title, children, tone = 'info' }: AlertProps) {
     <div className="vb-alert" data-tone={tone} role={tone === 'danger' ? 'alert' : 'status'}>
       <Icon size={18} aria-hidden />
       <div>
-        <strong>{title}</strong>
+        {title && <strong>{title}</strong>}
         {children && <div>{children}</div>}
       </div>
     </div>

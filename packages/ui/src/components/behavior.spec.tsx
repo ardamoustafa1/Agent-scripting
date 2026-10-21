@@ -441,3 +441,29 @@ it('does not dispatch a native select value that is absent from its options', as
   fireEvent.change(screen.getByRole('combobox'), { target: { value: 'unlisted' } });
   expect(changed).not.toHaveBeenCalled();
 });
+
+it('groups select options under headings and explains each with a hint', async () => {
+  const change = vi.fn();
+  mount(
+    <Select
+      label="Aksiyon"
+      value="next"
+      onValueChange={change}
+      options={[
+        { value: 'next', label: 'Sonraki sayfa', group: 'Gezinme', hint: 'Akışta ilerler' },
+        { value: 'back', label: 'Önceki sayfa', group: 'Gezinme' },
+        { value: 'set', label: 'Değişken ata', group: 'Veri', hint: 'Bir değeri saklar' },
+        { value: 'plain', label: 'Grupsuz' },
+      ]}
+    />,
+  );
+  const trigger = screen.getByRole('combobox', { name: 'Aksiyon' });
+  // Only the label is shown for the chosen value, never the hint.
+  expect(trigger.textContent).toBe('Sonraki sayfa');
+  fireEvent.click(trigger);
+  const groups = await screen.findAllByRole('group');
+  expect(groups.map((group) => group.firstElementChild?.textContent)).toEqual(['Gezinme', 'Veri']);
+  expect(screen.getByText('Bir değeri saklar')).toBeTruthy();
+  fireEvent.click(screen.getByRole('option', { name: /Değişken ata/ }));
+  expect(change).toHaveBeenCalledWith('set');
+});

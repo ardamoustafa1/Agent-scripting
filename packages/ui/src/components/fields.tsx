@@ -127,6 +127,10 @@ export interface ChoiceOption {
   readonly value: string;
   readonly label: string;
   readonly disabled?: boolean;
+  /** Select only: consecutive options with the same group render under one heading. */
+  readonly group?: string;
+  /** Select only: one short line under the label explaining the choice. */
+  readonly hint?: string;
 }
 export interface RadioProps {
   label: string;

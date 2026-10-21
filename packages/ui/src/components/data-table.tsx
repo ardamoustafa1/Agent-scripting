@@ -28,7 +28,8 @@ export interface DataTableProps<T> {
   label: string;
   data: T[];
   columns: readonly DataColumn<T>[];
-  getRowId: (row: T) => string;
+  /** Stable row id; `index` is the row's position, for data without its own key. */
+  getRowId: (row: T, index: number) => string;
   height?: number;
   virtualized?: boolean;
   direction?: 'ltr' | 'rtl';

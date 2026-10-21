@@ -16,6 +16,16 @@ export interface SelectProps {
   placeholder?: string;
   name?: string;
 }
+/** Consecutive options sharing a `group` render under one heading; ungrouped ones stay flat. */
+function groups(options: readonly ChoiceOption[]) {
+  const result: { group: string | undefined; items: ChoiceOption[] }[] = [];
+  for (const option of options) {
+    const last = result.at(-1);
+    if (last && last.group === option.group) last.items.push(option);
+    else result.push({ group: option.group, items: [option] });
+  }
+  return result;
+}
 export function Select({ label, options, placeholder, disabled = false, ...props }: SelectProps) {
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -41,29 +51,42 @@ export function Select({ label, options, placeholder, disabled = false, ...props
               <ChevronUp size={16} />
             </RadixSelect.ScrollUpButton>
             <RadixSelect.Viewport>
-              {options.map((option) => (
-                <RadixSelect.Item
-                  className="vb-menu-item"
-                  key={option.value}
-                  value={option.value}
-                  disabled={option.disabled === true}
-                  onPointerDown={(event) => {
-                    // Finish mouse selection before the opening pointer-up guard
-                    // can cancel it and keep the focus trap over the next field.
-                    // Touch and keyboard retain Radix's normal selection path.
-                    if (event.pointerType === 'mouse' && event.button === 0 && !option.disabled) {
-                      event.preventDefault();
-                      props.onValueChange(option.value);
-                      setOpen(false);
-                    }
-                  }}
-                >
-                  <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
-                  <RadixSelect.ItemIndicator>
-                    <Check size={14} />
-                  </RadixSelect.ItemIndicator>
-                </RadixSelect.Item>
-              ))}
+              {groups(options).map(({ group, items }, index) => {
+                const rendered = items.map((option) => (
+                  <RadixSelect.Item
+                    className="vb-menu-item"
+                    key={option.value}
+                    value={option.value}
+                    disabled={option.disabled === true}
+                    onPointerDown={(event) => {
+                      // Finish mouse selection before the opening pointer-up guard
+                      // can cancel it and keep the focus trap over the next field.
+                      // Touch and keyboard retain Radix's normal selection path.
+                      if (event.pointerType === 'mouse' && event.button === 0 && !option.disabled) {
+                        event.preventDefault();
+                        props.onValueChange(option.value);
+                        setOpen(false);
+                      }
+                    }}
+                  >
+                    <span className="vb-select-item-text">
+                      <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
+                      {option.hint && <small className="vb-select-item-hint">{option.hint}</small>}
+                    </span>
+                    <RadixSelect.ItemIndicator>
+                      <Check size={14} />
+                    </RadixSelect.ItemIndicator>
+                  </RadixSelect.Item>
+                ));
+                return group === undefined ? (
+                  rendered
+                ) : (
+                  <RadixSelect.Group key={`${group}-${String(index)}`}>
+                    <RadixSelect.Label className="vb-select-group">{group}</RadixSelect.Label>
+                    {rendered}
+                  </RadixSelect.Group>
+                );
+              })}
             </RadixSelect.Viewport>
             <RadixSelect.ScrollDownButton className="vb-select-scroll">
               <ChevronDown size={16} />
