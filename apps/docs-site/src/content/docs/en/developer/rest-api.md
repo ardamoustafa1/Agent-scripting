@@ -36225,8 +36225,7 @@ Requires: update:User
     "properties": {
       "code": {
         "type": "string",
-        "maxLength": 64,
-        "pattern": "^[A-Z0-9][A-Z0-9_-]*$"
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$"
       },
       "label": {
         "type": "string",
@@ -36263,8 +36262,7 @@ Requires: update:User
         "type": "array",
         "items": {
           "type": "string",
-          "maxLength": 64,
-          "pattern": "^[A-Z0-9][A-Z0-9_-]*$"
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$"
         }
       }
     },

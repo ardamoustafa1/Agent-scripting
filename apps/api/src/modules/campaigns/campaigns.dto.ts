@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { LocaleSchema } from '@verbis/script-schema';
+import { LocaleSchema, OutcomeCodeSchema } from '@verbis/script-schema';
 
 import {
   ChannelTypeSchema,
@@ -43,10 +43,11 @@ export type ExternalMapping = z.infer<typeof ExternalMappingSchema>;
 
 export const OutcomeSchema = z
   .strictObject({
-    code: z
-      .string()
-      .regex(/^[A-Z0-9][A-Z0-9_-]*$/)
-      .max(64),
+    /**
+     * The same rule as the codes scripts record (`submitOutcome`, end steps), so every outcome a
+     * script can emit can also be configured on its campaign (e.g. `SALE_OK`, `demo-success`).
+     */
+    code: OutcomeCodeSchema,
     /** i18n key or literal label shown to agents. */
     label: z.string().trim().min(1).max(200),
     category: z.enum(['success', 'failure', 'callback', 'noContact', 'other']),
@@ -60,15 +61,7 @@ export const OutcomeSchema = z
       )
       .max(50)
       .default([]),
-    subCodes: z
-      .array(
-        z
-          .string()
-          .regex(/^[A-Z0-9][A-Z0-9_-]*$/)
-          .max(64),
-      )
-      .max(50)
-      .default([]),
+    subCodes: z.array(OutcomeCodeSchema).max(50).default([]),
   })
   .meta({ id: 'CampaignOutcome' });
 
