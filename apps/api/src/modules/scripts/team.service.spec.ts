@@ -104,7 +104,7 @@ function fixture() {
         .mockResolvedValue({ ability: createAbility([{ action: 'manage', subject: 'all' }]) }),
     },
     audit = { record: vi.fn().mockResolvedValue(undefined) },
-    authz = { authorize: vi.fn() };
+    authz = { authorize: vi.fn(), can: vi.fn().mockReturnValue(true) };
   const service = new TeamService(
     abilities as unknown as AbilityFactory,
     { tenantId: () => tenant, current: () => tx } as unknown as TenantDb,
@@ -237,4 +237,27 @@ it('loads notifications in a bounded number of queries for 100 versions and 200 
   expect(f.tx.assignment.findMany.mock.calls.length).toBeLessThanOrEqual(1);
   expect(f.tx.scriptVersionReview.findMany.mock.calls.length).toBeLessThanOrEqual(1);
   expect(f.tx.scriptVersion.findFirst).not.toHaveBeenCalled();
+});
+
+it('names active people for creator columns, audits the read and needs script or campaign read', async () => {
+  const f = fixture();
+  expect(await f.service.people([id, id, script])).toEqual([{ id, name: 'Synthetic member' }]);
+  // Duplicates are asked for once; only active, undeleted users of this tenant are named.
+  expect(f.tx.user.findMany).toHaveBeenLastCalledWith(
+    expect.objectContaining({
+      where: { tenantId: tenant, id: { in: [id, script] }, status: 'active', deletedAt: null },
+      select: { id: true, displayName: true },
+    }),
+  );
+  expect(f.audit.record).toHaveBeenLastCalledWith(f.tx, {
+    action: 'script.team.namesRead',
+    target: { type: 'Tenant', id: tenant },
+    metadata: { requested: 3, count: 1 },
+  });
+  // A campaign-only reader may resolve names too.
+  f.authz.can.mockImplementation((_action: string, subject: string) => subject === 'Campaign');
+  expect(await f.service.people([id])).toHaveLength(1);
+  f.authz.can.mockReturnValue(false);
+  await expect(f.service.people([id])).rejects.toThrow('permission');
+  expect(f.audit.record).toHaveBeenCalledTimes(2);
 });

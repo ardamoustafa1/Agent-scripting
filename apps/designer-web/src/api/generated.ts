@@ -2618,6 +2618,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/people': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Display names of up to 100 active tenant users by id (for "created by" in script and campaign lists) */
+    get: operations['Team.people'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/private-egress/jobs/{id}/complete': {
     parameters: {
       query?: never;
@@ -17838,6 +17855,41 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Team.people': {
+    parameters: {
+      query: {
+        ids: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description People */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: uuid */
+            id: string;
+            name: string;
+          }[];
+        };
       };
       /** @description Error (RFC 7807) */
       default: {

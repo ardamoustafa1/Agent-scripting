@@ -23546,6 +23546,75 @@ End one of my sessions
 }
 ```
 
+## GET /v1/people
+
+Display names of up to 100 active tenant users by id (for "created by" in script and campaign lists)
+
+```json
+{
+  "operationId": "Team.people",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "ids",
+      "in": "query",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 4000
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "People",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## POST /v1/private-egress/jobs/claim
 
 Certificate-bound gateway: claim a transient job for this service client

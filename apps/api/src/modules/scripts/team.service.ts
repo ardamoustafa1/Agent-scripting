@@ -11,6 +11,7 @@ import { requestContext } from '../../common/context/request-context.js';
 import { uuidv7 } from '../../common/crypto/uuid.js';
 import {
   DomainError,
+  ForbiddenError,
   NotFoundError,
   VersionMismatchError,
 } from '../../common/errors/domain-errors.js';
@@ -112,6 +113,31 @@ export class TeamService {
       metadata: { count: result.length },
     });
     return result;
+  }
+  /**
+   * Display names of active tenant users, for lists that show who created a script or campaign.
+   * Allowed to anyone who can read scripts or campaigns: the same people already see these names
+   * as script team members, comment authors and collaborators. Unknown, inactive or deleted users
+   * are left out (the list then says "former team member"). The read is audited.
+   */
+  async people(ids: readonly string[]) {
+    if (!this.authz.can('read', 'Script') && !this.authz.can('read', 'Campaign'))
+      throw new ForbiddenError();
+    const tx = this.db.current(),
+      tenantId = this.db.tenantId();
+    const users = ids.length
+      ? await tx.user.findMany({
+          where: { tenantId, id: { in: [...new Set(ids)] }, status: 'active', deletedAt: null },
+          select: { id: true, displayName: true },
+          orderBy: { id: 'asc' },
+        })
+      : [];
+    await this.audit.record(tx, {
+      action: 'script.team.namesRead',
+      target: { type: 'Tenant', id: tenantId },
+      metadata: { requested: ids.length, count: users.length },
+    });
+    return users.map((user) => ({ id: user.id, name: user.displayName }));
   }
   async threads(scriptId: string, number: number) {
     const v = await this.authorize(scriptId, number);

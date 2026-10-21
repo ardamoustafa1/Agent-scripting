@@ -15,9 +15,9 @@ import {
 } from '@verbis/shared-types';
 
 import { UuidSchema } from '../../common/dto.js';
-import { ZParam, ZBody } from '../../common/validation/zod.js';
+import { ZParam, ZBody, ZQuery } from '../../common/validation/zod.js';
 import { ApiOperation, ApiResponse, ApiTag } from '../../openapi/metadata.js';
-import { Can } from '../authz/permissions.js';
+import { AnyAuthenticated, Can } from '../authz/permissions.js';
 
 import { ReleaseJobsService } from './release-jobs.service.js';
 import { SuggestionsService } from './suggestions.service.js';
@@ -25,6 +25,13 @@ import { TeamService } from './team.service.js';
 import { VersionLifecycleService } from './version-lifecycle.service.js';
 
 const NumberSchema = z.coerce.number().int().positive();
+const PeopleQuerySchema = z.strictObject({
+  ids: z
+    .string()
+    .max(4000)
+    .transform((value) => value.split(',').filter((id) => id !== ''))
+    .pipe(z.array(z.uuid()).min(1).max(100)),
+});
 @ApiTag('authoring-team')
 @Controller('v1')
 export class TeamController {
@@ -76,6 +83,17 @@ export class TeamController {
   @Get('authoring-notifications')
   notifications() {
     return this.team.notifications();
+  }
+  @ApiOperation({
+    summary:
+      'Display names of up to 100 active tenant users by id (for "created by" in script and campaign lists)',
+  })
+  @ApiResponse(200, 'People', z.array(z.object({ id: z.uuid(), name: z.string() })))
+  @AnyAuthenticated()
+  @Get('people')
+  people(@ZQuery(PeopleQuerySchema) query: z.infer<typeof PeopleQuerySchema>) {
+    // Reading scripts or campaigns is checked in the service: either one is enough.
+    return this.team.people(query.ids);
   }
   @ApiOperation({ summary: 'List up to 100 active tenant members who can read the script' })
   @ApiResponse(

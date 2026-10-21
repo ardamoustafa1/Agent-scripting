@@ -1080,3 +1080,26 @@ describe('rate limiting (Redis)', () => {
     }
   });
 });
+
+describe('people names for creator columns', () => {
+  it('names active users of the caller tenant only, for script readers, and audits the read', async () => {
+    const auth = await a.auth(a.designerId);
+    const response = await app.inject({
+      method: 'GET',
+      url: `/v1/people?ids=${a.adminId},${a.inactiveId},${b.adminId}`,
+      headers: auth,
+    });
+    expect(response.statusCode).toBe(200);
+    // Suspended users and users of another tenant are never named.
+    expect(response.json()).toEqual([{ id: a.adminId, name: 'admin' }]);
+    const audited = await owner.auditEvent.findFirst({
+      where: { tenantId: a.tenantId, action: 'script.team.namesRead' },
+      orderBy: { seq: 'desc' },
+    });
+    expect(audited).not.toBeNull();
+    expect(
+      (await app.inject({ method: 'GET', url: '/v1/people?ids=not-a-uuid', headers: auth }))
+        .statusCode,
+    ).toBe(400);
+  });
+});
