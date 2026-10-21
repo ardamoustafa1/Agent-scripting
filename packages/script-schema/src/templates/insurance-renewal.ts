@@ -601,10 +601,16 @@ export const insuranceRenewalScript: ScriptDocumentInput = {
     start: 'n-greeting',
     nodes: [
       { id: 'n-greeting', type: 'page', page: 'greeting', position: { x: 0, y: 0 } },
-      { id: 'n-available', type: 'decision', position: { x: 0, y: 140 } },
+      {
+        id: 'n-available',
+        labelKey: 'flow.available',
+        type: 'decision',
+        position: { x: 0, y: 140 },
+      },
       { id: 'n-verify', type: 'page', page: 'verify', position: { x: 0, y: 280 } },
       {
         id: 'n-lookup',
+        labelKey: 'flow.lookup',
         type: 'dataSource',
         dataSource: 'policyLookup',
         position: { x: 0, y: 420 },
@@ -613,12 +619,18 @@ export const insuranceRenewalScript: ScriptDocumentInput = {
       { id: 'n-needs', type: 'page', page: 'needs', position: { x: 0, y: 700 } },
       {
         id: 'n-quote-call',
+        labelKey: 'flow.quote',
         type: 'dataSource',
         dataSource: 'renewalQuote',
         position: { x: 0, y: 840 },
       },
       { id: 'n-quote', type: 'page', page: 'quote', position: { x: 0, y: 980 } },
-      { id: 'n-decision', type: 'decision', position: { x: 0, y: 1120 } },
+      {
+        id: 'n-decision',
+        labelKey: 'flow.decision',
+        type: 'decision',
+        position: { x: 0, y: 1120 },
+      },
       { id: 'n-confirm', type: 'page', page: 'confirm', position: { x: -320, y: 1260 } },
       { id: 'n-summary', type: 'page', page: 'summary', position: { x: -320, y: 1400 } },
       { id: 'n-callback', type: 'page', page: 'callback', position: { x: 0, y: 1260 } },
@@ -627,6 +639,7 @@ export const insuranceRenewalScript: ScriptDocumentInput = {
       // A customer who cannot talk now never hears the terms: an author-declared early exit.
       {
         id: 'n-end-unavailable',
+        labelKey: 'flow.unavailable',
         type: 'end',
         outcome: 'NOT_AVAILABLE',
         completion: 'early',
@@ -634,6 +647,7 @@ export const insuranceRenewalScript: ScriptDocumentInput = {
       },
       {
         id: 'n-end-tech',
+        labelKey: 'flow.techError',
         type: 'end',
         outcome: 'TECH_ERROR',
         completion: 'early',
@@ -678,6 +692,12 @@ export const insuranceRenewalScript: ScriptDocumentInput = {
     defaultLocale: 'tr',
     messages: {
       tr: {
+        'flow.available': 'Müsaitlik kontrolü',
+        'flow.lookup': 'Poliçe sorgulama',
+        'flow.quote': 'Yenileme teklifi',
+        'flow.decision': 'Müşteri kararı',
+        'flow.unavailable': 'Müşteri müsait değil',
+        'flow.techError': 'Teknik hata',
         'common.next': 'İleri',
         'common.finish': 'Görüşmeyi bitir',
         'greeting.title': 'Karşılama',
@@ -751,6 +771,12 @@ export const insuranceRenewalScript: ScriptDocumentInput = {
           '{product} poliçeniz {premium} yıllık primle yenilendi. Yenileme referansınız: {reference}.',
       },
       en: {
+        'flow.available': 'Availability check',
+        'flow.lookup': 'Policy lookup',
+        'flow.quote': 'Renewal quote',
+        'flow.decision': 'Customer decision',
+        'flow.unavailable': 'Customer not available',
+        'flow.techError': 'Technical error',
         'common.next': 'Next',
         'common.finish': 'End call',
         'greeting.title': 'Greeting',

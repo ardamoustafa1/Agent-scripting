@@ -404,18 +404,24 @@ export const collectionsScript: ScriptDocumentInput = {
     start: 'n-rpc',
     nodes: [
       { id: 'n-rpc', type: 'page', page: 'rpc' },
-      { id: 'n-is-rpc', type: 'decision' },
+      { id: 'n-is-rpc', labelKey: 'flow.isRpc', type: 'decision' },
       { id: 'n-disclosure', type: 'page', page: 'disclosure' },
-      { id: 'n-debt', type: 'dataSource', dataSource: 'debtInfo' },
+      { id: 'n-debt', labelKey: 'flow.debt', type: 'dataSource', dataSource: 'debtInfo' },
       { id: 'n-balance', type: 'page', page: 'balance' },
       { id: 'n-negotiate', type: 'page', page: 'negotiate' },
-      { id: 'n-has-plan', type: 'decision' },
+      { id: 'n-has-plan', labelKey: 'flow.hasPlan', type: 'decision' },
       { id: 'n-promise', type: 'page', page: 'promise' },
       { id: 'n-wrap-up', type: 'page', page: 'wrap-up' },
       { id: 'n-end', type: 'end' },
       // The mandatory disclosure must never be read to a wrong party, so this end is an
       // author-declared early exit (ADR-0047): the outcome is kept without visiting it.
-      { id: 'n-end-wrong-party', type: 'end', outcome: 'WRONG_PARTY', completion: 'early' },
+      {
+        id: 'n-end-wrong-party',
+        labelKey: 'flow.wrongParty',
+        type: 'end',
+        outcome: 'WRONG_PARTY',
+        completion: 'early',
+      },
     ],
     edges: [
       { id: 'e1', from: 'n-rpc', to: 'n-is-rpc' },
@@ -458,6 +464,10 @@ export const collectionsScript: ScriptDocumentInput = {
     defaultLocale: 'tr',
     messages: {
       tr: {
+        'flow.isRpc': 'Doğru kişi mi?',
+        'flow.debt': 'Borç bilgisi',
+        'flow.hasPlan': 'Ödeme planı var mı?',
+        'flow.wrongParty': 'Yanlış kişi',
         'common.next': 'İleri',
         'common.finish': 'Bitir',
         'rpc.title': 'Kişi teyidi',
@@ -498,6 +508,10 @@ export const collectionsScript: ScriptDocumentInput = {
         'wrapUp.disposition': 'Sonuç kodu',
       },
       en: {
+        'flow.isRpc': 'Right party?',
+        'flow.debt': 'Debt details',
+        'flow.hasPlan': 'Payment plan agreed?',
+        'flow.wrongParty': 'Wrong party',
         'common.next': 'Next',
         'common.finish': 'Finish',
         'rpc.title': 'Right party contact',

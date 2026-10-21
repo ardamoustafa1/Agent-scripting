@@ -498,10 +498,16 @@ export const ecommerceOrderScript: ScriptDocumentInput = {
     start: 'n-greeting',
     nodes: [
       { id: 'n-greeting', type: 'page', page: 'greeting', position: { x: 0, y: 0 } },
-      { id: 'n-lookup', type: 'dataSource', dataSource: 'orderLookup', position: { x: 0, y: 140 } },
+      {
+        id: 'n-lookup',
+        labelKey: 'flow.lookup',
+        type: 'dataSource',
+        dataSource: 'orderLookup',
+        position: { x: 0, y: 140 },
+      },
       { id: 'n-verify', type: 'page', page: 'verify', position: { x: 0, y: 280 } },
       { id: 'n-order', type: 'page', page: 'order', position: { x: 0, y: 420 } },
-      { id: 'n-request', type: 'decision', position: { x: 0, y: 560 } },
+      { id: 'n-request', labelKey: 'flow.request', type: 'decision', position: { x: 0, y: 560 } },
       { id: 'n-delivery', type: 'page', page: 'delivery', position: { x: -320, y: 700 } },
       { id: 'n-return', type: 'page', page: 'return', position: { x: 0, y: 700 } },
       { id: 'n-damage', type: 'page', page: 'damage', position: { x: 320, y: 700 } },
@@ -510,6 +516,7 @@ export const ecommerceOrderScript: ScriptDocumentInput = {
       // An unknown order number never reaches identity checks: an author-declared early exit.
       {
         id: 'n-end-not-found',
+        labelKey: 'flow.notFound',
         type: 'end',
         outcome: 'ORDER_NOT_FOUND',
         completion: 'early',
@@ -540,6 +547,9 @@ export const ecommerceOrderScript: ScriptDocumentInput = {
     defaultLocale: 'tr',
     messages: {
       tr: {
+        'flow.lookup': 'Sipariş sorgulama',
+        'flow.request': 'Talep türü',
+        'flow.notFound': 'Sipariş bulunamadı',
         'common.next': 'İleri',
         'common.finish': 'Görüşmeyi bitir',
         'common.failed': 'Talep oluşturulamadı. Tekrar deneyin veya teknik ekibe aktarın.',
@@ -606,6 +616,9 @@ export const ecommerceOrderScript: ScriptDocumentInput = {
         'summary.closing': 'Başka yardımcı olabileceğim bir konu var mı? İyi günler dilerim.',
       },
       en: {
+        'flow.lookup': 'Order lookup',
+        'flow.request': 'Request type',
+        'flow.notFound': 'Order not found',
         'common.next': 'Next',
         'common.finish': 'End call',
         'common.failed': 'The request could not be created. Try again or hand over to support.',

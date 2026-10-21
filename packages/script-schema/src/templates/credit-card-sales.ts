@@ -446,6 +446,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
       { id: 'n-welcome', type: 'page', page: 'welcome', position: { x: 0, y: 0 } },
       {
         id: 'n-lookup',
+        labelKey: 'flow.lookup',
         type: 'dataSource',
         dataSource: 'customerLookup',
         position: { x: 200, y: 0 },
@@ -453,7 +454,13 @@ export const creditCardSalesScript: ScriptDocumentInput = {
       { id: 'n-verify', type: 'page', page: 'verify-identity', position: { x: 400, y: 0 } },
       { id: 'n-verified', type: 'decision', labelKey: 'flow.verified', position: { x: 600, y: 0 } },
       { id: 'n-needs', type: 'page', page: 'needs', position: { x: 800, y: 0 } },
-      { id: 'n-score', type: 'dataSource', dataSource: 'creditScore', position: { x: 1000, y: 0 } },
+      {
+        id: 'n-score',
+        labelKey: 'flow.score',
+        type: 'dataSource',
+        dataSource: 'creditScore',
+        position: { x: 1000, y: 0 },
+      },
       {
         id: 'n-eligible',
         type: 'decision',
@@ -461,13 +468,25 @@ export const creditCardSalesScript: ScriptDocumentInput = {
         position: { x: 1200, y: 0 },
       },
       { id: 'n-offer', type: 'page', page: 'offer', position: { x: 1400, y: 0 } },
-      { id: 'n-accepted', type: 'decision', position: { x: 1600, y: 0 } },
+      {
+        id: 'n-accepted',
+        labelKey: 'flow.accepted',
+        type: 'decision',
+        position: { x: 1600, y: 0 },
+      },
       { id: 'n-consent', type: 'page', page: 'consent', position: { x: 1800, y: 0 } },
       { id: 'n-summary', type: 'page', page: 'summary', position: { x: 2000, y: 0 } },
       { id: 'n-decline', type: 'page', page: 'decline', position: { x: 1400, y: 200 } },
-      { id: 'n-end-sale', type: 'end', outcome: 'SALE_OK', position: { x: 2200, y: 0 } },
+      {
+        id: 'n-end-sale',
+        labelKey: 'flow.sale',
+        type: 'end',
+        outcome: 'SALE_OK',
+        position: { x: 2200, y: 0 },
+      },
       {
         id: 'n-end-no-sale',
+        labelKey: 'flow.noSale',
         type: 'end',
         outcome: 'NO_SALE',
         completion: 'early',
@@ -475,6 +494,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
       },
       {
         id: 'n-end-unverified',
+        labelKey: 'flow.unverified',
         type: 'end',
         outcome: 'ID_FAILED',
         completion: 'early',
@@ -484,6 +504,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
       // is an author-declared early exit (ADR-0047): it keeps the technical-error outcome.
       {
         id: 'n-end-tech',
+        labelKey: 'flow.techError',
         type: 'end',
         outcome: 'TECH_ERROR',
         completion: 'early',
@@ -539,6 +560,13 @@ export const creditCardSalesScript: ScriptDocumentInput = {
     defaultLocale: 'tr',
     messages: {
       tr: {
+        'flow.lookup': 'Müşteri sorgulama',
+        'flow.score': 'Kredi skoru',
+        'flow.accepted': 'Teklif kabul edildi mi?',
+        'flow.sale': 'Satış yapıldı',
+        'flow.noSale': 'Satış yapılmadı',
+        'flow.unverified': 'Kimlik doğrulanamadı',
+        'flow.techError': 'Teknik hata',
         'common.next': 'İleri',
         'common.back': 'Geri',
         'common.close': 'Kapat',
@@ -579,6 +607,13 @@ export const creditCardSalesScript: ScriptDocumentInput = {
         'flow.eligible': 'Skor uygun mu?',
       },
       en: {
+        'flow.lookup': 'Customer lookup',
+        'flow.score': 'Credit score',
+        'flow.accepted': 'Offer accepted?',
+        'flow.sale': 'Sale made',
+        'flow.noSale': 'No sale',
+        'flow.unverified': 'Identity not verified',
+        'flow.techError': 'Technical error',
         'common.next': 'Next',
         'common.back': 'Back',
         'common.close': 'Close',
