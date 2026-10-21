@@ -33,8 +33,10 @@ import {
 import { request } from '../api/client.js';
 import { useEditor, type EditorStore } from '../editor/store.js';
 import { ValueEditor, valueKind } from '../editor/value-editor.js';
+import { variableName } from '../flow/model.js';
 import { JsonField } from '../integrations/json-field.js';
 import { describePath, displayValue, nodeTitle } from '../lifecycle/diff-text.js';
+import { humanize } from '../words.js';
 import { useWorkspace } from '../workspace/context.js';
 
 import { expectedFields, formatScalar, parseScalar, readPath, writePath } from './context-paths.js';
@@ -531,7 +533,7 @@ export function PreviewStudio({
                     <p>{t('designer.preview.mockHelp')}</p>
                     {state.document.dataSources.map((source) => (
                       <fieldset key={source.id}>
-                        <legend>{source.id}</legend>
+                        <legend>{humanize(source.id)}</legend>
                         <Checkbox
                           label={t('designer.preview.liveTest')}
                           checked={liveSources.has(source.id)}
@@ -590,6 +592,10 @@ export function PreviewStudio({
                           const variable = state.document.variables.find(
                             (v) => v.key === output.variable,
                           );
+                          // The field reads as the variable it fills, else as its name in words.
+                          const field = variable
+                            ? variableName(state.document, variable.key)
+                            : humanize(key);
                           const write = (value: JsonValue) => {
                             const parsed = PreviewMockSchema.safeParse({
                               ...mocks[source.id],
@@ -602,7 +608,7 @@ export function PreviewStudio({
                             return (
                               <Input
                                 key={`${source.id}.${key}.${String(samples[source.id]?.generation ?? 0)}`}
-                                label={t('designer.preview.mockField', { field: key })}
+                                label={t('designer.preview.mockField', { field })}
                                 hint={t('designer.preview.mockScalarHint')}
                                 value={formatScalar(mocks[source.id]?.outputs[key])}
                                 onChange={(event) => {
@@ -613,7 +619,7 @@ export function PreviewStudio({
                           return (
                             <ValueEditor
                               key={`${source.id}.${key}.${String(samples[source.id]?.generation ?? 0)}`}
-                              label={t('designer.preview.mockField', { field: key })}
+                              label={t('designer.preview.mockField', { field })}
                               value={mocks[source.id]?.outputs[key] ?? null}
                               kind={valueKind(variable.type)}
                               choices={variable.enumValues?.map((value) => ({

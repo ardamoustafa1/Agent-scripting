@@ -402,13 +402,16 @@ it.each([
 it('fills a mock response field by field and keeps the whole response under advanced', async () => {
   const f = await setup({ outputs: true });
   f.tab('dataSources');
+  // Fields read as the variable they fill ("Customer no"), else as their name in words; the
+  // data source is titled in words too, never as a code name.
+  expect(screen.getByText('Synthetic', { selector: 'legend' })).toBeTruthy();
   const field = await screen.findByRole('textbox', {
-    name: f.i18n.t('designer.preview.mockField', { field: 'status' }),
+    name: f.i18n.t('designer.preview.mockField', { field: 'Customer no' }),
   });
   fireEvent.change(field, { target: { value: 'Yolda' } });
   // An output no variable receives is typed as written, so `ds.x.score >= 650` can be tested.
   const score = screen.getByRole('textbox', {
-    name: f.i18n.t('designer.preview.mockField', { field: 'score' }),
+    name: f.i18n.t('designer.preview.mockField', { field: 'Score' }),
   });
   fireEvent.change(score, { target: { value: '720' } });
   // The advanced JSON field remounts on every change; read the current one.

@@ -1656,7 +1656,7 @@ export const tr: Catalog = {
         'Durum geri yüklendi. Yeni bir senaryo kaydetmek için yeniden başlat; iptal edilen aksiyon devamları yeniden oynatılmaz.',
       title: 'Önizleme ve debugger',
       groups: { run: 'Çalıştırma denetimi', environment: 'Cihaz ve dil' },
-      simulation: 'Simülasyon • dış komutlar mock',
+      simulation: 'Simülasyon • dış komutlar taklit ediliyor',
       restart: 'Yeniden başlat',
       resume: 'Devam et',
       pause: 'Duraklat',
@@ -1696,10 +1696,10 @@ export const tr: Catalog = {
       removeField: '{{field}} alanını kaldır',
       dataSources: 'Veri kaynakları',
       mockHelp:
-        'Mock çıktıları script çıktı alanlarıyla eşleşmeli. Canlı mod yalnızca kayıtlı sürüm ve açık test profiliyle çalışır; yeniden başlatınca etkinleşir.',
+        'Sahte yanıtlar scriptin çıktı alanlarıyla eşleşmeli. Canlı mod yalnızca kayıtlı sürüm ve açık test profiliyle çalışır; yeniden başlatınca etkinleşir.',
       liveTest: 'Gerçek test çağrısı (yetki gerekir)',
-      mockKind: 'Mock senaryosu',
-      mockOutputs: 'Mock çıktı değerleri',
+      mockKind: 'Sahte yanıt senaryosu',
+      mockOutputs: 'Sahte çıktı değerleri',
       watch: 'Değişkenler',
       watchHelp:
         'Değerleri JSON olarak canlı düzenle. Hassas alanlar maskelenir; global değişkenler salt okunurdur.',
@@ -1726,7 +1726,7 @@ export const tr: Catalog = {
       jump: 'Bu ana dön',
       scenarioName: 'Senaryo adı',
       syntheticHelp:
-        'Başlangıç girdileri, mock’lar, etkileşimler ve beklenen sayfa/sonuç kaydedilir. Canlı çağrı veya hassas değişken kaydı saklanamaz.',
+        'Başlangıç girdileri, sahte yanıtlar, etkileşimler ve beklenen sayfa/sonuç kaydedilir. Canlı çağrı veya hassas değişken kaydı saklanamaz.',
       syntheticConfirm: 'Tüm verilerin sentetik test verisi olduğunu onaylıyorum',
       recordingBlocked:
         'Bu oturum kaydedilemez: hassas değişken girdisi, canlı çağrı, geri yüklenmiş durum veya tamamlanmamış aksiyon içeriyor. Sentetik, hassas olmayan girdilerle yeniden başlatıp aksiyonları tamamladıktan sonra tekrar kaydedin.',
@@ -1852,7 +1852,7 @@ export const tr: Catalog = {
         testInputJson: 'Test girdisi (JSON)',
         introspected: 'Şema alındı · ayrıntıları göster',
       },
-      noSourceFields: 'Alanları görmek için Mock sekmesinde örnek yanıt girin.',
+      noSourceFields: 'Alanları görmek için “Örnek yanıt” sekmesinde bir örnek girin.',
       noTargetFields: 'Eşlediğiniz hedef alanlar burada görünür.',
       manualMappingHelp:
         'Özel JSONata ifadesi kullanılıyor. Mevcut eşlemeyi korumak için ifadeyi aşağıdaki alandan düzenleyin.',
@@ -1960,8 +1960,8 @@ export const tr: Catalog = {
       fallback: 'Fallback yanıtı (JSON)',
       resilienceHelp:
         'Retry idempotent REST çağrılarına uygulanır. PII cache kullanımını kapatır. Tenant origin kısıtları her zaman geçerlidir.',
-      mockEnabled: 'Yürütmede mock kullan',
-      mockResponse: 'Mock yanıtı (JSON)',
+      mockEnabled: 'Yürütmede örnek yanıtı kullan',
+      mockResponse: 'Örnek yanıt (JSON)',
       addScenario: 'Senaryo ekle',
       scenario: 'Senaryo',
       scenarioKind: 'Senaryo tipi',
@@ -1970,7 +1970,7 @@ export const tr: Catalog = {
       redacted:
         'İstek/yanıt ve mapping izleri sunucuda maskelenir. Geçmiş bu editör oturumu için bellekte kalır.',
       testInput: 'Test girdisi',
-      livePreview: 'Canlı mock mapping önizlemesi',
+      livePreview: 'Örnek yanıtla canlı eşleme önizlemesi',
       liveSandbox: 'Canlı sandbox isteği gönder (kayıtlı tanım)',
       savedDefinition: 'Canlı test son kayıtlı tanımı kullanır. Önce değişiklikleri kaydedin.',
       send: 'Gönder',
