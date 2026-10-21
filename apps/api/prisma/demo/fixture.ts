@@ -9,7 +9,8 @@ import {
 } from '@verbis/shared-types';
 
 export const DEMO_SLUG = 'verbis-demo';
-export const DEMO_SEED_VERSION = 2;
+/** Bump whenever published demo content changes; `upgrade.ts` appends it to older bundles. */
+export const DEMO_SEED_VERSION = 4;
 export const demoId = (n: number): string =>
   `019c0000-0000-7000-8000-${n.toString(16).padStart(12, '0')}`;
 export const DEMO_TENANT_ID = demoId(1);
@@ -80,7 +81,7 @@ export const sharedFragment = {
           {
             id: 'demo-intro-heading',
             type: 'heading',
-            props: { textKey: 'demo.intro.title', level: 1 },
+            props: { textKey: 'demo.intro.title' },
           },
           {
             id: 'demo-intro-text',
@@ -186,6 +187,14 @@ export function demoCampaigns(): DemoCampaign[] {
 }
 
 /** Mock response covers the checked-in script fixtures; no network or secret is configured. */
+/** Runtime policy of every synthetic demo service. */
+export const DEMO_SOURCE_POLICY = {
+  timeoutMs: 4000,
+  retries: 0,
+  containsPii: true,
+  cacheTtlSeconds: 0,
+} as const;
+
 export function mockDefinition(key: string) {
   const payload = {
     tariff: { code: 'S20' },

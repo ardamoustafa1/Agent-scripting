@@ -1,16 +1,26 @@
 import { describe, expect, it } from 'vitest';
+import { z } from 'zod';
 
 import { asSubject, defineAbilityFor, SYSTEM_ROLES } from '@verbis/authz';
+import { IntegrationPolicySchema } from '@verbis/shared-types';
 
 import {
   assertDemoTarget,
+  DEMO_SOURCE_POLICY,
   demoCampaigns,
   demoFacts,
   demoOutcomeCodes,
   demoRoleScope,
   mockDefinition,
   DEMO_SHARED_ID,
+  sharedFragment,
 } from '../prisma/demo/fixture.js';
+
+import { OutcomeSchema } from './modules/campaigns/campaigns.dto.js';
+import {
+  validateComponents,
+  validateFragmentComponents,
+} from './modules/scripts/script-validation.js';
 
 describe('synthetic demo bundle', () => {
   it('rejects production, remote servers and unapproved databases', () => {
@@ -90,4 +100,27 @@ it('limits demo designer access to the four explicit campaign grants', () => {
   expect(ability.can('read', asSubject('Script', { campaignIds: ['foreign-campaign'] }))).toBe(
     false,
   );
+});
+
+describe('synthetic demo bundle runs on the current product', () => {
+  // The bundle is published without the release gate (synthetic bootstrap), so these are the
+  // checks the gate and the agent would otherwise apply.
+  it('passes the agent component contracts on every page, including the shared welcome', () => {
+    expect(() => validateFragmentComponents(sharedFragment)).not.toThrow();
+    for (const campaign of demoCampaigns())
+      expect(() => {
+        validateComponents(campaign.document);
+      }, campaign.name).not.toThrow();
+  });
+  it('stores campaign outcome sets and service policies the API can read back', () => {
+    for (const campaign of demoCampaigns()) {
+      const codes = demoOutcomeCodes(campaign.document);
+      expect(
+        z
+          .array(OutcomeSchema)
+          .safeParse(codes.map((code) => ({ code, label: code, category: 'other' }))).success,
+      ).toBe(true);
+    }
+    expect(IntegrationPolicySchema.safeParse(DEMO_SOURCE_POLICY).success).toBe(true);
+  });
 });

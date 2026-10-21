@@ -23,6 +23,7 @@ import {
   DEMO_SEED_VERSION,
   DEMO_SHARED_VERSION_ID,
   DEMO_SLUG,
+  DEMO_SOURCE_POLICY,
   DEMO_TENANT_ID,
   DEMO_USERS,
   demoCampaigns,
@@ -34,6 +35,7 @@ import {
   sharedFragment,
 } from './demo/fixture.js';
 import { provisionDemoIdentity } from './demo/identity.js';
+import { upgradeDemoBundle } from './demo/upgrade.js';
 
 loadDotenv({ path: path.resolve(import.meta.dirname, '../../../.env'), quiet: true });
 const connectionString = assertDemoTarget(process.env);
@@ -57,12 +59,37 @@ try {
           throw new Error('Clean demo acceptance requires an empty isolated database');
         const existing = await tx.tenant.findUnique({ where: { slug: DEMO_SLUG } });
         if (existing) {
+          const settings = existing.settings as Prisma.JsonObject;
+          const seeded = settings['demoSeedVersion'];
           if (
             existing.id !== DEMO_TENANT_ID ||
-            (existing.settings as Record<string, unknown>)['demoSeedVersion'] !== DEMO_SEED_VERSION
+            typeof seeded !== 'number' ||
+            seeded > DEMO_SEED_VERSION
           )
             throw new Error('Demo tenant collision; refusing to overwrite');
-          process.stdout.write('Demo bundle already exists; preserved without mutation.\n');
+          if (seeded === DEMO_SEED_VERSION) {
+            process.stdout.write('Demo bundle already exists; preserved without mutation.\n');
+            return;
+          }
+          // An older bundle gets new published versions on top; nothing is edited or removed.
+          await tx.$executeRaw`SELECT set_config('app.tenant_id', ${DEMO_TENANT_ID}, true)`;
+          await upgradeDemoBundle(
+            tx,
+            seeded,
+            settings,
+            async (action, type, id) => {
+              await audit.record(tx, {
+                action,
+                target: { type, id },
+                actor,
+                metadata: { synthetic: true },
+              });
+            },
+            new Date(),
+          );
+          process.stdout.write(
+            `Demo bundle upgraded from seed v${String(seeded)} to v${String(DEMO_SEED_VERSION)}; earlier versions kept.\n`,
+          );
           return;
         }
         await tx.tenant.create({
@@ -174,7 +201,7 @@ try {
               protocol: 'rest',
               version,
               definition: json(mockDefinition(key)),
-              policy: { timeoutMs: 4000, retries: 0, containsPii: true, cacheTtlSeconds: 0 },
+              policy: DEMO_SOURCE_POLICY,
               secretRefs: [],
             },
           });
