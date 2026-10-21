@@ -117,6 +117,7 @@ const NodeContent = memo(function NodeContent({ node, runtime, sourceNode = node
   );
   if (!runtime.condition(node.visibleWhen)) return null;
   const resolved: Record<string, unknown> = { ...definition.defaults, ...node.props };
+  const unanswered: string[] = [];
   for (const binding of node.bindings) {
     if (definition.secureBindings?.includes(binding.prop)) {
       resolved[binding.prop] = '';
@@ -135,17 +136,37 @@ const NodeContent = memo(function NodeContent({ node, runtime, sourceNode = node
       resolved[binding.prop] =
         runtime.store.get(`runtime.mask.${node.id}`) === true
           ? ''
-          : runtime.expressions.evaluate(binding.expression);
+          : runtime.expressions.bindingValue(binding.expression);
+      if (resolved[binding.prop] === null) unanswered.push(binding.prop);
     }
   }
   const Renderer = definition.renderer;
+  const parsed = definition.propsSchema.safeParse(resolved);
+  // A binding to data that has not arrived yet (`ds.catalog.offers` before the call returns)
+  // keeps the authored or default value instead of failing the component; anything else that
+  // does not fit the schema still fails into the node boundary.
+  const props = parsed.success
+    ? parsed.data
+    : definition.propsSchema.parse(
+        Object.fromEntries(
+          Object.entries(resolved).flatMap(([key, value]) =>
+            !unanswered.includes(key)
+              ? [[key, value]]
+              : key in node.props
+                ? [[key, node.props[key]]]
+                : key in definition.defaults
+                  ? [[key, definition.defaults[key]]]
+                  : [],
+          ),
+        ),
+      );
   const errors = runtime.store.get(`runtime.errors.${node.id}`);
   return (
     <>
       <Renderer
         node={node}
         sourceNode={sourceNode}
-        props={definition.propsSchema.parse(resolved)}
+        props={props}
         runtime={runtime}
         enabled={runtime.condition(node.enabledWhen)}
         required={

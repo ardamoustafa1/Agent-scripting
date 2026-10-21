@@ -120,7 +120,15 @@ export class Runtime {
       /* Telemetry transport failures do not corrupt interpreter state. Server audit is authoritative. */
     }
   }
-  message(key: string, values: Record<string, JsonValue> = {}): string {
+  /**
+   * A message with its parameters. `gapNames` gives a readable name for a parameter that is
+   * still empty ("[müşteri adı]" instead of "[name]"); without one the parameter name is shown.
+   */
+  message(
+    key: string,
+    values: Record<string, JsonValue> = {},
+    gapNames: Readonly<Record<string, string>> = {},
+  ): string {
     const locale = this.store.locale;
     const template =
       this.document.i18n.messages[locale]?.[key] ??
@@ -147,7 +155,8 @@ export class Runtime {
             ],
       ),
     );
-    // Empty or unbound values stay visible as `[name]` (M-Z6) instead of collapsing the sentence.
+    // Empty or unbound values stay visible as a named gap (M-Z6) instead of collapsing the
+    // sentence: `[name]`, or the readable name the caller knows for it.
     const withGaps = new Proxy(params, {
       has: () => true,
       get: (target, name) =>
@@ -155,7 +164,7 @@ export class Runtime {
           ? undefined
           : Object.hasOwn(target, name)
             ? target[name]
-            : `[${name}]`,
+            : `[${Object.hasOwn(gapNames, name) ? (gapNames[name] ?? name) : name}]`,
     });
     try {
       return String(compiled.format(withGaps));
@@ -417,6 +426,10 @@ export class Runtime {
     } finally {
       this.departure = undefined;
     }
+  }
+  /** Pages the agent has left, oldest first; the step trail and "Back" read the same list. */
+  pageHistory(): string[] {
+    return this.history.map((entry) => entry.page);
   }
   async back(signal = this.lifetime.signal): Promise<void> {
     await this.ports.navigationGuard?.();

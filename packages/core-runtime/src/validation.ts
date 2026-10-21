@@ -117,6 +117,20 @@ export class ValidationEngine {
     );
     return issues.filter((issue) => !OPEN_BY_EARLY_EXIT.has(issue.messageKey));
   }
+  /**
+   * Completing-outcome validation (ADR-0055): every page the call showed (navigated to or opened
+   * as a window) and every mandatory page. A branch the call never reached owes nothing; what the
+   * agent was shown must be complete: required values, read notices, signatures.
+   */
+  async completion(signal = this.runtime.signal): Promise<FieldIssue[]> {
+    return this.pages(
+      this.runtime.document.pages
+        .filter((p) => p.mandatory || this.runtime.store.get(`runtime.visited.${p.id}`) === true)
+        .map((p) => p.id),
+      signal,
+    );
+  }
+  /** Every page of the document, reached or not; for tooling, not for recording outcomes. */
   async script(signal = this.runtime.signal): Promise<FieldIssue[]> {
     return this.pages(
       this.runtime.document.pages.map((p) => p.id),

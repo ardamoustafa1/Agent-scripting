@@ -203,7 +203,11 @@ export class ActionExecutor {
         return;
       case 'openModal':
         r.page(action.page);
-        r.store.set('runtime.modal', action.page);
+        // A window the agent was shown is part of the call: its fields count at completion.
+        r.store.batch(() => {
+          r.store.set('runtime.modal', action.page);
+          r.store.set(`runtime.visited.${action.page}`, true);
+        });
         return;
       case 'closeModal':
         r.store.set('runtime.modal', null);
@@ -227,7 +231,7 @@ export class ActionExecutor {
           )
         )
           throw new RuntimeProblem('VERBIS_MANDATORY_PAGE_UNVISITED');
-        if ((await (early ? r.validation.visited(signal) : r.validation.script(signal))).length)
+        if ((await (early ? r.validation.visited(signal) : r.validation.completion(signal))).length)
           throw new RuntimeProblem('VERBIS_VALIDATION_FAILED');
         const values = action.notes === undefined ? {} : { notes: action.notes };
         e.assertSink(values);

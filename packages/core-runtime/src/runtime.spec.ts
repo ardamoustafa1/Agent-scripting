@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { z } from 'zod';
 
 import { FlowSchema, type ActionInput, type ScriptDocument } from '@verbis/script-schema';
 
@@ -226,8 +227,10 @@ describe('action executor and runtime boundaries', () => {
     expect(runtime.store.variable('count')).toBe(2);
     await runtime.executor.execute([{ type: 'stopTimer', timer: 'home-timer' }, { type: 'next' }]);
     expect(runtime.store.get('runtime.page')).toBe('second');
+    expect(runtime.pageHistory()).toEqual(['home']);
     await runtime.back();
     expect(runtime.store.get('runtime.page')).toBe('home');
+    expect(runtime.pageHistory()).toEqual([]);
     await runtime.executor.execute([{ type: 'navigate', page: 'second' }, { type: 'next' }]);
     expect(runtime.store.get('runtime.ended')).toBe(true);
   });
@@ -383,7 +386,7 @@ describe('action executor and runtime boundaries', () => {
         'VERBIS_VALIDATION_FAILED',
       );
     });
-    it('a completing outcome still validates every page', async () => {
+    it('a completing outcome validates the pages the call showed (ADR-0055)', async () => {
       const seen: string[][] = [];
       const { runtime } = engine(runtimeFixture(), {
         command: vi.fn().mockResolvedValue(undefined),
@@ -394,7 +397,7 @@ describe('action executor and runtime boundaries', () => {
       });
       await runtime.start();
       await runtime.executor.execute([{ type: 'submitOutcome', outcome: 'DONE' }]);
-      expect(seen).toEqual([['home', 'second']]);
+      expect(seen).toEqual([['home']]);
     });
     it('an end node carries its completion into the outcome', async () => {
       const bypass = (completion?: 'early') => {
@@ -665,7 +668,7 @@ it('enforces mandatory page validation on navigation and outcome submission', as
   await expect(runtime.next()).rejects.toThrow('VERBIS_VALIDATION_FAILED');
   await expect(runtime.navigate('second')).rejects.toThrow('VERBIS_VALIDATION_FAILED');
   expect(runtime.store.get('runtime.page')).toBe('home');
-  vi.spyOn(runtime.validation, 'script').mockResolvedValue([
+  vi.spyOn(runtime.validation, 'completion').mockResolvedValue([
     { node: 'synthetic', messageKey: 'runtime.required' },
   ]);
   await expect(
@@ -707,6 +710,13 @@ it('handles booleans and structured ICU values and marks empty or missing parame
     'İyi günler, ben Ayşe. Size özel teklif.',
   );
   expect(runtime.message('missing.key')).toBe('missing.key');
+  // A caller that knows where the value comes from names the gap for the agent.
+  expect(runtime.message('synthetic.greeting', { agent: '' }, { agent: 'ajan adı' })).toBe(
+    'İyi günler, ben [ajan adı]. Size özel teklif.',
+  );
+  expect(runtime.message('synthetic.greeting', { agent: 'Ayşe' }, { agent: 'ajan adı' })).toBe(
+    'İyi günler, ben Ayşe. Size özel teklif.',
+  );
 });
 it('isolates a failed telemetry transport and suppresses simulation timers when configured', async () => {
   const document = runtimeFixture();
@@ -794,4 +804,99 @@ it('resynchronizes an authorized cursor atomically without replaying external co
   expect(() => {
     runtime.resynchronize('second');
   }).toThrow('VERBIS_RUNTIME_DISPOSED');
+});
+
+// ADR-0055: a completing outcome owes what the call showed (and every mandatory page), never a
+// branch it did not take.
+describe('completing outcomes validate the call that happened', () => {
+  function withRequiredField(pageIndex: number) {
+    const doc = runtimeFixture();
+    const page = doc.pages[pageIndex];
+    if (!page) throw new Error('Missing fixture page');
+    page.layout.children = [
+      {
+        id: `required-${page.id}`,
+        type: 'textInput',
+        props: { required: true },
+        bindings: [{ variable: 'other' }],
+        events: {},
+        style: { base: {} },
+        children: [],
+      },
+    ];
+    return doc;
+  }
+  function fieldEngine(doc: ReturnType<typeof runtimeFixture>) {
+    const registry = createCoreRegistry();
+    registry.register({
+      type: 'textInput',
+      renderer: () => null,
+      propsSchema: z.strictObject({
+        value: z.string().default(''),
+        required: z.boolean().default(false),
+      }),
+      defaults: {},
+      designerMeta: {
+        icon: 'Text',
+        category: 'field',
+        acceptsChildren: [],
+        allowedParents: '*',
+        draggable: true,
+      },
+      events: [],
+      bindableProps: ['value'],
+    });
+    const runtime = new Runtime({
+      document: doc,
+      registry,
+      ports: { sessionEvent: vi.fn(), command: vi.fn().mockResolvedValue(undefined) },
+    });
+    engines.push(runtime);
+    return runtime;
+  }
+  const complete = [{ type: 'submitOutcome', outcome: 'DONE' }] as const;
+
+  it('does not demand a required field on a branch page the call never reached', async () => {
+    const runtime = fieldEngine(withRequiredField(1));
+    await runtime.start();
+    expect(runtime.store.get('runtime.page')).toBe('home');
+    await runtime.executor.execute([...complete]);
+  });
+
+  it('still demands a required field on a page the call showed', async () => {
+    const runtime = fieldEngine(withRequiredField(0));
+    await runtime.start();
+    await expect(runtime.executor.execute([...complete])).rejects.toThrow(
+      'VERBIS_VALIDATION_FAILED',
+    );
+    runtime.store.setVariable('other', 'filled');
+    await runtime.executor.execute([...complete]);
+  });
+
+  it('counts an opened window as shown, so its required fields are owed', async () => {
+    const opened = fieldEngine(withRequiredField(1));
+    await opened.start();
+    await opened.executor.execute([{ type: 'openModal', page: 'second' }]);
+    expect(opened.store.get('runtime.visited.second')).toBe(true);
+    await expect(opened.executor.execute([...complete])).rejects.toThrow(
+      'VERBIS_VALIDATION_FAILED',
+    );
+  });
+
+  it('validates a mandatory page even when it is the only thing left to check', async () => {
+    const doc = withRequiredField(1);
+    doc.pages[1]!.mandatory = true;
+    const runtime = fieldEngine(doc);
+    await runtime.start();
+    // Mandatory pages must be visited first, and a mandatory page can only be left once valid.
+    await expect(runtime.executor.execute([...complete])).rejects.toThrow(
+      'VERBIS_MANDATORY_PAGE_UNVISITED',
+    );
+    await runtime.next();
+    await expect(runtime.executor.execute([...complete])).rejects.toThrow(
+      'VERBIS_VALIDATION_FAILED',
+    );
+    runtime.store.setVariable('other', 'filled');
+    await runtime.executor.execute([...complete]);
+  });
 });

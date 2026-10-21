@@ -1,10 +1,25 @@
-import { compileExpression, extractDependencies, ruleToExpression } from '@verbis/expr';
+import {
+  ExpressionError,
+  compileExpression,
+  extractDependencies,
+  ruleToExpression,
+} from '@verbis/expr';
 import type { Condition, JsonValue, Node, ScriptDocument, Value } from '@verbis/script-schema';
 
 import { RuntimeProblem } from './problem.js';
 
 import type { RuntimeStore } from './store.js';
 
+/** Type errors an operand that holds no value yet (`null`) can raise. */
+const EMPTY_OPERAND_ERRORS = new Set(['TYPE_COMPARISON', 'TYPE_NUMBER', 'TYPE_STRING']);
+function readPath(context: Record<string, JsonValue>, path: string): JsonValue | undefined {
+  let current: JsonValue | undefined = context;
+  for (const part of path.split('.')) {
+    if (current === null || typeof current !== 'object' || Array.isArray(current)) return undefined;
+    current = current[part];
+  }
+  return current;
+}
 /** Compile once per runtime; rules are pure predicates and never run then/else implicitly. */
 export class RuntimeExpressions {
   private dependencyCache = new Map<string, string[]>();
@@ -40,7 +55,42 @@ export class RuntimeExpressions {
     return compiled.evaluate(this.store.context(this.dependenciesOf(source)));
   }
   condition(condition?: Condition): boolean {
-    return condition === undefined || this.evaluate(this.source(condition)) === true;
+    if (condition === undefined) return true;
+    const source = this.source(condition);
+    try {
+      return this.evaluate(source) === true;
+    } catch (error) {
+      // "Income ≥ 30 000" before the agent has typed an income, or a data source that has not
+      // answered yet, is not an authoring error: the condition simply does not hold yet. The
+      // engine stays strict (mismatched types still fail), only an empty operand reads as false.
+      if (this.emptyOperand(error, source)) return false;
+      throw error;
+    }
+  }
+  /** A one-way binding's value; `null` while a value it formats or computes is still empty. */
+  bindingValue(source: string): JsonValue {
+    try {
+      return this.evaluate(source);
+    } catch (error) {
+      if (this.emptyOperand(error, source)) return null;
+      throw error;
+    }
+  }
+  private emptyOperand(error: unknown, source: string): boolean {
+    return (
+      error instanceof ExpressionError &&
+      EMPTY_OPERAND_ERRORS.has(error.code) &&
+      this.readsEmptyValue(source)
+    );
+  }
+  private readsEmptyValue(source: string): boolean {
+    const context = this.store.context(this.dependenciesOf(source));
+    // Only concrete paths count: a dynamic read (`vars.*`) says nothing about an empty field.
+    return this.dependenciesOf(source).some((path) => {
+      if (!path.includes('.') || path.includes('*')) return false;
+      const value = readPath(context, path);
+      return value === null || value === undefined;
+    });
   }
   value(value: Value): JsonValue {
     return value !== null &&

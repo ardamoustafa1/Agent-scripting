@@ -110,6 +110,99 @@ describe('shared React renderer', () => {
       false,
     );
   });
+  it('reads a condition on an empty field as not holding but keeps real type errors visible', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    try {
+      const { runtime } = await mount([
+        {
+          id: 'button-run',
+          type: 'button',
+          props: { labelKey: 'common.run' },
+          visibleWhen: { $expr: 'vars.count >= 30000' },
+        },
+        {
+          id: 'button-typed',
+          type: 'button',
+          props: { labelKey: 'common.result' },
+          visibleWhen: { $expr: 'vars.name > 1' },
+        },
+      ]);
+      act(() => {
+        runtime.store.setVariable('count', null);
+      });
+      // No income typed yet: the offer stays hidden instead of failing on the agent's screen.
+      expect(screen.queryByRole('button', { name: 'Çalıştır' })).toBeNull();
+      act(() => {
+        runtime.store.setVariable('count', 40000);
+      });
+      expect(screen.getByRole('button', { name: 'Çalıştır' })).toBeTruthy();
+      // A text compared with a number is an authoring error and still surfaces.
+      expect(screen.getByText('Bu bileşen gösterilemedi')).toBeTruthy();
+    } finally {
+      error.mockRestore();
+    }
+  });
+  it('keeps the default value while bound data has not arrived', async () => {
+    await mount(
+      [
+        {
+          id: 'input-result',
+          type: 'textInput',
+          bindings: [{ prop: 'value', expression: 'ds.lookup.result' }],
+        },
+      ],
+      ({ node, props }) => (
+        <Input label={node.id} aria-label={node.id} value={String(props['value'])} readOnly />
+      ),
+    );
+    expect(screen.getByLabelText<HTMLInputElement>('input-result').value).toBe('');
+    expect(screen.queryByText('Bu bileşen gösterilemedi')).toBeNull();
+  });
+  it('falls back to the authored prop, then the component default, for unanswered data', async () => {
+    const registry = createCoreRegistry();
+    registry.register({
+      type: 'textInput',
+      renderer: ({ node, props }: RendererProps) => (
+        <Input label={node.id} aria-label={node.id} value={String(props['value'])} readOnly />
+      ),
+      propsSchema: z.strictObject({ value: z.string().default('') }),
+      defaults: { value: 'Waiting for data' },
+      designerMeta: {
+        icon: 'Text',
+        category: 'field',
+        acceptsChildren: [],
+        allowedParents: '*',
+        draggable: true,
+      },
+      events: [],
+      bindableProps: ['value'],
+    });
+    const bound = [{ prop: 'value', expression: 'ds.lookup.result' }];
+    const runtime = new Runtime({
+      document: runtimeFixture([
+        { id: 'in-authored', type: 'textInput', props: { value: 'Authored' }, bindings: bound },
+        { id: 'in-default', type: 'textInput', bindings: bound },
+        // A formatting call on a value that is still empty waits like the plain read above.
+        {
+          id: 'in-formatted',
+          type: 'textInput',
+          bindings: [{ prop: 'value', expression: 'formatCurrency(ds.lookup.result)' }],
+        },
+      ]),
+      registry,
+      ports: { sessionEvent: vi.fn() },
+    });
+    engines.push(runtime);
+    await runtime.start();
+    render(
+      <UiProvider i18n={await createI18n()}>
+        <ScriptRenderer runtime={runtime} />
+      </UiProvider>,
+    );
+    expect(screen.getByLabelText<HTMLInputElement>('in-authored').value).toBe('Authored');
+    expect(screen.getByLabelText<HTMLInputElement>('in-default').value).toBe('Waiting for data');
+    expect(screen.getByLabelText<HTMLInputElement>('in-formatted').value).toBe('Waiting for data');
+  });
   it('isolates a throwing leaf and preserves the rest of the script', async () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     try {
