@@ -25,7 +25,13 @@ import { abilityFromSerialized, MePermissionsSchema } from '@verbis/authz';
 import { AccessLayout, Button, UiProvider, THEMES, useTheme, type Theme } from '@verbis/ui';
 import { RetryAfterNotice } from '@verbis/ui';
 
-import { fetchSession, logout, AuthApiError, type AuthSession } from '../auth/auth-api.js';
+import {
+  fetchSession,
+  logout,
+  takeReturnRoute,
+  AuthApiError,
+  type AuthSession,
+} from '../auth/auth-api.js';
 import { AuthSection } from '../auth/auth-section.js';
 
 import { allowed as canAccess, AccessContext } from './access.js';
@@ -167,7 +173,13 @@ function Authenticated({ session }: { session: AuthSession }) {
     [filter, setFilter] = useState(''),
     [compact, setCompact] = useState(false),
     [error, setError] = useState<unknown>(),
-    [route, setRoute] = useState(() => location.hash.slice(1));
+    [route, setRoute] = useState(() => {
+      // Back from signing in: reopen the page the sign-in started from (once, this tab only).
+      const back = takeReturnRoute();
+      if (back !== undefined && location.hash === '')
+        history.replaceState(history.state, '', `${location.pathname}${location.search}${back}`);
+      return location.hash.slice(1);
+    });
   const scope = ['admin', session.user.tenantId, session.user.id];
   const grants = useQuery({
     queryKey: [...scope, 'permissions'],

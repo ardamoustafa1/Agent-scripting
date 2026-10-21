@@ -9,6 +9,7 @@ import {
   discover,
   fetchSession,
   loginUrl,
+  rememberReturnRoute,
   logout,
   takeAuthError,
 } from './auth-api.js';
@@ -171,7 +172,13 @@ function SignIn({ initialError }: { initialError: string | null }) {
           <ul className="vb-stack">
             {discovery.providers.map((provider) => (
               <li key={provider.id}>
-                <a className="vb-button" href={loginUrl(discovery.tenant, provider.id)}>
+                <a
+                  className="vb-button"
+                  href={loginUrl(discovery.tenant, provider.id)}
+                  onClick={() => {
+                    rememberReturnRoute(window.location.hash);
+                  }}
+                >
                   {t('admin.auth.signInWith', { provider: provider.displayName })}
                 </a>
               </li>

@@ -291,3 +291,21 @@ for (const theme of ['dark', 'high-contrast'])
     expect(colors.theme).toBe(theme);
     expect(colors.preview).toBe(colors.page);
   });
+
+test('reopens the console page the sign-in started from, once', async ({ page }) => {
+  await workspace(page, 'light');
+  // The sign-in link stored the open page before the IdP round trip (auth-api rememberReturnRoute).
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem('verbis.test.seeded') === null) {
+      sessionStorage.setItem('verbis.test.seeded', '1');
+      sessionStorage.setItem('verbis.admin.returnRoute', '#trust');
+    }
+  });
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/#trust$/);
+  await expect(page.getByText('Dikkat gerekli').first()).toBeVisible();
+  expect(await page.evaluate(() => sessionStorage.getItem('verbis.admin.returnRoute'))).toBeNull();
+  // Opening the start page again stays there: the route is used only once.
+  await page.goto('/');
+  await expect(page).not.toHaveURL(/#trust/);
+});

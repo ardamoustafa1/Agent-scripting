@@ -91,6 +91,30 @@ export async function discover(email: string): Promise<Discovery> {
   return parsed.data;
 }
 
+const RETURN_ROUTE = 'verbis.admin.returnRoute';
+const ROUTE = /^#[A-Za-z0-9-]{1,64}$/;
+/**
+ * The console's page lives in the URL hash, which the server-side return path cannot carry. The
+ * sign-in link keeps it for this tab only, and the console reopens it once after signing in.
+ */
+export function rememberReturnRoute(hash: string): void {
+  try {
+    if (ROUTE.test(hash)) sessionStorage.setItem(RETURN_ROUTE, hash);
+    else sessionStorage.removeItem(RETURN_ROUTE);
+  } catch {
+    // Storage may be blocked; signing in then opens the start page as before.
+  }
+}
+export function takeReturnRoute(): string | undefined {
+  try {
+    const hash = sessionStorage.getItem(RETURN_ROUTE);
+    sessionStorage.removeItem(RETURN_ROUTE);
+    return hash !== null && ROUTE.test(hash) ? hash : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 /** SSO is a top-level navigation (the IdP round trip needs the browser). Fixed parameters only. */
 export function loginUrl(tenant: string, idpId: string): string {
   const params = new URLSearchParams({ tenant, idp: idpId, app: 'admin', returnTo: '/' });

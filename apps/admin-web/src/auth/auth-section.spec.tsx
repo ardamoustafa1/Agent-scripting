@@ -5,7 +5,13 @@ import { createI18n } from '@verbis/i18n';
 
 import { AppProviders } from '../providers.js';
 
-import { fetchSession, loginUrl, takeAuthError } from './auth-api.js';
+import {
+  fetchSession,
+  loginUrl,
+  rememberReturnRoute,
+  takeAuthError,
+  takeReturnRoute,
+} from './auth-api.js';
 import { AuthSection } from './auth-section.js';
 
 type Handler = (url: string, init?: RequestInit) => { status: number; body: unknown };
@@ -68,6 +74,15 @@ describe('AuthSection', () => {
     const discoverCall = calls.find((call) => call.url === '/api/auth/discover');
     expect(discoverCall?.init?.body).toBe(JSON.stringify({ email: 'ada@acme.test' }));
     expect(discoverCall?.url).not.toContain('ada@');
+    // The open console page (#audit) is kept for this tab and reopened once after signing in.
+    window.history.replaceState(null, '', '/#audit');
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+    });
+    fireEvent.click(link);
+    expect(takeReturnRoute()).toBe('#audit');
+    expect(takeReturnRoute()).toBeUndefined();
+    window.history.replaceState(null, '', '/');
   });
 
   it('shows a localized error for an unknown domain', async () => {
@@ -142,6 +157,16 @@ describe('auth helpers', () => {
     expect(takeAuthError()).toBe('login_failed');
     expect(takeAuthError()).toBeNull();
     expect(loginUrl('t', 'i')).toBe('/api/auth/login?tenant=t&idp=i&app=admin&returnTo=%2F');
+  });
+  it('keeps only a plain console route for after sign-in', () => {
+    rememberReturnRoute('#serviceClients');
+    expect(takeReturnRoute()).toBe('#serviceClients');
+    for (const hash of ['', '#', '#a/b', '#<script>', `#${'x'.repeat(65)}`]) {
+      rememberReturnRoute(hash);
+      expect(takeReturnRoute()).toBeUndefined();
+    }
+    sessionStorage.setItem('verbis.admin.returnRoute', 'javascript:alert(1)');
+    expect(takeReturnRoute()).toBeUndefined();
   });
 });
 
