@@ -2,9 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { z } from 'zod';
 
 import {
-  minimalScript,
   collectionsScript,
   creditCardSalesScript,
+  ecommerceOrderScript,
+  insuranceRenewalScript,
   surveyScript,
   telecomTariffChangeScript,
   TEMPLATE_SCENARIOS,
@@ -53,69 +54,6 @@ export const InstantiateTemplateSchema = z
   .meta({ id: 'InstantiateTemplate' });
 export type InstantiateTemplateInput = z.output<typeof InstantiateTemplateSchema>;
 
-function sectorTemplate(sector: 'insurance' | 'ecommerce') {
-  const document = minimalScript();
-  const insurance = sector === 'insurance';
-  document.meta.name = insurance ? 'Insurance renewal' : 'E-commerce order support';
-  document.variables = [{ key: 'reference', type: 'string', scope: 'session', default: '' }];
-  const root = document.pages[0]?.layout;
-  if (root)
-    root.children = [
-      { id: 'greeting', type: 'scriptText', props: { textKey: 'sector.greeting' } },
-      {
-        id: 'reference',
-        type: 'textInput',
-        props: { labelKey: 'sector.reference' },
-        bindings: [{ prop: 'value', variable: 'reference' }],
-      },
-      { id: 'legal', type: 'scriptText', props: { textKey: 'sector.legal', mustRead: true } },
-      {
-        id: 'btn-next',
-        type: 'button',
-        props: { labelKey: 'common.next' },
-        events: { onPress: [{ type: 'validatePage' }, { type: 'next' }] },
-      },
-    ];
-  document.i18n.messages = {
-    tr: {
-      'common.next': 'Tamamla',
-      'sector.greeting': insurance
-        ? 'Yenileme seçeneklerini ve teminat ihtiyaçlarınızı birlikte gözden geçirelim.'
-        : 'Siparişinizle ilgili talebinizi birlikte çözelim.',
-      'sector.reference': insurance ? 'Poliçe referansı' : 'Sipariş referansı',
-      'sector.legal': insurance
-        ? 'Teklif, kapsam ve istisnaları doğrulayarak müşteriye açıklayın.'
-        : 'Kimliği doğrulayın; iade, teslimat ve kişisel veri süreçlerini müşteriye açıklayın.',
-    },
-    en: {
-      'common.next': 'Complete',
-      'sector.greeting': insurance
-        ? 'Let us review renewal options and coverage needs together.'
-        : 'Let us resolve your order request together.',
-      'sector.reference': insurance ? 'Policy reference' : 'Order reference',
-      'sector.legal': insurance
-        ? 'Verify and explain the quote, coverage and exclusions.'
-        : 'Verify identity; explain returns, delivery and personal data handling.',
-    },
-  };
-  // Shipped with a regression scenario so scripts created from it pass the publication gate.
-  document.testScenarios = [
-    {
-      id: insurance ? 'insuranceRenewalCompleted' : 'ecommerceRequestCompleted',
-      name: insurance ? 'Renewal reviewed and completed' : 'Order request completed',
-      synthetic: true,
-      context: {},
-      steps: [
-        { type: 'variable', variable: 'reference', value: 'SYNTHETIC-REF-1' },
-        { type: 'read', node: 'legal', acknowledged: true },
-        { type: 'event', node: 'btn-next', event: 'onPress' },
-      ],
-      expected: { ended: true, variables: { reference: 'SYNTHETIC-REF-1' } },
-    },
-  ];
-  return document;
-}
-
 /** Curated starting points shipped with the product (read-only, versioned with the release). */
 const BUILT_IN = [
   {
@@ -143,13 +81,16 @@ const BUILT_IN = [
     id: 'builtin-insurance-renewal',
     name: 'Insurance renewal',
     category: 'service',
-    document: sectorTemplate('insurance'),
+    document: {
+      ...insuranceRenewalScript,
+      testScenarios: [...TEMPLATE_SCENARIOS.insuranceRenewal],
+    },
   },
   {
     id: 'builtin-ecommerce-order',
     name: 'E-commerce order support',
     category: 'service',
-    document: sectorTemplate('ecommerce'),
+    document: { ...ecommerceOrderScript, testScenarios: [...TEMPLATE_SCENARIOS.ecommerceOrder] },
   },
   {
     id: 'builtin-nps-survey',
