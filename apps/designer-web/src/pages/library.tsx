@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import {
   Plus,
   ArrowUpRight,
@@ -13,17 +13,21 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 
 import { useCan } from '@verbis/authz/react';
 import { Button, Badge, DataTable, Input, Select, IconButton, EmptyState, Alert } from '@verbis/ui';
 
-import { list, type ResourceKind, type Resource } from '../api/client.js';
+import { list, request, type ResourceKind, type Resource } from '../api/client.js';
 import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
 
 import SharedScreens from './shared-screens.js';
 
 import type { Destination } from '../workspace/navigation.js';
+
+const PeopleSchema = z.array(z.object({ id: z.uuid(), name: z.string() }));
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function LibraryBody({
   kind,
@@ -44,7 +48,8 @@ function LibraryBody({
   const allowed = useCan('create', resource === 'campaigns' ? 'Campaign' : 'Script');
   const canReadTemplates = useCan('read', 'Script');
   const [search, setSearch] = useState('');
-  const [status, setStatus] = useState('all');
+  // Archived rows stay out of the way until the author asks for them.
+  const [status, setStatus] = useState('current');
   const [tag, setTag] = useState('all');
   const [owner, setOwner] = useState('all');
   const [view, setView] = useState<'list' | 'cards'>('list');
@@ -63,21 +68,59 @@ function LibraryBody({
   });
   const all = query.data?.pages.flatMap((page) => page.data) ?? [];
   // Rows carry their creator as an actor reference (`user:<id>`, `service:<name>`).
-  const creator = (row: Resource): 'mine' | 'member' | 'system' | undefined => {
+  const creatorUser = (row: Resource): string | undefined => {
     if (!row.createdBy) return undefined;
     const [kind, ...rest] = row.createdBy.includes(':')
       ? row.createdBy.split(':')
       : ['user', row.createdBy];
-    if (kind !== 'user') return 'system';
-    return rest.join(':') === session.user.id ? 'mine' : 'member';
+    return kind === 'user' ? rest.join(':') : undefined;
   };
+  const creator = (row: Resource): 'mine' | 'member' | 'system' | undefined =>
+    !row.createdBy
+      ? undefined
+      : creatorUser(row) === undefined
+        ? 'system'
+        : creatorUser(row) === session.user.id
+          ? 'mine'
+          : 'member';
+  // Teammates' names, at most 100 per request; until they arrive the row says "team member".
+  const teammates = [
+    ...new Set(
+      all.flatMap((row) => {
+        const id = creatorUser(row);
+        return id !== undefined && id !== session.user.id && UUID.test(id) ? [id] : [];
+      }),
+    ),
+  ]
+    .sort()
+    .slice(0, 100);
+  const people = useQuery({
+    queryKey: [
+      'workspace',
+      session.user.tenantId,
+      session.user.id,
+      session.session.id,
+      'people',
+      teammates.join(','),
+    ],
+    enabled: teammates.length > 0 && (resource === 'campaigns' || resource === 'scripts'),
+    queryFn: ({ signal }) =>
+      request(`/v1/people?ids=${teammates.join(',')}`, PeopleSchema, { signal }),
+    retry: false,
+  });
   const creatorName = (row: Resource) => {
     const kind = creator(row);
-    return kind === 'mine'
-      ? t('designer.workspace.you')
-      : kind
-        ? t(`designer.workspace.owners.${kind}`)
-        : t('designer.workspace.unassigned');
+    if (kind === 'mine') return t('designer.workspace.you');
+    if (kind === 'member') {
+      const id = creatorUser(row);
+      const name = people.data?.find((person) => person.id === id)?.name;
+      if (name) return name;
+      // Answered without this person: no longer an active member of the team.
+      return people.isSuccess && teammates.includes(id ?? '')
+        ? t('designer.workspace.owners.former')
+        : t('designer.workspace.owners.member');
+    }
+    return kind ? t(`designer.workspace.owners.${kind}`) : t('designer.workspace.unassigned');
   };
   const rows = all.filter(
     (row) =>
@@ -85,14 +128,15 @@ function LibraryBody({
         .toLocaleLowerCase(i18n.language)
         .includes(search.toLocaleLowerCase(i18n.language)) ||
         row.tags.some((value) => value.toLocaleLowerCase().includes(search.toLocaleLowerCase()))) &&
-      (status === 'all' || row.status === status) &&
+      (status === 'all' ||
+        (status === 'current' ? row.status !== 'archived' : row.status === status)) &&
       (tag === 'all' || row.tags.includes(tag)) &&
       (owner === 'all' || (owner === 'mine' ? creator(row) === 'mine' : creator(row) !== 'mine')),
   );
-  const filtered = !!search || status !== 'all' || tag !== 'all' || owner !== 'all';
+  const filtered = !!search || status !== 'current' || tag !== 'all' || owner !== 'all';
   const clearFilters = () => {
     setSearch('');
-    setStatus('all');
+    setStatus('current');
     setTag('all');
     setOwner('all');
   };
@@ -120,7 +164,9 @@ function LibraryBody({
           </div>
           <h1>
             {t(`designer.workspace.nav.${kind}`)}
-            <span className="dw-count">{all.length}</span>
+            <span className="dw-count">
+              {all.filter((row) => row.status !== 'archived').length}
+            </span>
           </h1>
           <p>{t(`designer.workspace.descriptions.${kind}`)}</p>
         </div>
@@ -186,6 +232,7 @@ function LibraryBody({
           label={t('designer.workspace.statusFilter')}
           value={status}
           options={[
+            { value: 'current', label: t('designer.workspace.currentStatuses') },
             { value: 'all', label: t('designer.workspace.allStatuses') },
             ...statuses.map((value) => ({ value, label: statusLabel(value) })),
           ]}

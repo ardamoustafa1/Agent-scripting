@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  Archive,
+  ArchiveRestore,
   ArrowLeft,
   ArrowUpRight,
   GitBranch,
@@ -10,13 +12,13 @@ import {
   Plus,
   Workflow,
 } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { z } from 'zod';
 
 import { useAbility } from '@verbis/authz/react';
-import { Badge, DataTable, Tabs, EmptyState, Button, Dialog } from '@verbis/ui';
+import { Alert, Badge, DataTable, Tabs, EmptyState, Button, Dialog } from '@verbis/ui';
 
 import { request, ResourceSchema, VersionsSchema } from '../api/client.js';
 import { newDocument } from '../editor/new-document.js';
@@ -38,6 +40,8 @@ const DocumentSchema = z.object({
     ),
   }),
 });
+const ScriptSchema = ResourceSchema.extend({ version: z.number().int().optional() });
+
 export default function ScriptPage() {
   const { id } = useParams();
   const ability = useAbility();
@@ -55,7 +59,7 @@ export default function ScriptPage() {
   ];
   const script = useQuery({
     queryKey: key,
-    queryFn: ({ signal }) => request(`/v1/scripts/${id ?? ''}`, ResourceSchema, { signal }),
+    queryFn: ({ signal }) => request(`/v1/scripts/${id ?? ''}`, ScriptSchema, { signal }),
   });
   const versions = useQuery({
     queryKey: [...key, 'versions'],
@@ -65,6 +69,25 @@ export default function ScriptPage() {
       }),
   });
   const queryClient = useQueryClient();
+  const [archiving, setArchiving] = useState(false);
+  // Archiving retires a script: campaigns stop opening it and lists hide it. Restoring brings it
+  // back as published (if it has a published version) or as a draft. Both are audited updates.
+  const archive = useMutation({
+    mutationFn: (status: 'archived' | 'active' | 'draft') => {
+      if (!id || script.data?.version === undefined || !ability.can('update', 'Script'))
+        throw new Error('VERBIS_FORBIDDEN');
+      return request(`/v1/scripts/${id}`, ScriptSchema, {
+        method: 'PATCH',
+        csrf: session.csrfToken,
+        ifMatch: `"${String(script.data.version)}"`,
+        body: { status },
+      });
+    },
+    onSuccess: () => {
+      setArchiving(false);
+      void queryClient.invalidateQueries({ queryKey: ['workspace', session.user.tenantId] });
+    },
+  });
   const latestVersion = versions.data?.data[0];
   const latest = latestVersion?.number;
   const members = useQuery({
@@ -190,6 +213,31 @@ export default function ScriptPage() {
           </div>
         </div>
         <div className="dw-script-primary-actions">
+          {ability.can('update', 'Script') &&
+            script.data.version !== undefined &&
+            (script.data.status === 'archived' ? (
+              <Button
+                variant="secondary"
+                loading={archive.isPending}
+                startIcon={<ArchiveRestore size={16} aria-hidden />}
+                onClick={() => {
+                  archive.mutate(script.data.currentVersionId ? 'active' : 'draft');
+                }}
+              >
+                {t('designer.workspace.unarchive')}
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                startIcon={<Archive size={16} aria-hidden />}
+                onClick={() => {
+                  archive.reset();
+                  setArchiving(true);
+                }}
+              >
+                {t('designer.workspace.archive')}
+              </Button>
+            ))}
           {versions.data && latestVersion?.state !== 'draft' && ability.can('create', 'Script') && (
             <Button
               loading={createDraft.isPending}
@@ -218,6 +266,29 @@ export default function ScriptPage() {
           )}
         </div>
       </header>
+      {script.data.status === 'archived' && (
+        <Alert tone="warning" title={t('designer.workspace.archivedNotice')} />
+      )}
+      {archive.isError && !archiving && (
+        <Alert tone="danger" title={t('designer.workspace.archiveFailed')} />
+      )}
+      <Dialog
+        open={archiving}
+        onOpenChange={setArchiving}
+        title={t('designer.workspace.archiveTitle', { name: script.data.name })}
+        description={t('designer.workspace.archiveHelp')}
+      >
+        {archive.isError && <Alert tone="danger" title={t('designer.workspace.archiveFailed')} />}
+        <Button
+          variant="danger"
+          loading={archive.isPending}
+          onClick={() => {
+            archive.mutate('archived');
+          }}
+        >
+          {t('designer.workspace.archiveConfirm')}
+        </Button>
+      </Dialog>
       <nav className="dw-script-tools" aria-label={t('designer.workspace.scriptActions')}>
         <Link
           className="dw-script-tool"
@@ -326,7 +397,7 @@ export default function ScriptPage() {
                       },
                       {
                         id: 'owner',
-                        header: t('designer.workspace.owner'),
+                        header: t('designer.workspace.createdBy'),
                         accessor: (row) => ownerName(row.createdBy),
                       },
                       {

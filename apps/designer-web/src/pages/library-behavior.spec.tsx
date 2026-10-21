@@ -121,7 +121,17 @@ it('names who created each row and keeps a single search box', async () => {
         createdBy: 'user:01928f3a-0000-7000-8000-0000000000ff',
       },
       { ...scriptFixture, id: 'system', name: 'From a template', createdBy: 'service:templates' },
+      {
+        ...scriptFixture,
+        id: 'former',
+        name: 'Left the team',
+        createdBy: 'user:01928f3a-0000-7000-8000-0000000000fe',
+      },
     ]),
+    // Only the teammates are asked for, sorted; a person no longer active is not returned.
+    '/v1/people?ids=01928f3a-0000-7000-8000-0000000000fe,01928f3a-0000-7000-8000-0000000000ff': [
+      { id: '01928f3a-0000-7000-8000-0000000000ff', name: 'Deniz Yılmaz' },
+    ],
   });
   const table = await screen.findByRole('table', { name: f.label('workspace.nav.scripts') });
   fireEvent.click(screen.getByRole('button', { name: 'Show all rows' }));
@@ -129,7 +139,10 @@ it('names who created each row and keeps a single search box', async () => {
   const cell = (name: string) =>
     within(within(table).getByRole('button', { name }).closest('tr')!).getAllByRole('cell')[3]!;
   expect(cell('Mine').textContent).toBe(f.label('workspace.you'));
-  expect(cell('Teammate').textContent).toBe(f.label('workspace.owners.member'));
+  await waitFor(() => {
+    expect(cell('Teammate').textContent).toBe('Deniz Yılmaz');
+  });
+  expect(cell('Left the team').textContent).toBe(f.label('workspace.owners.former'));
   expect(cell('From a template').textContent).toBe(f.label('workspace.owners.system'));
   expect(screen.queryByText(f.label('workspace.unassigned'))).toBeNull();
   // The page search is the only search box; the table adds no "Filter records" field.
@@ -172,4 +185,43 @@ it('draws the campaigns banner flow with named branches, not empty boxes', async
     f.label('workspace.canvasBranchSale'),
     f.label('workspace.canvasBranchSupport'),
   ]);
+});
+
+it('keeps "team member" when names cannot be read', async () => {
+  const f = await mountDesigner(<Library kind="campaigns" onCreate={vi.fn()} />, {
+    '/v1/campaigns?limit=100': pageFixture([
+      { ...campaignFixture, createdBy: 'user:01928f3a-0000-7000-8000-0000000000ff' },
+    ]),
+    '/v1/people?ids=01928f3a-0000-7000-8000-0000000000ff': Response.json(
+      { code: 'VERBIS_AUTHZ_FORBIDDEN' },
+      { status: 403 },
+    ),
+  });
+  const table = await screen.findByRole('table', { name: f.label('workspace.nav.campaigns') });
+  fireEvent.click(screen.getByRole('button', { name: 'Show all rows' }));
+  await waitFor(() => {
+    expect(f.requests.some((r) => r.path.startsWith('/v1/people'))).toBe(true);
+  });
+  expect(within(table).getByText(f.label('workspace.owners.member'))).toBeTruthy();
+});
+
+it('hides archived scripts until the author asks for every status', async () => {
+  const f = await mountDesigner(<Library kind="scripts" onCreate={vi.fn()} />, {
+    '/v1/scripts?limit=100': pageFixture([
+      { ...scriptFixture, name: 'In use' },
+      { ...scriptFixture, id: 'old', name: 'Old trial', status: 'archived' },
+    ]),
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.label('workspace.cardView') }));
+  await screen.findByRole('button', { name: 'In use' });
+  expect(screen.queryByRole('button', { name: 'Old trial' })).toBeNull();
+  // The heading counts what the list shows by default.
+  expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('1');
+  fireEvent.click(screen.getByRole('combobox', { name: f.label('workspace.statusFilter') }));
+  fireEvent.click(await screen.findByRole('option', { name: f.label('workspace.allStatuses') }));
+  expect(await screen.findByRole('button', { name: 'Old trial' })).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
+  await waitFor(() => {
+    expect(screen.queryByRole('button', { name: 'Old trial' })).toBeNull();
+  });
 });

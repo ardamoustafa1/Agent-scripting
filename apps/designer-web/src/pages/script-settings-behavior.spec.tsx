@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
 import { createAbility } from '@verbis/authz';
@@ -247,4 +247,50 @@ it('does not create a draft by itself for a user who cannot create scripts', asy
   );
   expect(await screen.findByText(f.label('workspace.firstDraftHint'))).toBeTruthy();
   expect(f.requests.some((r) => r.method === 'POST')).toBe(false);
+});
+
+it('archives a script after confirmation and restores it as a draft', async () => {
+  const f = await setup({
+    [base]: { ...scriptFixture, version: 3 },
+    [`PATCH ${base}`]: { ...scriptFixture, version: 4, status: 'archived' },
+  });
+  await screen.findByRole('heading', { name: scriptFixture.name });
+  fireEvent.click(screen.getByRole('button', { name: f.label('workspace.archive') }));
+  const dialog = await screen.findByRole('dialog', {
+    name: f.i18n.t('designer.workspace.archiveTitle', { name: scriptFixture.name }),
+  });
+  expect(f.requests.some((r) => r.method === 'PATCH')).toBe(false);
+  fireEvent.click(
+    within(dialog).getByRole('button', { name: f.label('workspace.archiveConfirm') }),
+  );
+  await waitFor(() => {
+    expect(f.requests.find((r) => r.method === 'PATCH')).toMatchObject({
+      path: base,
+      body: { status: 'archived' },
+    });
+  });
+  const patch = f.requests.find((r) => r.method === 'PATCH')!;
+  expect(new Headers(patch.init?.headers).get('if-match')).toBe('"3"');
+  expect(new Headers(patch.init?.headers).get('x-csrf-token')).toBe(sessionFixture.csrfToken);
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+});
+
+it('shows an archived script as archived and restores it as a draft without a published version', async () => {
+  const f = await setup({
+    [base]: { ...scriptFixture, version: 5, status: 'archived' },
+    [`PATCH ${base}`]: { ...scriptFixture, version: 6, status: 'draft' },
+  });
+  expect(await screen.findByText(f.label('workspace.archivedNotice'))).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: f.label('workspace.unarchive') }));
+  await waitFor(() => {
+    expect(f.requests.find((r) => r.method === 'PATCH')?.body).toEqual({ status: 'draft' });
+  });
+});
+
+it('offers no archive action to readers', async () => {
+  const f = await setup({ [base]: { ...scriptFixture, version: 3 } }, '', false);
+  await screen.findByRole('heading', { name: scriptFixture.name });
+  expect(screen.queryByRole('button', { name: f.label('workspace.archive') })).toBeNull();
 });
