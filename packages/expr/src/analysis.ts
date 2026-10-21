@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { children, parseExpression } from './parser.js';
+import { parseExpression } from './parser.js';
 import { createDefaultRegistry, type FunctionRegistry } from './registry.js';
 import { Budget } from './runtime.js';
 import { valueType, type Ast, type ValueType } from './types.js';
@@ -254,4 +254,5 @@ export function completions(
   return result.sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
 }
 export const analyze = analyzeExpression;
-export { children };
+// `children` is exported once, from parser.ts: a second re-export of the same name makes
+// ESM loader hooks (the API's OpenTelemetry instrumentation) drop it as ambiguous.

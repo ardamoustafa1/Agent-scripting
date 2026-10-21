@@ -1,14 +1,6 @@
 import { parseExpression } from './parser.js';
 import { createDefaultRegistry, type FunctionRegistry } from './registry.js';
-import {
-  array,
-  Budget,
-  display,
-  equal,
-  numeric,
-  truth,
-  type EvaluationOptions,
-} from './runtime.js';
+import { array, Budget, equal, numeric, truth, type EvaluationOptions } from './runtime.js';
 import { assertKey, ExpressionError, type Ast, type Value } from './types.js';
 
 const defaultRegistry = createDefaultRegistry();
@@ -224,7 +216,7 @@ export function tryEvaluate(
   }
 }
 export const evaluate = evaluateExpression;
-export { display };
+// `display` is exported once, from runtime.ts (see exports.spec.ts).
 
 /** Internal composition hook: templates share the entire operation's budget. */
 export function evaluateWithBudget(
