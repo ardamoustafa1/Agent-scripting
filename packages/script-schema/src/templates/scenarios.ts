@@ -11,7 +11,7 @@ const surveySubmitted = { kind: 'success' as const, outputs: { responseId: 'synt
 export const SURVEY_SCENARIOS: TestScenarioInput[] = [
   {
     id: 'surveyPromoter',
-    name: 'Promoter completes the survey',
+    name: 'Destekçi müşteri anketi tamamlıyor',
     synthetic: true,
     context: surveyContext,
     dataSources: { submitSurvey: surveySubmitted },
@@ -27,7 +27,7 @@ export const SURVEY_SCENARIOS: TestScenarioInput[] = [
   },
   {
     id: 'surveyDetractor',
-    name: 'Detractor explains the low score',
+    name: 'Düşük puan veren müşteri nedenini anlatıyor',
     synthetic: true,
     context: surveyContext,
     dataSources: { submitSurvey: surveySubmitted },
@@ -43,7 +43,7 @@ export const SURVEY_SCENARIOS: TestScenarioInput[] = [
   },
   {
     id: 'surveyPassive',
-    name: 'Passive goes straight to the comment',
+    name: 'Kararsız müşteri doğrudan yoruma geçiyor',
     synthetic: true,
     context: surveyContext,
     dataSources: { submitSurvey: surveySubmitted },
@@ -56,7 +56,7 @@ export const SURVEY_SCENARIOS: TestScenarioInput[] = [
   },
   {
     id: 'surveySubmitFails',
-    name: 'Failed submission keeps the agent on the comment page',
+    name: 'Gönderim başarısız olunca ajan yorum sayfasında kalıyor',
     synthetic: true,
     context: surveyContext,
     dataSources: { submitSurvey: { kind: 'error', outputs: {} } },
@@ -84,7 +84,7 @@ const toNegotiation = [
 export const COLLECTIONS_SCENARIOS: TestScenarioInput[] = [
   {
     id: 'collectionsPromiseToPay',
-    name: 'Right party agrees an instalment plan and a promise to pay',
+    name: 'Doğru kişi taksit planı ve ödeme sözü veriyor',
     synthetic: true,
     context: {},
     dataSources: { debtInfo: debtFound, registerPromise: promiseRegistered },
@@ -101,7 +101,7 @@ export const COLLECTIONS_SCENARIOS: TestScenarioInput[] = [
   },
   {
     id: 'collectionsRefused',
-    name: 'Right party refuses any plan',
+    name: 'Doğru kişi her planı reddediyor',
     synthetic: true,
     context: {},
     dataSources: { debtInfo: debtFound, registerPromise: promiseRegistered },
@@ -118,7 +118,7 @@ export const COLLECTIONS_SCENARIOS: TestScenarioInput[] = [
   },
   {
     id: 'collectionsWrongParty',
-    name: 'Wrong party ends the call with its outcome and without disclosure',
+    name: 'Yanlış kişiyle görüşme, bilgilendirme yapılmadan sonuçla bitiyor',
     synthetic: true,
     context: {},
     dataSources: { debtInfo: debtFound, registerPromise: promiseRegistered },
@@ -149,7 +149,7 @@ const toCatalog = [
 export const TELECOM_SCENARIOS: TestScenarioInput[] = [
   {
     id: 'telecomTariffChanged',
-    name: 'Verified subscriber confirms a new tariff',
+    name: 'Doğrulanan abone yeni tarifeyi onaylıyor',
     synthetic: true,
     context: {},
     dataSources: telecomMocks,
@@ -167,7 +167,7 @@ export const TELECOM_SCENARIOS: TestScenarioInput[] = [
   },
   {
     id: 'telecomWrongOtp',
-    name: 'A rejected one-time code keeps the agent on verification',
+    name: 'Reddedilen tek kullanımlık kod ajanı doğrulamada tutuyor',
     synthetic: true,
     context: {},
     dataSources: { ...telecomMocks, verifyOtp: { kind: 'error', outputs: {} } },
@@ -180,7 +180,7 @@ export const TELECOM_SCENARIOS: TestScenarioInput[] = [
   },
   {
     id: 'telecomNotConfirmed',
-    name: 'Without confirmation the agent returns to the catalog',
+    name: 'Onay verilmezse ajan tarife listesine dönüyor',
     synthetic: true,
     context: {},
     dataSources: telecomMocks,
@@ -189,7 +189,7 @@ export const TELECOM_SCENARIOS: TestScenarioInput[] = [
   },
   {
     id: 'telecomChangeFails',
-    name: 'A failed tariff change hands the call over',
+    name: 'Tarife değişikliği başarısız olunca görüşme aktarılıyor',
     synthetic: true,
     context: {},
     dataSources: { ...telecomMocks, changeTariff: { kind: 'error', outputs: {} } },
@@ -209,13 +209,14 @@ const cardLookup = {
 const cardScore = { kind: 'success' as const, outputs: { score: 700, approvedLimit: 20000 } };
 
 /**
- * Identity verification needs card digits (PCI), which scenarios may never contain, so the
- * credit card template is tested up to verification and on its technical-failure path.
+ * Identity verification needs card digits and income (personal data), which document scenarios
+ * may never contain, so these stop at verification and the technical-failure path. The whole
+ * sale is walked by the component package's template test.
  */
 export const CREDIT_CARD_SCENARIOS: TestScenarioInput[] = [
   {
     id: 'cardReachesVerification',
-    name: 'Customer found, agent reaches identity verification',
+    name: 'Müşteri bulunuyor, ajan kimlik doğrulamaya geçiyor',
     synthetic: true,
     context: {},
     dataSources: { customerLookup: cardLookup, creditScore: cardScore },
@@ -224,7 +225,7 @@ export const CREDIT_CARD_SCENARIOS: TestScenarioInput[] = [
   },
   {
     id: 'cardLookupFails',
-    name: 'Failed customer lookup ends the call with a technical-error outcome',
+    name: 'Müşteri sorgusu başarısız olunca görüşme teknik hata sonucuyla bitiyor',
     synthetic: true,
     context: {},
     dataSources: { customerLookup: { kind: 'error', outputs: {} }, creditScore: cardScore },
@@ -233,8 +234,198 @@ export const CREDIT_CARD_SCENARIOS: TestScenarioInput[] = [
   },
 ];
 
+const policyFound = {
+  kind: 'success' as const,
+  outputs: {
+    holderName: 'Synthetic Customer',
+    product: 'Kasko',
+    premium: 9000,
+    endDate: '2026-12-01',
+    claims: 0,
+    coverages: [{ name: 'Synthetic cover', limit: '100000' }],
+  },
+};
+const quoteReady = {
+  kind: 'success' as const,
+  outputs: { premium: 9600, quote: 'synthetic-quote' },
+};
+const renewed = { kind: 'success' as const, outputs: { reference: 'synthetic-renewal' } };
+const insuranceMocks = {
+  policyLookup: policyFound,
+  renewalQuote: quoteReady,
+  renewPolicy: renewed,
+};
+/** Recording notice read, policy checked, cover and needs reviewed, quote terms read. */
+const toInsuranceDecision = [
+  { type: 'read' as const, node: 'greeting-notice', acknowledged: true },
+  { type: 'event' as const, node: 'btn-greeting-next', event: 'onPress' },
+  { type: 'variable' as const, variable: 'policyNumber', value: 'SYN-POL-1' },
+  { type: 'variable' as const, variable: 'identityConfirmed', value: true },
+  { type: 'event' as const, node: 'btn-verify-next', event: 'onPress' },
+  { type: 'event' as const, node: 'btn-coverage-next', event: 'onPress' },
+  { type: 'variable' as const, variable: 'addRoadside', value: true },
+  { type: 'event' as const, node: 'btn-needs-next', event: 'onPress' },
+  { type: 'read' as const, node: 'quote-terms', acknowledged: true },
+];
+
+export const INSURANCE_SCENARIOS: TestScenarioInput[] = [
+  {
+    id: 'insuranceRenewed',
+    name: 'Müşteri yenileme teklifini kabul edip kayıtlı kartla ödüyor',
+    synthetic: true,
+    context: {},
+    dataSources: insuranceMocks,
+    steps: [
+      ...toInsuranceDecision,
+      { type: 'event', node: 'btn-quote-accept', event: 'onPress' },
+      { type: 'variable', variable: 'paymentMethod', value: 'cardOnFile' },
+      { type: 'variable', variable: 'consentGiven', value: true },
+      { type: 'event', node: 'btn-confirm', event: 'onPress' },
+      { type: 'event', node: 'btn-summary-finish', event: 'onPress' },
+    ],
+    expected: {
+      ended: true,
+      outcome: 'RENEWED',
+      variables: { renewalReference: 'synthetic-renewal', newPremium: 9600 },
+    },
+  },
+  {
+    id: 'insuranceCallback',
+    name: 'Müşteri düşünmek istiyor, geri arama planlanıyor',
+    synthetic: true,
+    context: {},
+    dataSources: insuranceMocks,
+    steps: [
+      ...toInsuranceDecision,
+      { type: 'event', node: 'btn-quote-think', event: 'onPress' },
+      { type: 'variable', variable: 'callbackDate', value: '2026-11-15' },
+      { type: 'event', node: 'btn-callback', event: 'onPress' },
+    ],
+    expected: { ended: true, outcome: 'CALLBACK' },
+  },
+  {
+    id: 'insuranceDeclined',
+    name: 'Müşteri fiyat nedeniyle yenilemeyi reddediyor',
+    synthetic: true,
+    context: {},
+    dataSources: insuranceMocks,
+    steps: [
+      ...toInsuranceDecision,
+      { type: 'event', node: 'btn-quote-decline', event: 'onPress' },
+      { type: 'variable', variable: 'declineReason', value: 'price' },
+      { type: 'event', node: 'btn-decline', event: 'onPress' },
+    ],
+    expected: { ended: true, outcome: 'NOT_RENEWED' },
+  },
+  {
+    id: 'insuranceUnavailable',
+    name: 'Müşteri şu an konuşamıyor; görüşme bilgilendirmeden önce bitiyor',
+    synthetic: true,
+    context: {},
+    dataSources: insuranceMocks,
+    steps: [{ type: 'event', node: 'btn-greeting-unavailable', event: 'onPress' }],
+    expected: { ended: true, outcome: 'NOT_AVAILABLE' },
+  },
+  {
+    id: 'insuranceLookupFails',
+    name: 'Poliçe sorgusu başarısız olunca görüşme teknik hata sonucuyla bitiyor',
+    synthetic: true,
+    context: {},
+    dataSources: { ...insuranceMocks, policyLookup: { kind: 'error', outputs: {} } },
+    steps: toInsuranceDecision.slice(0, 5),
+    expected: { ended: true, outcome: 'TECH_ERROR' },
+  },
+];
+
+const orderFound = {
+  kind: 'success' as const,
+  outputs: {
+    buyer: 'Synthetic Customer',
+    status: 'shipped',
+    statusText: 'kargoda',
+    carrier: 'Synthetic Kargo',
+    tracking: 'SYN123',
+    eta: '2026-10-25',
+    delay: 2,
+    items: [{ name: 'Synthetic item', quantity: 1 }],
+  },
+};
+const caseCreated = { kind: 'success' as const, outputs: { reference: 'synthetic-case' } };
+const orderMocks = { orderLookup: orderFound, createReturn: caseCreated, createClaim: caseCreated };
+const toRequest = [
+  { type: 'read' as const, node: 'greeting-notice', acknowledged: true },
+  { type: 'variable' as const, variable: 'orderNumber', value: 'SYN-ORDER-1' },
+  { type: 'event' as const, node: 'btn-greeting-next', event: 'onPress' },
+  { type: 'variable' as const, variable: 'identityConfirmed', value: true },
+  { type: 'event' as const, node: 'btn-verify-next', event: 'onPress' },
+];
+
+export const ECOMMERCE_SCENARIOS: TestScenarioInput[] = [
+  {
+    id: 'orderWhereIsMyParcel',
+    name: 'Müşteri kargosunu soruyor ve bilgilendiriliyor',
+    synthetic: true,
+    context: {},
+    dataSources: orderMocks,
+    steps: [
+      ...toRequest,
+      { type: 'event', node: 'btn-order-next', event: 'onPress' },
+      { type: 'event', node: 'btn-delivery-done', event: 'onPress' },
+      { type: 'event', node: 'btn-summary-finish', event: 'onPress' },
+    ],
+    expected: { ended: true, outcome: 'RESOLVED' },
+  },
+  {
+    id: 'orderReturn',
+    name: 'Müşteri iade koşullarını dinledikten sonra ürünü iade ediyor',
+    synthetic: true,
+    context: {},
+    dataSources: orderMocks,
+    steps: [
+      ...toRequest,
+      { type: 'variable', variable: 'requestType', value: 'return' },
+      { type: 'event', node: 'btn-order-next', event: 'onPress' },
+      { type: 'read', node: 'return-terms', acknowledged: true },
+      { type: 'variable', variable: 'returnReason', value: 'size' },
+      { type: 'event', node: 'btn-return-create', event: 'onPress' },
+      { type: 'event', node: 'btn-summary-finish', event: 'onPress' },
+    ],
+    expected: { ended: true, outcome: 'RESOLVED', variables: { caseReference: 'synthetic-case' } },
+  },
+  {
+    id: 'orderDamaged',
+    name: 'Müşteri hasarlı ürün bildiriyor, değişim talebi açılıyor',
+    synthetic: true,
+    context: {},
+    dataSources: orderMocks,
+    steps: [
+      ...toRequest,
+      { type: 'variable', variable: 'requestType', value: 'damaged' },
+      { type: 'event', node: 'btn-order-next', event: 'onPress' },
+      { type: 'variable', variable: 'damageDetails', value: 'Synthetic damage description' },
+      { type: 'event', node: 'btn-damage-create', event: 'onPress' },
+      { type: 'event', node: 'btn-summary-finish', event: 'onPress' },
+    ],
+    expected: { ended: true, outcome: 'RESOLVED', variables: { caseReference: 'synthetic-case' } },
+  },
+  {
+    id: 'orderNotFound',
+    name: 'Bilinmeyen sipariş numarasıyla görüşme kimlik doğrulamadan önce bitiyor',
+    synthetic: true,
+    context: {},
+    dataSources: { ...orderMocks, orderLookup: { kind: 'error', outputs: {} } },
+    steps: toRequest.slice(0, 3),
+    expected: { ended: true, outcome: 'ORDER_NOT_FOUND' },
+  },
+];
+
 export type TemplateWithScenarios =
-  'survey' | 'collections' | 'telecomTariffChange' | 'creditCardSales';
+  | 'survey'
+  | 'collections'
+  | 'telecomTariffChange'
+  | 'creditCardSales'
+  | 'insuranceRenewal'
+  | 'ecommerceOrder';
 export const TEMPLATE_SCENARIOS: Readonly<
   Record<TemplateWithScenarios, readonly TestScenarioInput[]>
 > = {
@@ -242,4 +433,6 @@ export const TEMPLATE_SCENARIOS: Readonly<
   collections: COLLECTIONS_SCENARIOS,
   telecomTariffChange: TELECOM_SCENARIOS,
   creditCardSales: CREDIT_CARD_SCENARIOS,
+  insuranceRenewal: INSURANCE_SCENARIOS,
+  ecommerceOrder: ECOMMERCE_SCENARIOS,
 };

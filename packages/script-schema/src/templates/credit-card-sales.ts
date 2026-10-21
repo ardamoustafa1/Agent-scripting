@@ -6,7 +6,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
   id: '01928f3a-0000-7000-8000-000000000001',
   meta: {
     name: 'Kredi Kartı Satış',
-    description: 'Outbound credit card offer for pre-approved customers.',
+    description: 'Ön onaylı müşterilere giden aramada kredi kartı teklifi.',
     tags: ['banking', 'sales', 'outbound'],
     channels: ['voice'],
     capabilities: ['hold', 'transfer'],
@@ -18,28 +18,50 @@ export const creditCardSalesScript: ScriptDocumentInput = {
       scope: 'interaction',
       source: 'interaction.attributes.customerId',
     },
-    { key: 'customerName', type: 'string', scope: 'session', classification: 'pii', pii: true },
+    {
+      key: 'customerName',
+      description: 'müşteri adı',
+      type: 'string',
+      scope: 'session',
+      classification: 'pii',
+      pii: true,
+    },
     {
       key: 'cardLast4',
       type: 'string',
-      scope: 'page',
-      classification: 'pci',
+      // Session, not page: a completing outcome re-validates every page, and a page-scoped
+      // value is cleared when the agent moves on, so the sale could never be recorded. The
+      // field is masked after verification and the value is not persisted.
+      scope: 'session',
+      // Truncated card digits identify the customer but are not cardholder data: a full card
+      // number would be `pci` and captured by the hosted card field, never a plain input.
+      classification: 'pii',
       pii: true,
       persist: false,
+      default: '',
     },
     { key: 'identityVerified', type: 'boolean', scope: 'session', default: false, persist: true },
     { key: 'monthlyIncome', type: 'number', scope: 'session', classification: 'pii', pii: true },
     {
       key: 'cardProduct',
+      description: 'kart tipi',
       type: 'enum',
       scope: 'session',
       enumValues: ['classic', 'gold', 'platinum'],
       default: 'classic',
       persist: true,
     },
-    { key: 'creditLimit', type: 'number', scope: 'session', default: 0, persist: true },
+    {
+      key: 'creditLimit',
+      description: 'kart limiti',
+      type: 'number',
+      scope: 'session',
+      default: 0,
+      persist: true,
+    },
     {
       key: 'maxCreditLimit',
+      description: 'en yüksek limit',
       type: 'number',
       scope: 'global',
       default: 50000,
@@ -126,7 +148,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
             id: 'btn-verify',
             type: 'button',
             props: { variant: 'primary', labelKey: 'verify.submit' },
-            enabledWhen: { $expr: 'len(vars.cardLast4) == 4' },
+            enabledWhen: { $expr: "regexTest(vars.cardLast4, '^[0-9]{4}$')" },
             events: {
               onPress: [
                 {
@@ -136,7 +158,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
                 {
                   type: 'setVariable',
                   variable: 'identityVerified',
-                  value: { $expr: 'len(vars.cardLast4) == 4' },
+                  value: { $expr: "regexTest(vars.cardLast4, '^[0-9]{4}$')" },
                 },
                 { type: 'maskField', node: 'in-card-last4' },
                 { type: 'next' },
@@ -224,8 +246,9 @@ export const creditCardSalesScript: ScriptDocumentInput = {
             bindings: [
               {
                 prop: 'params',
+                // Product names and amounts read as the agent says them, not as stored codes.
                 expression:
-                  '{ limit: min(vars.creditLimit, vars.maxCreditLimit), product: vars.cardProduct }',
+                  "{ limit: formatCurrency(if(vars.creditLimit < vars.maxCreditLimit, vars.creditLimit, vars.maxCreditLimit)), product: switch(vars.cardProduct, 'classic', 'Classic', 'gold', 'Gold', 'platinum', 'Platinum', vars.cardProduct) }",
               },
             ],
           },
@@ -374,7 +397,9 @@ export const creditCardSalesScript: ScriptDocumentInput = {
             bindings: [
               {
                 prop: 'params',
-                expression: '{ product: vars.cardProduct, limit: vars.creditLimit }',
+                // Same wording and amount the offer page read out.
+                expression:
+                  "{ limit: formatCurrency(if(vars.creditLimit < vars.maxCreditLimit, vars.creditLimit, vars.maxCreditLimit)), product: switch(vars.cardProduct, 'classic', 'Classic', 'gold', 'Gold', 'platinum', 'Platinum', vars.cardProduct) }",
               },
             ],
           },
@@ -499,7 +524,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
     { id: 'r-offer-accepted', when: { fact: 'vars.offerAccepted', op: 'eq', value: true } },
     {
       id: 'r-platinum',
-      description: 'High income customers are offered platinum.',
+      description: 'Yüksek gelirli müşteriye Platinum kart önerilir.',
       when: {
         all: [
           { fact: 'vars.monthlyIncome', op: 'gte', value: 30000 },
@@ -533,7 +558,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
         'product.gold': 'Gold',
         'product.platinum': 'Platinum',
         'offer.title': 'Teklif',
-        'offer.pitch': '{product} kartınız için {limit} TL limit tanımlayabiliriz.',
+        'offer.pitch': '{product} kartınız için {limit} limit tanımlayabiliriz.',
         'offer.platinumNote': 'Müşteri Platinum karta uygundur.',
         'offer.timeWarning': 'Teklif adımında 2 dakikayı geçtiniz.',
         'offer.accept': 'Kabul etti',
@@ -547,7 +572,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
         'terms.title': 'Sözleşme',
         'terms.body': 'Kredi kartı üyelik sözleşmesi özeti.',
         'summary.title': 'Özet',
-        'summary.text': '{product} kart başvurunuz {limit} TL limitle alınmıştır.',
+        'summary.text': '{product} kart başvurunuz {limit} limitle alınmıştır.',
         'decline.title': 'Satış gerçekleşmedi',
         'decline.text': 'Zaman ayırdığınız için teşekkür ederiz.',
         'flow.verified': 'Kimlik doğrulandı mı?',
@@ -574,7 +599,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
         'product.gold': 'Gold',
         'product.platinum': 'Platinum',
         'offer.title': 'Offer',
-        'offer.pitch': 'We can set a limit of {limit} TRY on your {product} card.',
+        'offer.pitch': 'We can set a limit of {limit} on your {product} card.',
         'offer.platinumNote': 'Customer is eligible for Platinum.',
         'offer.timeWarning': 'You have spent over 2 minutes on the offer.',
         'offer.accept': 'Accepted',
@@ -588,7 +613,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
         'terms.title': 'Terms',
         'terms.body': 'Summary of the credit card membership agreement.',
         'summary.title': 'Summary',
-        'summary.text': 'Your {product} card application with a {limit} TRY limit is recorded.',
+        'summary.text': 'Your {product} card application with a {limit} limit is recorded.',
         'decline.title': 'No sale',
         'decline.text': 'Thank you for your time.',
         'flow.verified': 'Identity verified?',

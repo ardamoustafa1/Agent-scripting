@@ -1,11 +1,20 @@
 import { collectionsScript } from './collections.js';
 import { creditCardSalesScript } from './credit-card-sales.js';
+import { ecommerceOrderScript } from './ecommerce-order.js';
+import { insuranceRenewalScript } from './insurance-renewal.js';
 import { surveyScript } from './survey.js';
 import { telecomTariffChangeScript } from './telecom-tariff-change.js';
 
 import type { ScriptDocumentInput } from '../schema/document.js';
 
-export { collectionsScript, creditCardSalesScript, surveyScript, telecomTariffChangeScript };
+export {
+  collectionsScript,
+  creditCardSalesScript,
+  ecommerceOrderScript,
+  insuranceRenewalScript,
+  surveyScript,
+  telecomTariffChangeScript,
+};
 export { BROKEN_FIXTURES, type BrokenFixture } from './broken.js';
 export { legacyDraftScript } from './legacy-draft.js';
 export { minimalScript } from './minimal.js';
@@ -16,4 +25,6 @@ export const VALID_FIXTURES: Readonly<Record<string, ScriptDocumentInput>> = {
   telecomTariffChange: telecomTariffChangeScript,
   collections: collectionsScript,
   survey: surveyScript,
+  insuranceRenewal: insuranceRenewalScript,
+  ecommerceOrder: ecommerceOrderScript,
 };

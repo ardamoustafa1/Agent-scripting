@@ -19,9 +19,16 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
       pii: true,
       source: 'interaction.ani',
     },
-    { key: 'currentTariff', type: 'string', scope: 'session', persist: true },
+    {
+      key: 'currentTariff',
+      description: 'mevcut tarife',
+      type: 'string',
+      scope: 'session',
+      persist: true,
+    },
     {
       key: 'selectedTariff',
+      description: 'seçilen tarife',
       type: 'enum',
       scope: 'session',
       enumValues: ['S20', 'S40', 'UNL'],
@@ -31,10 +38,17 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
     { key: 'otpAttempts', type: 'number', scope: 'session', default: 0 },
     { key: 'otpValid', type: 'boolean', scope: 'session', default: false, persist: true },
     { key: 'tariffChangeConfirmed', type: 'boolean', scope: 'page', default: false },
-    { key: 'effectiveDate', type: 'date', scope: 'session', persist: true },
+    {
+      key: 'effectiveDate',
+      description: 'geçiş tarihi',
+      type: 'date',
+      scope: 'session',
+      persist: true,
+    },
     { key: 'orderId', type: 'string', scope: 'session', classification: 'internal' },
     {
       key: 'campaignDiscount',
+      description: 'kampanya indirimi',
       type: 'number',
       scope: 'campaign',
       default: 10,
@@ -132,7 +146,7 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
             },
             bindings: [{ variable: 'otpCode' }],
             // The code is page-scoped and cleared on leaving; once verified it is no longer needed,
-            // or the final outcome would fail script-wide validation.
+            // or the final outcome would fail: the OTP page was shown, so it is validated (ADR-0055).
             requiredWhen: { $expr: '!vars.otpValid' },
           },
           {

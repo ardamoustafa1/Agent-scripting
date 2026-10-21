@@ -169,6 +169,8 @@ export const BROKEN_FIXTURES: readonly BrokenFixture[] = [
     'pci-leak',
     creditCardSalesScript,
     [
+      // The template keeps only the last 4 digits (personal data); here they are card data.
+      { op: 'replace', path: '/variables/2/classification', value: 'pci' },
       { op: 'replace', path: '/variables/2/persist', value: true },
       {
         op: 'add',

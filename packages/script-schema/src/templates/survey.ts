@@ -36,6 +36,8 @@ export const surveyScript: ScriptDocumentInput = {
         segment: { $expr: 'vars.npsSegment' },
         reasons: { $expr: 'vars.reasons' },
         comment: { $expr: 'vars.comment' },
+        // Responses carry the questionnaire version so reports never mix two question sets.
+        surveyVersion: { $expr: 'vars.surveyMeta.version' },
       },
       outputs: { responseId: { path: '$.id' } },
     },
