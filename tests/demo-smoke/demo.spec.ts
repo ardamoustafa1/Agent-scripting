@@ -29,7 +29,9 @@ async function signIn(page: Page, origin: string, app: string, username: string)
   expect(response.ok()).toBe(true);
   const session = (await response.json()) as { csrfToken: string; user: { tenantId: string } };
   expect(session.user.tenantId).toBe('019c0000-0000-7000-8000-000000000001');
-  return { 'x-csrf-token': session.csrfToken };
+  // State-changing BFF calls need the synchronizer token and the app's Origin (SECURITY §5.3);
+  // Playwright's request API sends no Origin by itself.
+  return { 'x-csrf-token': session.csrfToken, origin: new URL(origin).origin };
 }
 test('clean demo: real SSO → four campaigns/shared screens → simulator → agent → mock → wrap-up ACK → audit chain', async ({
   browser,
@@ -53,7 +55,7 @@ test('clean demo: real SSO → four campaigns/shared screens → simulator → a
     expect(campaigns.ok()).toBe(true);
     const items = ((await campaigns.json()) as { data: { name: string }[] }).data;
     expect(items.map((item) => item.name).sort()).toEqual([...campaignNames].sort());
-    // These are the exact four seed-pinned versions; every one exposes the linked welcome page.
+    // The first published version of each demo script (kept by upgrades) shows the linked welcome.
     for (let index = 0; index < 4; index++) {
       const version = `019c0000-0000-7000-8000-${(300 + index).toString(16).padStart(12, '0')}`;
       const screens = await designer.request.get(
@@ -94,12 +96,17 @@ test('clean demo: real SSO → four campaigns/shared screens → simulator → a
     await agent.getByRole('checkbox').first().check();
     await agent.getByRole('button', { name: /^Start$|^Başlayalım$/ }).click();
     await agent.getByRole('button', { name: /^Start$|^Başla$/ }).click();
-    await agent.getByRole('radio', { name: '10', exact: true }).check();
+    // The survey template asks for the score on a 0-10 slider; End moves it to 10 by keyboard.
+    await agent
+      .getByRole('slider', { name: /How likely are you to recommend|tavsiye etme olasılığınız/ })
+      .press('End');
     await agent
       .getByRole('button', { name: /^Next$|^İleri$/ })
       .last()
       .click();
+    await agent.getByRole('button', { name: /Select the reasons|Nedenleri seçin/ }).click();
     await agent.getByRole('checkbox', { name: /Quick resolution|Hızlı çözüm/ }).check();
+    await agent.keyboard.press('Escape');
     await agent
       .getByRole('button', { name: /^Next$|^İleri$/ })
       .last()
@@ -148,6 +155,13 @@ test('clean demo: real SSO → four campaigns/shared screens → simulator → a
           command.platformInteractionId === interaction.platformInteractionId,
       ),
     ).toBe(true);
+    // After wrap-up the platform ends the call; the simulator does it on request. That also frees
+    // the agent's voice line, so the acceptance can run again on the same demo tenant.
+    const ended = await admin.request.post(
+      `${adminUrl}/api/v1/simulator/connectors/${connector}/interactions/${interaction.platformInteractionId}/actions`,
+      { headers: adminHeaders, data: { action: 'end' } },
+    );
+    expect(ended.ok()).toBe(true);
     const chain = await admin.request.post(`${adminUrl}/api/v1/audit-events/verify`, {
       headers: adminHeaders,
       data: {},

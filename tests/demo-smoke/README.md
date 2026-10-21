@@ -1,4 +1,8 @@
-# Clean demo acceptance — authored, not executed
+# Clean demo acceptance
+
+The browser spec (`demo.spec.ts`) passed on 2026-10-21 against a local demo tenant that had been
+upgraded in place, with the services started by hand ([DEMO.md](../../docs/DEMO.md)). The
+installer below, with its empty-database guard, has not been executed yet.
 
 The installer performs frozen install, build, migration, empty-tenant-database guard, seed,
 service startup and Playwright. It never mocks auth/API/connector ACK. Seed integration responses
