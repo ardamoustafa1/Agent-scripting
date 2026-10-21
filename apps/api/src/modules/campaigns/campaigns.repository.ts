@@ -30,6 +30,7 @@ const SELECT = {
   startsAt: true,
   endsAt: true,
   createdAt: true,
+  createdBy: true,
   updatedAt: true,
   version: true,
 } satisfies Prisma.CampaignSelect;

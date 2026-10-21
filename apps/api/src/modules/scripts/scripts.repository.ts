@@ -22,6 +22,7 @@ const SCRIPT_SELECT = {
   currentVersionId: true,
   approvalPolicy: true,
   createdAt: true,
+  createdBy: true,
   updatedAt: true,
   version: true,
 } satisfies Prisma.ScriptSelect;

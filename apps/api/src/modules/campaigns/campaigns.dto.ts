@@ -93,6 +93,8 @@ export const CampaignSchema = z
     queues: z.array(z.string()),
     startsAt: IsoDateTime.nullable(),
     endsAt: IsoDateTime.nullable(),
+    /** Actor that created the campaign (`user:<id>`, `service:<name>`). */
+    createdBy: z.string(),
   })
   .meta({ id: 'Campaign' });
 export type CampaignDto = z.infer<typeof CampaignSchema>;
@@ -221,6 +223,7 @@ export function toCampaignDto(row: CampaignRow): CampaignDto {
     queues: row.queues,
     startsAt: isoOrNull(row.startsAt),
     endsAt: isoOrNull(row.endsAt),
+    createdBy: row.createdBy,
     createdAt: iso(row.createdAt),
     updatedAt: iso(row.updatedAt),
     version: row.version,

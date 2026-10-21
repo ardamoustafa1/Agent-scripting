@@ -36101,6 +36101,9 @@
                 "type": "null"
               }
             ]
+          },
+          "createdBy": {
+            "type": "string"
           }
         },
         "required": [
@@ -36120,7 +36123,8 @@
           "channels",
           "queues",
           "startsAt",
-          "endsAt"
+          "endsAt",
+          "createdBy"
         ],
         "additionalProperties": false
       },
@@ -42085,6 +42089,9 @@
                 "type": "null"
               }
             ]
+          },
+          "createdBy": {
+            "type": "string"
           }
         },
         "required": [
@@ -42096,7 +42103,8 @@
           "description",
           "status",
           "tags",
-          "currentVersionId"
+          "currentVersionId",
+          "createdBy"
         ],
         "additionalProperties": false
       },

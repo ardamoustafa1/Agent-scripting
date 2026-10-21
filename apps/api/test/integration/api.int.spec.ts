@@ -68,7 +68,12 @@ describe('campaigns: CRUD with optimistic locking and soft delete', () => {
       queues: ['retention'],
     });
     expect(created.statusCode).toBe(201);
-    const campaign = created.json<{ id: string; version: number; status: string }>();
+    const campaign = created.json<{
+      id: string;
+      version: number;
+      status: string;
+      createdBy: string;
+    }>();
     expect(campaign).toMatchObject({
       name: 'Retention Q4',
       status: 'draft',
@@ -76,6 +81,8 @@ describe('campaigns: CRUD with optimistic locking and soft delete', () => {
       version: 1,
       channels: ['voice', 'chat'],
     });
+    // Lists name who made a campaign from this actor reference.
+    expect(campaign.createdBy).toMatch(/^user:/);
     expect(created.headers.location).toBe(`/v1/campaigns/${campaign.id}`);
     expect(created.headers.etag).toBe('"1"');
 
@@ -510,7 +517,12 @@ describe('scripts and versions', () => {
         headers: { ...json, ...auth },
         payload: { name: 'Credit card sales', tags: ['banking'] },
       })
-    ).json<{ id: string }>();
+    ).json<{ id: string; createdBy: string }>();
+    expect(script.createdBy).toMatch(/^user:/);
+    const listed = (
+      await app.inject({ method: 'GET', url: '/v1/scripts?limit=100', headers: auth })
+    ).json<{ data: { id: string; createdBy: string }[] }>();
+    expect(listed.data.find((row) => row.id === script.id)?.createdBy).toBe(script.createdBy);
     const created = await app.inject({
       method: 'POST',
       url: `/v1/scripts/${script.id}/versions`,

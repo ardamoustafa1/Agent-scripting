@@ -16,6 +16,8 @@ export const ScriptSchema = z
     status: ScriptStatusSchema,
     tags: z.array(z.string()),
     currentVersionId: UuidSchema.nullable(),
+    /** Actor that created the script (`user:<id>`, `service:<name>`); lists show who made it. */
+    createdBy: z.string(),
   })
   .meta({ id: 'Script' });
 export type ScriptDto = z.infer<typeof ScriptSchema>;
@@ -130,6 +132,7 @@ export function toScriptDto(row: ScriptRow): ScriptDto {
     status: row.status,
     tags: row.tags,
     currentVersionId: row.currentVersionId,
+    createdBy: row.createdBy,
     createdAt: iso(row.createdAt),
     updatedAt: iso(row.updatedAt),
     version: row.version,

@@ -36088,6 +36088,9 @@ Requires: update:User
             "type": "null"
           }
         ]
+      },
+      "createdBy": {
+        "type": "string"
       }
     },
     "required": [
@@ -36107,7 +36110,8 @@ Requires: update:User
       "channels",
       "queues",
       "startsAt",
-      "endsAt"
+      "endsAt",
+      "createdBy"
     ],
     "additionalProperties": false
   },
@@ -42072,6 +42076,9 @@ Requires: update:User
             "type": "null"
           }
         ]
+      },
+      "createdBy": {
+        "type": "string"
       }
     },
     "required": [
@@ -42083,7 +42090,8 @@ Requires: update:User
       "description",
       "status",
       "tags",
-      "currentVersionId"
+      "currentVersionId",
+      "createdBy"
     ],
     "additionalProperties": false
   },
