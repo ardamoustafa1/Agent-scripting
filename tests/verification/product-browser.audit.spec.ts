@@ -429,13 +429,12 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
     await dialog.getByLabel('Name', { exact: true }).fill('Browser-created persisted script');
     await dialog.getByLabel('Campaign', { exact: true }).selectOption(campaignId);
     await dialog.getByRole('button', { name: 'Create', exact: true }).click();
-    await browserExpect(page).toHaveURL(/\/scripts\/[^/]+$/);
-    const id = new URL(page.url()).pathname.split('/').at(-1)!;
+    // A blank script opens straight in the editor; its first draft is created on the way.
+    await browserExpect(page).toHaveURL(/\/scripts\/[^/]+\/versions\/1\/edit$/);
+    const id = new URL(page.url()).pathname.split('/')[2]!;
     const saved = await owner.script.findUniqueOrThrow({ where: { id } });
     expect(saved.tenantId).toBe(tenant.tenantId);
     expect(saved.name).toBe('Browser-created persisted script');
-    await page.getByRole('button', { name: 'Create first draft', exact: true }).click();
-    await browserExpect(page).toHaveURL(new RegExp(`/scripts/${id}/versions/1/edit$`));
     expect(await owner.scriptVersion.count({ where: { scriptId: id } })).toBe(1);
     expect(failures).toEqual([]);
   });
@@ -922,16 +921,19 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
       .fill('Synthetic welcome, delivery issue, resolution and confirmation');
     await dialog.getByLabel('Campaign', { exact: true }).selectOption(campaignId);
     await dialog.getByRole('button', { name: 'Create', exact: true }).click();
-    await browserExpect(page).toHaveURL(/\/scripts\/[a-f0-9-]+$/);
-    const id = new URL(page.url()).pathname.split('/').at(-1)!;
-    await page.getByRole('button', { name: 'Create first draft', exact: true }).click();
+    await browserExpect(page).toHaveURL(/\/scripts\/[a-f0-9-]+\/versions\/1\/edit$/);
+    const id = new URL(page.url()).pathname.split('/')[2]!;
     await browserExpect(page.locator('[data-editor-node="home-root"]')).toBeAttached();
     const palette = page.locator('.ed-palette');
     await palette.locator('[data-component-type="heading"]').getByRole('button').last().click();
     const inspector = page.locator('.ed-inspector');
-    const headingId = await inspector.locator('code').first().innerText();
-    await inspector.getByLabel('Text key · TR', { exact: true }).fill('Kargo destek merkezi');
-    await inspector.getByLabel('Text key · EN', { exact: true }).fill('Delivery support');
+    const headingId = await inspector
+      .locator('code')
+      .first()
+      .textContent()
+      .then((id) => id ?? '');
+    await inspector.getByLabel('Text · TR', { exact: true }).fill('Kargo destek merkezi');
+    await inspector.getByLabel('Text · EN', { exact: true }).fill('Delivery support');
     await page.getByRole('button', { name: 'Copy', exact: true }).click();
     await page.getByRole('button', { name: 'Paste', exact: true }).click();
     await page.getByRole('button', { name: 'Duplicate', exact: true }).click();
@@ -955,7 +957,8 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
     await page.getByRole('button', { name: 'Add variable', exact: true }).click();
     const variable = page.getByRole('dialog');
     await variable.getByLabel('Variable name', { exact: true }).fill('trackingReference');
-    await variable.getByLabel('Default value (JSON)', { exact: true }).fill('"TEST-0001"');
+    // The initial value is a plain typed field; no JSON quoting.
+    await variable.getByLabel('Initial value', { exact: true }).fill('TEST-0001');
     await variable.getByRole('button', { name: 'Apply', exact: true }).click();
     await browserExpect(variable).not.toBeVisible();
     await mode(page, 'Rules');
@@ -970,10 +973,8 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
       .fill('02 · Issue and resolution');
     await page.getByRole('tab', { name: 'Components', exact: true }).click();
     await palette.locator('[data-component-type="heading"]').getByRole('button').last().click();
-    await inspector.getByLabel('Text key · TR', { exact: true }).fill('Teslimat sorunu ve çözüm');
-    await inspector
-      .getByLabel('Text key · EN', { exact: true })
-      .fill('Delivery issue and resolution');
+    await inspector.getByLabel('Text · TR', { exact: true }).fill('Teslimat sorunu ve çözüm');
+    await inspector.getByLabel('Text · EN', { exact: true }).fill('Delivery issue and resolution');
     await browserExpect(page.getByText('Saved', { exact: true })).toBeVisible();
     await browserExpect
       .poll(async () => {
@@ -1008,11 +1009,11 @@ describe('Real frontend / API / PostgreSQL / Redis product audit (no response mo
       .getByRole('region', { name: 'Component results', exact: true })
       .getByRole('button')
       .click();
-    await browserExpect(inspector.getByLabel('Text key · EN', { exact: true })).toHaveValue(
+    await browserExpect(inspector.getByLabel('Text · EN', { exact: true })).toHaveValue(
       'Delivery support',
     );
     await mode(page, 'Preview / debugger');
-    const frame = page.frameLocator('iframe[title="Agent runtime device preview"]');
+    const frame = page.frameLocator('iframe[title="Agent screen preview"]');
     await browserExpect(
       frame.getByRole('heading', { name: 'Kargo destek merkezi', exact: true }).first(),
     ).toBeVisible();
