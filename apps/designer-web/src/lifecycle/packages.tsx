@@ -29,6 +29,15 @@ const Plan = z.object({
       missing: z.boolean(),
       canCreate: z.boolean(),
       secretRefs: z.array(z.uuid()),
+      /** Where each packaged secret is used; the package carries no secret names. */
+      secretUses: z
+        .record(
+          z.uuid(),
+          z.array(
+            z.object({ profile: z.enum(['default', 'dev', 'test', 'prod']), auth: z.string() }),
+          ),
+        )
+        .default({}),
     }),
   ),
   created: z
@@ -250,10 +259,25 @@ export default function PackagesPage() {
                 }}
               />
               {dep.canCreate &&
-                dep.secretRefs.map((ref) => (
+                dep.secretRefs.map((ref, index) => (
                   <Select
                     key={ref}
-                    label={t('designer.lifecycle.secretMapping', { id: ref.slice(0, 8) })}
+                    label={t('designer.lifecycle.secretMapping', {
+                      use:
+                        (dep.secretUses[ref] ?? [])
+                          .map(({ profile, auth }) =>
+                            [
+                              profile === 'default'
+                                ? t('designer.lifecycle.secretUse.default')
+                                : t('designer.lifecycle.secretUse.environment', {
+                                    name: t(`designer.workspace.env.${profile}`),
+                                  }),
+                              t(`designer.integrations.authTypes.${auth}`, { defaultValue: auth }),
+                            ].join(' · '),
+                          )
+                          .join(', ') ||
+                        t('designer.lifecycle.secretUse.packaged', { number: index + 1 }),
+                    })}
                     value={secrets[ref] ?? ''}
                     options={(secretOptions.data?.data ?? []).map((s) => ({
                       value: s.id,

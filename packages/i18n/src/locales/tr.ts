@@ -1519,7 +1519,12 @@ export const tr: Catalog = {
       available: 'Hazır',
       integrationMapping: 'Hedef entegrasyon',
       keepOrCreate: '{{key}}: koru veya paketten oluştur',
-      secretMapping: 'Secret referansı {{id}} → hedef secret',
+      secretMapping: '{{use}} için bu ortamdaki secret',
+      secretUse: {
+        default: 'Varsayılan bağlantı',
+        environment: '{{name}} ortamı',
+        packaged: 'Paketteki secret {{number}}',
+      },
       secretHelp:
         'Yalnızca secret adları ve referansları görünür. Secret değerleri taşınmaz; prod profili ayrı onay gerektirir.',
       importDraft: 'Taslak olarak içe aktar',

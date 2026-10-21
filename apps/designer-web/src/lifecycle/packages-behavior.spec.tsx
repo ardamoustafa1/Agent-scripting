@@ -27,6 +27,12 @@ const plan = {
       missing: false,
       canCreate: true,
       secretRefs: [tenantId],
+      secretUses: {
+        [tenantId]: [
+          { profile: 'default', auth: 'bearer' },
+          { profile: 'test', auth: 'bearer' },
+        ],
+      },
     },
   ],
 };
@@ -81,10 +87,13 @@ it('checks dependencies, invalidates verified plans after remapping, and imports
   });
   await choose(f.label('lifecycle.integrationMapping'), 'target-key v4');
   expect(importDraft.hasAttribute('disabled')).toBe(true);
-  await choose(
-    f.i18n.t('designer.lifecycle.secretMapping', { id: tenantId.slice(0, 8) }),
-    'Synthetic target secret',
+  // The packaged secret is named by where it is used, never by its source id.
+  const secretLabel =
+    'Secret in this environment for Default connection · Access token (Bearer), Test environment · Access token (Bearer)';
+  expect(f.i18n.t('designer.lifecycle.secretMapping', { use: 'x' })).not.toContain(
+    tenantId.slice(0, 8),
   );
+  await choose(secretLabel, 'Synthetic target secret');
   fireEvent.click(
     screen.getAllByRole('button', { name: f.label('lifecycle.checkDependencies') })[1]!,
   );

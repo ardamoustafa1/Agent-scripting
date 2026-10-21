@@ -1510,7 +1510,12 @@ export const en = {
       available: 'Ready',
       integrationMapping: 'Target integration',
       keepOrCreate: '{{key}}: keep or create from package',
-      secretMapping: 'Secret reference {{id}} → target secret',
+      secretMapping: 'Secret in this environment for {{use}}',
+      secretUse: {
+        default: 'Default connection',
+        environment: '{{name}} environment',
+        packaged: 'Packaged secret {{number}}',
+      },
       secretHelp:
         'Only secret names and references are shown. Secret values are never transported; production profiles require separate approval.',
       importDraft: 'Import as drafts',
