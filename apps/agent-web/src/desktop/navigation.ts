@@ -1,5 +1,3 @@
-import type { ScriptDocument } from '@verbis/script-schema';
-
 /** Keyboard intents of the agent desktop (DIFFERENTIATORS D4). */
 export type ShortcutIntent =
   | { type: 'next' }
@@ -74,36 +72,6 @@ export function shortcutIntent(event: ShortcutEvent, at: ShortcutTarget): Shortc
     return { type: 'next' };
   if (event.key === '?' && !at.typing) return { type: 'help' };
   return null;
-}
-
-export interface Step {
-  id: string;
-  title: string;
-}
-
-/** Customer-facing page title (its title key), falling back to the designer's page name. */
-export function pageTitle(
-  document: ScriptDocument,
-  pageId: string,
-  message: (key: string) => string,
-): string {
-  const page = document.pages.find((candidate) => candidate.id === pageId);
-  if (!page) return pageId;
-  return page.titleKey ? message(page.titleKey) : page.name;
-}
-
-/** The pages already completed, most recent last, without the current one. Bounded for display. */
-export function stepTrail(
-  document: ScriptDocument,
-  history: readonly string[],
-  current: string | null,
-  message: (key: string) => string,
-  limit = 12,
-): Step[] {
-  return history
-    .filter((id) => id !== current)
-    .slice(-limit)
-    .map((id) => ({ id, title: pageTitle(document, id, message) }));
 }
 
 /** The first field of a freshly shown page, so typing can start at once; otherwise its heading. */

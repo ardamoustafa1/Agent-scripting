@@ -140,6 +140,16 @@ for (const theme of ['light', 'dark', 'high-contrast'])
     await expect(
       page.getByRole('heading', { name: /Keyboard shortcuts|Klavye kısayolları/ }),
     ).toBeVisible();
+    // Contrast is meaningful after the dialog and its backdrop finish fading in.
+    const dialog = page.getByRole('dialog');
+    await expect
+      .poll(() => dialog.evaluate((element) => getComputedStyle(element).opacity))
+      .toBe('1');
+    await expect
+      .poll(() =>
+        page.locator('.vb-overlay').evaluate((element) => getComputedStyle(element).opacity),
+      )
+      .toBe('1');
     expect(
       (
         await new AxeBuilder({ page })

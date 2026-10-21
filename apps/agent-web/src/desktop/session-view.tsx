@@ -15,7 +15,18 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import { ComponentProvider, type ComponentEnvironment } from '@verbis/components';
+import {
+  ComplianceList,
+  ComponentProvider,
+  PageProgress,
+  StepHeader,
+  complianceChecklist,
+  noticeShown,
+  pageTitle,
+  pendingCount,
+  stepTrail,
+  type ComponentEnvironment,
+} from '@verbis/components';
 import { ScriptRenderer, useRuntimePaths } from '@verbis/core-runtime';
 import { AgentFeedbackReasonSchema, AgentFeedbackResultSchema } from '@verbis/shared-types';
 import {
@@ -27,7 +38,6 @@ import {
   Textarea,
   Select,
   MultiSelect,
-  Progress,
   Tabs,
   Kbd,
   Skeleton,
@@ -39,17 +49,10 @@ import { agentScreenReady, agentLaunchFailed, agentPageTransition } from '../obs
 
 import { AgentAiPanel } from './ai-panel.js';
 import { api, Desktop } from './api.js';
-import { complianceChecklist, pendingCount } from './checklist.js';
 import { AgentController } from './controller.js';
 import { FailureNotice } from './failure-notice.js';
 import { classifyAgentFailure, type AgentFailure } from './failure.js';
-import {
-  describeTarget,
-  pageFocusTarget,
-  pageTitle,
-  shortcutIntent,
-  stepTrail,
-} from './navigation.js';
+import { describeTarget, pageFocusTarget, shortcutIntent } from './navigation.js';
 import { type DraftVault } from './vault.js';
 
 export function SessionView({
@@ -228,7 +231,12 @@ function Interaction({
     [feedbackFailed, setFeedbackFailed] = useState(false);
   const message = useCallback((key: string) => c.runtime.message(key), [c]);
   // Read separately from `page` so the compiler can keep `next` memoized.
-  const checklist = complianceChecklist(c.runtime.document, c.runtime.store, message),
+  const checklist = complianceChecklist(
+      c.runtime.document,
+      c.runtime.store,
+      message,
+      noticeShown(c.runtime),
+    ),
     pending = pendingCount(checklist);
   const shown = c.runtime.store.get('runtime.page');
   const pageId = typeof shown === 'string' ? shown : null;
@@ -606,14 +614,12 @@ function Interaction({
             </section>
           ) : (
             <>
-              <header className="ag-step">
-                <p className="ag-step-count">
-                  {t('agent.desktop.step', { number: trail.length + 1 })}
-                </p>
-                <div className="ag-step-title">
-                  <h2 ref={stepHeading} tabIndex={-1}>
-                    {currentTitle}
-                  </h2>
+              <StepHeader
+                step={trail.length + 1}
+                title={currentTitle}
+                trail={trail}
+                headingRef={stepHeading}
+                actions={
                   <Button
                     variant="ghost"
                     size="sm"
@@ -626,18 +632,8 @@ function Interaction({
                     <MessageSquareWarning size={15} aria-hidden />
                     {t('agent.desktop.feedback')}
                   </Button>
-                </div>
-                {trail.length > 0 && (
-                  <details className="ag-trail">
-                    <summary>{t('agent.desktop.trail', { count: trail.length })}</summary>
-                    <ol>
-                      {trail.map((step, index) => (
-                        <li key={`${step.id}-${String(index)}`}>{step.title}</li>
-                      ))}
-                    </ol>
-                  </details>
-                )}
-              </header>
+                }
+              />
               <fieldset
                 className="ag-runtime"
                 data-page-id={typeof page === 'string' ? page : undefined}
@@ -679,40 +675,7 @@ function Interaction({
                           pending > 0
                             ? `${t('agent.desktop.compliance')} (${String(pending)})`
                             : t('agent.desktop.compliance'),
-                        content: (
-                          <section aria-label={t('agent.desktop.compliance')}>
-                            <p>{t('agent.desktop.complianceHint')}</p>
-                            <p role="status">
-                              {t('agent.desktop.complianceProgress', {
-                                done: checklist.length - pending,
-                                total: checklist.length,
-                              })}
-                            </p>
-                            <ul className="ag-checklist">
-                              {checklist.map((item) => (
-                                <li key={item.id} data-done={item.done}>
-                                  <span aria-hidden="true">{item.done ? '✓' : '○'}</span>{' '}
-                                  <span>
-                                    {item.label} <small>· {item.page}</small>
-                                  </span>{' '}
-                                  <strong>
-                                    {t(
-                                      item.done
-                                        ? 'agent.desktop.complianceDone'
-                                        : 'agent.desktop.compliancePending',
-                                    )}
-                                  </strong>
-                                  {!item.done && s.probablySaid.includes(item.id) && (
-                                    <>
-                                      {' '}
-                                      <small>{t('agent.desktop.probablySaid')}</small>
-                                    </>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          </section>
-                        ),
+                        content: <ComplianceList items={checklist} probablySaid={s.probablySaid} />,
                       },
                     ]
                   : []),
@@ -783,18 +746,7 @@ function Interaction({
           <ChevronLeft size={16} />
           {t('agent.desktop.back')}
         </Button>
-        <div className="ag-progress">
-          <span>
-            {t('agent.desktop.progress', {
-              current: index + 1,
-              total: c.runtime.document.pages.length,
-            })}
-          </span>
-          <Progress
-            value={Math.max(0, ((index + 1) / c.runtime.document.pages.length) * 100)}
-            label={t('agent.desktop.progressLabel')}
-          />
-        </div>
+        <PageProgress current={index + 1} total={c.runtime.document.pages.length} />
         <Button
           variant="ghost"
           disabled={busy || s.readOnly || !s.online || !['active', 'paused'].includes(s.view.state)}

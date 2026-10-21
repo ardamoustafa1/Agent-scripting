@@ -35,6 +35,7 @@ import { FailureNotice } from './failure-notice.js';
 import { type AgentFailure } from './failure.js';
 import { describeTarget, shortcutIntent } from './navigation.js';
 import { DraftVault } from './vault.js';
+import '@verbis/components/agent-shell.css';
 import './styles.css';
 
 const loadSessionView = () => import('./session-view.js');

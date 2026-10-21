@@ -1,14 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { ScriptDocumentSchema } from '@verbis/script-schema';
-import { minimalScript } from '@verbis/script-schema/fixtures';
-
 import {
   describeTarget,
   pageFocusTarget,
-  pageTitle,
   shortcutIntent,
-  stepTrail,
   type ShortcutEvent,
   type ShortcutTarget,
 } from './navigation.js';
@@ -95,27 +90,7 @@ describe('describeTarget', () => {
   });
 });
 
-describe('steps', () => {
-  const document = ScriptDocumentSchema.parse(minimalScript());
-  document.pages.push({ ...document.pages[0]!, id: 'offer', name: 'offer', titleKey: 'p.offer' });
-  const message = (key: string) => (key === 'p.offer' ? 'Special offer' : key);
-
-  it('prefers the customer-facing title key over the page name', () => {
-    expect(pageTitle(document, 'offer', message)).toBe('Special offer');
-    expect(pageTitle(document, 'home', message)).toBe('Home');
-    expect(pageTitle(document, 'missing', message)).toBe('missing');
-  });
-
-  it('lists completed steps without the current page, bounded to the most recent', () => {
-    expect(stepTrail(document, ['home', 'offer', 'home'], 'offer', message)).toEqual([
-      { id: 'home', title: 'Home' },
-      { id: 'home', title: 'Home' },
-    ]);
-    expect(stepTrail(document, Array(20).fill('home') as string[], null, message, 3)).toHaveLength(
-      3,
-    );
-  });
-
+describe('page focus', () => {
   it('focuses the first enabled field, else the heading', () => {
     globalThis.document.body.innerHTML = `
       <div id="root"><input disabled /><input type="hidden" /><textarea id="first"></textarea></div>
