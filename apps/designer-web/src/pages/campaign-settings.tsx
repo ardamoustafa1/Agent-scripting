@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { useAbility } from '@verbis/authz/react';
-import { LocaleSchema } from '@verbis/script-schema';
+import { LocaleSchema, OutcomeCodeSchema } from '@verbis/script-schema';
 import { Alert, Button, Checkbox, Input, MultiSelect, Select, Textarea } from '@verbis/ui';
 
 import { CampaignSchema, request } from '../api/client.js';
@@ -20,10 +20,8 @@ const split = (value: string) => [
   ),
 ];
 const Outcome = z.object({
-  code: z
-    .string()
-    .regex(/^[A-Z0-9][A-Z0-9_-]*$/)
-    .max(64),
+  // The rule scripts use for the outcome codes they record.
+  code: OutcomeCodeSchema,
   label: z.string().trim().min(1).max(200),
   category: z.enum(['success', 'failure', 'callback', 'noContact', 'other']),
   requiresNote: z.boolean(),
@@ -35,14 +33,7 @@ const Outcome = z.object({
         .max(64),
     )
     .max(50),
-  subCodes: z
-    .array(
-      z
-        .string()
-        .regex(/^[A-Z0-9][A-Z0-9_-]*$/)
-        .max(64),
-    )
-    .max(50),
+  subCodes: z.array(OutcomeCodeSchema).max(50),
 });
 const Fields = z.object({
   name: z.string().trim().min(1).max(120),
