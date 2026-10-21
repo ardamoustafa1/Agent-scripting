@@ -123,3 +123,22 @@ it('filters Turkish dotted and dotless letters using the active locale', async (
   expect(screen.getByText('Çağrı akışı')).toBeDefined();
   expect(screen.queryByText('Müşteri karşılama')).toBeNull();
 });
+
+it('leaves filtering to the page when it is not filterable', () => {
+  render(
+    <UiProvider i18n={i18n}>
+      <DataTable
+        label="Scripts"
+        data={rows}
+        columns={columns}
+        getRowId={(row) => row.id}
+        filterable={false}
+        virtualized={false}
+      />
+    </UiProvider>,
+  );
+  expect(screen.queryByRole('searchbox')).toBeNull();
+  expect(screen.getByText(i18n.t('ui.tableCount', { count: 2 }))).toBeDefined();
+  expect(screen.getByText('Alpha')).toBeDefined();
+  expect(screen.getByText('Beta')).toBeDefined();
+});

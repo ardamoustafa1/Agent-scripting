@@ -32,6 +32,8 @@ export interface DataTableProps<T> {
   getRowId: (row: T, index: number) => string;
   height?: number;
   virtualized?: boolean;
+  /** Off when the page already filters the data, so there is never a second search box. */
+  filterable?: boolean;
   direction?: 'ltr' | 'rtl';
 }
 function scalarCell(value: unknown): string {
@@ -49,6 +51,7 @@ export function DataTable<T>({
   getRowId,
   height = 360,
   virtualized = true,
+  filterable = true,
   direction,
 }: DataTableProps<T>) {
   // TanStack's mutable table API cannot be memoized by React Compiler.
@@ -116,15 +119,17 @@ export function DataTable<T>({
   return (
     <div className="vb-data-table" dir={resolvedDirection}>
       <div className="vb-table-toolbar">
-        <Input
-          label={t('ui.tableFilter')}
-          type="search"
-          value={filter}
-          onChange={(event) => {
-            setFilter(event.target.value);
-            scroll.current?.scrollTo({ top: 0 });
-          }}
-        />
+        {filterable && (
+          <Input
+            label={t('ui.tableFilter')}
+            type="search"
+            value={filter}
+            onChange={(event) => {
+              setFilter(event.target.value);
+              scroll.current?.scrollTo({ top: 0 });
+            }}
+          />
+        )}
         <span className="vb-description" role="status">
           {t('ui.tableCount', { count: rows.length })}
         </span>
