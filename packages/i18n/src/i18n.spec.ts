@@ -43,6 +43,8 @@ describe('catalogs', () => {
       ...['Avaya Aura Contact Center', 'Avaya Experience Platform', 'Genesys Cloud'],
       ...['Genesys Engage', 'NICE CXone', 'Kafka', 'Syslog', 'Syslog (RFC 5424)', 'Webhook'],
       ...['WhatsApp', 'SMS', 'Video', 'OIDC', 'SAML', 'CEF', 'JSON', 'PII', 'VDN', 'Platform API'],
+      // Integration protocol and standard names.
+      ...['REST', 'SOAP', 'GraphQL', 'SOAPAction', 'SOAP WS-Security'],
       ...['Connector', 'Script', 'Platform', 'Port', 'Test', 'Tablet · 768', 'Tablet', '01 — 03'],
       ...[
         'Alt + ←',
