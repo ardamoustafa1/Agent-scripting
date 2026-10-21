@@ -1,5 +1,15 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Plus, ArrowUpRight, LayoutGrid, List, Layers3, Search, Sparkles } from 'lucide-react';
+import {
+  Plus,
+  ArrowUpRight,
+  Headset,
+  LayoutGrid,
+  List,
+  Layers3,
+  Search,
+  ShoppingCart,
+  Sparkles,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -52,6 +62,23 @@ function LibraryBody({
     getNextPageParam: (page) => page.page.nextCursor ?? undefined,
   });
   const all = query.data?.pages.flatMap((page) => page.data) ?? [];
+  // Rows carry their creator as an actor reference (`user:<id>`, `service:<name>`).
+  const creator = (row: Resource): 'mine' | 'member' | 'system' | undefined => {
+    if (!row.createdBy) return undefined;
+    const [kind, ...rest] = row.createdBy.includes(':')
+      ? row.createdBy.split(':')
+      : ['user', row.createdBy];
+    if (kind !== 'user') return 'system';
+    return rest.join(':') === session.user.id ? 'mine' : 'member';
+  };
+  const creatorName = (row: Resource) => {
+    const kind = creator(row);
+    return kind === 'mine'
+      ? t('designer.workspace.you')
+      : kind
+        ? t(`designer.workspace.owners.${kind}`)
+        : t('designer.workspace.unassigned');
+  };
   const rows = all.filter(
     (row) =>
       (row.name
@@ -60,9 +87,7 @@ function LibraryBody({
         row.tags.some((value) => value.toLocaleLowerCase().includes(search.toLocaleLowerCase()))) &&
       (status === 'all' || row.status === status) &&
       (tag === 'all' || row.tags.includes(tag)) &&
-      (owner === 'all' ||
-        (owner === 'mine' && row.ownerId === session.user.id) ||
-        (owner === 'unassigned' && !row.ownerId)),
+      (owner === 'all' || (owner === 'mine' ? creator(row) === 'mine' : creator(row) !== 'mine')),
   );
   const filtered = !!search || status !== 'all' || tag !== 'all' || owner !== 'all';
   const clearFilters = () => {
@@ -133,8 +158,14 @@ function LibraryBody({
             </div>
             <div className="dw-canvas-line" />
             <div className="dw-canvas-branches">
-              <span />
-              <span />
+              <span>
+                <ShoppingCart size={15} />
+                {t('designer.workspace.canvasBranchSale')}
+              </span>
+              <span>
+                <Headset size={15} />
+                {t('designer.workspace.canvasBranchSupport')}
+              </span>
             </div>
           </div>
         </div>
@@ -169,15 +200,17 @@ function LibraryBody({
           ]}
           onValueChange={setTag}
         />
-        <Select
-          label={t('designer.workspace.owner')}
-          value={owner}
-          options={['all', 'mine', 'unassigned'].map((value) => ({
-            value,
-            label: t(`designer.workspace.owners.${value}`),
-          }))}
-          onValueChange={setOwner}
-        />
+        {editable && (
+          <Select
+            label={t('designer.workspace.createdBy')}
+            value={owner}
+            options={['all', 'mine', 'others'].map((value) => ({
+              value,
+              label: t(`designer.workspace.owners.${value}`),
+            }))}
+            onValueChange={setOwner}
+          />
+        )}
         <div className="dw-view-toggle">
           <IconButton
             label={t('designer.workspace.listView')}
@@ -273,10 +306,11 @@ function LibraryBody({
                 ))}
               </div>
               <footer>
-                <span>
-                  {t('designer.workspace.owner')}:{' '}
-                  {row.ownerId ?? t('designer.workspace.unassigned')}
-                </span>
+                {editable && (
+                  <span>
+                    {t('designer.workspace.createdBy')}: {creatorName(row)}
+                  </span>
+                )}
                 <time>
                   {row.updatedAt
                     ? new Intl.DateTimeFormat(i18n.language, { dateStyle: 'medium' }).format(
@@ -293,6 +327,8 @@ function LibraryBody({
           label={t(`designer.workspace.nav.${kind}`)}
           data={rows}
           getRowId={(row) => row.id}
+          // The search above already filters the list; a second box would only confuse.
+          filterable={false}
           height={440}
           columns={[
             {
@@ -338,11 +374,15 @@ function LibraryBody({
                 </div>
               ),
             },
-            {
-              id: 'owner',
-              header: t('designer.workspace.owner'),
-              accessor: (row) => row.ownerId ?? t('designer.workspace.unassigned'),
-            },
+            ...(editable
+              ? [
+                  {
+                    id: 'createdBy',
+                    header: t('designer.workspace.createdBy'),
+                    accessor: creatorName,
+                  },
+                ]
+              : []),
             {
               id: 'updatedAt',
               header: t('designer.workspace.edited'),

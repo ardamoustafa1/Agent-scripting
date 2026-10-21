@@ -107,7 +107,8 @@ export const ResourceSchema = z.object({
   tags: z.array(z.string()).default([]),
   updatedAt: z.string().optional(),
   createdAt: z.string().optional(),
-  ownerId: z.string().optional(),
+  /** Actor reference of the creator (`user:<id>`, `service:<name>`); campaigns and scripts. */
+  createdBy: z.string().optional(),
   currentVersionId: z.string().nullable().optional(),
   key: z.string().optional(),
 });

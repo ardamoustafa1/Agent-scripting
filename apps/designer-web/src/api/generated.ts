@@ -5190,6 +5190,7 @@ export interface components {
       queues: string[];
       startsAt: string | null;
       endsAt: string | null;
+      createdBy: string;
     };
     CampaignExternalMapping: {
       /** @enum {string} */
@@ -6742,6 +6743,7 @@ export interface components {
       status: 'draft' | 'active' | 'archived';
       tags: string[];
       currentVersionId: string | null;
+      createdBy: string;
     };
     ScriptBranch: {
       name: string;
