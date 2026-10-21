@@ -13,6 +13,7 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
   variables: [
     {
       key: 'msisdn',
+      description: 'Telefon numarası',
       type: 'string',
       scope: 'interaction',
       classification: 'pii',
@@ -34,10 +35,29 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
       enumValues: ['S20', 'S40', 'UNL'],
       persist: true,
     },
-    { key: 'otpCode', type: 'string', scope: 'page' },
-    { key: 'otpAttempts', type: 'number', scope: 'session', default: 0 },
-    { key: 'otpValid', type: 'boolean', scope: 'session', default: false, persist: true },
-    { key: 'tariffChangeConfirmed', type: 'boolean', scope: 'page', default: false },
+    { key: 'otpCode', description: 'Doğrulama kodu', type: 'string', scope: 'page' },
+    {
+      key: 'otpAttempts',
+      description: 'Kod deneme sayısı',
+      type: 'number',
+      scope: 'session',
+      default: 0,
+    },
+    {
+      key: 'otpValid',
+      description: 'Kod doğru',
+      type: 'boolean',
+      scope: 'session',
+      default: false,
+      persist: true,
+    },
+    {
+      key: 'tariffChangeConfirmed',
+      description: 'Tarife değişikliği onaylandı',
+      type: 'boolean',
+      scope: 'page',
+      default: false,
+    },
     {
       key: 'effectiveDate',
       description: 'geçiş tarihi',
@@ -45,7 +65,13 @@ export const telecomTariffChangeScript: ScriptDocumentInput = {
       scope: 'session',
       persist: true,
     },
-    { key: 'orderId', type: 'string', scope: 'session', classification: 'internal' },
+    {
+      key: 'orderId',
+      description: 'Sipariş no',
+      type: 'string',
+      scope: 'session',
+      classification: 'internal',
+    },
     {
       key: 'campaignDiscount',
       description: 'kampanya indirimi',

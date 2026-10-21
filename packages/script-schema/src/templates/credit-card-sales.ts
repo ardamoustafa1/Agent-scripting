@@ -14,6 +14,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
   variables: [
     {
       key: 'customerId',
+      description: 'Müşteri no',
       type: 'string',
       scope: 'interaction',
       source: 'interaction.attributes.customerId',
@@ -28,6 +29,7 @@ export const creditCardSalesScript: ScriptDocumentInput = {
     },
     {
       key: 'cardLast4',
+      description: 'Kartın son 4 hanesi',
       type: 'string',
       // Session, not page: a completing outcome re-validates every page, and a page-scoped
       // value is cleared when the agent moves on, so the sale could never be recorded. The
@@ -40,8 +42,22 @@ export const creditCardSalesScript: ScriptDocumentInput = {
       persist: false,
       default: '',
     },
-    { key: 'identityVerified', type: 'boolean', scope: 'session', default: false, persist: true },
-    { key: 'monthlyIncome', type: 'number', scope: 'session', classification: 'pii', pii: true },
+    {
+      key: 'identityVerified',
+      description: 'Kimlik doğrulandı',
+      type: 'boolean',
+      scope: 'session',
+      default: false,
+      persist: true,
+    },
+    {
+      key: 'monthlyIncome',
+      description: 'Aylık gelir',
+      type: 'number',
+      scope: 'session',
+      classification: 'pii',
+      pii: true,
+    },
     {
       key: 'cardProduct',
       description: 'kart tipi',
@@ -67,8 +83,22 @@ export const creditCardSalesScript: ScriptDocumentInput = {
       default: 50000,
       classification: 'public',
     },
-    { key: 'offerAccepted', type: 'boolean', scope: 'session', default: false, persist: true },
-    { key: 'consentGiven', type: 'boolean', scope: 'session', default: false, persist: true },
+    {
+      key: 'offerAccepted',
+      description: 'Teklif kabul edildi',
+      type: 'boolean',
+      scope: 'session',
+      default: false,
+      persist: true,
+    },
+    {
+      key: 'consentGiven',
+      description: 'Onay verildi',
+      type: 'boolean',
+      scope: 'session',
+      default: false,
+      persist: true,
+    },
   ],
   dataSources: [
     {

@@ -27,8 +27,21 @@ export const ecommerceOrderScript: ScriptDocumentInput = {
       classification: 'pii',
       pii: true,
     },
-    { key: 'identityConfirmed', type: 'boolean', scope: 'session', default: false },
-    { key: 'orderStatus', type: 'string', scope: 'session', default: '', persist: true },
+    {
+      key: 'identityConfirmed',
+      description: 'Kimlik doğrulandı',
+      type: 'boolean',
+      scope: 'session',
+      default: false,
+    },
+    {
+      key: 'orderStatus',
+      description: 'Sipariş durumu',
+      type: 'string',
+      scope: 'session',
+      default: '',
+      persist: true,
+    },
     // The order system's own wording in the customer's language ("kargoda", "shipped").
     {
       key: 'orderStatusText',
@@ -56,6 +69,7 @@ export const ecommerceOrderScript: ScriptDocumentInput = {
     },
     {
       key: 'requestType',
+      description: 'Talep türü',
       type: 'enum',
       scope: 'session',
       enumValues: ['where', 'return', 'damaged'],
@@ -64,6 +78,7 @@ export const ecommerceOrderScript: ScriptDocumentInput = {
     },
     {
       key: 'returnReason',
+      description: 'İade nedeni',
       type: 'enum',
       scope: 'session',
       enumValues: ['size', 'defect', 'changedMind', 'other'],
@@ -71,15 +86,23 @@ export const ecommerceOrderScript: ScriptDocumentInput = {
     },
     {
       key: 'refundMethod',
+      description: 'İade yöntemi',
       type: 'enum',
       scope: 'session',
       enumValues: ['original', 'storeCredit'],
       default: 'original',
       persist: true,
     },
-    { key: 'damageDetails', type: 'string', scope: 'session', default: '' },
+    {
+      key: 'damageDetails',
+      description: 'Hasar ayrıntıları',
+      type: 'string',
+      scope: 'session',
+      default: '',
+    },
     {
       key: 'resolution',
+      description: 'Çözüm',
       type: 'enum',
       scope: 'session',
       enumValues: ['replacement', 'refund'],
