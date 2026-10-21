@@ -9,12 +9,19 @@ CLAUDE.md, mevcut onay politikası, BFF/CSRF, tenant RLS ve audit/outbox kuralla
   yorum/ret/geri çekme, senaryo regresyon kapılı onay/yayın, zamanlanmış yayın durumları ve
   önceki yayın başına tek tıkla rollback. Yetkiler ve görevler ayrılığı sunucuda yeniden kontrol edilir.
 - Aynı sayfada sürüm seçimi, yan yana gerçek core-runtime ekran görüntüsü, renk ve metinle
-  eklenen/silinen/değişen node göstergeleri, iki flow görünümü, değişken/veri kaynağı ve JSON patch diff.
+  eklenen/silinen/değişen node göstergeleri, iki flow görünümü, değişken/veri kaynağı tabloları ve
+  "Tüm değişiklikler" listesi. Tablolar "ne değişti" sütununda alan adını ve "önce → sonra" değerini
+  sözcüklerle verir; JSON Patch yolları ad zincirine çevrilir ("“Karşılama” sayfası › Düğme “btn-next” ›
+  Etiket"; `lifecycle/diff-text.ts`). Ham JSON yalnız katlanmış "teknik görünüm" altında kalır. Lint
+  bulguları, dal birleştirme çakışmaları, öneri işlemleri ve yorum hedefi aynı adlandırmayı kullanır.
   Diff renderer etkileşimsizdir; entegrasyon ya da aksiyon çalıştırmaz. Lint ve senaryo sonuçları ayrıca gösterilir.
 - `/scripts/:id/assignments`: çoklu kampanya atama, kampanya içindeki tüm scriptleri klavye veya
   sürüklemeyle önceliklendirme, tek transaction’da toplu optimistic kayıt, tarih/koşul ve A/B kollarının
   yayınlanmış sürümlerine pinleme. Yüzdeler resolver’ın 10.000 baz puan ölçeğine dönüştürülür.
-  Resolver testinde kanal, kampanya ve attached data ile gerçek resolver trace’i gösterilir.
+  Resolver testinde kampanya, kanal, dil, kuyruk, segment, yetkinlikler ve ek veri (alan–değer
+  satırları) girilir; gerçek resolver kararı cümle olarak gösterilir: açılan script ve sürüm, A/B kolu,
+  çalışma saati, kontrol edilen her atamanın uygunluğu ve ret gerekçeleri (`lifecycle/resolver-tester.tsx`).
+  Çakışma listesi boyutları ("Kanal: Ses, Sohbet") okunur verir.
   İlk 100 kayıttan fazlası varsa tüm kampanya sıralaması engellenir; yanlış eksik liste sırası yazılmaz.
 - `/scripts/:id/packages`: onaylı/yayınlanmış sürümlerin hedef ortama imzalı export’u;
   import ön kontrolü, eksik entegrasyon oluşturma/eşleme ve yalnız secret metadata’sı üzerinden

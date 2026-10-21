@@ -1089,6 +1089,10 @@
     "components.elapsed",
     "components.empty",
     "components.field",
+    "components.gaps.agent",
+    "components.gaps.ani",
+    "components.gaps.campaign",
+    "components.gaps.customer",
     "components.invalid",
     "components.media",
     "components.mustRead",
@@ -1190,6 +1194,119 @@
     "components.unavailable",
     "components.unconfigured",
     "components.value",
+    "designer.actions.addAttribute",
+    "designer.actions.addText",
+    "designer.actions.codeInvalid",
+    "designer.actions.completion.complete",
+    "designer.actions.completion.early",
+    "designer.actions.completionHints.complete",
+    "designer.actions.completionHints.early",
+    "designer.actions.customInputs",
+    "designer.actions.emptyList",
+    "designer.actions.fields.actions",
+    "designer.actions.fields.addNotes",
+    "designer.actions.fields.attribute",
+    "designer.actions.fields.attributeHint",
+    "designer.actions.fields.attributeValue",
+    "designer.actions.fields.attributes",
+    "designer.actions.fields.code",
+    "designer.actions.fields.completion",
+    "designer.actions.fields.condition",
+    "designer.actions.fields.currentPage",
+    "designer.actions.fields.dataSource",
+    "designer.actions.fields.else",
+    "designer.actions.fields.event",
+    "designer.actions.fields.eventHint",
+    "designer.actions.fields.flow",
+    "designer.actions.fields.level",
+    "designer.actions.fields.masked",
+    "designer.actions.fields.message",
+    "designer.actions.fields.modalPage",
+    "designer.actions.fields.node",
+    "designer.actions.fields.notes",
+    "designer.actions.fields.onError",
+    "designer.actions.fields.onInvalid",
+    "designer.actions.fields.onSuccess",
+    "designer.actions.fields.outcome",
+    "designer.actions.fields.outcomeHint",
+    "designer.actions.fields.page",
+    "designer.actions.fields.reason",
+    "designer.actions.fields.removeNotes",
+    "designer.actions.fields.rule",
+    "designer.actions.fields.subCode",
+    "designer.actions.fields.target",
+    "designer.actions.fields.targetHint",
+    "designer.actions.fields.then",
+    "designer.actions.fields.timer",
+    "designer.actions.fields.tone",
+    "designer.actions.fields.value",
+    "designer.actions.fields.variable",
+    "designer.actions.groups.data",
+    "designer.actions.groups.logic",
+    "designer.actions.groups.navigation",
+    "designer.actions.groups.outcome",
+    "designer.actions.groups.screen",
+    "designer.actions.groups.timer",
+    "designer.actions.groups.tracking",
+    "designer.actions.hints.back",
+    "designer.actions.hints.callDataSource",
+    "designer.actions.hints.closeModal",
+    "designer.actions.hints.conditional",
+    "designer.actions.hints.emitEvent",
+    "designer.actions.hints.logEvent",
+    "designer.actions.hints.maskField",
+    "designer.actions.hints.navigate",
+    "designer.actions.hints.next",
+    "designer.actions.hints.openModal",
+    "designer.actions.hints.parallel",
+    "designer.actions.hints.runSubflow",
+    "designer.actions.hints.sequence",
+    "designer.actions.hints.setDisposition",
+    "designer.actions.hints.setVariable",
+    "designer.actions.hints.showToast",
+    "designer.actions.hints.startTimer",
+    "designer.actions.hints.stopTimer",
+    "designer.actions.hints.submitOutcome",
+    "designer.actions.hints.transferHint",
+    "designer.actions.hints.validatePage",
+    "designer.actions.hints.writeBackToPlatform",
+    "designer.actions.inlineCondition",
+    "designer.actions.levels.debug",
+    "designer.actions.levels.error",
+    "designer.actions.levels.info",
+    "designer.actions.levels.warn",
+    "designer.actions.maskOff",
+    "designer.actions.maskOn",
+    "designer.actions.names.back",
+    "designer.actions.names.callDataSource",
+    "designer.actions.names.closeModal",
+    "designer.actions.names.conditional",
+    "designer.actions.names.emitEvent",
+    "designer.actions.names.logEvent",
+    "designer.actions.names.maskField",
+    "designer.actions.names.navigate",
+    "designer.actions.names.next",
+    "designer.actions.names.openModal",
+    "designer.actions.names.parallel",
+    "designer.actions.names.runSubflow",
+    "designer.actions.names.sequence",
+    "designer.actions.names.setDisposition",
+    "designer.actions.names.setVariable",
+    "designer.actions.names.showToast",
+    "designer.actions.names.startTimer",
+    "designer.actions.names.stopTimer",
+    "designer.actions.names.submitOutcome",
+    "designer.actions.names.transferHint",
+    "designer.actions.names.validatePage",
+    "designer.actions.names.writeBackToPlatform",
+    "designer.actions.needs.dataSource",
+    "designer.actions.needs.node",
+    "designer.actions.needs.page",
+    "designer.actions.needs.subflow",
+    "designer.actions.needs.timer",
+    "designer.actions.needs.variable",
+    "designer.actions.noAttributes",
+    "designer.actions.removeAttribute",
     "designer.blocks.add",
     "designer.blocks.addShort",
     "designer.blocks.help",
@@ -1350,15 +1467,66 @@
     "designer.editor.affectedVersion",
     "designer.editor.apply",
     "designer.editor.applyExpression",
+    "designer.editor.argumentCount",
     "designer.editor.assignmentPermission",
     "designer.editor.attach",
     "designer.editor.auto",
     "designer.editor.binding",
+    "designer.editor.blocks.add",
+    "designer.editor.blocks.empty",
+    "designer.editor.blocks.format",
+    "designer.editor.blocks.hint",
+    "designer.editor.blocks.moveDown",
+    "designer.editor.blocks.moveUp",
+    "designer.editor.blocks.remove",
+    "designer.editor.blocks.tags.em",
+    "designer.editor.blocks.tags.h3",
+    "designer.editor.blocks.tags.li",
+    "designer.editor.blocks.tags.mark",
+    "designer.editor.blocks.tags.p",
+    "designer.editor.blocks.tags.strong",
+    "designer.editor.blocks.text",
+    "designer.editor.blocks.title",
+    "designer.editor.boundByExpression",
     "designer.editor.breadcrumb",
     "designer.editor.breakpoint",
     "designer.editor.by",
     "designer.editor.cancel",
     "designer.editor.canvas",
+    "designer.editor.cardOnPlainField",
+    "designer.editor.choices.2xl",
+    "designer.editor.choices.AlertTriangle",
+    "designer.editor.choices.ArrowRight",
+    "designer.editor.choices.Check",
+    "designer.editor.choices.EUR",
+    "designer.editor.choices.GBP",
+    "designer.editor.choices.Info",
+    "designer.editor.choices.MousePointer2",
+    "designer.editor.choices.Phone",
+    "designer.editor.choices.Search",
+    "designer.editor.choices.Square",
+    "designer.editor.choices.TR",
+    "designer.editor.choices.TRY",
+    "designer.editor.choices.USD",
+    "designer.editor.choices.bar",
+    "designer.editor.choices.check",
+    "designer.editor.choices.ghost",
+    "designer.editor.choices.horizontal",
+    "designer.editor.choices.international",
+    "designer.editor.choices.line",
+    "designer.editor.choices.link",
+    "designer.editor.choices.manual",
+    "designer.editor.choices.muted",
+    "designer.editor.choices.next",
+    "designer.editor.choices.normal",
+    "designer.editor.choices.onChange",
+    "designer.editor.choices.onEvent",
+    "designer.editor.choices.onLoad",
+    "designer.editor.choices.search",
+    "designer.editor.choices.secondary",
+    "designer.editor.choices.strong",
+    "designer.editor.choices.submit",
+    "designer.editor.choices.vertical",
     "designer.editor.columns",
     "designer.editor.componentGroups.action",
     "designer.editor.componentGroups.core",
@@ -1442,6 +1610,9 @@
     "designer.editor.componentNames.wizard",
     "designer.editor.components",
     "designer.editor.conditionSource",
+    "designer.editor.confirmField.description",
+    "designer.editor.confirmField.enable",
+    "designer.editor.confirmField.title",
     "designer.editor.conflict",
     "designer.editor.conflictRecovered",
     "designer.editor.copy",
@@ -1460,12 +1631,37 @@
     "designer.editor.duplicate",
     "designer.editor.enabledWhen",
     "designer.editor.event",
+    "designer.editor.eventNames.onBlur",
+    "designer.editor.eventNames.onChange",
+    "designer.editor.eventNames.onClear",
+    "designer.editor.eventNames.onElapsed",
+    "designer.editor.eventNames.onError",
+    "designer.editor.eventNames.onPress",
+    "designer.editor.eventNames.onRead",
+    "designer.editor.eventNames.onSuccess",
     "designer.editor.events",
     "designer.editor.exitFullscreen",
     "designer.editor.findNode",
     "designer.editor.findPage",
     "designer.editor.fitCanvas",
     "designer.editor.fullscreen",
+    "designer.editor.gridColumns.add",
+    "designer.editor.gridColumns.currency",
+    "designer.editor.gridColumns.empty",
+    "designer.editor.gridColumns.field",
+    "designer.editor.gridColumns.fieldHint",
+    "designer.editor.gridColumns.format",
+    "designer.editor.gridColumns.formats.currency",
+    "designer.editor.gridColumns.formats.date",
+    "designer.editor.gridColumns.formats.number",
+    "designer.editor.gridColumns.formats.text",
+    "designer.editor.gridColumns.hint",
+    "designer.editor.gridColumns.invalid",
+    "designer.editor.gridColumns.label",
+    "designer.editor.gridColumns.moveDown",
+    "designer.editor.gridColumns.moveUp",
+    "designer.editor.gridColumns.remove",
+    "designer.editor.gridColumns.title",
     "designer.editor.group",
     "designer.editor.groups.clipboard",
     "designer.editor.groups.history",
@@ -1478,6 +1674,16 @@
     "designer.editor.invalidExpression",
     "designer.editor.invalidProps",
     "designer.editor.issues",
+    "designer.editor.itemRows.add",
+    "designer.editor.itemRows.duplicate",
+    "designer.editor.itemRows.empty",
+    "designer.editor.itemRows.hint",
+    "designer.editor.itemRows.label",
+    "designer.editor.itemRows.moveDown",
+    "designer.editor.itemRows.moveUp",
+    "designer.editor.itemRows.remove",
+    "designer.editor.itemRows.title",
+    "designer.editor.itemRows.value",
     "designer.editor.jsonInvalid",
     "designer.editor.jsonRejected",
     "designer.editor.jumpCanvas",
@@ -1493,6 +1699,7 @@
     "designer.editor.moveUp",
     "designer.editor.newPage",
     "designer.editor.newPageName",
+    "designer.editor.newVariable",
     "designer.editor.nextResults",
     "designer.editor.noMatchingNodes",
     "designer.editor.noMatchingPages",
@@ -1510,7 +1717,6 @@
     "designer.editor.options.title",
     "designer.editor.options.value",
     "designer.editor.outdated",
-    "designer.editor.override",
     "designer.editor.pageDefault",
     "designer.editor.pageName",
     "designer.editor.pages",
@@ -1570,13 +1776,48 @@
     "designer.editor.styleLabels.padding",
     "designer.editor.styleLabels.tone",
     "designer.editor.styleLabels.width",
+    "designer.editor.styleScope",
+    "designer.editor.styleScopes.base",
+    "designer.editor.styleScopes.lg",
+    "designer.editor.styleScopes.md",
+    "designer.editor.styleScopes.sm",
+    "designer.editor.styleScopes.xl",
+    "designer.editor.styleValues.1_2",
+    "designer.editor.styleValues.auto",
+    "designer.editor.styleValues.between",
+    "designer.editor.styleValues.block",
+    "designer.editor.styleValues.center",
+    "designer.editor.styleValues.column",
+    "designer.editor.styleValues.danger",
+    "designer.editor.styleValues.end",
+    "designer.editor.styleValues.flex",
+    "designer.editor.styleValues.full",
+    "designer.editor.styleValues.grid",
+    "designer.editor.styleValues.info",
+    "designer.editor.styleValues.lg",
+    "designer.editor.styleValues.md",
+    "designer.editor.styleValues.neutral",
+    "designer.editor.styleValues.none",
+    "designer.editor.styleValues.primary",
+    "designer.editor.styleValues.row",
+    "designer.editor.styleValues.sm",
+    "designer.editor.styleValues.start",
+    "designer.editor.styleValues.stretch",
+    "designer.editor.styleValues.success",
+    "designer.editor.styleValues.warning",
+    "designer.editor.styleValues.xl",
+    "designer.editor.styleValues.xs",
+    "designer.editor.technical",
     "designer.editor.tenantIntegration",
     "designer.editor.title",
     "designer.editor.twoWay",
     "designer.editor.undo",
     "designer.editor.ungroup",
+    "designer.editor.unknownFunction",
     "designer.editor.unsaved",
     "designer.editor.validation",
+    "designer.editor.valueVariable",
+    "designer.editor.valueVariableHint",
     "designer.editor.viewportNames.base",
     "designer.editor.viewportNames.lg",
     "designer.editor.viewportNames.md",
@@ -1607,6 +1848,7 @@
     "designer.flow.issueCount",
     "designer.flow.iterations",
     "designer.flow.layout",
+    "designer.flow.mainFlow",
     "designer.flow.makeStart",
     "designer.flow.minimap",
     "designer.flow.missingElse",
@@ -1614,11 +1856,13 @@
     "designer.flow.newNote",
     "designer.flow.note",
     "designer.flow.outcome",
+    "designer.flow.position",
     "designer.flow.reuseScreen",
     "designer.flow.screenFragment",
     "designer.flow.selectTitle",
     "designer.flow.sourceScript",
     "designer.flow.sourceVersion",
+    "designer.flow.stepName",
     "designer.flow.success",
     "designer.flow.target",
     "designer.flow.title",
@@ -1653,6 +1897,8 @@
     "designer.health.grades.fair",
     "designer.health.grades.good",
     "designer.health.grades.poor",
+    "designer.health.issues.placeholderUnbound",
+    "designer.health.issues.placeholderUnknown",
     "designer.health.issues.unusedSensitive",
     "designer.health.issues.unusedVariable",
     "designer.health.locations.document",
@@ -1679,6 +1925,15 @@
     "designer.integrations.approve",
     "designer.integrations.approveHelp",
     "designer.integrations.auth",
+    "designer.integrations.authTypes.apiKey",
+    "designer.integrations.authTypes.basic",
+    "designer.integrations.authTypes.bearer",
+    "designer.integrations.authTypes.hmac",
+    "designer.integrations.authTypes.mtls",
+    "designer.integrations.authTypes.none",
+    "designer.integrations.authTypes.oauth2-client-credentials",
+    "designer.integrations.authTypes.oauth2-password",
+    "designer.integrations.authTypes.wsSecurity",
     "designer.integrations.baseUrl",
     "designer.integrations.body",
     "designer.integrations.breaker.closed",
@@ -1699,6 +1954,65 @@
     "designer.integrations.environment",
     "designer.integrations.fallback",
     "designer.integrations.file",
+    "designer.integrations.forms.addField",
+    "designer.integrations.forms.addUrl",
+    "designer.integrations.forms.advancedSchema",
+    "designer.integrations.forms.allowedOriginsHelp",
+    "designer.integrations.forms.authType",
+    "designer.integrations.forms.bodyField",
+    "designer.integrations.forms.bodyFields",
+    "designer.integrations.forms.bodyMode",
+    "designer.integrations.forms.bodyModes.form",
+    "designer.integrations.forms.bodyModes.json",
+    "designer.integrations.forms.bodyModes.none",
+    "designer.integrations.forms.bodyValue",
+    "designer.integrations.forms.cached",
+    "designer.integrations.forms.defaultScenario",
+    "designer.integrations.forms.failed",
+    "designer.integrations.forms.field",
+    "designer.integrations.forms.fieldKind",
+    "designer.integrations.forms.fieldName",
+    "designer.integrations.forms.fieldNameHint",
+    "designer.integrations.forms.fieldNameInvalid",
+    "designer.integrations.forms.headerName",
+    "designer.integrations.forms.headerValue",
+    "designer.integrations.forms.inputSchemaHelp",
+    "designer.integrations.forms.introspected",
+    "designer.integrations.forms.jsonView",
+    "designer.integrations.forms.jsonataAdvanced",
+    "designer.integrations.forms.kinds.array",
+    "designer.integrations.forms.kinds.boolean",
+    "designer.integrations.forms.kinds.date",
+    "designer.integrations.forms.kinds.integer",
+    "designer.integrations.forms.kinds.number",
+    "designer.integrations.forms.kinds.object",
+    "designer.integrations.forms.kinds.string",
+    "designer.integrations.forms.mappedFields",
+    "designer.integrations.forms.maxComplexity",
+    "designer.integrations.forms.maxDepth",
+    "designer.integrations.forms.noFields",
+    "designer.integrations.forms.noInputFields",
+    "designer.integrations.forms.outputSchemaHelp",
+    "designer.integrations.forms.queryName",
+    "designer.integrations.forms.queryValue",
+    "designer.integrations.forms.rawTrace",
+    "designer.integrations.forms.removeField",
+    "designer.integrations.forms.request",
+    "designer.integrations.forms.requestMappingAdvanced",
+    "designer.integrations.forms.required",
+    "designer.integrations.forms.reservedHeader",
+    "designer.integrations.forms.responseData",
+    "designer.integrations.forms.sampleFromSchema",
+    "designer.integrations.forms.secret",
+    "designer.integrations.forms.secretStored",
+    "designer.integrations.forms.soap.action",
+    "designer.integrations.forms.soap.namespace",
+    "designer.integrations.forms.soap.operation",
+    "designer.integrations.forms.testInputJson",
+    "designer.integrations.forms.url",
+    "designer.integrations.forms.urlInvalid",
+    "designer.integrations.forms.useFallback",
+    "designer.integrations.forms.value",
     "designer.integrations.graphqlQuery",
     "designer.integrations.headerName",
     "designer.integrations.headers",
@@ -1735,6 +2049,8 @@
     "designer.integrations.pendingApproval",
     "designer.integrations.pii",
     "designer.integrations.placement",
+    "designer.integrations.placements.header",
+    "designer.integrations.placements.query",
     "designer.integrations.policy.breakerResetMs",
     "designer.integrations.policy.breakerThreshold",
     "designer.integrations.policy.cacheTtlSeconds",
@@ -1746,6 +2062,10 @@
     "designer.integrations.promoteFrom",
     "designer.integrations.promotionError",
     "designer.integrations.protocol",
+    "designer.integrations.protocols.graphql",
+    "designer.integrations.protocols.rest",
+    "designer.integrations.protocols.soap",
+    "designer.integrations.protocols.sql",
     "designer.integrations.query",
     "designer.integrations.reason",
     "designer.integrations.redacted",
@@ -1854,6 +2174,12 @@
     "designer.lifecycle.commented",
     "designer.lifecycle.comments",
     "designer.lifecycle.confirmRollback",
+    "designer.lifecycle.conflicts.anyValue",
+    "designer.lifecycle.conflicts.dimensions.channels",
+    "designer.lifecycle.conflicts.dimensions.locales",
+    "designer.lifecycle.conflicts.dimensions.queues",
+    "designer.lifecycle.conflicts.dimensions.segments",
+    "designer.lifecycle.conflicts.dimensions.skills",
     "designer.lifecycle.conflicts.failed",
     "designer.lifecycle.conflicts.help",
     "designer.lifecycle.conflicts.none",
@@ -1878,6 +2204,88 @@
     "designer.lifecycle.create_script",
     "designer.lifecycle.dependencies",
     "designer.lifecycle.diff",
+    "designer.lifecycle.diffText.absent",
+    "designer.lifecycle.diffText.added",
+    "designer.lifecycle.diffText.component",
+    "designer.lifecycle.diffText.connection",
+    "designer.lifecycle.diffText.dataSource",
+    "designer.lifecycle.diffText.expression",
+    "designer.lifecycle.diffText.fields.bindings",
+    "designer.lifecycle.diffText.fields.classification",
+    "designer.lifecycle.diffText.fields.componentRegistry",
+    "designer.lifecycle.diffText.fields.dataSource",
+    "designer.lifecycle.diffText.fields.dataSources",
+    "designer.lifecycle.diffText.fields.default",
+    "designer.lifecycle.diffText.fields.description",
+    "designer.lifecycle.diffText.fields.else",
+    "designer.lifecycle.diffText.fields.enumValues",
+    "designer.lifecycle.diffText.fields.events",
+    "designer.lifecycle.diffText.fields.fallback",
+    "designer.lifecycle.diffText.fields.flow",
+    "designer.lifecycle.diffText.fields.from",
+    "designer.lifecycle.diffText.fields.i18n",
+    "designer.lifecycle.diffText.fields.inputs",
+    "designer.lifecycle.diffText.fields.key",
+    "designer.lifecycle.diffText.fields.label",
+    "designer.lifecycle.diffText.fields.labelKey",
+    "designer.lifecycle.diffText.fields.layout",
+    "designer.lifecycle.diffText.fields.mandatory",
+    "designer.lifecycle.diffText.fields.maxIterations",
+    "designer.lifecycle.diffText.fields.meta",
+    "designer.lifecycle.diffText.fields.name",
+    "designer.lifecycle.diffText.fields.onEnter",
+    "designer.lifecycle.diffText.fields.onLeave",
+    "designer.lifecycle.diffText.fields.outcome",
+    "designer.lifecycle.diffText.fields.outputs",
+    "designer.lifecycle.diffText.fields.page",
+    "designer.lifecycle.diffText.fields.pages",
+    "designer.lifecycle.diffText.fields.persist",
+    "designer.lifecycle.diffText.fields.pii",
+    "designer.lifecycle.diffText.fields.policy",
+    "designer.lifecycle.diffText.fields.port",
+    "designer.lifecycle.diffText.fields.position",
+    "designer.lifecycle.diffText.fields.props",
+    "designer.lifecycle.diffText.fields.ref",
+    "designer.lifecycle.diffText.fields.rules",
+    "designer.lifecycle.diffText.fields.schemaVersion",
+    "designer.lifecycle.diffText.fields.scope",
+    "designer.lifecycle.diffText.fields.settings",
+    "designer.lifecycle.diffText.fields.source",
+    "designer.lifecycle.diffText.fields.style",
+    "designer.lifecycle.diffText.fields.styles",
+    "designer.lifecycle.diffText.fields.subflows",
+    "designer.lifecycle.diffText.fields.target",
+    "designer.lifecycle.diffText.fields.testScenarios",
+    "designer.lifecycle.diffText.fields.theme",
+    "designer.lifecycle.diffText.fields.then",
+    "designer.lifecycle.diffText.fields.timers",
+    "designer.lifecycle.diffText.fields.titleKey",
+    "designer.lifecycle.diffText.fields.to",
+    "designer.lifecycle.diffText.fields.type",
+    "designer.lifecycle.diffText.fields.value",
+    "designer.lifecycle.diffText.fields.variable",
+    "designer.lifecycle.diffText.fields.variables",
+    "designer.lifecycle.diffText.fields.version",
+    "designer.lifecycle.diffText.fields.visibleWhen",
+    "designer.lifecycle.diffText.fields.when",
+    "designer.lifecycle.diffText.items",
+    "designer.lifecycle.diffText.layout",
+    "designer.lifecycle.diffText.longValue",
+    "designer.lifecycle.diffText.mainFlow",
+    "designer.lifecycle.diffText.moved",
+    "designer.lifecycle.diffText.noChanges",
+    "designer.lifecycle.diffText.page",
+    "designer.lifecycle.diffText.removed",
+    "designer.lifecycle.diffText.rule",
+    "designer.lifecycle.diffText.ruleItem",
+    "designer.lifecycle.diffText.settings",
+    "designer.lifecycle.diffText.step",
+    "designer.lifecycle.diffText.subflow",
+    "designer.lifecycle.diffText.technical",
+    "designer.lifecycle.diffText.texts",
+    "designer.lifecycle.diffText.variable",
+    "designer.lifecycle.diffText.whatChanged",
+    "designer.lifecycle.diffText.wholeScript",
     "designer.lifecycle.done",
     "designer.lifecycle.draftFromChanges",
     "designer.lifecycle.draftFromChangesHint",
@@ -1887,6 +2295,11 @@
     "designer.lifecycle.errors.sod",
     "designer.lifecycle.errors.stale",
     "designer.lifecycle.export",
+    "designer.lifecycle.facts.channel",
+    "designer.lifecycle.facts.locale",
+    "designer.lifecycle.facts.queue",
+    "designer.lifecycle.facts.segment",
+    "designer.lifecycle.facts.skills",
     "designer.lifecycle.failed",
     "designer.lifecycle.flowDiff",
     "designer.lifecycle.flush",
@@ -1958,6 +2371,46 @@
     "designer.lifecycle.reopen",
     "designer.lifecycle.reorder",
     "designer.lifecycle.reply",
+    "designer.lifecycle.resolution.abSkipped.missing_sticky_key",
+    "designer.lifecycle.resolution.abSkipped.variant_not_published",
+    "designer.lifecycle.resolution.attributeInvalid",
+    "designer.lifecycle.resolution.attributesHint",
+    "designer.lifecycle.resolution.eligible",
+    "designer.lifecycle.resolution.evaluated",
+    "designer.lifecycle.resolution.noEvaluations",
+    "designer.lifecycle.resolution.noMatch",
+    "designer.lifecycle.resolution.otherAssignment",
+    "designer.lifecycle.resolution.reasons.campaign_inactive",
+    "designer.lifecycle.resolution.reasons.campaign_out_of_window",
+    "designer.lifecycle.resolution.reasons.channel_not_in_campaign",
+    "designer.lifecycle.resolution.reasons.no_assignments",
+    "designer.lifecycle.resolution.reasons.no_eligible_assignment",
+    "designer.lifecycle.resolution.reasons.outside_working_hours",
+    "designer.lifecycle.resolution.rejected",
+    "designer.lifecycle.resolution.rejects.channel_mismatch",
+    "designer.lifecycle.resolution.rejects.expired",
+    "designer.lifecycle.resolution.rejects.expression_false",
+    "designer.lifecycle.resolution.rejects.expression_unsupported",
+    "designer.lifecycle.resolution.rejects.locale_mismatch",
+    "designer.lifecycle.resolution.rejects.no_published_version",
+    "designer.lifecycle.resolution.rejects.not_yet_effective",
+    "designer.lifecycle.resolution.rejects.pinned_version_not_published",
+    "designer.lifecycle.resolution.rejects.queue_mismatch",
+    "designer.lifecycle.resolution.rejects.script_archived",
+    "designer.lifecycle.resolution.rejects.segment_mismatch",
+    "designer.lifecycle.resolution.rejects.skill_mismatch",
+    "designer.lifecycle.resolution.resolved",
+    "designer.lifecycle.resolution.skillsHint",
+    "designer.lifecycle.resolution.tie",
+    "designer.lifecycle.resolution.tieBy.id",
+    "designer.lifecycle.resolution.tieBy.recency",
+    "designer.lifecycle.resolution.title",
+    "designer.lifecycle.resolution.unknownScript",
+    "designer.lifecycle.resolution.unreadable",
+    "designer.lifecycle.resolution.variant",
+    "designer.lifecycle.resolution.workingHours.closed",
+    "designer.lifecycle.resolution.workingHours.none",
+    "designer.lifecycle.resolution.workingHours.open",
     "designer.lifecycle.resolve",
     "designer.lifecycle.resolveContext",
     "designer.lifecycle.resolved",
@@ -2005,6 +2458,12 @@
     "designer.lifecycle.summary.variablesRemoved",
     "designer.lifecycle.target",
     "designer.lifecycle.team",
+    "designer.lifecycle.templateDescriptions.builtin-collections",
+    "designer.lifecycle.templateDescriptions.builtin-credit-card-sales",
+    "designer.lifecycle.templateDescriptions.builtin-ecommerce-order",
+    "designer.lifecycle.templateDescriptions.builtin-insurance-renewal",
+    "designer.lifecycle.templateDescriptions.builtin-nps-survey",
+    "designer.lifecycle.templateDescriptions.builtin-telecom-tariff-change",
     "designer.lifecycle.templateHelp",
     "designer.lifecycle.templateSource",
     "designer.lifecycle.templates.builtin-collections",
@@ -2021,6 +2480,10 @@
     "designer.lifecycle.validTo",
     "designer.lifecycle.versionLabel",
     "designer.lifecycle.versionPolicy",
+    "designer.lifecycle.window.arm",
+    "designer.lifecycle.window.between",
+    "designer.lifecycle.window.from",
+    "designer.lifecycle.window.until",
     "designer.lifecycle.withdraw",
     "designer.live.controls",
     "designer.live.device",
@@ -2042,14 +2505,19 @@
     "designer.preview.actions.back",
     "designer.preview.actions.callDataSource",
     "designer.preview.actions.closeModal",
+    "designer.preview.actions.component",
     "designer.preview.actions.conditional",
+    "designer.preview.actions.dataSource",
     "designer.preview.actions.emitEvent",
+    "designer.preview.actions.flow",
     "designer.preview.actions.logEvent",
     "designer.preview.actions.maskField",
     "designer.preview.actions.navigate",
     "designer.preview.actions.next",
     "designer.preview.actions.openModal",
+    "designer.preview.actions.page",
     "designer.preview.actions.parallel",
+    "designer.preview.actions.rule",
     "designer.preview.actions.runSubflow",
     "designer.preview.actions.sequence",
     "designer.preview.actions.setDisposition",
@@ -2061,7 +2529,12 @@
     "designer.preview.actions.transferHint",
     "designer.preview.actions.validatePage",
     "designer.preview.actions.writeBackToPlatform",
+    "designer.preview.addField",
     "designer.preview.addWatch",
+    "designer.preview.advancedResponse",
+    "designer.preview.advancedState",
+    "designer.preview.agentName",
+    "designer.preview.agentNameHelp",
     "designer.preview.ani",
     "designer.preview.approve",
     "designer.preview.attachedData",
@@ -2090,7 +2563,14 @@
     "designer.preview.delete",
     "designer.preview.device",
     "designer.preview.deviceFrame",
+    "designer.preview.expectedData",
+    "designer.preview.expectedHelp",
     "designer.preview.failed",
+    "designer.preview.fieldName",
+    "designer.preview.fieldValue",
+    "designer.preview.frame",
+    "designer.preview.frames.agent",
+    "designer.preview.frames.script",
     "designer.preview.groups.environment",
     "designer.preview.groups.run",
     "designer.preview.height",
@@ -2109,13 +2589,16 @@
     "designer.preview.loadScenario",
     "designer.preview.masked",
     "designer.preview.milliseconds",
+    "designer.preview.mockField",
     "designer.preview.mockHelp",
     "designer.preview.mockKind",
     "designer.preview.mockOutputs",
+    "designer.preview.mockScalarHint",
     "designer.preview.mocks.delay",
     "designer.preview.mocks.empty",
     "designer.preview.mocks.error",
     "designer.preview.mocks.success",
+    "designer.preview.noFields",
     "designer.preview.outcome",
     "designer.preview.page",
     "designer.preview.panels",
@@ -2131,6 +2614,7 @@
     "designer.preview.regression",
     "designer.preview.regressionHelp",
     "designer.preview.remove",
+    "designer.preview.removeField",
     "designer.preview.removeWatch",
     "designer.preview.restart",
     "designer.preview.resume",
@@ -2139,6 +2623,7 @@
     "designer.preview.sample.done",
     "designer.preview.sample.failed",
     "designer.preview.sample.missing",
+    "designer.preview.sampleAgent",
     "designer.preview.sampleFromSchema",
     "designer.preview.saveFirst",
     "designer.preview.saveScenario",
@@ -2219,18 +2704,46 @@
     "designer.rules.advanced",
     "designer.rules.advancedLeaf",
     "designer.rules.all",
+    "designer.rules.always",
     "designer.rules.any",
     "designer.rules.assignment",
     "designer.rules.assignmentDescription",
+    "designer.rules.autoNames.enabled",
+    "designer.rules.autoNames.required",
+    "designer.rules.autoNames.visible",
     "designer.rules.depth",
+    "designer.rules.describe.and",
+    "designer.rules.describe.blank",
+    "designer.rules.describe.exists",
+    "designer.rules.describe.formula",
+    "designer.rules.describe.not",
+    "designer.rules.describe.ops.after",
+    "designer.rules.describe.ops.before",
+    "designer.rules.describe.ops.between",
+    "designer.rules.describe.ops.contains",
+    "designer.rules.describe.ops.in",
+    "designer.rules.describe.ops.notIn",
+    "designer.rules.describe.ops.startsWith",
+    "designer.rules.describe.or",
     "designer.rules.description",
     "designer.rules.emptyBody",
     "designer.rules.emptyTitle",
+    "designer.rules.factGroups.dataSource",
+    "designer.rules.factGroups.interaction",
+    "designer.rules.factGroups.variable",
+    "designer.rules.facts.ani",
+    "designer.rules.facts.channel",
+    "designer.rules.facts.custom",
+    "designer.rules.facts.dataSource",
+    "designer.rules.facts.direction",
+    "designer.rules.facts.dnis",
+    "designer.rules.facts.interactionId",
     "designer.rules.field",
     "designer.rules.group",
     "designer.rules.intro",
     "designer.rules.invalid",
     "designer.rules.logic",
+    "designer.rules.never",
     "designer.rules.not",
     "designer.rules.operator",
     "designer.rules.ops.after",
@@ -2249,9 +2762,14 @@
     "designer.rules.ops.neq",
     "designer.rules.ops.notIn",
     "designer.rules.ops.startsWith",
+    "designer.rules.rangeFrom",
+    "designer.rules.rangeTo",
+    "designer.rules.removedComponent",
     "designer.rules.routingExpressionsUnsupported",
     "designer.rules.title",
+    "designer.rules.unnamed",
     "designer.rules.value",
+    "designer.rules.values",
     "designer.rules.visual",
     "designer.screens.create",
     "designer.screens.empty",
@@ -2261,6 +2779,24 @@
     "designer.screens.save",
     "designer.screens.source",
     "designer.screens.sourceVersion",
+    "designer.sources.addInput",
+    "designer.sources.addOutput",
+    "designer.sources.advanced",
+    "designer.sources.componentsOnly",
+    "designer.sources.inputName",
+    "designer.sources.inputs",
+    "designer.sources.inputsHelp",
+    "designer.sources.newVariable",
+    "designer.sources.noInputSchema",
+    "designer.sources.noOutputSchema",
+    "designer.sources.notUsed",
+    "designer.sources.outputField",
+    "designer.sources.outputPath",
+    "designer.sources.outputPathHint",
+    "designer.sources.outputs",
+    "designer.sources.outputsHelp",
+    "designer.sources.removeInput",
+    "designer.sources.requiredInput",
     "designer.suggest.accept",
     "designer.suggest.active",
     "designer.suggest.changes",
@@ -2295,12 +2831,28 @@
     "designer.suggest.state.stale",
     "designer.suggest.titleLabel",
     "designer.suggest.toggle",
+    "designer.textVariables.insert",
+    "designer.textVariables.placeholder",
+    "designer.value.fixedValue",
+    "designer.value.formula",
+    "designer.value.json",
+    "designer.value.listHint",
+    "designer.value.mode",
+    "designer.value.modes.fixed",
+    "designer.value.modes.formula",
+    "designer.value.modes.variable",
+    "designer.value.no",
+    "designer.value.sourceVariable",
+    "designer.value.yes",
     "designer.variables.add",
+    "designer.variables.addDescription",
     "designer.variables.classifications.internal",
     "designer.variables.classifications.pci",
     "designer.variables.classifications.pii",
     "designer.variables.classifications.public",
     "designer.variables.default",
+    "designer.variables.displayName",
+    "designer.variables.displayNameHint",
     "designer.variables.edit",
     "designer.variables.emptyBody",
     "designer.variables.emptyTitle",
@@ -2311,9 +2863,9 @@
     "designer.variables.errors.linked",
     "designer.variables.errors.name",
     "designer.variables.errors.nameTaken",
+    "designer.variables.errors.source",
     "designer.variables.intro",
     "designer.variables.name",
-    "designer.variables.pii",
     "designer.variables.renameDescription",
     "designer.variables.renameFailed",
     "designer.variables.scopes.campaign",
@@ -2321,6 +2873,9 @@
     "designer.variables.scopes.interaction",
     "designer.variables.scopes.page",
     "designer.variables.scopes.session",
+    "designer.variables.sensitiveDefault",
+    "designer.variables.source",
+    "designer.variables.sourceHint",
     "designer.variables.title",
     "designer.variables.types.array",
     "designer.variables.types.boolean",
@@ -2452,7 +3007,9 @@
     "designer.workspace.notificationsEmpty",
     "designer.workspace.owner",
     "designer.workspace.owners.all",
+    "designer.workspace.owners.former",
     "designer.workspace.owners.mine",
+    "designer.workspace.owners.system",
     "designer.workspace.owners.unassigned",
     "designer.workspace.platform",
     "designer.workspace.priority",
@@ -3805,6 +4362,10 @@
     "components.elapsed",
     "components.empty",
     "components.field",
+    "components.gaps.agent",
+    "components.gaps.ani",
+    "components.gaps.campaign",
+    "components.gaps.customer",
     "components.invalid",
     "components.media",
     "components.mustRead",
@@ -3906,6 +4467,119 @@
     "components.unavailable",
     "components.unconfigured",
     "components.value",
+    "designer.actions.addAttribute",
+    "designer.actions.addText",
+    "designer.actions.codeInvalid",
+    "designer.actions.completion.complete",
+    "designer.actions.completion.early",
+    "designer.actions.completionHints.complete",
+    "designer.actions.completionHints.early",
+    "designer.actions.customInputs",
+    "designer.actions.emptyList",
+    "designer.actions.fields.actions",
+    "designer.actions.fields.addNotes",
+    "designer.actions.fields.attribute",
+    "designer.actions.fields.attributeHint",
+    "designer.actions.fields.attributeValue",
+    "designer.actions.fields.attributes",
+    "designer.actions.fields.code",
+    "designer.actions.fields.completion",
+    "designer.actions.fields.condition",
+    "designer.actions.fields.currentPage",
+    "designer.actions.fields.dataSource",
+    "designer.actions.fields.else",
+    "designer.actions.fields.event",
+    "designer.actions.fields.eventHint",
+    "designer.actions.fields.flow",
+    "designer.actions.fields.level",
+    "designer.actions.fields.masked",
+    "designer.actions.fields.message",
+    "designer.actions.fields.modalPage",
+    "designer.actions.fields.node",
+    "designer.actions.fields.notes",
+    "designer.actions.fields.onError",
+    "designer.actions.fields.onInvalid",
+    "designer.actions.fields.onSuccess",
+    "designer.actions.fields.outcome",
+    "designer.actions.fields.outcomeHint",
+    "designer.actions.fields.page",
+    "designer.actions.fields.reason",
+    "designer.actions.fields.removeNotes",
+    "designer.actions.fields.rule",
+    "designer.actions.fields.subCode",
+    "designer.actions.fields.target",
+    "designer.actions.fields.targetHint",
+    "designer.actions.fields.then",
+    "designer.actions.fields.timer",
+    "designer.actions.fields.tone",
+    "designer.actions.fields.value",
+    "designer.actions.fields.variable",
+    "designer.actions.groups.data",
+    "designer.actions.groups.logic",
+    "designer.actions.groups.navigation",
+    "designer.actions.groups.outcome",
+    "designer.actions.groups.screen",
+    "designer.actions.groups.timer",
+    "designer.actions.groups.tracking",
+    "designer.actions.hints.back",
+    "designer.actions.hints.callDataSource",
+    "designer.actions.hints.closeModal",
+    "designer.actions.hints.conditional",
+    "designer.actions.hints.emitEvent",
+    "designer.actions.hints.logEvent",
+    "designer.actions.hints.maskField",
+    "designer.actions.hints.navigate",
+    "designer.actions.hints.next",
+    "designer.actions.hints.openModal",
+    "designer.actions.hints.parallel",
+    "designer.actions.hints.runSubflow",
+    "designer.actions.hints.sequence",
+    "designer.actions.hints.setDisposition",
+    "designer.actions.hints.setVariable",
+    "designer.actions.hints.showToast",
+    "designer.actions.hints.startTimer",
+    "designer.actions.hints.stopTimer",
+    "designer.actions.hints.submitOutcome",
+    "designer.actions.hints.transferHint",
+    "designer.actions.hints.validatePage",
+    "designer.actions.hints.writeBackToPlatform",
+    "designer.actions.inlineCondition",
+    "designer.actions.levels.debug",
+    "designer.actions.levels.error",
+    "designer.actions.levels.info",
+    "designer.actions.levels.warn",
+    "designer.actions.maskOff",
+    "designer.actions.maskOn",
+    "designer.actions.names.back",
+    "designer.actions.names.callDataSource",
+    "designer.actions.names.closeModal",
+    "designer.actions.names.conditional",
+    "designer.actions.names.emitEvent",
+    "designer.actions.names.logEvent",
+    "designer.actions.names.maskField",
+    "designer.actions.names.navigate",
+    "designer.actions.names.next",
+    "designer.actions.names.openModal",
+    "designer.actions.names.parallel",
+    "designer.actions.names.runSubflow",
+    "designer.actions.names.sequence",
+    "designer.actions.names.setDisposition",
+    "designer.actions.names.setVariable",
+    "designer.actions.names.showToast",
+    "designer.actions.names.startTimer",
+    "designer.actions.names.stopTimer",
+    "designer.actions.names.submitOutcome",
+    "designer.actions.names.transferHint",
+    "designer.actions.names.validatePage",
+    "designer.actions.names.writeBackToPlatform",
+    "designer.actions.needs.dataSource",
+    "designer.actions.needs.node",
+    "designer.actions.needs.page",
+    "designer.actions.needs.subflow",
+    "designer.actions.needs.timer",
+    "designer.actions.needs.variable",
+    "designer.actions.noAttributes",
+    "designer.actions.removeAttribute",
     "designer.blocks.add",
     "designer.blocks.addShort",
     "designer.blocks.help",
@@ -4066,15 +4740,66 @@
     "designer.editor.affectedVersion",
     "designer.editor.apply",
     "designer.editor.applyExpression",
+    "designer.editor.argumentCount",
     "designer.editor.assignmentPermission",
     "designer.editor.attach",
     "designer.editor.auto",
     "designer.editor.binding",
+    "designer.editor.blocks.add",
+    "designer.editor.blocks.empty",
+    "designer.editor.blocks.format",
+    "designer.editor.blocks.hint",
+    "designer.editor.blocks.moveDown",
+    "designer.editor.blocks.moveUp",
+    "designer.editor.blocks.remove",
+    "designer.editor.blocks.tags.em",
+    "designer.editor.blocks.tags.h3",
+    "designer.editor.blocks.tags.li",
+    "designer.editor.blocks.tags.mark",
+    "designer.editor.blocks.tags.p",
+    "designer.editor.blocks.tags.strong",
+    "designer.editor.blocks.text",
+    "designer.editor.blocks.title",
+    "designer.editor.boundByExpression",
     "designer.editor.breadcrumb",
     "designer.editor.breakpoint",
     "designer.editor.by",
     "designer.editor.cancel",
     "designer.editor.canvas",
+    "designer.editor.cardOnPlainField",
+    "designer.editor.choices.2xl",
+    "designer.editor.choices.AlertTriangle",
+    "designer.editor.choices.ArrowRight",
+    "designer.editor.choices.Check",
+    "designer.editor.choices.EUR",
+    "designer.editor.choices.GBP",
+    "designer.editor.choices.Info",
+    "designer.editor.choices.MousePointer2",
+    "designer.editor.choices.Phone",
+    "designer.editor.choices.Search",
+    "designer.editor.choices.Square",
+    "designer.editor.choices.TR",
+    "designer.editor.choices.TRY",
+    "designer.editor.choices.USD",
+    "designer.editor.choices.bar",
+    "designer.editor.choices.check",
+    "designer.editor.choices.ghost",
+    "designer.editor.choices.horizontal",
+    "designer.editor.choices.international",
+    "designer.editor.choices.line",
+    "designer.editor.choices.link",
+    "designer.editor.choices.manual",
+    "designer.editor.choices.muted",
+    "designer.editor.choices.next",
+    "designer.editor.choices.normal",
+    "designer.editor.choices.onChange",
+    "designer.editor.choices.onEvent",
+    "designer.editor.choices.onLoad",
+    "designer.editor.choices.search",
+    "designer.editor.choices.secondary",
+    "designer.editor.choices.strong",
+    "designer.editor.choices.submit",
+    "designer.editor.choices.vertical",
     "designer.editor.columns",
     "designer.editor.componentGroups.action",
     "designer.editor.componentGroups.core",
@@ -4158,6 +4883,9 @@
     "designer.editor.componentNames.wizard",
     "designer.editor.components",
     "designer.editor.conditionSource",
+    "designer.editor.confirmField.description",
+    "designer.editor.confirmField.enable",
+    "designer.editor.confirmField.title",
     "designer.editor.conflict",
     "designer.editor.conflictRecovered",
     "designer.editor.copy",
@@ -4176,12 +4904,37 @@
     "designer.editor.duplicate",
     "designer.editor.enabledWhen",
     "designer.editor.event",
+    "designer.editor.eventNames.onBlur",
+    "designer.editor.eventNames.onChange",
+    "designer.editor.eventNames.onClear",
+    "designer.editor.eventNames.onElapsed",
+    "designer.editor.eventNames.onError",
+    "designer.editor.eventNames.onPress",
+    "designer.editor.eventNames.onRead",
+    "designer.editor.eventNames.onSuccess",
     "designer.editor.events",
     "designer.editor.exitFullscreen",
     "designer.editor.findNode",
     "designer.editor.findPage",
     "designer.editor.fitCanvas",
     "designer.editor.fullscreen",
+    "designer.editor.gridColumns.add",
+    "designer.editor.gridColumns.currency",
+    "designer.editor.gridColumns.empty",
+    "designer.editor.gridColumns.field",
+    "designer.editor.gridColumns.fieldHint",
+    "designer.editor.gridColumns.format",
+    "designer.editor.gridColumns.formats.currency",
+    "designer.editor.gridColumns.formats.date",
+    "designer.editor.gridColumns.formats.number",
+    "designer.editor.gridColumns.formats.text",
+    "designer.editor.gridColumns.hint",
+    "designer.editor.gridColumns.invalid",
+    "designer.editor.gridColumns.label",
+    "designer.editor.gridColumns.moveDown",
+    "designer.editor.gridColumns.moveUp",
+    "designer.editor.gridColumns.remove",
+    "designer.editor.gridColumns.title",
     "designer.editor.group",
     "designer.editor.groups.clipboard",
     "designer.editor.groups.history",
@@ -4194,6 +4947,16 @@
     "designer.editor.invalidExpression",
     "designer.editor.invalidProps",
     "designer.editor.issues",
+    "designer.editor.itemRows.add",
+    "designer.editor.itemRows.duplicate",
+    "designer.editor.itemRows.empty",
+    "designer.editor.itemRows.hint",
+    "designer.editor.itemRows.label",
+    "designer.editor.itemRows.moveDown",
+    "designer.editor.itemRows.moveUp",
+    "designer.editor.itemRows.remove",
+    "designer.editor.itemRows.title",
+    "designer.editor.itemRows.value",
     "designer.editor.jsonInvalid",
     "designer.editor.jsonRejected",
     "designer.editor.jumpCanvas",
@@ -4209,6 +4972,7 @@
     "designer.editor.moveUp",
     "designer.editor.newPage",
     "designer.editor.newPageName",
+    "designer.editor.newVariable",
     "designer.editor.nextResults",
     "designer.editor.noMatchingNodes",
     "designer.editor.noMatchingPages",
@@ -4226,7 +4990,6 @@
     "designer.editor.options.title",
     "designer.editor.options.value",
     "designer.editor.outdated",
-    "designer.editor.override",
     "designer.editor.pageDefault",
     "designer.editor.pageName",
     "designer.editor.pages",
@@ -4286,13 +5049,48 @@
     "designer.editor.styleLabels.padding",
     "designer.editor.styleLabels.tone",
     "designer.editor.styleLabels.width",
+    "designer.editor.styleScope",
+    "designer.editor.styleScopes.base",
+    "designer.editor.styleScopes.lg",
+    "designer.editor.styleScopes.md",
+    "designer.editor.styleScopes.sm",
+    "designer.editor.styleScopes.xl",
+    "designer.editor.styleValues.1_2",
+    "designer.editor.styleValues.auto",
+    "designer.editor.styleValues.between",
+    "designer.editor.styleValues.block",
+    "designer.editor.styleValues.center",
+    "designer.editor.styleValues.column",
+    "designer.editor.styleValues.danger",
+    "designer.editor.styleValues.end",
+    "designer.editor.styleValues.flex",
+    "designer.editor.styleValues.full",
+    "designer.editor.styleValues.grid",
+    "designer.editor.styleValues.info",
+    "designer.editor.styleValues.lg",
+    "designer.editor.styleValues.md",
+    "designer.editor.styleValues.neutral",
+    "designer.editor.styleValues.none",
+    "designer.editor.styleValues.primary",
+    "designer.editor.styleValues.row",
+    "designer.editor.styleValues.sm",
+    "designer.editor.styleValues.start",
+    "designer.editor.styleValues.stretch",
+    "designer.editor.styleValues.success",
+    "designer.editor.styleValues.warning",
+    "designer.editor.styleValues.xl",
+    "designer.editor.styleValues.xs",
+    "designer.editor.technical",
     "designer.editor.tenantIntegration",
     "designer.editor.title",
     "designer.editor.twoWay",
     "designer.editor.undo",
     "designer.editor.ungroup",
+    "designer.editor.unknownFunction",
     "designer.editor.unsaved",
     "designer.editor.validation",
+    "designer.editor.valueVariable",
+    "designer.editor.valueVariableHint",
     "designer.editor.viewportNames.base",
     "designer.editor.viewportNames.lg",
     "designer.editor.viewportNames.md",
@@ -4323,6 +5121,7 @@
     "designer.flow.issueCount",
     "designer.flow.iterations",
     "designer.flow.layout",
+    "designer.flow.mainFlow",
     "designer.flow.makeStart",
     "designer.flow.minimap",
     "designer.flow.missingElse",
@@ -4330,11 +5129,13 @@
     "designer.flow.newNote",
     "designer.flow.note",
     "designer.flow.outcome",
+    "designer.flow.position",
     "designer.flow.reuseScreen",
     "designer.flow.screenFragment",
     "designer.flow.selectTitle",
     "designer.flow.sourceScript",
     "designer.flow.sourceVersion",
+    "designer.flow.stepName",
     "designer.flow.success",
     "designer.flow.target",
     "designer.flow.title",
@@ -4369,6 +5170,8 @@
     "designer.health.grades.fair",
     "designer.health.grades.good",
     "designer.health.grades.poor",
+    "designer.health.issues.placeholderUnbound",
+    "designer.health.issues.placeholderUnknown",
     "designer.health.issues.unusedSensitive",
     "designer.health.issues.unusedVariable",
     "designer.health.locations.document",
@@ -4395,6 +5198,15 @@
     "designer.integrations.approve",
     "designer.integrations.approveHelp",
     "designer.integrations.auth",
+    "designer.integrations.authTypes.apiKey",
+    "designer.integrations.authTypes.basic",
+    "designer.integrations.authTypes.bearer",
+    "designer.integrations.authTypes.hmac",
+    "designer.integrations.authTypes.mtls",
+    "designer.integrations.authTypes.none",
+    "designer.integrations.authTypes.oauth2-client-credentials",
+    "designer.integrations.authTypes.oauth2-password",
+    "designer.integrations.authTypes.wsSecurity",
     "designer.integrations.baseUrl",
     "designer.integrations.body",
     "designer.integrations.breaker.closed",
@@ -4415,6 +5227,65 @@
     "designer.integrations.environment",
     "designer.integrations.fallback",
     "designer.integrations.file",
+    "designer.integrations.forms.addField",
+    "designer.integrations.forms.addUrl",
+    "designer.integrations.forms.advancedSchema",
+    "designer.integrations.forms.allowedOriginsHelp",
+    "designer.integrations.forms.authType",
+    "designer.integrations.forms.bodyField",
+    "designer.integrations.forms.bodyFields",
+    "designer.integrations.forms.bodyMode",
+    "designer.integrations.forms.bodyModes.form",
+    "designer.integrations.forms.bodyModes.json",
+    "designer.integrations.forms.bodyModes.none",
+    "designer.integrations.forms.bodyValue",
+    "designer.integrations.forms.cached",
+    "designer.integrations.forms.defaultScenario",
+    "designer.integrations.forms.failed",
+    "designer.integrations.forms.field",
+    "designer.integrations.forms.fieldKind",
+    "designer.integrations.forms.fieldName",
+    "designer.integrations.forms.fieldNameHint",
+    "designer.integrations.forms.fieldNameInvalid",
+    "designer.integrations.forms.headerName",
+    "designer.integrations.forms.headerValue",
+    "designer.integrations.forms.inputSchemaHelp",
+    "designer.integrations.forms.introspected",
+    "designer.integrations.forms.jsonView",
+    "designer.integrations.forms.jsonataAdvanced",
+    "designer.integrations.forms.kinds.array",
+    "designer.integrations.forms.kinds.boolean",
+    "designer.integrations.forms.kinds.date",
+    "designer.integrations.forms.kinds.integer",
+    "designer.integrations.forms.kinds.number",
+    "designer.integrations.forms.kinds.object",
+    "designer.integrations.forms.kinds.string",
+    "designer.integrations.forms.mappedFields",
+    "designer.integrations.forms.maxComplexity",
+    "designer.integrations.forms.maxDepth",
+    "designer.integrations.forms.noFields",
+    "designer.integrations.forms.noInputFields",
+    "designer.integrations.forms.outputSchemaHelp",
+    "designer.integrations.forms.queryName",
+    "designer.integrations.forms.queryValue",
+    "designer.integrations.forms.rawTrace",
+    "designer.integrations.forms.removeField",
+    "designer.integrations.forms.request",
+    "designer.integrations.forms.requestMappingAdvanced",
+    "designer.integrations.forms.required",
+    "designer.integrations.forms.reservedHeader",
+    "designer.integrations.forms.responseData",
+    "designer.integrations.forms.sampleFromSchema",
+    "designer.integrations.forms.secret",
+    "designer.integrations.forms.secretStored",
+    "designer.integrations.forms.soap.action",
+    "designer.integrations.forms.soap.namespace",
+    "designer.integrations.forms.soap.operation",
+    "designer.integrations.forms.testInputJson",
+    "designer.integrations.forms.url",
+    "designer.integrations.forms.urlInvalid",
+    "designer.integrations.forms.useFallback",
+    "designer.integrations.forms.value",
     "designer.integrations.graphqlQuery",
     "designer.integrations.headerName",
     "designer.integrations.headers",
@@ -4451,6 +5322,8 @@
     "designer.integrations.pendingApproval",
     "designer.integrations.pii",
     "designer.integrations.placement",
+    "designer.integrations.placements.header",
+    "designer.integrations.placements.query",
     "designer.integrations.policy.breakerResetMs",
     "designer.integrations.policy.breakerThreshold",
     "designer.integrations.policy.cacheTtlSeconds",
@@ -4462,6 +5335,10 @@
     "designer.integrations.promoteFrom",
     "designer.integrations.promotionError",
     "designer.integrations.protocol",
+    "designer.integrations.protocols.graphql",
+    "designer.integrations.protocols.rest",
+    "designer.integrations.protocols.soap",
+    "designer.integrations.protocols.sql",
     "designer.integrations.query",
     "designer.integrations.reason",
     "designer.integrations.redacted",
@@ -4570,6 +5447,12 @@
     "designer.lifecycle.commented",
     "designer.lifecycle.comments",
     "designer.lifecycle.confirmRollback",
+    "designer.lifecycle.conflicts.anyValue",
+    "designer.lifecycle.conflicts.dimensions.channels",
+    "designer.lifecycle.conflicts.dimensions.locales",
+    "designer.lifecycle.conflicts.dimensions.queues",
+    "designer.lifecycle.conflicts.dimensions.segments",
+    "designer.lifecycle.conflicts.dimensions.skills",
     "designer.lifecycle.conflicts.failed",
     "designer.lifecycle.conflicts.help",
     "designer.lifecycle.conflicts.none",
@@ -4594,6 +5477,88 @@
     "designer.lifecycle.create_script",
     "designer.lifecycle.dependencies",
     "designer.lifecycle.diff",
+    "designer.lifecycle.diffText.absent",
+    "designer.lifecycle.diffText.added",
+    "designer.lifecycle.diffText.component",
+    "designer.lifecycle.diffText.connection",
+    "designer.lifecycle.diffText.dataSource",
+    "designer.lifecycle.diffText.expression",
+    "designer.lifecycle.diffText.fields.bindings",
+    "designer.lifecycle.diffText.fields.classification",
+    "designer.lifecycle.diffText.fields.componentRegistry",
+    "designer.lifecycle.diffText.fields.dataSource",
+    "designer.lifecycle.diffText.fields.dataSources",
+    "designer.lifecycle.diffText.fields.default",
+    "designer.lifecycle.diffText.fields.description",
+    "designer.lifecycle.diffText.fields.else",
+    "designer.lifecycle.diffText.fields.enumValues",
+    "designer.lifecycle.diffText.fields.events",
+    "designer.lifecycle.diffText.fields.fallback",
+    "designer.lifecycle.diffText.fields.flow",
+    "designer.lifecycle.diffText.fields.from",
+    "designer.lifecycle.diffText.fields.i18n",
+    "designer.lifecycle.diffText.fields.inputs",
+    "designer.lifecycle.diffText.fields.key",
+    "designer.lifecycle.diffText.fields.label",
+    "designer.lifecycle.diffText.fields.labelKey",
+    "designer.lifecycle.diffText.fields.layout",
+    "designer.lifecycle.diffText.fields.mandatory",
+    "designer.lifecycle.diffText.fields.maxIterations",
+    "designer.lifecycle.diffText.fields.meta",
+    "designer.lifecycle.diffText.fields.name",
+    "designer.lifecycle.diffText.fields.onEnter",
+    "designer.lifecycle.diffText.fields.onLeave",
+    "designer.lifecycle.diffText.fields.outcome",
+    "designer.lifecycle.diffText.fields.outputs",
+    "designer.lifecycle.diffText.fields.page",
+    "designer.lifecycle.diffText.fields.pages",
+    "designer.lifecycle.diffText.fields.persist",
+    "designer.lifecycle.diffText.fields.pii",
+    "designer.lifecycle.diffText.fields.policy",
+    "designer.lifecycle.diffText.fields.port",
+    "designer.lifecycle.diffText.fields.position",
+    "designer.lifecycle.diffText.fields.props",
+    "designer.lifecycle.diffText.fields.ref",
+    "designer.lifecycle.diffText.fields.rules",
+    "designer.lifecycle.diffText.fields.schemaVersion",
+    "designer.lifecycle.diffText.fields.scope",
+    "designer.lifecycle.diffText.fields.settings",
+    "designer.lifecycle.diffText.fields.source",
+    "designer.lifecycle.diffText.fields.style",
+    "designer.lifecycle.diffText.fields.styles",
+    "designer.lifecycle.diffText.fields.subflows",
+    "designer.lifecycle.diffText.fields.target",
+    "designer.lifecycle.diffText.fields.testScenarios",
+    "designer.lifecycle.diffText.fields.theme",
+    "designer.lifecycle.diffText.fields.then",
+    "designer.lifecycle.diffText.fields.timers",
+    "designer.lifecycle.diffText.fields.titleKey",
+    "designer.lifecycle.diffText.fields.to",
+    "designer.lifecycle.diffText.fields.type",
+    "designer.lifecycle.diffText.fields.value",
+    "designer.lifecycle.diffText.fields.variable",
+    "designer.lifecycle.diffText.fields.variables",
+    "designer.lifecycle.diffText.fields.version",
+    "designer.lifecycle.diffText.fields.visibleWhen",
+    "designer.lifecycle.diffText.fields.when",
+    "designer.lifecycle.diffText.items",
+    "designer.lifecycle.diffText.layout",
+    "designer.lifecycle.diffText.longValue",
+    "designer.lifecycle.diffText.mainFlow",
+    "designer.lifecycle.diffText.moved",
+    "designer.lifecycle.diffText.noChanges",
+    "designer.lifecycle.diffText.page",
+    "designer.lifecycle.diffText.removed",
+    "designer.lifecycle.diffText.rule",
+    "designer.lifecycle.diffText.ruleItem",
+    "designer.lifecycle.diffText.settings",
+    "designer.lifecycle.diffText.step",
+    "designer.lifecycle.diffText.subflow",
+    "designer.lifecycle.diffText.technical",
+    "designer.lifecycle.diffText.texts",
+    "designer.lifecycle.diffText.variable",
+    "designer.lifecycle.diffText.whatChanged",
+    "designer.lifecycle.diffText.wholeScript",
     "designer.lifecycle.done",
     "designer.lifecycle.draftFromChanges",
     "designer.lifecycle.draftFromChangesHint",
@@ -4603,6 +5568,11 @@
     "designer.lifecycle.errors.sod",
     "designer.lifecycle.errors.stale",
     "designer.lifecycle.export",
+    "designer.lifecycle.facts.channel",
+    "designer.lifecycle.facts.locale",
+    "designer.lifecycle.facts.queue",
+    "designer.lifecycle.facts.segment",
+    "designer.lifecycle.facts.skills",
     "designer.lifecycle.failed",
     "designer.lifecycle.flowDiff",
     "designer.lifecycle.flush",
@@ -4674,6 +5644,46 @@
     "designer.lifecycle.reopen",
     "designer.lifecycle.reorder",
     "designer.lifecycle.reply",
+    "designer.lifecycle.resolution.abSkipped.missing_sticky_key",
+    "designer.lifecycle.resolution.abSkipped.variant_not_published",
+    "designer.lifecycle.resolution.attributeInvalid",
+    "designer.lifecycle.resolution.attributesHint",
+    "designer.lifecycle.resolution.eligible",
+    "designer.lifecycle.resolution.evaluated",
+    "designer.lifecycle.resolution.noEvaluations",
+    "designer.lifecycle.resolution.noMatch",
+    "designer.lifecycle.resolution.otherAssignment",
+    "designer.lifecycle.resolution.reasons.campaign_inactive",
+    "designer.lifecycle.resolution.reasons.campaign_out_of_window",
+    "designer.lifecycle.resolution.reasons.channel_not_in_campaign",
+    "designer.lifecycle.resolution.reasons.no_assignments",
+    "designer.lifecycle.resolution.reasons.no_eligible_assignment",
+    "designer.lifecycle.resolution.reasons.outside_working_hours",
+    "designer.lifecycle.resolution.rejected",
+    "designer.lifecycle.resolution.rejects.channel_mismatch",
+    "designer.lifecycle.resolution.rejects.expired",
+    "designer.lifecycle.resolution.rejects.expression_false",
+    "designer.lifecycle.resolution.rejects.expression_unsupported",
+    "designer.lifecycle.resolution.rejects.locale_mismatch",
+    "designer.lifecycle.resolution.rejects.no_published_version",
+    "designer.lifecycle.resolution.rejects.not_yet_effective",
+    "designer.lifecycle.resolution.rejects.pinned_version_not_published",
+    "designer.lifecycle.resolution.rejects.queue_mismatch",
+    "designer.lifecycle.resolution.rejects.script_archived",
+    "designer.lifecycle.resolution.rejects.segment_mismatch",
+    "designer.lifecycle.resolution.rejects.skill_mismatch",
+    "designer.lifecycle.resolution.resolved",
+    "designer.lifecycle.resolution.skillsHint",
+    "designer.lifecycle.resolution.tie",
+    "designer.lifecycle.resolution.tieBy.id",
+    "designer.lifecycle.resolution.tieBy.recency",
+    "designer.lifecycle.resolution.title",
+    "designer.lifecycle.resolution.unknownScript",
+    "designer.lifecycle.resolution.unreadable",
+    "designer.lifecycle.resolution.variant",
+    "designer.lifecycle.resolution.workingHours.closed",
+    "designer.lifecycle.resolution.workingHours.none",
+    "designer.lifecycle.resolution.workingHours.open",
     "designer.lifecycle.resolve",
     "designer.lifecycle.resolveContext",
     "designer.lifecycle.resolved",
@@ -4721,6 +5731,12 @@
     "designer.lifecycle.summary.variablesRemoved",
     "designer.lifecycle.target",
     "designer.lifecycle.team",
+    "designer.lifecycle.templateDescriptions.builtin-collections",
+    "designer.lifecycle.templateDescriptions.builtin-credit-card-sales",
+    "designer.lifecycle.templateDescriptions.builtin-ecommerce-order",
+    "designer.lifecycle.templateDescriptions.builtin-insurance-renewal",
+    "designer.lifecycle.templateDescriptions.builtin-nps-survey",
+    "designer.lifecycle.templateDescriptions.builtin-telecom-tariff-change",
     "designer.lifecycle.templateHelp",
     "designer.lifecycle.templateSource",
     "designer.lifecycle.templates.builtin-collections",
@@ -4737,6 +5753,10 @@
     "designer.lifecycle.validTo",
     "designer.lifecycle.versionLabel",
     "designer.lifecycle.versionPolicy",
+    "designer.lifecycle.window.arm",
+    "designer.lifecycle.window.between",
+    "designer.lifecycle.window.from",
+    "designer.lifecycle.window.until",
     "designer.lifecycle.withdraw",
     "designer.live.controls",
     "designer.live.device",
@@ -4758,14 +5778,19 @@
     "designer.preview.actions.back",
     "designer.preview.actions.callDataSource",
     "designer.preview.actions.closeModal",
+    "designer.preview.actions.component",
     "designer.preview.actions.conditional",
+    "designer.preview.actions.dataSource",
     "designer.preview.actions.emitEvent",
+    "designer.preview.actions.flow",
     "designer.preview.actions.logEvent",
     "designer.preview.actions.maskField",
     "designer.preview.actions.navigate",
     "designer.preview.actions.next",
     "designer.preview.actions.openModal",
+    "designer.preview.actions.page",
     "designer.preview.actions.parallel",
+    "designer.preview.actions.rule",
     "designer.preview.actions.runSubflow",
     "designer.preview.actions.sequence",
     "designer.preview.actions.setDisposition",
@@ -4777,7 +5802,12 @@
     "designer.preview.actions.transferHint",
     "designer.preview.actions.validatePage",
     "designer.preview.actions.writeBackToPlatform",
+    "designer.preview.addField",
     "designer.preview.addWatch",
+    "designer.preview.advancedResponse",
+    "designer.preview.advancedState",
+    "designer.preview.agentName",
+    "designer.preview.agentNameHelp",
     "designer.preview.ani",
     "designer.preview.approve",
     "designer.preview.attachedData",
@@ -4806,7 +5836,14 @@
     "designer.preview.delete",
     "designer.preview.device",
     "designer.preview.deviceFrame",
+    "designer.preview.expectedData",
+    "designer.preview.expectedHelp",
     "designer.preview.failed",
+    "designer.preview.fieldName",
+    "designer.preview.fieldValue",
+    "designer.preview.frame",
+    "designer.preview.frames.agent",
+    "designer.preview.frames.script",
     "designer.preview.groups.environment",
     "designer.preview.groups.run",
     "designer.preview.height",
@@ -4825,13 +5862,16 @@
     "designer.preview.loadScenario",
     "designer.preview.masked",
     "designer.preview.milliseconds",
+    "designer.preview.mockField",
     "designer.preview.mockHelp",
     "designer.preview.mockKind",
     "designer.preview.mockOutputs",
+    "designer.preview.mockScalarHint",
     "designer.preview.mocks.delay",
     "designer.preview.mocks.empty",
     "designer.preview.mocks.error",
     "designer.preview.mocks.success",
+    "designer.preview.noFields",
     "designer.preview.outcome",
     "designer.preview.page",
     "designer.preview.panels",
@@ -4847,6 +5887,7 @@
     "designer.preview.regression",
     "designer.preview.regressionHelp",
     "designer.preview.remove",
+    "designer.preview.removeField",
     "designer.preview.removeWatch",
     "designer.preview.restart",
     "designer.preview.resume",
@@ -4855,6 +5896,7 @@
     "designer.preview.sample.done",
     "designer.preview.sample.failed",
     "designer.preview.sample.missing",
+    "designer.preview.sampleAgent",
     "designer.preview.sampleFromSchema",
     "designer.preview.saveFirst",
     "designer.preview.saveScenario",
@@ -4935,18 +5977,46 @@
     "designer.rules.advanced",
     "designer.rules.advancedLeaf",
     "designer.rules.all",
+    "designer.rules.always",
     "designer.rules.any",
     "designer.rules.assignment",
     "designer.rules.assignmentDescription",
+    "designer.rules.autoNames.enabled",
+    "designer.rules.autoNames.required",
+    "designer.rules.autoNames.visible",
     "designer.rules.depth",
+    "designer.rules.describe.and",
+    "designer.rules.describe.blank",
+    "designer.rules.describe.exists",
+    "designer.rules.describe.formula",
+    "designer.rules.describe.not",
+    "designer.rules.describe.ops.after",
+    "designer.rules.describe.ops.before",
+    "designer.rules.describe.ops.between",
+    "designer.rules.describe.ops.contains",
+    "designer.rules.describe.ops.in",
+    "designer.rules.describe.ops.notIn",
+    "designer.rules.describe.ops.startsWith",
+    "designer.rules.describe.or",
     "designer.rules.description",
     "designer.rules.emptyBody",
     "designer.rules.emptyTitle",
+    "designer.rules.factGroups.dataSource",
+    "designer.rules.factGroups.interaction",
+    "designer.rules.factGroups.variable",
+    "designer.rules.facts.ani",
+    "designer.rules.facts.channel",
+    "designer.rules.facts.custom",
+    "designer.rules.facts.dataSource",
+    "designer.rules.facts.direction",
+    "designer.rules.facts.dnis",
+    "designer.rules.facts.interactionId",
     "designer.rules.field",
     "designer.rules.group",
     "designer.rules.intro",
     "designer.rules.invalid",
     "designer.rules.logic",
+    "designer.rules.never",
     "designer.rules.not",
     "designer.rules.operator",
     "designer.rules.ops.after",
@@ -4965,9 +6035,14 @@
     "designer.rules.ops.neq",
     "designer.rules.ops.notIn",
     "designer.rules.ops.startsWith",
+    "designer.rules.rangeFrom",
+    "designer.rules.rangeTo",
+    "designer.rules.removedComponent",
     "designer.rules.routingExpressionsUnsupported",
     "designer.rules.title",
+    "designer.rules.unnamed",
     "designer.rules.value",
+    "designer.rules.values",
     "designer.rules.visual",
     "designer.screens.create",
     "designer.screens.empty",
@@ -4977,6 +6052,24 @@
     "designer.screens.save",
     "designer.screens.source",
     "designer.screens.sourceVersion",
+    "designer.sources.addInput",
+    "designer.sources.addOutput",
+    "designer.sources.advanced",
+    "designer.sources.componentsOnly",
+    "designer.sources.inputName",
+    "designer.sources.inputs",
+    "designer.sources.inputsHelp",
+    "designer.sources.newVariable",
+    "designer.sources.noInputSchema",
+    "designer.sources.noOutputSchema",
+    "designer.sources.notUsed",
+    "designer.sources.outputField",
+    "designer.sources.outputPath",
+    "designer.sources.outputPathHint",
+    "designer.sources.outputs",
+    "designer.sources.outputsHelp",
+    "designer.sources.removeInput",
+    "designer.sources.requiredInput",
     "designer.suggest.accept",
     "designer.suggest.active",
     "designer.suggest.changes",
@@ -5011,12 +6104,28 @@
     "designer.suggest.state.stale",
     "designer.suggest.titleLabel",
     "designer.suggest.toggle",
+    "designer.textVariables.insert",
+    "designer.textVariables.placeholder",
+    "designer.value.fixedValue",
+    "designer.value.formula",
+    "designer.value.json",
+    "designer.value.listHint",
+    "designer.value.mode",
+    "designer.value.modes.fixed",
+    "designer.value.modes.formula",
+    "designer.value.modes.variable",
+    "designer.value.no",
+    "designer.value.sourceVariable",
+    "designer.value.yes",
     "designer.variables.add",
+    "designer.variables.addDescription",
     "designer.variables.classifications.internal",
     "designer.variables.classifications.pci",
     "designer.variables.classifications.pii",
     "designer.variables.classifications.public",
     "designer.variables.default",
+    "designer.variables.displayName",
+    "designer.variables.displayNameHint",
     "designer.variables.edit",
     "designer.variables.emptyBody",
     "designer.variables.emptyTitle",
@@ -5027,9 +6136,9 @@
     "designer.variables.errors.linked",
     "designer.variables.errors.name",
     "designer.variables.errors.nameTaken",
+    "designer.variables.errors.source",
     "designer.variables.intro",
     "designer.variables.name",
-    "designer.variables.pii",
     "designer.variables.renameDescription",
     "designer.variables.renameFailed",
     "designer.variables.scopes.campaign",
@@ -5037,6 +6146,9 @@
     "designer.variables.scopes.interaction",
     "designer.variables.scopes.page",
     "designer.variables.scopes.session",
+    "designer.variables.sensitiveDefault",
+    "designer.variables.source",
+    "designer.variables.sourceHint",
     "designer.variables.title",
     "designer.variables.types.array",
     "designer.variables.types.boolean",
@@ -5168,7 +6280,9 @@
     "designer.workspace.notificationsEmpty",
     "designer.workspace.owner",
     "designer.workspace.owners.all",
+    "designer.workspace.owners.former",
     "designer.workspace.owners.mine",
+    "designer.workspace.owners.system",
     "designer.workspace.owners.unassigned",
     "designer.workspace.platform",
     "designer.workspace.priority",
@@ -5434,7 +6548,7 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 1178,
+  "literalKeyCount": 1320,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
@@ -5870,87 +6984,83 @@
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 382
+      "line": 390
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 395
+      "line": 403
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 420
+      "line": 428
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 456
-    },
-    {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 480
-    },
-    {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 541
-    },
-    {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 667
-    },
-    {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 699
-    },
-    {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 857
-    },
-    {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 885
-    },
-    {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 887
-    },
-    {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 392
-    },
-    {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 396
-    },
-    {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 434
-    },
-    {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 444
-    },
-    {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
       "line": 464
     },
     {
-      "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 478
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 488
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 549
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 663
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 809
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 837
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 839
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 494
+      "line": 393
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 500
+      "line": 397
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 678
+      "line": 435
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
-      "line": 683
+      "line": 445
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 465
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 479
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 495
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 501
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 679
+    },
+    {
+      "file": "apps/agent-web/src/desktop/workspace.tsx",
+      "line": 684
     },
     {
       "file": "apps/agent-web/src/launch/genesys-linked-page.tsx",
@@ -5989,8 +7099,80 @@
       "line": 118
     },
     {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 60
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 122
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 123
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 124
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 144
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 157
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 186
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 191
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 202
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 288
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 310
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 311
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 416
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 440
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 456
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 466
+    },
+    {
+      "file": "apps/designer-web/src/editor/actions.tsx",
+      "line": 692
+    },
+    {
       "file": "apps/designer-web/src/editor/canvas.tsx",
-      "line": 297
+      "line": 310
+    },
+    {
+      "file": "apps/designer-web/src/editor/canvas.tsx",
+      "line": 439
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
@@ -6046,7 +7228,7 @@
     },
     {
       "file": "apps/designer-web/src/editor/data-sources.tsx",
-      "line": 222
+      "line": 302
     },
     {
       "file": "apps/designer-web/src/editor/drag-a11y.ts",
@@ -6062,23 +7244,19 @@
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 493
+      "line": 480
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 553
+      "line": 500
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 558
+      "line": 560
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 578
-    },
-    {
-      "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 584
+      "line": 565
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
@@ -6086,27 +7264,35 @@
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 692
+      "line": 591
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 698
+      "line": 592
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 715
+      "line": 699
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 735
+      "line": 705
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 871
+      "line": 722
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 888
+      "line": 742
+    },
+    {
+      "file": "apps/designer-web/src/editor/editor.tsx",
+      "line": 878
+    },
+    {
+      "file": "apps/designer-web/src/editor/editor.tsx",
+      "line": 895
     },
     {
       "file": "apps/designer-web/src/editor/health-panel.tsx",
@@ -6134,71 +7320,139 @@
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 119
+      "line": 134
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 214
+      "line": 196
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 443
+      "line": 275
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 600
+      "line": 276
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 610
+      "line": 280
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 644
+      "line": 295
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 778
+      "line": 301
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 313
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 324
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 343
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 358
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 478
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 545
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 546
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 553
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 720
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 783
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 797
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 829
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 848
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 854
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 918
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 993
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 1037
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 59
+      "line": 60
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 163
+      "line": 164
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 200
+      "line": 201
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 232
+      "line": 235
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 255
+      "line": 258
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 265
+      "line": 268
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 489
+      "line": 492
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 490
+      "line": 493
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 496
+      "line": 499
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
-      "line": 500
+      "line": 503
     },
     {
       "file": "apps/designer-web/src/editor/live-pane.tsx",
@@ -6221,12 +7475,132 @@
       "line": 53
     },
     {
+      "file": "apps/designer-web/src/editor/source-mapping.tsx",
+      "line": 95
+    },
+    {
+      "file": "apps/designer-web/src/editor/source-mapping.tsx",
+      "line": 103
+    },
+    {
+      "file": "apps/designer-web/src/editor/source-mapping.tsx",
+      "line": 163
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 67
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 78
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 92
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 150
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 151
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 152
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 156
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 158
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 166
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 210
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 261
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 262
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 263
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 267
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 268
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 270
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 284
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 295
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 299
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 311
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 315
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 358
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 389
+    },
+    {
+      "file": "apps/designer-web/src/editor/structured-fields.tsx",
+      "line": 412
+    },
+    {
       "file": "apps/designer-web/src/editor/suggest-mode.tsx",
       "line": 144
     },
     {
+      "file": "apps/designer-web/src/editor/value-editor.tsx",
+      "line": 126
+    },
+    {
+      "file": "apps/designer-web/src/editor/value-editor.tsx",
+      "line": 144
+    },
+    {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 89
+      "line": 82
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 88
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
@@ -6234,51 +7608,67 @@
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 102
+      "line": 196
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 351
+      "line": 200
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 369
+      "line": 251
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 498
+      "line": 362
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 644
+      "line": 380
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 695
+      "line": 509
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 810
+      "line": 649
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 930
+      "line": 659
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 730
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 742
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 816
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 857
+    },
+    {
+      "file": "apps/designer-web/src/flow/designer.tsx",
+      "line": 984
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 43
+      "line": 68
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 54
+      "line": 88
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 71
-    },
-    {
-      "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 82
+      "line": 105
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
@@ -6286,7 +7676,7 @@
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 125
+      "line": 132
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
@@ -6294,51 +7684,115 @@
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 279
+      "line": 172
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 284
+      "line": 182
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 289
+      "line": 333
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
-      "line": 313
+      "line": 339
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 345
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 354
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 373
+    },
+    {
+      "file": "apps/designer-web/src/flow/variable-manager.tsx",
+      "line": 374
     },
     {
       "file": "apps/designer-web/src/integrations/auth.tsx",
-      "line": 180
+      "line": 79
+    },
+    {
+      "file": "apps/designer-web/src/integrations/auth.tsx",
+      "line": 122
+    },
+    {
+      "file": "apps/designer-web/src/integrations/auth.tsx",
+      "line": 183
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 190
+      "line": 205
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 206
+      "line": 221
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 430
+      "line": 278
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 585
+      "line": 390
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 659
+      "line": 427
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 810
+      "line": 498
     },
     {
       "file": "apps/designer-web/src/integrations/editor.tsx",
-      "line": 974
+      "line": 651
+    },
+    {
+      "file": "apps/designer-web/src/integrations/editor.tsx",
+      "line": 674
+    },
+    {
+      "file": "apps/designer-web/src/integrations/editor.tsx",
+      "line": 748
+    },
+    {
+      "file": "apps/designer-web/src/integrations/editor.tsx",
+      "line": 906
+    },
+    {
+      "file": "apps/designer-web/src/integrations/editor.tsx",
+      "line": 1071
+    },
+    {
+      "file": "apps/designer-web/src/integrations/editor.tsx",
+      "line": 1141
+    },
+    {
+      "file": "apps/designer-web/src/integrations/editor.tsx",
+      "line": 1176
+    },
+    {
+      "file": "apps/designer-web/src/integrations/forms.tsx",
+      "line": 92
+    },
+    {
+      "file": "apps/designer-web/src/integrations/forms.tsx",
+      "line": 267
+    },
+    {
+      "file": "apps/designer-web/src/integrations/forms.tsx",
+      "line": 336
+    },
+    {
+      "file": "apps/designer-web/src/integrations/forms.tsx",
+      "line": 390
     },
     {
       "file": "apps/designer-web/src/integrations/list.tsx",
@@ -6350,15 +7804,19 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
-      "line": 109
+      "line": 104
     },
     {
       "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
-      "line": 126
+      "line": 121
     },
     {
       "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
-      "line": 128
+      "line": 123
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
+      "line": 190
     },
     {
       "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
@@ -6366,23 +7824,43 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
-      "line": 200
+      "line": 220
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
+      "line": 227
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
+      "line": 228
     },
     {
       "file": "apps/designer-web/src/lifecycle/assignments.tsx",
-      "line": 315
+      "line": 336
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/assignments.tsx",
+      "line": 421
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/assignments.tsx",
+      "line": 430
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/assignments.tsx",
+      "line": 436
     },
     {
       "file": "apps/designer-web/src/lifecycle/branches.tsx",
-      "line": 206
+      "line": 208
     },
     {
       "file": "apps/designer-web/src/lifecycle/branches.tsx",
-      "line": 247
+      "line": 249
     },
     {
       "file": "apps/designer-web/src/lifecycle/branches.tsx",
-      "line": 278
+      "line": 282
     },
     {
       "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
@@ -6442,15 +7920,47 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/comments.tsx",
-      "line": 94
+      "line": 100
     },
     {
       "file": "apps/designer-web/src/lifecycle/comments.tsx",
-      "line": 105
+      "line": 111
     },
     {
       "file": "apps/designer-web/src/lifecycle/comments.tsx",
-      "line": 141
+      "line": 147
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/diff-text.ts",
+      "line": 48
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/diff-text.ts",
+      "line": 64
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/diff-text.ts",
+      "line": 66
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/diff-text.ts",
+      "line": 70
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/diff-text.ts",
+      "line": 111
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/diff-text.ts",
+      "line": 125
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/diff-text.ts",
+      "line": 158
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/diff-text.ts",
+      "line": 263
     },
     {
       "file": "apps/designer-web/src/lifecycle/notifications.tsx",
@@ -6462,15 +7972,19 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/packages.tsx",
-      "line": 177
+      "line": 160
     },
     {
       "file": "apps/designer-web/src/lifecycle/packages.tsx",
-      "line": 212
+      "line": 180
     },
     {
       "file": "apps/designer-web/src/lifecycle/packages.tsx",
-      "line": 221
+      "line": 215
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/packages.tsx",
+      "line": 224
     },
     {
       "file": "apps/designer-web/src/lifecycle/release-risk.tsx",
@@ -6482,35 +7996,35 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 189
+      "line": 190
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 202
+      "line": 203
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 274
+      "line": 275
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 274
+      "line": 275
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 309
+      "line": 310
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 395
+      "line": 396
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 418
+      "line": 421
     },
     {
       "file": "apps/designer-web/src/lifecycle/release.tsx",
-      "line": 430
+      "line": 433
     },
     {
       "file": "apps/designer-web/src/lifecycle/replay.tsx",
@@ -6521,20 +8035,40 @@
       "line": 135
     },
     {
-      "file": "apps/designer-web/src/lifecycle/suggestions.tsx",
-      "line": 96
+      "file": "apps/designer-web/src/lifecycle/replay.tsx",
+      "line": 174
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/replay.tsx",
+      "line": 175
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/resolver-tester.tsx",
+      "line": 91
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/resolver-tester.tsx",
+      "line": 98
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/resolver-tester.tsx",
+      "line": 179
     },
     {
       "file": "apps/designer-web/src/lifecycle/suggestions.tsx",
-      "line": 103
+      "line": 98
     },
     {
       "file": "apps/designer-web/src/lifecycle/suggestions.tsx",
-      "line": 111
+      "line": 105
     },
     {
       "file": "apps/designer-web/src/lifecycle/suggestions.tsx",
-      "line": 126
+      "line": 112
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/suggestions.tsx",
+      "line": 132
     },
     {
       "file": "apps/designer-web/src/lifecycle/templates.tsx",
@@ -6554,55 +8088,63 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/templates.tsx",
-      "line": 177
+      "line": 175
     },
     {
       "file": "apps/designer-web/src/lifecycle/templates.tsx",
-      "line": 202
+      "line": 183
     },
     {
       "file": "apps/designer-web/src/lifecycle/templates.tsx",
-      "line": 248
+      "line": 208
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/templates.tsx",
+      "line": 254
     },
     {
       "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
-      "line": 70
+      "line": 79
     },
     {
       "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
-      "line": 81
+      "line": 90
     },
     {
       "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
-      "line": 82
+      "line": 91
     },
     {
       "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
-      "line": 120
+      "line": 129
     },
     {
       "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
-      "line": 122
+      "line": 131
     },
     {
       "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
-      "line": 134
+      "line": 143
     },
     {
       "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
-      "line": 139
+      "line": 148
     },
     {
       "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
-      "line": 140
+      "line": 149
     },
     {
       "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
-      "line": 189
+      "line": 206
     },
     {
       "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
-      "line": 268
+      "line": 306
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/visual-diff.tsx",
+      "line": 342
     },
     {
       "file": "apps/designer-web/src/pages/ai.tsx",
@@ -6662,11 +8204,11 @@
     },
     {
       "file": "apps/designer-web/src/pages/script.tsx",
-      "line": 159
+      "line": 201
     },
     {
       "file": "apps/designer-web/src/pages/script.tsx",
-      "line": 279
+      "line": 321
     },
     {
       "file": "apps/designer-web/src/pages/settings.tsx",
@@ -6701,6 +8243,10 @@
       "line": 142
     },
     {
+      "file": "apps/designer-web/src/preview/key-value-field.tsx",
+      "line": 40
+    },
+    {
       "file": "apps/designer-web/src/preview/regression-panel.tsx",
       "line": 115
     },
@@ -6718,43 +8264,55 @@
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 259
+      "line": 271
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 319
+      "line": 331
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 393
+      "line": 413
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 474
+      "line": 553
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 501
+      "line": 580
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 644
+      "line": 733
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 665
+      "line": 786
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 667
+      "line": 807
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 780
+      "line": 809
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 839
+      "line": 881
+    },
+    {
+      "file": "apps/designer-web/src/preview/studio.tsx",
+      "line": 942
+    },
+    {
+      "file": "apps/designer-web/src/preview/studio.tsx",
+      "line": 945
+    },
+    {
+      "file": "apps/designer-web/src/preview/studio.tsx",
+      "line": 1008
     },
     {
       "file": "apps/designer-web/src/rules/assignment-rule.tsx",
@@ -6770,19 +8328,51 @@
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 61
+      "line": 65
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 120
+      "line": 124
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 198
+      "line": 200
     },
     {
       "file": "apps/designer-web/src/rules/builder.tsx",
-      "line": 359
+      "line": 201
+    },
+    {
+      "file": "apps/designer-web/src/rules/builder.tsx",
+      "line": 215
+    },
+    {
+      "file": "apps/designer-web/src/rules/builder.tsx",
+      "line": 333
+    },
+    {
+      "file": "apps/designer-web/src/rules/builder.tsx",
+      "line": 477
+    },
+    {
+      "file": "apps/designer-web/src/rules/describe.ts",
+      "line": 68
+    },
+    {
+      "file": "apps/designer-web/src/rules/describe.ts",
+      "line": 85
+    },
+    {
+      "file": "apps/designer-web/src/rules/fields.ts",
+      "line": 123
+    },
+    {
+      "file": "apps/designer-web/src/rules/fields.ts",
+      "line": 126
+    },
+    {
+      "file": "apps/designer-web/src/rules/manager.tsx",
+      "line": 63
     },
     {
       "file": "apps/designer-web/src/rules/manager.tsx",
@@ -6790,15 +8380,15 @@
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
-      "line": 122
+      "line": 125
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
-      "line": 172
+      "line": 175
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
-      "line": 191
+      "line": 194
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
@@ -6885,56 +8475,60 @@
       "line": 89
     },
     {
-      "file": "packages/components/src/data.tsx",
-      "line": 64
+      "file": "packages/components/src/agent-shell.tsx",
+      "line": 206
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 75
+      "line": 59
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 91
+      "line": 70
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 95
+      "line": 86
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 109
+      "line": 90
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 135
+      "line": 102
     },
     {
       "file": "packages/components/src/data.tsx",
-      "line": 162
+      "line": 128
+    },
+    {
+      "file": "packages/components/src/data.tsx",
+      "line": 155
+    },
+    {
+      "file": "packages/components/src/data.tsx",
+      "line": 179
     },
     {
       "file": "packages/components/src/data.tsx",
       "line": 186
     },
     {
-      "file": "packages/components/src/data.tsx",
-      "line": 193
+      "file": "packages/components/src/inputs.tsx",
+      "line": 76
     },
     {
       "file": "packages/components/src/inputs.tsx",
-      "line": 59
+      "line": 297
     },
     {
       "file": "packages/components/src/inputs.tsx",
-      "line": 280
+      "line": 357
     },
     {
       "file": "packages/components/src/inputs.tsx",
-      "line": 327
-    },
-    {
-      "file": "packages/components/src/inputs.tsx",
-      "line": 446
+      "line": 484
     },
     {
       "file": "packages/components/src/layout.tsx",
@@ -7034,47 +8628,51 @@
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 78
+      "line": 80
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 87
+      "line": 90
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 91
+      "line": 94
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 110
+      "line": 113
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 127
+      "line": 130
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 128
+      "line": 131
     },
     {
       "file": "packages/components/src/script-text.tsx",
-      "line": 143
+      "line": 146
     },
     {
       "file": "packages/components/src/shared.tsx",
-      "line": 21
+      "line": 22
     },
     {
       "file": "packages/components/src/shared.tsx",
-      "line": 138
+      "line": 28
     },
     {
       "file": "packages/components/src/shared.tsx",
-      "line": 141
+      "line": 146
     },
     {
       "file": "packages/components/src/shared.tsx",
-      "line": 143
+      "line": 149
+    },
+    {
+      "file": "packages/components/src/shared.tsx",
+      "line": 151
     },
     {
       "file": "packages/core-runtime/src/core-components.tsx",
@@ -7082,7 +8680,7 @@
     },
     {
       "file": "packages/core-runtime/src/renderer.tsx",
-      "line": 172
+      "line": 193
     },
     {
       "file": "packages/expr/.stryker-tmp/sandbox-YreAAl/src/registry.ts",
@@ -7814,7 +9412,7 @@
     },
     {
       "file": "packages/ui/src/components/data-table.tsx",
-      "line": 139
+      "line": 140
     },
     {
       "file": "packages/ui/src/stories/demos.tsx",

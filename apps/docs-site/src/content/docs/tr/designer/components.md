@@ -1136,9 +1136,7 @@ Kategori: `input`
 
 Olaylar: `onPress`, `onChange`, `onBlur`, `onRead`, `onSuccess`, `onError`, `onElapsed`, `onClear`
 
-Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`, `value`
-
-**Güvenli giriş:** değer okunmaz/geri gösterilmez; sınıflandırılmış değişken kullanın.
+Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `value`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`
 
 | Özellik | Editör | Bağlanabilir |
 | --- | --- | --- |
@@ -1151,6 +1149,7 @@ Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `pla
 | `disabled` | boolean | ✓ |
 | `validation` | json | — |
 | `checked` | text | ✓ |
+| `value` | text | ✓ |
 | `options` | json | ✓ |
 | `min` | number | ✓ |
 | `max` | number | ✓ |
@@ -1158,9 +1157,8 @@ Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `pla
 | `maxLength` | number | ✓ |
 | `currency` | select | ✓ |
 | `mask` | text | ✓ |
-| `country` | select | ✓ |
 | `secure` | boolean | — |
-| `value` | text | ✓ |
+| `country` | select | ✓ |
 
 ```json
 {
@@ -1175,9 +1173,7 @@ Kategori: `input`
 
 Olaylar: `onPress`, `onChange`, `onBlur`, `onRead`, `onSuccess`, `onError`, `onElapsed`, `onClear`
 
-Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`, `value`
-
-**Güvenli giriş:** değer okunmaz/geri gösterilmez; sınıflandırılmış değişken kullanın.
+Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `value`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`
 
 | Özellik | Editör | Bağlanabilir |
 | --- | --- | --- |
@@ -1190,6 +1186,7 @@ Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `pla
 | `disabled` | boolean | ✓ |
 | `validation` | json | — |
 | `checked` | text | ✓ |
+| `value` | text | ✓ |
 | `options` | json | ✓ |
 | `min` | number | ✓ |
 | `max` | number | ✓ |
@@ -1197,9 +1194,8 @@ Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `pla
 | `maxLength` | number | ✓ |
 | `currency` | select | ✓ |
 | `mask` | text | ✓ |
-| `country` | select | ✓ |
 | `secure` | boolean | — |
-| `value` | text | ✓ |
+| `country` | select | ✓ |
 
 ```json
 {
@@ -1214,9 +1210,7 @@ Kategori: `input`
 
 Olaylar: `onPress`, `onChange`, `onBlur`, `onRead`, `onSuccess`, `onError`, `onElapsed`, `onClear`
 
-Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`, `value`
-
-**Güvenli giriş:** değer okunmaz/geri gösterilmez; sınıflandırılmış değişken kullanın.
+Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `value`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`
 
 | Özellik | Editör | Bağlanabilir |
 | --- | --- | --- |
@@ -1229,6 +1223,7 @@ Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `pla
 | `disabled` | boolean | ✓ |
 | `validation` | json | — |
 | `checked` | text | ✓ |
+| `value` | text | ✓ |
 | `options` | json | ✓ |
 | `min` | number | ✓ |
 | `max` | number | ✓ |
@@ -1236,9 +1231,8 @@ Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `pla
 | `maxLength` | number | ✓ |
 | `currency` | select | ✓ |
 | `mask` | text | ✓ |
-| `country` | select | ✓ |
 | `secure` | boolean | — |
-| `value` | text | ✓ |
+| `country` | select | ✓ |
 
 ```json
 {

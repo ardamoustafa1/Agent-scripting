@@ -37,6 +37,9 @@ Alt+1…9 selects an interaction; Alt shortcuts use physical key codes. Shortcut
 dialogs or from the side panel (notes, assistant). After a page change, focus moves to the first
 field (else the step heading) and a status region announces the page. Each step shows its number,
 title (page title key, else name) and the completed steps from the authoritative view history.
+The step header, page progress and compliance checklist are shared components
+(`@verbis/components` `agent-shell.tsx` / `agent-shell.css`); the designer preview draws the
+same frame around the script, so authors see the screen agents work with.
 Focus mode (a stored preference, default off) enlarges text and centres the current step. Page
 transition duration is exported as the `agent.page_transition` span (duration only, no identifiers);
 the Next button shows progress only after 150 ms.

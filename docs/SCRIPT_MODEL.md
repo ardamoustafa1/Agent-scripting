@@ -111,6 +111,8 @@ All higher-level components are **compositions** of these primitives plus a smal
 - A prop may be bound only once per node (`BINDING_DUPLICATE_PROP`).
 - `visibleWhen` / `enabledWhen` / `requiredWhen`, `conditional.if` and flow edge `when` take `{ "$expr": "…" }` or `{ "$rule": "<rule-id>" }`.
 - Action values (`setVariable.value`, inputs, params) are a JSON literal or `{ "$expr": "…" }`.
+- Empty placeholders: a text parameter that is still empty shows as a visible, named gap. The name comes from where the value comes from — the variable's `description` (shown in the designer as its display name), a known context field ("agent name", "caller number") or the source name in words — never the code name alone.
+- Empty values ([ADR-0054](adr/0054-conditions-on-empty-values.md)): a condition that fails only because a value it reads is still empty (`null`: a field not filled yet, a data source that has not answered) does not hold. The node is hidden or disabled, and a decision takes its default edge. Type errors with filled values (text compared with a number) still fail. A one-way binding that evaluates to `null` keeps the authored or default prop until the data arrives.
 
 ## 5. Events → Actions
 
@@ -125,7 +127,7 @@ All higher-level components are **compositions** of these primitives plus a smal
 | `showToast` | `messageKey, tone, params?` | Toast (i18n key) |
 | `openModal` / `closeModal` | `page` / — | Render a page in a dialog |
 | `validatePage` | `page?, onInvalid?` | Run required/validation checks |
-| `submitOutcome` | `outcome, notes?, completion?` | Record the session outcome. `completion: "early"` is an author-declared early exit (wrong party, failed verification, refusal, technical error): it skips the mandatory-page check and only requires that values already entered are valid ([ADR-0047](adr/0047-early-exit-outcomes.md)). Omitted = a completing outcome, which needs every mandatory page visited |
+| `submitOutcome` | `outcome, notes?, completion?` | Record the session outcome. `completion: "early"` is an author-declared early exit (wrong party, failed verification, refusal, technical error): it skips the mandatory-page check and only requires that values already entered are valid ([ADR-0047](adr/0047-early-exit-outcomes.md)). Omitted = a completing outcome, which needs every mandatory page visited and validates the pages the call showed (entered or opened as a window) plus the mandatory pages; branches the call never reached owe nothing ([ADR-0055](adr/0055-completion-validates-the-call-that-happened.md)) |
 | `setDisposition` | `code, subCode?` | Disposition code |
 | `writeBackToPlatform` | `attributes` | Attached data via the connector (capability-gated) |
 | `transferHint` | `target, reasonKey?` | Suggest a transfer target |
@@ -222,7 +224,7 @@ flowchart LR
 ## 10. Execution semantics & safety
 
 1. Runtime = deterministic interpreter over this JSON; no code is generated or evaluated.
-2. Expressions: sandboxed, no I/O, no prototype access, step/size/time-bounded, function allow-list.
+2. Expressions: sandboxed, no I/O, no prototype access, step/size/time-bounded, function allow-list. The designer reports a function outside the allow-list or a wrong argument count as a blocking error before the call, not only at runtime.
 3. Every user-visible value flows through React (auto-escaped); rich text via sanitized AST renderer.
 4. Data from DataSources is treated as untrusted; never interpreted as markup or expression.
 5. Capability gating: an action/component that needs a channel capability not present on the interaction is disabled at runtime and flagged at validation.
@@ -256,7 +258,7 @@ const { document, patches, inversePatches } = moveNode(doc, 'btn-ok', { parentId
 
 The complete built-in catalog, setup and authoring contracts live in [packages/components](../packages/components/README.md). `createComponentRegistry()` adds all screen renderers on the core registry; each definition supplies a strict props schema, translated property-panel metadata and event/binding allowlists. Runtime host hooks remain additive; no document format change is required.
 
-Secure TCKN/VKN/IBAN/PAN controls are write-only; classify their variables as PII/PCI before launch. PAN values are memory-only and cleared on runtime disposal. Repeater child IDs derive from stable item identity; scoped `itemPath` writes never change sibling rows. Rich text is structured data with escaped interpolation, never executable HTML.
+PAN (`creditCardInput`) uses hosted capture and is write-only; PAN values are memory-only and cleared on runtime disposal. TCKN/VKN/IBAN are agent-typed personal-data fields: values are normalised, checksum-validated, always written with PII classification, masked to the last four characters when not focused, and cannot write into repeater rows ([ADR-0053](adr/0053-personal-id-inputs-as-kvkk-fields.md)). A node that stores `secure: true` keeps hosted capture. Repeater child IDs derive from stable item identity; scoped `itemPath` writes never change sibling rows. Rich text is structured data with escaped interpolation, never executable HTML.
 
 Partner types use exact componentRegistry version/integrity pins and the [component SDK](../packages/sdk-component/README.md). Only the authenticated host catalog selects an approved artifact and tenant; script JSON cannot select a bundle URL or executable module. Tenant enablement, authorization and authoritative audit remain server responsibilities.
 

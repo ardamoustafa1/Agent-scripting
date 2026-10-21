@@ -259,8 +259,10 @@ kurulum ve operasyonel sınırlar [security/OPERATIONS.md](security/OPERATIONS.m
 pentest kapsamı [security/PENTEST_CHECKLIST.md](security/PENTEST_CHECKLIST.md),
 KVKK veri envanteri [compliance/KVKK.md](compliance/KVKK.md) dosyalarındadır.
 Adım 35 test ve taramaları yazılmıştır; kullanıcı talimatıyla bu görevde çalıştırılmamıştır.
-Secure fields artık raw PCI değeri yerine hosted capture receipt kabul eder;
-konfigürasyon yoksa giriş kapalıdır. Geçmiş bellekte raw PCI yakalama tasarımı
+Kart numarası (PAN) alanı raw PCI değeri yerine hosted capture receipt kabul eder;
+konfigürasyon yoksa giriş kapalıdır. TCKN/VKN/IBAN ajan tarafından yazılan KVKK alanlarıdır:
+her yazım PII sınıfına yükseltilir, odak dışındayken son 4 hane dışında maskelenir ve
+repeater satırına yazılamaz ([ADR-0053](adr/0053-personal-id-inputs-as-kvkk-fields.md)). Geçmiş bellekte raw PCI yakalama tasarımı
 production capture için kullanılmaz. ASVS uygunluk iddiası tüm uygulanabilir satırlar
 ve dağıtım/IdP/KMS/PSP/bağımsız pentest kanıtları tamamlanmadan yapılamaz.
 

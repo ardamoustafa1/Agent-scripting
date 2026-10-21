@@ -2,6 +2,8 @@
 
 Status: Accepted · 2026-10-07 · DIFFERENTIATORS Wave 2 follow-up (A6). Accepted together with the request to complete all waves; items 1, 2, 4 and 5 are implemented, item 3 is a follow-up.
 
+**Amended 2026-10-21 by [ADR-0055](0055-completion-validates-the-call-that-happened.md):** a completing outcome no longer runs whole-script validation; it validates the pages the call showed (including opened windows) and every mandatory page. The early-exit rules below are unchanged.
+
 ## Context
 
 `submitOutcome` (`packages/core-runtime/src/executor.ts`, case `submitOutcome`) refuses with

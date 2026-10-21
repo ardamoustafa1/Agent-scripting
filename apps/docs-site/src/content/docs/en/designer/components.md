@@ -1136,9 +1136,7 @@ Category: `input`
 
 Events: `onPress`, `onChange`, `onBlur`, `onRead`, `onSuccess`, `onError`, `onElapsed`, `onClear`
 
-Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`, `value`
-
-**Secure input:** values are write-only; use a classified variable.
+Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `value`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`
 
 | Property | Editor | Bindable |
 | --- | --- | --- |
@@ -1151,6 +1149,7 @@ Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholde
 | `disabled` | boolean | ✓ |
 | `validation` | json | — |
 | `checked` | text | ✓ |
+| `value` | text | ✓ |
 | `options` | json | ✓ |
 | `min` | number | ✓ |
 | `max` | number | ✓ |
@@ -1158,9 +1157,8 @@ Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholde
 | `maxLength` | number | ✓ |
 | `currency` | select | ✓ |
 | `mask` | text | ✓ |
-| `country` | select | ✓ |
 | `secure` | boolean | — |
-| `value` | text | ✓ |
+| `country` | select | ✓ |
 
 ```json
 {
@@ -1175,9 +1173,7 @@ Category: `input`
 
 Events: `onPress`, `onChange`, `onBlur`, `onRead`, `onSuccess`, `onError`, `onElapsed`, `onClear`
 
-Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`, `value`
-
-**Secure input:** values are write-only; use a classified variable.
+Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `value`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`
 
 | Property | Editor | Bindable |
 | --- | --- | --- |
@@ -1190,6 +1186,7 @@ Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholde
 | `disabled` | boolean | ✓ |
 | `validation` | json | — |
 | `checked` | text | ✓ |
+| `value` | text | ✓ |
 | `options` | json | ✓ |
 | `min` | number | ✓ |
 | `max` | number | ✓ |
@@ -1197,9 +1194,8 @@ Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholde
 | `maxLength` | number | ✓ |
 | `currency` | select | ✓ |
 | `mask` | text | ✓ |
-| `country` | select | ✓ |
 | `secure` | boolean | — |
-| `value` | text | ✓ |
+| `country` | select | ✓ |
 
 ```json
 {
@@ -1214,9 +1210,7 @@ Category: `input`
 
 Events: `onPress`, `onChange`, `onBlur`, `onRead`, `onSuccess`, `onError`, `onElapsed`, `onClear`
 
-Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`, `value`
-
-**Secure input:** values are write-only; use a classified variable.
+Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholderKey`, `required`, `disabled`, `checked`, `value`, `options`, `min`, `max`, `step`, `maxLength`, `currency`, `mask`, `country`
 
 | Property | Editor | Bindable |
 | --- | --- | --- |
@@ -1229,6 +1223,7 @@ Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholde
 | `disabled` | boolean | ✓ |
 | `validation` | json | — |
 | `checked` | text | ✓ |
+| `value` | text | ✓ |
 | `options` | json | ✓ |
 | `min` | number | ✓ |
 | `max` | number | ✓ |
@@ -1236,9 +1231,8 @@ Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholde
 | `maxLength` | number | ✓ |
 | `currency` | select | ✓ |
 | `mask` | text | ✓ |
-| `country` | select | ✓ |
 | `secure` | boolean | — |
-| `value` | text | ✓ |
+| `country` | select | ✓ |
 
 ```json
 {
