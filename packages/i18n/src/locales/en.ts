@@ -1165,6 +1165,12 @@ export const en = {
     },
   },
   designer: {
+    ai: {
+      offTitle: 'The AI assistant is not turned on for your team yet',
+      offDescription:
+        'An administrator can turn it on by choosing an AI provider on the “AI assistant” page of the admin console. Once it is on, you can:',
+      offSafety: 'Every suggestion waits for your review; nothing is published on its own.',
+    },
     lifecycle: {
       versionLabel: 'v{{number}}',
       integrationVersion: '{{key}}@{{version}}',
@@ -2985,7 +2991,7 @@ export const en = {
       reorder: 'Reorder',
       actionParameters: 'Action parameters',
       delete: 'Delete',
-      groups: { history: 'History', clipboard: 'Clipboard and delete', structure: 'Grouping' },
+      groups: { history: 'History', clipboard: 'Edit' },
       undo: 'Undo',
       redo: 'Redo',
       copy: 'Copy',
@@ -2993,6 +2999,7 @@ export const en = {
       duplicate: 'Duplicate',
       group: 'Group',
       ungroup: 'Ungroup',
+      moreEdits: 'More edits',
       styleScope: 'Which screens does this style apply to?',
       styleScopes: {
         base: 'All screens (recommended)',
@@ -3226,9 +3233,10 @@ export const en = {
         retired: 'Retired',
       },
       owners: {
-        all: 'All owners',
-        mine: 'Owned by me',
-        unassigned: 'Owner unspecified',
+        all: 'Everyone',
+        mine: 'Created by me',
+        others: 'Other team members',
+        member: 'Team member',
         former: 'Former team member',
         system: 'System',
       },
@@ -3335,6 +3343,7 @@ export const en = {
       tags: 'Tags',
       allTags: 'All tags',
       owner: 'Owner',
+      createdBy: 'Created by',
       edited: 'Last edited',
       listView: 'List view',
       cardView: 'Card view',
@@ -3353,6 +3362,8 @@ export const en = {
       heroDescription: 'Design flows your team can trust and your customers can feel.',
       exploreTemplates: 'Explore templates',
       canvasLabel: 'Conversation flow',
+      canvasBranchSale: 'Sales',
+      canvasBranchSupport: 'Support',
       back: 'Go back',
       campaignDetail: 'Campaign workspace',
       channels: 'Channels',

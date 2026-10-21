@@ -1172,6 +1172,12 @@ export const tr: Catalog = {
     },
   },
   designer: {
+    ai: {
+      offTitle: 'AI asistanı ekibiniz için henüz açık değil',
+      offDescription:
+        'Bir yönetici, yönetim konsolundaki “AI asistanı” sayfasından bir AI sağlayıcısı seçerek açabilir. Açıldığında şunları yapabilirsiniz:',
+      offSafety: 'Her öneri önce sizin incelemenizden geçer; hiçbir şey kendiliğinden yayımlanmaz.',
+    },
     lifecycle: {
       versionLabel: 'v{{number}}',
       integrationVersion: '{{key}}@{{version}}',
@@ -3011,7 +3017,7 @@ export const tr: Catalog = {
       reorder: 'Yeniden sırala',
       actionParameters: 'Aksiyon parametreleri',
       delete: 'Sil',
-      groups: { history: 'Geçmiş', clipboard: 'Pano ve silme', structure: 'Gruplama' },
+      groups: { history: 'Geçmiş', clipboard: 'Düzenleme' },
       undo: 'Geri al',
       redo: 'Yinele',
       copy: 'Kopyala',
@@ -3019,6 +3025,7 @@ export const tr: Catalog = {
       duplicate: 'Çoğalt',
       group: 'Grupla',
       ungroup: 'Gruptan çıkar',
+      moreEdits: 'Diğer düzenlemeler',
       styleScope: 'Bu stil hangi ekranlarda geçerli?',
       styleScopes: {
         base: 'Tüm ekranlar (önerilen)',
@@ -3252,9 +3259,10 @@ export const tr: Catalog = {
         retired: 'Emekli',
       },
       owners: {
-        all: 'Tüm sahipler',
-        mine: 'Bana ait',
-        unassigned: 'Sahip belirtilmemiş',
+        all: 'Herkes',
+        mine: 'Benim oluşturduklarım',
+        others: 'Ekipteki diğerleri',
+        member: 'Ekip üyesi',
         former: 'Eski ekip üyesi',
         system: 'Sistem',
       },
@@ -3361,6 +3369,7 @@ export const tr: Catalog = {
       tags: 'Etiketler',
       allTags: 'Tüm etiketler',
       owner: 'Sahip',
+      createdBy: 'Oluşturan',
       edited: 'Son düzenleme',
       listView: 'Liste görünümü',
       cardView: 'Kart görünümü',
@@ -3380,6 +3389,8 @@ export const tr: Catalog = {
         'Ekibinizin güvenle ilerlediği, müşterilerinizin farkı hissettiği akışlar tasarlayın.',
       exploreTemplates: 'Şablonları keşfet',
       canvasLabel: 'Görüşme akışı',
+      canvasBranchSale: 'Satış',
+      canvasBranchSupport: 'Destek',
       back: 'Geri dön',
       campaignDetail: 'Kampanya çalışma alanı',
       channels: 'Kanallar',
