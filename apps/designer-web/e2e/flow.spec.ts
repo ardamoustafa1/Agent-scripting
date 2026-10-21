@@ -1,6 +1,7 @@
 import { AxeBuilder } from '@axe-core/playwright';
 
-import { VariableSchema } from '@verbis/script-schema';
+import { ScriptDocumentSchema, VariableSchema } from '@verbis/script-schema';
+import { ecommerceOrderScript } from '@verbis/script-schema/templates';
 
 import { expect, test, type Page } from '../../../tests/playwright/test.js';
 import { editorFixture } from '../src/editor/fixtures.js';
@@ -86,6 +87,51 @@ test('add, arrange, drag and undo a flow node; Page double-click opens its canva
   await expect.poll(position).toBe(before);
   await node.locator('.fd-node-title strong').dblclick();
   await expect(page.locator('[data-editor-node="home-root"]')).toBeAttached();
+});
+test('opens a tall flow at a readable size and names its steps in words', async ({ page }) => {
+  const fixture = editorFixture();
+  await page.route(
+    (url) => url.pathname.endsWith('/versions/1'),
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ...fixture,
+          document: ScriptDocumentSchema.parse({
+            ...ecommerceOrderScript,
+            i18n: { ...ecommerceOrderScript.i18n, defaultLocale: 'en' },
+          }),
+        }),
+      });
+    },
+  );
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`/scripts/${scriptId}/versions/1/edit`);
+  await openMode(page, 'Flow');
+  const nodes = page.locator('.react-flow__node-verbis');
+  await expect(nodes).toHaveCount(11);
+  // Fitting all 11 steps would shrink names to about 6 px; the flow opens readable instead.
+  const zoom = () =>
+    page
+      .locator('.react-flow__viewport')
+      .evaluate((element) => new DOMMatrixReadOnly(getComputedStyle(element).transform).a);
+  await expect.poll(zoom).toBeCloseTo(0.7, 2);
+  // The start step opens at the top of the canvas, horizontally centred (bounds use the steps'
+  // initial size, so the centre may be a few pixels off).
+  const canvas = (await page.locator('.react-flow').boundingBox())!;
+  const start = (await page
+    .locator('.react-flow__node-verbis[data-id="n-greeting"]')
+    .boundingBox())!;
+  expect(Math.abs(start.x + start.width / 2 - (canvas.x + canvas.width / 2))).toBeLessThan(16);
+  expect(Math.abs(start.y - canvas.y - 48)).toBeLessThan(2);
+  // Steps read as words: author-given names, never source or outcome codes.
+  await expect(nodes.filter({ hasText: 'Order lookup' })).toHaveCount(1);
+  await expect(nodes.filter({ hasText: 'Order not found' })).toHaveCount(1);
+  await expect(nodes.filter({ hasText: /orderLookup|ORDER_NOT_FOUND/ })).toHaveCount(0);
+  // The fit control still shows the whole flow.
+  await page.getByRole('button', { name: 'Fit flow' }).click();
+  await expect.poll(zoom).toBeLessThan(0.7);
 });
 test('rename commits all references atomically and uses CSRF + optimistic version', async ({
   page,

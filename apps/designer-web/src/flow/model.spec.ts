@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { VariableSchema } from '@verbis/script-schema';
 import { minimalScript } from '@verbis/script-schema/fixtures';
 
 import { EditorStore } from '../editor/store.js';
@@ -166,6 +167,47 @@ describe('flow canvas data (D-15)', () => {
     expect(flowNodeLabel(doc as never, node)).toBe('Teşekkürler');
     const end = doc.flow.nodes.find((n) => n.type === 'end')!;
     expect(flowNodeLabel(doc as never, end)).toBe(end.id);
+  });
+  it('names sources, variables and outcomes in words, never as code', () => {
+    const store = new EditorStore(minimalScript());
+    store.edit((d) => {
+      d.variables.push(
+        VariableSchema.parse({
+          key: 'npsSegment',
+          type: 'string',
+          scope: 'session',
+          description: 'Müşteri grubu',
+        }),
+        VariableSchema.parse({ key: 'otpValid', type: 'boolean', scope: 'session' }),
+      );
+      d.i18n.messages[d.i18n.defaultLocale] = {
+        ...d.i18n.messages[d.i18n.defaultLocale],
+        'flow.lookup': 'Sipariş sorgulama',
+      };
+    });
+    const doc = store.getSnapshot().document;
+    const describe = {
+      flow: doc.flow,
+      typeName: (type: string) =>
+        ({ dataSource: 'Veri kaynağı', setVariable: 'Değişken ata', end: 'Bitiş' })[type] ?? type,
+    };
+    const label = (node: Record<string, unknown>) => flowNodeLabel(doc, node as never, describe);
+    expect(label({ id: 'a', type: 'dataSource', dataSource: 'orderLookup' })).toBe(
+      'Veri kaynağı: Order lookup',
+    );
+    expect(label({ id: 'b', type: 'end', outcome: 'ORDER_NOT_FOUND' })).toBe(
+      'Bitiş: Order not found',
+    );
+    expect(label({ id: 'c', type: 'setVariable', variable: 'npsSegment', value: 'x' })).toBe(
+      'Değişken ata: Müşteri grubu',
+    );
+    expect(label({ id: 'd', type: 'setVariable', variable: 'otpValid', value: true })).toBe(
+      'Değişken ata: Otp valid',
+    );
+    // An author-given step name still wins over any generated one.
+    expect(
+      label({ id: 'e', type: 'dataSource', dataSource: 'orderLookup', labelKey: 'flow.lookup' }),
+    ).toBe('Sipariş sorgulama');
   });
   it('deletes the orphaned condition rule with its edge, but keeps rules referenced elsewhere', () => {
     const store = new EditorStore(minimalScript());

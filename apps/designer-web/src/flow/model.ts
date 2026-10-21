@@ -6,6 +6,8 @@ import {
   type ScriptDocument,
 } from '@verbis/script-schema';
 
+import { humanize } from '../words.js';
+
 import type { EditorStore } from '../editor/store.js';
 
 export function addFlowNode(
@@ -152,10 +154,16 @@ export function createScreenSubflow(store: EditorStore, pageId: string, id: stri
 export function flowNodeLabelKey(nodeId: string): string {
   return `flow.${nodeId.replace(/[^a-zA-Z0-9]+/g, '.').replace(/^\.+|\.+$/g, '')}.label`;
 }
+/** A variable's display name (its description), or its name in words. */
+export function variableName(document: ScriptDocument, key: string): string {
+  const display = document.variables.find((v) => v.key === key)?.description?.trim() ?? '';
+  return display === '' ? humanize(key) : display;
+}
 /**
  * The name a flow step shows to authors. Without `describe`, unnamed non-page steps fall back to
- * their id. With it, they read as "Decision 2" or "Data source: shipmentLookup" instead of the
- * generated `flow-<uuid>` id.
+ * their id. With it, they read as "Decision 2" or "Data source: Shipment lookup" instead of the
+ * generated `flow-<uuid>` id; source, variable and outcome names are put into words, never shown
+ * as code (`shipmentLookup`, `ORDER_NOT_FOUND`).
  */
 export function flowNodeLabel(
   document: ScriptDocument,
@@ -172,15 +180,15 @@ export function flowNodeLabel(
   const name = describe.typeName(node.type);
   const detail =
     node.type === 'dataSource'
-      ? node.dataSource
+      ? humanize(node.dataSource)
       : node.type === 'setVariable'
-        ? node.variable
+        ? variableName(document, node.variable)
         : node.type === 'subflow'
-          ? (document.subflows.find((f) => f.id === node.flow)?.name ?? node.flow)
+          ? (document.subflows.find((f) => f.id === node.flow)?.name ?? humanize(node.flow))
           : node.type === 'transfer'
             ? node.target
-            : node.type === 'end'
-              ? node.outcome
+            : node.type === 'end' && node.outcome
+              ? humanize(node.outcome)
               : undefined;
   if (detail) return `${name}: ${detail}`;
   const same = describe.flow.nodes.filter((n) => n.type === node.type);

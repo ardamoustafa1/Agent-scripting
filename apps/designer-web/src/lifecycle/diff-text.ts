@@ -7,6 +7,7 @@ import {
 } from '@verbis/script-schema';
 
 import { flowNodeLabel } from '../flow/model.js';
+import { humanize } from '../words.js';
 
 /**
  * Version differences as words: "Initial value: “Ada” → “Grace”", "Page “Welcome” › Button
@@ -33,16 +34,6 @@ const canonical = (value: unknown): string => {
       .join(',')}}`;
   return value === undefined ? 'null' : JSON.stringify(value);
 };
-/** `defaultValue` → "Default value": a readable fallback for fields without a translation. */
-function humanize(name: string): string {
-  const words = name
-    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .replace(/[_-]+/g, ' ')
-    .trim()
-    .toLowerCase();
-  return words.charAt(0).toUpperCase() + words.slice(1);
-}
-
 export function fieldLabel(field: string, kind: DiffKind, t: Translate): string {
   const key = kind === 'edge' && field === 'default' ? 'fallback' : field;
   return t(`designer.lifecycle.diffText.fields.${key}`, { defaultValue: humanize(field) });

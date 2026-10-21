@@ -7,7 +7,8 @@ import {
   Controls,
   Background,
   applyNodeChanges,
-  type ReactFlowInstance,
+  useReactFlow,
+  useStore,
   type Node as CanvasNode,
   type NodeProps,
   type NodeChange,
@@ -34,6 +35,7 @@ import { ValueEditor, emptyValue, valueKind } from '../editor/value-editor.js';
 import { RuleBuilder } from '../rules/builder.js';
 import { shortCondition } from '../rules/describe.js';
 import { ruleFields } from '../rules/fields.js';
+import { humanize } from '../words.js';
 
 import { SubflowImport } from './import-dialog.js';
 import { layoutEngine } from './layout-engine.js';
@@ -45,7 +47,9 @@ import {
   flowNodeLabel,
   flowNodeLabelKey,
   removeFlowElements,
+  variableName,
 } from './model.js';
+import { openingViewport } from './viewport.js';
 
 import '@xyflow/react/dist/style.css';
 import './styles.css';
@@ -127,6 +131,57 @@ function Group({ data }: NodeProps<GraphNode>) {
   return <div className="fd-group-label">{data.label}</div>;
 }
 const nodeTypes = { verbis: FlowCard, note: Annotation, group: Group };
+/**
+ * Where the canvas looks. Each flow opens where its step names are readable; after Auto Layout
+ * (`arranged` changes) the whole flow is fitted, since the author asked to see the new
+ * arrangement. A child of the canvas, so watching the canvas never re-renders the designer.
+ * Bounds use each step's measured or initial size: the designer keeps positions only, so React
+ * Flow never reports its nodes as measured and cannot be waited on.
+ */
+function CanvasView({
+  flowId,
+  start,
+  arranged,
+}: {
+  flowId: string;
+  start: string;
+  arranged: number;
+}) {
+  const viewer = useReactFlow<GraphNode>(),
+    count = useStore((s) => s.nodes.length),
+    width = useStore((s) => s.width),
+    height = useStore((s) => s.height);
+  const opened = useRef('');
+  useEffect(() => {
+    if (!count || !width || !height || opened.current === flowId) return;
+    const frame = requestAnimationFrame(() => {
+      const all = viewer.getNodes();
+      if (!all.length) return;
+      opened.current = flowId;
+      void viewer.setViewport(
+        openingViewport(
+          viewer.getNodesBounds(all),
+          viewer.getInternalNode(start) ? viewer.getNodesBounds([start]) : undefined,
+          width,
+          height,
+        ),
+      );
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [count, width, height, flowId, start, viewer]);
+  useEffect(() => {
+    if (!arranged) return;
+    const frame = requestAnimationFrame(() => {
+      void viewer.fitView({ padding: 0.25, maxZoom: 1 });
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [arranged, viewer]);
+  return null;
+}
 
 export function FlowDesigner({
   store,
@@ -171,21 +226,11 @@ function FlowCanvas({
     [connectTarget, setConnectTarget] = useState(''),
     [connectPort, setConnectPort] = useState('condition');
   const layoutVersion = useRef(0);
-  const canvas = useRef<Pick<ReactFlowInstance<GraphNode>, 'fitView'> | null>(null);
-  const [fitRevision, setFitRevision] = useState(0);
-  useEffect(() => {
-    if (!fitRevision) return;
-    const frame = requestAnimationFrame(() => {
-      void canvas.current?.fitView({ padding: 0.25, maxZoom: 1 });
-    });
-    return () => {
-      cancelAnimationFrame(frame);
-    };
-  }, [fitRevision]);
   const flow =
     state.document.flow.id === flowId
       ? state.document.flow
       : (state.document.subflows.find((f) => f.id === flowId) ?? state.document.flow);
+  const [fitRevision, setFitRevision] = useState(0);
   const problems = flowProblems(state.document, flow, store.issues());
   const selected = flow.nodes.find((n) => n.id === selection[0]),
     edge = flow.edges.find((e) => e.id === selectedEdge),
@@ -517,9 +562,6 @@ function FlowCanvas({
               : {},
           }))}
           nodeTypes={nodeTypes}
-          onInit={(instance) => {
-            canvas.current = instance;
-          }}
           nodesDraggable={!readOnly}
           nodesConnectable={!readOnly}
           edgesReconnectable={false}
@@ -631,11 +673,10 @@ function FlowCanvas({
             'minimap.ariaLabel': t('designer.flow.minimap'),
             'handle.ariaLabel': t('designer.flow.handle'),
           }}
-          fitView
-          fitViewOptions={{ maxZoom: 1, padding: 0.25 }}
           minZoom={0.2}
           aria-label={t('designer.flow.canvas')}
         >
+          <CanvasView flowId={flow.id} start={flow.start} arranged={fitRevision} />
           <Background color="var(--vb-color-border)" />
           {flow.nodes.length > 1 && (
             <MiniMap pannable zoomable style={{ width: 156, height: 100 }} />
@@ -781,7 +822,10 @@ function FlowCanvas({
                   <Select
                     label={t('designer.flow.types.dataSource')}
                     value={selected.dataSource}
-                    options={state.document.dataSources.map((d) => ({ value: d.id, label: d.id }))}
+                    options={state.document.dataSources.map((d) => ({
+                      value: d.id,
+                      label: humanize(d.id),
+                    }))}
                     onValueChange={(dataSource) => {
                       update({ ...selected, dataSource });
                     }}
@@ -812,7 +856,7 @@ function FlowCanvas({
                           value={selected.variable}
                           options={assignable.map((v) => ({
                             value: v.key,
-                            label: v.key,
+                            label: variableName(state.document, v.key),
                             hint: t(`designer.variables.types.${v.type}`),
                           }))}
                           onValueChange={(variable) => {
