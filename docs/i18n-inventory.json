@@ -1307,6 +1307,9 @@
     "designer.actions.needs.variable",
     "designer.actions.noAttributes",
     "designer.actions.removeAttribute",
+    "designer.ai.offDescription",
+    "designer.ai.offSafety",
+    "designer.ai.offTitle",
     "designer.blocks.add",
     "designer.blocks.addShort",
     "designer.blocks.help",
@@ -1665,7 +1668,6 @@
     "designer.editor.group",
     "designer.editor.groups.clipboard",
     "designer.editor.groups.history",
-    "designer.editor.groups.structure",
     "designer.editor.hiddenCampaigns",
     "designer.editor.impactUnavailable",
     "designer.editor.inherit",
@@ -1694,6 +1696,7 @@
     "designer.editor.linkedReadonly",
     "designer.editor.loading",
     "designer.editor.manageSources",
+    "designer.editor.moreEdits",
     "designer.editor.moveComponent",
     "designer.editor.moveDown",
     "designer.editor.moveUp",
@@ -2894,6 +2897,8 @@
     "designer.workspace.assignmentsHint",
     "designer.workspace.back",
     "designer.workspace.campaignDetail",
+    "designer.workspace.canvasBranchSale",
+    "designer.workspace.canvasBranchSupport",
     "designer.workspace.canvasLabel",
     "designer.workspace.cardView",
     "designer.workspace.channels",
@@ -2910,6 +2915,7 @@
     "designer.workspace.createFirstDraft",
     "designer.workspace.createForbidden",
     "designer.workspace.createNextDraft",
+    "designer.workspace.createdBy",
     "designer.workspace.denied",
     "designer.workspace.deniedDetail",
     "designer.workspace.description",
@@ -3008,9 +3014,10 @@
     "designer.workspace.owner",
     "designer.workspace.owners.all",
     "designer.workspace.owners.former",
+    "designer.workspace.owners.member",
     "designer.workspace.owners.mine",
+    "designer.workspace.owners.others",
     "designer.workspace.owners.system",
-    "designer.workspace.owners.unassigned",
     "designer.workspace.platform",
     "designer.workspace.priority",
     "designer.workspace.refresh",
@@ -4580,6 +4587,9 @@
     "designer.actions.needs.variable",
     "designer.actions.noAttributes",
     "designer.actions.removeAttribute",
+    "designer.ai.offDescription",
+    "designer.ai.offSafety",
+    "designer.ai.offTitle",
     "designer.blocks.add",
     "designer.blocks.addShort",
     "designer.blocks.help",
@@ -4938,7 +4948,6 @@
     "designer.editor.group",
     "designer.editor.groups.clipboard",
     "designer.editor.groups.history",
-    "designer.editor.groups.structure",
     "designer.editor.hiddenCampaigns",
     "designer.editor.impactUnavailable",
     "designer.editor.inherit",
@@ -4967,6 +4976,7 @@
     "designer.editor.linkedReadonly",
     "designer.editor.loading",
     "designer.editor.manageSources",
+    "designer.editor.moreEdits",
     "designer.editor.moveComponent",
     "designer.editor.moveDown",
     "designer.editor.moveUp",
@@ -6167,6 +6177,8 @@
     "designer.workspace.assignmentsHint",
     "designer.workspace.back",
     "designer.workspace.campaignDetail",
+    "designer.workspace.canvasBranchSale",
+    "designer.workspace.canvasBranchSupport",
     "designer.workspace.canvasLabel",
     "designer.workspace.cardView",
     "designer.workspace.channels",
@@ -6183,6 +6195,7 @@
     "designer.workspace.createFirstDraft",
     "designer.workspace.createForbidden",
     "designer.workspace.createNextDraft",
+    "designer.workspace.createdBy",
     "designer.workspace.denied",
     "designer.workspace.deniedDetail",
     "designer.workspace.description",
@@ -6281,9 +6294,10 @@
     "designer.workspace.owner",
     "designer.workspace.owners.all",
     "designer.workspace.owners.former",
+    "designer.workspace.owners.member",
     "designer.workspace.owners.mine",
+    "designer.workspace.owners.others",
     "designer.workspace.owners.system",
-    "designer.workspace.owners.unassigned",
     "designer.workspace.platform",
     "designer.workspace.priority",
     "designer.workspace.refresh",
@@ -6548,7 +6562,7 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 1320,
+  "literalKeyCount": 1327,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
@@ -7236,63 +7250,67 @@
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 431
+      "line": 440
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 436
+      "line": 445
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 480
+      "line": 489
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 500
+      "line": 509
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 560
+      "line": 569
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 565
+      "line": 574
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 585
+      "line": 596
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 591
+      "line": 602
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 592
+      "line": 603
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 699
+      "line": 635
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 705
+      "line": 740
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 722
+      "line": 746
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 742
+      "line": 763
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 878
+      "line": 783
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 895
+      "line": 919
+    },
+    {
+      "file": "apps/designer-web/src/editor/editor.tsx",
+      "line": 936
     },
     {
       "file": "apps/designer-web/src/editor/health-panel.tsx",
@@ -7596,67 +7614,67 @@
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 82
+      "line": 87
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 88
+      "line": 93
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 95
+      "line": 100
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 196
+      "line": 222
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 200
+      "line": 226
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 251
+      "line": 277
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 362
+      "line": 388
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 380
+      "line": 406
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 509
+      "line": 535
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 649
+      "line": 671
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 659
+      "line": 681
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 730
+      "line": 752
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 742
+      "line": 764
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 816
+      "line": 841
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 857
+      "line": 882
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 984
+      "line": 1009
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
@@ -7852,15 +7870,15 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/branches.tsx",
-      "line": 208
+      "line": 229
     },
     {
       "file": "apps/designer-web/src/lifecycle/branches.tsx",
-      "line": 249
+      "line": 270
     },
     {
       "file": "apps/designer-web/src/lifecycle/branches.tsx",
-      "line": 282
+      "line": 303
     },
     {
       "file": "apps/designer-web/src/lifecycle/change-summary-text.ts",
@@ -7932,35 +7950,35 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/diff-text.ts",
-      "line": 48
+      "line": 39
     },
     {
       "file": "apps/designer-web/src/lifecycle/diff-text.ts",
-      "line": 64
+      "line": 55
     },
     {
       "file": "apps/designer-web/src/lifecycle/diff-text.ts",
-      "line": 66
+      "line": 57
     },
     {
       "file": "apps/designer-web/src/lifecycle/diff-text.ts",
-      "line": 70
+      "line": 61
     },
     {
       "file": "apps/designer-web/src/lifecycle/diff-text.ts",
-      "line": 111
+      "line": 102
     },
     {
       "file": "apps/designer-web/src/lifecycle/diff-text.ts",
-      "line": 125
+      "line": 116
     },
     {
       "file": "apps/designer-web/src/lifecycle/diff-text.ts",
-      "line": 158
+      "line": 149
     },
     {
       "file": "apps/designer-web/src/lifecycle/diff-text.ts",
-      "line": 263
+      "line": 254
     },
     {
       "file": "apps/designer-web/src/lifecycle/notifications.tsx",
@@ -8148,7 +8166,11 @@
     },
     {
       "file": "apps/designer-web/src/pages/ai.tsx",
-      "line": 41
+      "line": 52
+    },
+    {
+      "file": "apps/designer-web/src/pages/ai.tsx",
+      "line": 60
     },
     {
       "file": "apps/designer-web/src/pages/campaign-settings.tsx",
@@ -8168,39 +8190,43 @@
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 85
+      "line": 79
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 97
+      "line": 110
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 100
+      "line": 122
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 109
+      "line": 125
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 177
+      "line": 134
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 220
+      "line": 209
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 221
+      "line": 253
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 233
+      "line": 254
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 293
+      "line": 266
+    },
+    {
+      "file": "apps/designer-web/src/pages/library.tsx",
+      "line": 327
     },
     {
       "file": "apps/designer-web/src/pages/script.tsx",
@@ -9412,7 +9438,7 @@
     },
     {
       "file": "packages/ui/src/components/data-table.tsx",
-      "line": 140
+      "line": 145
     },
     {
       "file": "packages/ui/src/stories/demos.tsx",
