@@ -254,7 +254,21 @@ it('dry-runs missing integration secrets without writes and blocks unresolved im
   const pkg = await run(() => f.service.export(input));
   f.tx.dataSource.findFirst.mockResolvedValue(null);
   expect(await f.service.import(pkg, { dryRun: true })).toMatchObject({
-    dependencies: [{ key: 'synthetic', missing: true, canCreate: true, secretRefs: [id] }],
+    dependencies: [
+      {
+        key: 'synthetic',
+        missing: true,
+        canCreate: true,
+        secretRefs: [id],
+        // The import screen names the reference by its use; production never travels.
+        secretUses: {
+          [id]: [
+            { profile: 'default', auth: 'bearer' },
+            { profile: 'dev', auth: 'bearer' },
+          ],
+        },
+      },
+    ],
   });
   await expect(f.service.import(pkg)).rejects.toThrow(
     'Resolve integration and secret dependencies',

@@ -66,6 +66,30 @@ export function documentChecksum(document: Record<string, unknown>): string {
  * with this environment's key; import verifies the signature against trusted environments, every
  * checksum and every document, then creates DRAFT versions (target-environment approval applies).
  */
+/**
+ * Where each packaged secret reference is used: the default connection or an environment profile,
+ * and with which kind of authentication. The package carries no secret names, so the import screen
+ * names a reference by its use ("Test environment · Bearer token"), never by its source id.
+ */
+export function secretUses(
+  definition: z.infer<typeof IntegrationDefinitionSchema> | undefined,
+): Record<string, { profile: 'default' | 'dev' | 'test' | 'prod'; auth: string }[]> {
+  const uses: Record<string, { profile: 'default' | 'dev' | 'test' | 'prod'; auth: string }[]> = {};
+  if (!definition) return uses;
+  const add = (
+    profile: 'default' | 'dev' | 'test' | 'prod',
+    auth: z.infer<typeof IntegrationDefinitionSchema>['auth'],
+  ) => {
+    if ('secretRef' in auth) (uses[auth.secretRef] ??= []).push({ profile, auth: auth.type });
+  };
+  add('default', definition.auth);
+  for (const profile of ['dev', 'test', 'prod'] as const) {
+    const value = definition.profiles[profile];
+    if (value) add(profile, value.auth);
+  }
+  return uses;
+}
+
 @Injectable()
 export class PackagesService {
   constructor(
@@ -281,6 +305,7 @@ export class PackagesService {
         missing: !available,
         canCreate: !target && !!packaged,
         secretRefs: secrets,
+        secretUses: secretUses(packaged?.definition),
       });
     }
     if (options.dryRun === true)
