@@ -495,3 +495,13 @@
   font-size: var(--vb-font-size-sm);
   color: var(--vb-color-text-muted);
 }
+/* A dialog form: fields stacked, the action at the start of its own line. */
+.lc-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vb-space-4);
+  min-inline-size: 0;
+}
+.lc-stack > .vb-button {
+  align-self: flex-start;
+}

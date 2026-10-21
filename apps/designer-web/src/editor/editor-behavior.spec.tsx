@@ -133,26 +133,46 @@ it('switches rules, variables, flow and preview without losing the document', as
 });
 it('disables unavailable selection commands and enables paste only after copying', async () => {
   const f = await setup();
-  for (const action of ['copy', 'paste', 'duplicate', 'delete', 'group', 'ungroup'])
+  for (const action of ['duplicate', 'delete'])
     expect(
       screen.getByRole<HTMLButtonElement>('button', { name: f.label(`editor.${action}`) }).disabled,
     ).toBe(true);
+  // Copy, paste and grouping are one menu away instead of four more toolbar icons.
+  for (const action of ['copy', 'paste', 'group', 'ungroup'])
+    expect(screen.queryByRole('button', { name: f.label(`editor.${action}`) })).toBeNull();
+  // Opens the "More edits" menu and finds its items by name.
+  const menu = () => {
+    fireEvent.pointerDown(screen.getByRole('button', { name: f.label('editor.moreEdits') }), {
+      button: 0,
+      ctrlKey: false,
+    });
+    return (name: string) => screen.findByRole('menuitem', { name: new RegExp(f.label(name)) });
+  };
+  let item = menu();
+  for (const action of ['copy', 'paste', 'group', 'ungroup'])
+    expect((await item(`editor.${action}`)).getAttribute('data-disabled')).not.toBeNull();
+  fireEvent.keyDown(document.activeElement!, { key: 'Escape' });
   const palette = screen.getByRole('complementary', { name: f.label('editor.components') });
   fireEvent.click(
     within(palette)
       .getAllByRole('button', { name: f.label('editor.componentNames.text') })
       .find((node) => node.classList.contains('vb-button'))!,
   );
-  expect(
-    screen.getByRole<HTMLButtonElement>('button', { name: f.label('editor.copy') }).disabled,
-  ).toBe(false);
-  expect(
-    screen.getByRole<HTMLButtonElement>('button', { name: f.label('editor.ungroup') }).disabled,
-  ).toBe(true);
-  fireEvent.click(screen.getByRole('button', { name: f.label('editor.copy') }));
-  expect(
-    screen.getByRole<HTMLButtonElement>('button', { name: f.label('editor.paste') }).disabled,
-  ).toBe(false);
+  item = menu();
+  expect((await item('editor.copy')).getAttribute('data-disabled')).toBeNull();
+  expect((await item('editor.ungroup')).getAttribute('data-disabled')).not.toBeNull();
+  fireEvent.click(await item('editor.copy'));
+  item = menu();
+  expect((await item('editor.paste')).getAttribute('data-disabled')).toBeNull();
+});
+it('shows only undo and redo outside the screen canvas', async () => {
+  const f = await setup();
+  tool(f, 'flow');
+  await screen.findByRole('button', { name: f.label('flow.layout') });
+  expect(screen.getByRole('button', { name: f.label('editor.undo') })).toBeTruthy();
+  expect(screen.getByRole('button', { name: f.label('editor.redo') })).toBeTruthy();
+  for (const name of ['editor.duplicate', 'editor.moreEdits'])
+    expect(screen.queryByRole('button', { name: f.label(name) })).toBeNull();
 });
 it('reports failed document loading and retries', async () => {
   const f = await mountDesigner(

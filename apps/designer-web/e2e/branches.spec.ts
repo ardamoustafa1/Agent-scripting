@@ -86,8 +86,12 @@ test('creates a branch and merges only after a side is chosen for each conflict'
   await expect(panel).toBeVisible();
   await expect(panel.getByText('redesign')).toBeVisible();
 
-  await panel.getByLabel('Branch name', { exact: true }).fill('november');
-  await panel.getByRole('button', { name: 'Create branch', exact: true }).click();
+  await expect(panel.getByLabel('Branch name', { exact: true })).toHaveCount(0);
+  await panel.getByRole('button', { name: 'New branch', exact: true }).click();
+  const form = page.getByRole('dialog', { name: 'New branch' });
+  await form.getByLabel('Branch name', { exact: true }).fill('november');
+  await form.getByRole('button', { name: 'Create branch', exact: true }).click();
+  await expect(form).toBeHidden();
   await expect
     .poll(() => sent.find((r) => r.method === 'POST')?.body)
     .toEqual({

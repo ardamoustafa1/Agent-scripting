@@ -67,7 +67,9 @@ test('grouping reverse-selected siblings preserves canvas order through ungroup 
     .getByRole('button')
     .last()
     .click({ modifiers: ['Shift'] });
-  await page.getByRole('button', { name: 'Group', exact: true }).click();
+  // Grouping lives in the toolbar's "More edits" menu.
+  await page.getByRole('button', { name: 'More edits', exact: true }).click();
+  await page.getByRole('menuitem', { name: /^Group/ }).click();
   const group = await inspector
     .locator('code')
     .first()
@@ -84,7 +86,8 @@ test('grouping reverse-selected siblings preserves canvas order through ungroup 
       );
   await expect.poll(() => order(group)).toEqual([text, 'btn-next']);
   await expect.poll(() => order('home-root')).toEqual([heading, group, text, 'btn-next']);
-  await page.getByRole('button', { name: 'Ungroup', exact: true }).click();
+  await page.getByRole('button', { name: 'More edits', exact: true }).click();
+  await page.getByRole('menuitem', { name: /^Ungroup/ }).click();
   await expect.poll(() => order('home-root')).toEqual([heading, text, 'btn-next']);
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   await expect.poll(() => order('home-root')).toEqual([heading, group, text, 'btn-next']);

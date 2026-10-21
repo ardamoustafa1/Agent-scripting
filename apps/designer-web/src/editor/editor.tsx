@@ -20,6 +20,7 @@ import {
   Group,
   Ungroup,
   Keyboard,
+  Ellipsis,
   Maximize2,
   Minimize2,
   PanelRight,
@@ -38,7 +39,7 @@ import { useBlocker, useParams } from 'react-router-dom';
 import { z } from 'zod';
 
 import { useAbility } from '@verbis/authz/react';
-import { Button, Select, Badge, Dialog, Alert } from '@verbis/ui';
+import { Button, Select, Badge, Dialog, Alert, DropdownMenu } from '@verbis/ui';
 
 import { request, ApiError } from '../api/client.js';
 import { CollaborationPanel } from '../lifecycle/collaboration.js';
@@ -47,7 +48,14 @@ import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
 
 import { Canvas } from './canvas.js';
-import { type EDIT_ACTIONS, editorCommands, isApplePlatform, type EditAction } from './commands.js';
+import {
+  type EDIT_ACTIONS,
+  editorCommands,
+  isApplePlatform,
+  shortcutLabel,
+  SHORTCUTS,
+  type EditAction,
+} from './commands.js';
 import { DataSources } from './data-sources.js';
 import { dragAnnouncements, dragInstructions, dragLabel } from './drag-a11y.js';
 import { DropGuides, measureNodes } from './drop-guides.js';
@@ -111,9 +119,10 @@ const actionIcons = {
 type Version = z.infer<typeof EditorDocumentSchema>;
 const ACTION_GROUPS = [
   { id: 'history', actions: ['undo', 'redo'] },
-  { id: 'clipboard', actions: ['copy', 'paste', 'duplicate', 'delete'] },
-  { id: 'structure', actions: ['group', 'ungroup'] },
+  { id: 'clipboard', actions: ['duplicate', 'delete'] },
 ] as const satisfies readonly { id: string; actions: readonly (typeof EDIT_ACTIONS)[number][] }[];
+/** Less frequent screen edits sit one menu away; their keyboard shortcuts work as before. */
+const MORE_ACTIONS = ['copy', 'paste', 'group', 'ungroup'] as const satisfies readonly EditAction[];
 
 export default function EditorPage() {
   const { id, number } = useParams();
@@ -577,34 +586,66 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
           {version.state === 'draft' &&
             ability.can('update', 'Script') &&
             ability.can('read', 'Integration') && <DataSources store={store} />}
-          {ACTION_GROUPS.map(({ id, actions }) => (
-            <div
-              key={id}
-              role="group"
-              className="ed-cluster"
-              aria-label={t(`designer.editor.groups.${id}`)}
-            >
-              {actions.map((action) => (
-                <Button
-                  key={action}
-                  className="ed-command"
-                  aria-label={t(`designer.editor.${action}`)}
-                  title={t(`designer.editor.${action}`)}
-                  size="sm"
-                  variant="ghost"
-                  disabled={actionDisabled(action)}
-                  onClick={() => {
-                    runAction(action);
-                  }}
-                >
-                  {(() => {
-                    const Icon = actionIcons[action];
-                    return <Icon size={17} aria-hidden />;
-                  })()}
-                </Button>
-              ))}
-            </div>
-          ))}
+          {/* Only undo and redo apply outside the screen canvas; the rest would sit disabled. */}
+          {ACTION_GROUPS.filter(({ id }) => id === 'history' || mode === 'screen').map(
+            ({ id, actions }) => (
+              <div
+                key={id}
+                role="group"
+                className="ed-cluster"
+                aria-label={t(`designer.editor.groups.${id}`)}
+              >
+                {actions.map((action) => (
+                  <Button
+                    key={action}
+                    className="ed-command"
+                    aria-label={t(`designer.editor.${action}`)}
+                    title={t(`designer.editor.${action}`)}
+                    size="sm"
+                    variant="ghost"
+                    disabled={actionDisabled(action)}
+                    onClick={() => {
+                      runAction(action);
+                    }}
+                  >
+                    {(() => {
+                      const Icon = actionIcons[action];
+                      return <Icon size={17} aria-hidden />;
+                    })()}
+                  </Button>
+                ))}
+                {id === 'clipboard' && (
+                  <DropdownMenu
+                    label={t('designer.editor.moreEdits')}
+                    trigger={
+                      <Button
+                        className="ed-command"
+                        aria-label={t('designer.editor.moreEdits')}
+                        title={t('designer.editor.moreEdits')}
+                        size="sm"
+                        variant="ghost"
+                      >
+                        <Ellipsis size={17} aria-hidden />
+                      </Button>
+                    }
+                    items={MORE_ACTIONS.map((action) => {
+                      const Icon = actionIcons[action];
+                      return {
+                        id: action,
+                        label: t(`designer.editor.${action}`),
+                        icon: <Icon size={16} aria-hidden />,
+                        shortcut: shortcutLabel(SHORTCUTS[action], isApplePlatform()),
+                        disabled: actionDisabled(action),
+                        onSelect: () => {
+                          runAction(action);
+                        },
+                      };
+                    })}
+                  />
+                )}
+              </div>
+            ),
+          )}
           {!collaborating && version.state === 'draft' && ability.can('read', 'Screen') && (
             <ReuseScreen
               used={version.screens.map((s) => s.sharedScreenId)}

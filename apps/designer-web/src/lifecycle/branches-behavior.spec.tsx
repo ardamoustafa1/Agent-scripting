@@ -33,6 +33,9 @@ it('lists branches and creates one from a chosen mainline version', async () => 
   expect(screen.getByText(f.label('branches.open'))).toBeTruthy();
   // Merged branches offer no merge button; open ones do.
   expect(screen.getAllByRole('button', { name: f.label('branches.merge') })).toHaveLength(1);
+  // The form stays out of the page until the author asks for a new branch.
+  expect(screen.queryByLabelText(f.label('branches.name'))).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: f.label('branches.new') }));
   const create = screen.getByRole<HTMLButtonElement>('button', {
     name: f.label('branches.create'),
   });
@@ -54,6 +57,10 @@ it('lists branches and creates one from a chosen mainline version', async () => 
     name: 'december',
     fromNumber: 3,
   });
+  // A created branch closes the dialog.
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
 });
 
 it('tells the user when a branch name is taken', async () => {
@@ -61,6 +68,7 @@ it('tells the user when a branch name is taken', async () => {
     [base]: [],
     [`POST ${base}`]: Response.json({ code: 'VERBIS_BRANCH_EXISTS' }, { status: 409 }),
   });
+  fireEvent.click(await screen.findByRole('button', { name: f.label('branches.new') }));
   fireEvent.change(await screen.findByLabelText(f.label('branches.name')), {
     target: { value: 'taken' },
   });
@@ -182,4 +190,5 @@ it('hides creation and merge from users who cannot edit the script', async () =>
   expect(await screen.findByText('november')).toBeTruthy();
   expect(screen.queryByRole('button', { name: f.label('branches.merge') })).toBeNull();
   expect(screen.queryByRole('button', { name: f.label('branches.create') })).toBeNull();
+  expect(screen.queryByRole('button', { name: f.label('branches.new') })).toBeNull();
 });

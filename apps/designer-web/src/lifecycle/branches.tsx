@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { GitBranch } from 'lucide-react';
+import { GitBranch, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { ApiError, request } from '../api/client.js';
 import { useWorkspace } from '../workspace/context.js';
 
 import { describePath, excerptValue } from './diff-text.js';
+import './styles.css';
 
 const Branch = z.object({
   name: z.string(),
@@ -62,6 +63,7 @@ export function Branches({
     [from, setFrom] = useState(String(mainline[0] ?? '')),
     [busy, setBusy] = useState(false),
     [problem, setProblem] = useState(''),
+    [creating, setCreating] = useState(false),
     [merging, setMerging] = useState<string | null>(null),
     [choices, setChoices] = useState<Record<string, 'ours' | 'theirs'>>({}),
     [mergedAs, setMergedAs] = useState<number | null>(null);
@@ -97,6 +99,7 @@ export function Branches({
         body: { name, fromNumber: Number(from) },
       });
       setName('');
+      setCreating(false);
       await refresh();
     } catch (error) {
       setProblem(
@@ -182,8 +185,26 @@ export function Branches({
         ))}
       </ul>
       {canEdit && mainline.length > 0 && (
-        <>
-          <h3>{t('designer.branches.new')}</h3>
+        <Button
+          size="sm"
+          variant="secondary"
+          startIcon={<Plus size={16} aria-hidden />}
+          onClick={() => {
+            setProblem('');
+            setCreating(true);
+          }}
+        >
+          {t('designer.branches.new')}
+        </Button>
+      )}
+      {/* Branching is occasional work: its form opens on request instead of filling the page. */}
+      <Dialog
+        open={creating}
+        onOpenChange={setCreating}
+        title={t('designer.branches.new')}
+        description={t('designer.branches.help')}
+      >
+        <div className="lc-stack">
           <Input
             label={t('designer.branches.name')}
             value={name}
@@ -214,8 +235,8 @@ export function Branches({
           >
             {t('designer.branches.create')}
           </Button>
-        </>
-      )}
+        </div>
+      </Dialog>
       <Dialog
         open={merging !== null}
         onOpenChange={(open) => {

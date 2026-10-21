@@ -20,7 +20,7 @@ export type EditAction = (typeof EDIT_ACTIONS)[number];
 export const EDITOR_MODES = ['screen', 'flow', 'rules', 'variables', 'preview'] as const;
 const VIEWPORTS = ['base', 'sm', 'md', 'lg', 'xl'] as const;
 
-const SHORTCUTS: Record<EditAction, readonly string[]> = {
+export const SHORTCUTS: Record<EditAction, readonly string[]> = {
   undo: ['mod', 'Z'],
   redo: ['shift', 'mod', 'Z'],
   copy: ['mod', 'C'],
