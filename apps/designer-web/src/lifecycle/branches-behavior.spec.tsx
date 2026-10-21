@@ -99,7 +99,22 @@ it('shows both versions of every conflict and merges only after each one has a c
   });
   fireEvent.click(await screen.findByRole('button', { name: f.label('branches.merge') }));
   const dialog = await screen.findByRole('dialog');
-  expect(await within(dialog).findByText('/pages/home/name')).toBeTruthy();
+  const page = f.label('lifecycle.diffText.page').replace('{{name}}', 'home');
+  expect(
+    (
+      await within(dialog).findAllByText(
+        new RegExp(`${page} › ${f.label('lifecycle.diffText.fields.name')}`),
+      )
+    ).length,
+  ).toBeGreaterThan(0);
+  expect(within(dialog).queryByText(/\/pages\/home/)).toBeNull();
+  expect(
+    within(dialog).getByRole('radio', {
+      name: new RegExp(
+        `${f.label('branches.branchSide')}: ${f.label('lifecycle.diffText.settings').replace('{{count}}', '2')}`,
+      ),
+    }),
+  ).toBeTruthy();
   const merge = within(dialog).getByRole<HTMLButtonElement>('button', {
     name: f.label('branches.mergeConfirm'),
   });
@@ -107,13 +122,13 @@ it('shows both versions of every conflict and merges only after each one has a c
   // Both versions of the first conflict, and the absent side of the second, are shown.
   fireEvent.click(
     within(dialog).getByRole('radio', {
-      name: new RegExp(`${f.label('branches.branchSide')}: "Branch name"`),
+      name: new RegExp(`${f.label('branches.branchSide')}: “Branch name”`),
     }),
   );
   expect(merge.disabled).toBe(true);
   expect(
     within(dialog).getByRole('radio', {
-      name: new RegExp(`${f.label('branches.mainlineSide')}: "Mainline name"`),
+      name: new RegExp(`${f.label('branches.mainlineSide')}: “Mainline name”`),
     }),
   ).toBeTruthy();
   fireEvent.click(

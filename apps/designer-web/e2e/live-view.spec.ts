@@ -67,6 +67,8 @@ async function open(page: Page, { count = 1, live = false } = {}) {
 }
 const pane = (page: Page) => page.getByRole('region', { name: 'Agent view', exact: true });
 const agent = (page: Page) => page.frameLocator('iframe[title="Agent view of Minimal"]');
+/** The script inside the agent frame, without the frame's own Back/Next controls. */
+const script = (page: Page) => agent(page).locator('.pv-agent-runtime');
 
 test('edits hot-reload into the agent view without losing what the agent typed', async ({
   page,
@@ -80,13 +82,13 @@ test('edits hot-reload into the agent view without losing what the agent typed',
 
   const note = agent(page).getByRole('textbox', { name: 'Not' });
   await note.fill('customer asked about roaming');
-  await expect(agent(page).getByRole('button', { name: 'İleri' })).toHaveCount(1);
+  await expect(script(page).getByRole('button', { name: 'İleri' })).toHaveCount(1);
 
   // Duplicate the button in the editor: the agent view picks it up and keeps the note.
   await page.locator('#editor-canvas').focus();
   await page.keyboard.press('End');
   await page.getByRole('button', { name: 'Duplicate', exact: true }).click();
-  await expect(agent(page).getByRole('button', { name: 'İleri' })).toHaveCount(2);
+  await expect(script(page).getByRole('button', { name: 'İleri' })).toHaveCount(2);
   await expect(note).toHaveValue('customer asked about roaming');
   await expect(pane(page)).toHaveAttribute('data-result', 'reloaded');
 

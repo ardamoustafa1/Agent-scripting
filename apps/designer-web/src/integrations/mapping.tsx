@@ -110,13 +110,17 @@ export function MappingEditor({
         {t('designer.integrations.mapField')}
       </Button>
       {error && <Alert title={t('designer.integrations.invalidMapping')} tone="danger" />}
-      <Textarea
-        label={t('designer.integrations.jsonata')}
-        value={value}
-        onChange={(e) => {
-          onChange(e.target.value);
-        }}
-      />
+      {/* The generated expression stays editable for experts, out of the default path. */}
+      <details className="pv-advanced" open={mapping === null}>
+        <summary>{t('designer.integrations.forms.jsonataAdvanced')}</summary>
+        <Textarea
+          label={t('designer.integrations.jsonata')}
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value);
+          }}
+        />
+      </details>
     </DndContext>
   );
 }

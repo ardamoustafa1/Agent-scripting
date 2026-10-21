@@ -202,3 +202,16 @@ describe('flow canvas data (D-15)', () => {
     expect(store.getSnapshot().document.flow.edges).toEqual([]);
   });
 });
+
+it('places a new flow step below the existing steps instead of on top of them', () => {
+  const store = new EditorStore(minimalScript());
+  store.edit((d) => {
+    d.flow.nodes[0]!.position = { x: 40, y: 80 };
+    d.flow.nodes[1]!.position = { x: 300, y: 200 };
+  });
+  addFlowNode(store, 'main', 'decision', 'flow-a');
+  addFlowNode(store, 'main', 'decision', 'flow-b');
+  const [a, b] = store.getSnapshot().document.flow.nodes.slice(-2);
+  expect(a!.position).toEqual({ x: 40, y: 340 });
+  expect(b!.position).toEqual({ x: 40, y: 480 });
+});

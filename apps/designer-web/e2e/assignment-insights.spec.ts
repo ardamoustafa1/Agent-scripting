@@ -90,7 +90,7 @@ for (const { theme, width } of cases) {
               priority: 10,
               severity: 'certain',
               resolvedBy: 'id',
-              overlap: { 'interaction.channel': ['voice', 'chat'] },
+              overlap: { channels: ['voice', 'chat'] },
             },
           ];
         else if (path === '/api/v1/assignments')
@@ -106,6 +106,7 @@ for (const { theme, width } of cases) {
     await page.getByRole('combobox', { name: 'Campaign to reorder' }).click();
     await page.getByRole('option').nth(1).click();
     await expect(page.getByText('Certain overlap')).toBeVisible();
+    await expect(page.getByText('Channel: Voice, Chat', { exact: false })).toBeVisible();
     await page.getByRole('button', { name: 'Apply', exact: true }).first().click();
     await expect(page.getByText('How is this experiment doing?')).toBeVisible();
     await expect(page.getByText('88%')).toBeVisible();

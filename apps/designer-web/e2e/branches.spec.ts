@@ -97,10 +97,10 @@ test('creates a branch and merges only after a side is chosen for each conflict'
 
   await panel.getByRole('button', { name: 'Merge into mainline', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Merge branch redesign' });
-  await expect(dialog.getByText('/pages/home/name').first()).toBeVisible();
+  await expect(dialog.getByText('Page “home” › Name').first()).toBeVisible();
   const merge = dialog.getByRole('button', { name: 'Merge', exact: true });
   await expect(merge).toBeDisabled();
-  await dialog.getByRole('radio', { name: /Branch: "Branch name"/ }).click();
+  await dialog.getByRole('radio', { name: /Branch: “Branch name”/ }).click();
   await expect(merge).toBeEnabled();
   await expect.poll(() => page.evaluate(() => document.getAnimations().length)).toBe(0);
   expect(

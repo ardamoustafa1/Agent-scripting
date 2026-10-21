@@ -17,10 +17,17 @@ export function addFlowNode(
   store.edit((d) => {
     const flow = d.flow.id === flowId ? d.flow : d.subflows.find((f) => f.id === flowId);
     if (!flow) throw new Error('VERBIS_FLOW');
+    // New steps go below the lowest placed step so they never land on top of an existing one.
+    const placed = flow.nodes.flatMap((n) => (n.position ? [n.position] : []));
     const common = {
       id,
       type,
-      position: { x: 100 + flow.nodes.length * 35, y: 100 + flow.nodes.length * 30 },
+      position: placed.length
+        ? {
+            x: Math.min(...placed.map((p) => p.x)),
+            y: Math.max(...placed.map((p) => p.y)) + 140,
+          }
+        : { x: 100 + flow.nodes.length * 35, y: 100 + flow.nodes.length * 30 },
     };
     const value =
       type === 'page'
@@ -141,14 +148,43 @@ export function createScreenSubflow(store: EditorStore, pageId: string, id: stri
 }
 
 /** The page title is the recognizable identity of a page node. */
-export function flowNodeLabel(document: ScriptDocument, node: FlowNode): string {
+/** i18n key holding a flow step's author-given name. */
+export function flowNodeLabelKey(nodeId: string): string {
+  return `flow.${nodeId.replace(/[^a-zA-Z0-9]+/g, '.').replace(/^\.+|\.+$/g, '')}.label`;
+}
+/**
+ * The name a flow step shows to authors. Without `describe`, unnamed non-page steps fall back to
+ * their id. With it, they read as "Decision 2" or "Data source: shipmentLookup" instead of the
+ * generated `flow-<uuid>` id.
+ */
+export function flowNodeLabel(
+  document: ScriptDocument,
+  node: FlowNode,
+  describe?: { flow: Flow; typeName: (type: FlowNode['type']) => string },
+): string {
   if (node.labelKey) {
     const label = document.i18n.messages[document.i18n.defaultLocale]?.[node.labelKey];
     if (label) return label;
   }
-  return node.type === 'page'
-    ? (document.pages.find((page) => page.id === node.page)?.name ?? node.id)
-    : node.id;
+  if (node.type === 'page')
+    return document.pages.find((page) => page.id === node.page)?.name ?? node.id;
+  if (!describe) return node.id;
+  const name = describe.typeName(node.type);
+  const detail =
+    node.type === 'dataSource'
+      ? node.dataSource
+      : node.type === 'setVariable'
+        ? node.variable
+        : node.type === 'subflow'
+          ? (document.subflows.find((f) => f.id === node.flow)?.name ?? node.flow)
+          : node.type === 'transfer'
+            ? node.target
+            : node.type === 'end'
+              ? node.outcome
+              : undefined;
+  if (detail) return `${name}: ${detail}`;
+  const same = describe.flow.nodes.filter((n) => n.type === node.type);
+  return same.length > 1 ? `${name} ${same.indexOf(node) + 1}` : name;
 }
 
 /** Delete graph elements and only their unreferenced generated edge rules in one undo step. */

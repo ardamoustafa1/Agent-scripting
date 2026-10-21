@@ -155,7 +155,10 @@ export default function PackagesPage() {
             label={t('designer.lifecycle.target')}
             value={target}
             onValueChange={setTarget}
-            options={['dev', 'test', 'prod'].map((value) => ({ value, label: value }))}
+            options={['dev', 'test', 'prod'].map((value) => ({
+              value,
+              label: t(`designer.workspace.env.${value}`),
+            }))}
           />
           <Button loading={busy} disabled={!number} onClick={() => void download()}>
             {t('designer.lifecycle.export')}

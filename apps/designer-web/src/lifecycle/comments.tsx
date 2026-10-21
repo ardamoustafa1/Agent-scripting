@@ -3,22 +3,28 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
+import type { ScriptDocument } from '@verbis/script-schema';
 import { ThreadSchema } from '@verbis/shared-types';
 import { Button, Badge, Textarea, MultiSelect, Alert } from '@verbis/ui';
 
 import { request } from '../api/client.js';
 import { useWorkspace } from '../workspace/context.js';
 
+import { nodeTitle } from './diff-text.js';
+
 export function Comments({
   scriptId,
   number,
   nodeId,
   focusedThreadId = '',
+  document,
 }: {
   scriptId: string;
   number: number;
   nodeId: string;
   focusedThreadId?: string;
+  /** Names the commented component instead of showing its id. */
+  document?: ScriptDocument | undefined;
 }) {
   const { t } = useTranslation(),
     { session } = useWorkspace(),
@@ -77,7 +83,7 @@ export function Comments({
   return (
     <section className="lc-card" aria-label={t('designer.lifecycle.comments')}>
       <h2>
-        {t('designer.lifecycle.comments')} <code>{activeNode}</code>
+        {t('designer.lifecycle.comments')} · {targetName(activeNode, document, t)}
       </h2>
       {(failed || query.isError) && <Alert tone="danger" title={t('designer.lifecycle.failed')} />}
       <ul className="lc-threads">
@@ -186,4 +192,14 @@ export function Comments({
       </Button>
     </section>
   );
+}
+
+function targetName(
+  nodeId: string,
+  document: ScriptDocument | undefined,
+  t: (key: string, options: Record<string, unknown>) => string,
+): string {
+  return nodeId === 'script'
+    ? t('designer.lifecycle.diffText.wholeScript', {})
+    : nodeTitle(document, nodeId, t);
 }

@@ -170,7 +170,13 @@ export default function TemplateGallery() {
               {t(`designer.lifecycle.sources.${row.builtIn ? 'builtin' : 'tenant'}`)}
             </Badge>
             <h2>{label(row)}</h2>
-            <p>{row.description ?? t('designer.lifecycle.templateHelp')}</p>
+            <p>
+              {row.builtIn
+                ? t(`designer.lifecycle.templateDescriptions.${row.id}`, {
+                    defaultValue: t('designer.lifecycle.templateHelp'),
+                  })
+                : (row.description ?? t('designer.lifecycle.templateHelp'))}
+            </p>
             <div>
               {row.tags.map((tag) => (
                 <Badge key={tag}>

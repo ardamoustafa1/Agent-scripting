@@ -55,6 +55,29 @@ describe('preview recording and travel', () => {
       preview.dispose();
     }
   });
+  it('records typing into one variable as a single step until something else happens', async () => {
+    const preview = new PreviewController(
+      ScriptDocumentSchema.parse(minimalScript()),
+      PreviewContextSchema.parse({}),
+      {},
+    );
+    try {
+      await preview.runtime.start();
+      for (const value of ['A', 'Ad', 'Ada'])
+        preview.runtime.recordInput({ type: 'variable', variable: 'name', value });
+      expect(preview.inputs).toEqual([{ type: 'variable', variable: 'name', value: 'Ada' }]);
+      preview.runtime.recordInput({ type: 'variable', variable: 'other', value: 1 });
+      preview.runtime.recordInput({ type: 'variable', variable: 'name', value: 'Grace' });
+      expect(preview.inputs).toHaveLength(3);
+      await preview.runtime.executor.execute([{ type: 'next' }], undefined, 'ui:btn-next');
+      const before = preview.inputs.length;
+      preview.runtime.recordInput({ type: 'variable', variable: 'name', value: 'Later' });
+      expect(preview.inputs).toHaveLength(before + 1);
+      expect(preview.inputs[2]).toEqual({ type: 'variable', variable: 'name', value: 'Grace' });
+    } finally {
+      preview.dispose();
+    }
+  });
   it('saves inputs and expected outcome without session state telemetry', async () => {
     const preview = new PreviewController(
       ScriptDocumentSchema.parse(minimalScript()),

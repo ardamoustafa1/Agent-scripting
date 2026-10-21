@@ -38,9 +38,12 @@ it('lists suggestions with their state and operations, and only offers decisions
   });
   await screen.findByText(`Suggestion ${open}`);
   expect(screen.getByText('Clearer wording')).toBeTruthy();
+  expect(screen.getAllByText(f.label('suggest.op.replace'))).toHaveLength(3);
+  const page = f.label('lifecycle.diffText.page').replace('{{name}}', '#1');
   expect(
-    screen.getAllByText(new RegExp(`${f.label('suggest.op.replace')} /pages/0/name`)),
+    screen.getAllByText(new RegExp(`${page} › ${f.label('lifecycle.diffText.fields.name')}`)),
   ).toHaveLength(3);
+  expect(screen.queryByText(/\/pages\/0/)).toBeNull();
   expect(screen.getByText(f.label('suggest.state.open'))).toBeTruthy();
   expect(screen.getByText(f.label('suggest.state.stale'))).toBeTruthy();
   expect(screen.getByText(f.label('suggest.staleHint'))).toBeTruthy();

@@ -12,7 +12,7 @@ import { campaignId } from '../test-fixtures.js';
 
 import { AssignmentRule } from './assignment-rule.js';
 import { RuleBuilder } from './builder.js';
-import { operators, ruleFields, type RuleField } from './fields.js';
+import { operators, ruleDisplayName, ruleFields, type RuleField } from './fields.js';
 import { RuleManager } from './manager.js';
 
 const fields: RuleField[] = [
@@ -43,9 +43,8 @@ it('preserves the entered choices when changing In to Not in', async () => {
   );
   await choose(f.label('rules.operator'), f.label('rules.ops.notIn'));
   expect(predicate()).toEqual({ fact: 'vars.name', op: 'notIn', value: ['A', 'B'] });
-  expect(screen.getByLabelText<HTMLTextAreaElement>(f.label('rules.value')).value).toBe(
-    '["A","B"]',
-  );
+  // Lists are typed as comma separated values, not JSON.
+  expect(screen.getByLabelText<HTMLInputElement>(f.label('rules.values')).value).toBe('A, B');
 });
 it('returns to a numeric operand when changing Between to Greater than', async () => {
   const f = await mountDesigner(
@@ -62,7 +61,7 @@ it('returns to a string operand when changing In to Equals', async () => {
   await choose(f.label('rules.operator'), f.label('rules.ops.eq'));
   expect(predicate()).toEqual({ fact: 'vars.name', op: 'eq', value: '' });
 });
-it('refreshes a JSON operand after undo or another document update', async () => {
+it('refreshes the range fields after undo or another document update', async () => {
   function RefreshHarness() {
     const [value, setValue] = useState<Predicate>({
       fact: 'vars.amount',
@@ -84,7 +83,8 @@ it('refreshes a JSON operand after undo or another document update', async () =>
   }
   const f = await mountDesigner(<RefreshHarness />);
   fireEvent.click(screen.getByRole('button', { name: 'Replace predicate' }));
-  expect(screen.getByLabelText<HTMLTextAreaElement>(f.label('rules.value')).value).toBe('[10,20]');
+  expect(screen.getByLabelText<HTMLInputElement>(f.label('rules.rangeFrom')).value).toBe('10');
+  expect(screen.getByLabelText<HTMLInputElement>(f.label('rules.rangeTo')).value).toBe('20');
 });
 it('edits typed conditions, switches AND/OR, and removes nested conditions', async () => {
   const f = await mountDesigner(
@@ -93,7 +93,7 @@ it('edits typed conditions, switches AND/OR, and removes nested conditions', asy
   fireEvent.change(screen.getByLabelText(f.label('rules.value')), { target: { value: '12' } });
   expect(predicate()).toEqual({ all: [{ fact: 'vars.amount', op: 'gt', value: 12 }] });
   await choose(f.label('rules.field'), 'ready');
-  await choose(f.label('rules.value'), 'true');
+  await choose(f.label('rules.value'), f.label('value.yes'));
   expect(predicate()).toEqual({ all: [{ fact: 'vars.ready', op: 'eq', value: true }] });
   await choose(f.label('rules.logic'), f.label('rules.any'));
   fireEvent.click(screen.getByRole('button', { name: f.label('rules.addCondition') }));
@@ -105,18 +105,18 @@ it('edits typed conditions, switches AND/OR, and removes nested conditions', asy
     all: [{ fact: 'vars.amount', op: 'eq', value: '' }],
   });
 });
-it('validates JSON ranges without corrupting the last accepted predicate', async () => {
+it('edits a range with two number fields without corrupting the last accepted predicate', async () => {
   const f = await mountDesigner(<Harness initial={{ fact: 'vars.amount', op: 'eq', value: 1 }} />);
   await choose(f.label('rules.operator'), f.label('rules.ops.between'));
-  const input = screen.getByLabelText(f.label('rules.value'));
-  fireEvent.change(input, { target: { value: '[' } });
-  fireEvent.blur(input);
-  expect(await screen.findByRole('alert')).toBeTruthy();
   expect(predicate()).toEqual({ fact: 'vars.amount', op: 'between', value: [0, 1] });
-  fireEvent.change(input, { target: { value: '[10,20]' } });
-  fireEvent.blur(input);
+  const from = screen.getByLabelText(f.label('rules.rangeFrom')),
+    to = screen.getByLabelText(f.label('rules.rangeTo'));
+  fireEvent.change(from, { target: { value: '10' } });
+  fireEvent.change(to, { target: { value: '20' } });
   expect(predicate()).toEqual({ fact: 'vars.amount', op: 'between', value: [10, 20] });
-  expect(screen.queryByRole('alert')).toBeNull();
+  fireEvent.change(from, { target: { value: '' } });
+  expect(predicate()).toEqual({ fact: 'vars.amount', op: 'between', value: [10, 20] });
+  expect(screen.queryByRole('textbox', { name: /JSON/ })).toBeNull();
 });
 it.each(['empty', 'dateRange', 'in', 'exists'])(
   'constructs structured %s predicates',
@@ -253,4 +253,53 @@ it('keeps legacy assignment expressions visible but requires conversion before s
   expect(within(dialog).queryByRole('button', { name: f.label('rules.advanced') })).toBeNull();
   fireEvent.click(within(dialog).getByRole('button', { name: f.label('rules.visual') }));
   expect(save.hasAttribute('disabled')).toBe(false);
+});
+it('offers the options of the choice field that writes a variable and names auto rules', async () => {
+  const store = new EditorStore(minimalScript());
+  store.edit((doc) => {
+    doc.variables.push({
+      key: 'sikayet',
+      type: 'string',
+      scope: 'session',
+      default: '',
+      classification: 'internal',
+      pii: false,
+      persist: false,
+    });
+    doc.i18n.messages['tr'] = {
+      ...doc.i18n.messages['tr'],
+      'q.label': 'Şikayet türü',
+      'q.delay': 'Teslimat gecikmesi',
+    };
+    doc.pages[0]!.layout.children!.push({
+      id: 'q',
+      type: 'radioGroup',
+      props: {
+        labelKey: 'q.label',
+        options: [
+          { value: 'gecikme', labelKey: 'q.delay' },
+          { value: 'hasar', labelKey: 'q.missing' },
+        ],
+      },
+      bindings: [{ prop: 'value', variable: 'sikayet' }],
+      events: {},
+    });
+    doc.rules.push({ id: 'rule-q-visible-when', when: { $expr: 'true' }, then: [] });
+  });
+  const document = store.getSnapshot().document;
+  expect(ruleFields(document).find((f) => f.path === 'vars.sikayet')).toMatchObject({
+    group: 'variable',
+    choices: [
+      { value: 'gecikme', label: 'Teslimat gecikmesi' },
+      { value: 'hasar', label: 'hasar' },
+    ],
+  });
+  const f = await mountDesigner(<span />);
+  const t = (key: string, options?: Record<string, unknown>) => f.i18n.t(key, options ?? {});
+  expect(ruleDisplayName(document.rules[0]!, document, t)).toBe(
+    f.i18n.t('designer.rules.autoNames.visible', { component: 'Şikayet türü' }),
+  );
+  expect(ruleDisplayName({ id: 'rule-x', description: 'VIP müşteri' }, document, t)).toBe(
+    'VIP müşteri',
+  );
 });

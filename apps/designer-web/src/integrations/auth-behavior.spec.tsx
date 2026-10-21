@@ -33,14 +33,14 @@ it('configures API key headers, placement and secret references without exposing
   await waitFor(() => {
     expect(f.requests).toHaveLength(1);
   });
-  await choose(f.label('integrations.auth'), 'apiKey');
+  await choose(f.label('integrations.auth'), f.label('integrations.authTypes.apiKey'));
   await waitFor(() => {
     expect(auth()).toMatchObject({ type: 'apiKey', secretRef: campaignId });
   });
   fireEvent.change(screen.getByLabelText(f.label('integrations.headerName')), {
     target: { value: 'Synthetic-Key' },
   });
-  await choose(f.label('integrations.placement'), 'query');
+  await choose(f.label('integrations.placement'), f.label('integrations.placements.query'));
   expect(auth()).toEqual({
     type: 'apiKey',
     secretRef: campaignId,
@@ -62,7 +62,7 @@ it.each([
   await waitFor(() => {
     expect(f.requests).toHaveLength(1);
   });
-  await choose(f.label('integrations.auth'), type);
+  await choose(f.label('integrations.auth'), f.label(`integrations.authTypes.${type}`));
   await waitFor(() => {
     expect(auth()).toMatchObject({ type, secretRef: campaignId });
   });
@@ -89,7 +89,7 @@ it('rejects authentication requiring a missing secret reference', async () => {
   const f = await mountDesigner(<Harness />, {
     '/v1/secrets?limit=100': { data: [], page: { nextCursor: null } },
   });
-  await choose(f.label('integrations.auth'), 'basic');
+  await choose(f.label('integrations.auth'), f.label('integrations.authTypes.basic'));
   expect(await screen.findByText(f.label('integrations.secretError'))).toBeTruthy();
   expect(auth()).toEqual({ type: 'none' });
 });

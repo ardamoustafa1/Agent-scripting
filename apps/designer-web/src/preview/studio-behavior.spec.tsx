@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
 import { createAbility } from '@verbis/authz';
+import { createI18n } from '@verbis/i18n';
 import { DataSourceRefSchema, VariableSchema, TestScenarioSchema } from '@verbis/script-schema';
 import { minimalScript } from '@verbis/script-schema/fixtures';
 
@@ -11,7 +12,9 @@ import { scriptId } from '../test-fixtures.js';
 
 import { PreviewStudio } from './studio.js';
 
-async function setup(options: { dirty?: boolean; readonly?: boolean; scenario?: boolean } = {}) {
+async function setup(
+  options: { dirty?: boolean; readonly?: boolean; scenario?: boolean; outputs?: boolean } = {},
+) {
   const store = new EditorStore(minimalScript());
   store.edit((doc) => {
     doc.variables.push(
@@ -23,6 +26,12 @@ async function setup(options: { dirty?: boolean; readonly?: boolean; scenario?: 
         classification: 'pii',
       }),
       VariableSchema.parse({ key: 'sharedValue', type: 'string', scope: 'global' }),
+      VariableSchema.parse({
+        key: 'customerNo',
+        type: 'string',
+        scope: 'session',
+        source: 'interaction.attributes.customerNo',
+      }),
     );
     if (options.scenario)
       doc.testScenarios = [
@@ -45,6 +54,14 @@ async function setup(options: { dirty?: boolean; readonly?: boolean; scenario?: 
         id: 'synthetic',
         ref: 'tenant-datasource:synthetic',
         version: 1,
+        ...(options.outputs
+          ? {
+              outputs: {
+                status: { path: '$.status', variable: 'customerNo' },
+                score: { path: '$.score' },
+              },
+            }
+          : {}),
       }),
     );
   });
@@ -99,7 +116,14 @@ it('controls real runtime debugger and sets bounded device dimensions', async ()
   expect(frame.style.height).toBe('1200px');
   await choose(f.label('preview.device'), '768px');
   expect(frame.style.width).toBe('768px');
+  // The frame root paints below short pages, so it must follow the chosen theme, not the OS.
+  await waitFor(() => {
+    expect(frame.contentDocument?.documentElement.dataset['theme']).toBe('light');
+  });
   await choose(f.label('preview.theme'), f.i18n.t('common.theme.dark'));
+  await waitFor(() => {
+    expect(frame.contentDocument?.documentElement.dataset['theme']).toBe('dark');
+  });
   await choose(f.label('preview.language'), f.i18n.t('common.locale.en'));
   fireEvent.click(screen.getByRole('button', { name: f.label('preview.restart') }));
   await waitFor(() => {
@@ -143,14 +167,38 @@ it('records watch edits, masks sensitive variables and saves only explicitly syn
   );
   expect(f.store.getSnapshot().document.testScenarios).toHaveLength(0);
 });
-it('edits context JSON, diagnoses invalid context and allows a restart', async () => {
+it('edits test call data as fields, diagnoses an invalid advanced context and allows a restart', async () => {
   const f = await setup();
   fireEvent.change(screen.getByLabelText(f.label('preview.ani')), {
     target: { value: 'synthetic-caller' },
   });
-  json(f.label('preview.campaign'), '{"id":"synthetic-campaign"}');
-  json(f.label('preview.attachedData'), '{"synthetic":true}');
-  json(f.label('preview.customer'), '{"synthetic":true}');
+  // The script's expected call data is offered as a field, written at its source path.
+  fireEvent.change(screen.getByLabelText('customerNo · interaction.attributes.customerNo'), {
+    target: { value: 'C-1001' },
+  });
+  const attached = screen.getByRole('group', { name: f.label('preview.attachedData') });
+  fireEvent.click(within(attached).getByRole('button', { name: f.label('preview.addField') }));
+  fireEvent.change(within(attached).getByLabelText(f.label('preview.fieldName')), {
+    target: { value: 'segment' },
+  });
+  fireEvent.change(within(attached).getByLabelText(f.label('preview.fieldValue')), {
+    target: { value: 'gold' },
+  });
+  // Scripts greet with the signed-in agent's name; the preview starts with a synthetic one.
+  const agent = screen.getByLabelText<HTMLInputElement>(f.label('preview.agentName'));
+  expect(agent.value).toBe(f.label('preview.sampleAgent'));
+  fireEvent.change(agent, { target: { value: 'Synthetic agent' } });
+  const state = screen.getByLabelText<HTMLTextAreaElement>(f.label('preview.initialState'));
+  await waitFor(() => {
+    expect(JSON.parse(state.value)).toMatchObject({
+      interaction: {
+        ani: 'synthetic-caller',
+        attributes: { customerNo: 'C-1001' },
+        attachedData: { segment: 'gold' },
+      },
+      agent: { firstName: 'Synthetic agent' },
+    });
+  });
   json(f.label('preview.initialState'), '{"locale":"invalid-locale"}');
   expect(await screen.findByRole('alert')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: f.label('preview.restart') }));
@@ -216,6 +264,10 @@ it('loads an existing scenario and edits channel and interaction context before 
   await choose(f.label('preview.loadScenario'), 'Synthetic saved scenario');
   expect(screen.getByLabelText<HTMLInputElement>(f.label('preview.ani')).value).toBe(
     'synthetic-initial',
+  );
+  // The scenario names no agent, so the greeting keeps the synthetic one.
+  expect(screen.getByLabelText<HTMLInputElement>(f.label('preview.agentName')).value).toBe(
+    f.label('preview.sampleAgent'),
   );
   await choose(f.label('preview.channel'), f.label('preview.channels.voice'));
   fireEvent.change(screen.getByLabelText(f.label('preview.ani')), {
@@ -345,4 +397,64 @@ it.each([
   });
   fireEvent.click(await screen.findByRole('button', { name: f.label('preview.sampleFromSchema') }));
   await screen.findByText(f.label(`preview.sample.${state}`));
+});
+
+it('fills a mock response field by field and keeps the whole response under advanced', async () => {
+  const f = await setup({ outputs: true });
+  f.tab('dataSources');
+  const field = await screen.findByRole('textbox', {
+    name: f.i18n.t('designer.preview.mockField', { field: 'status' }),
+  });
+  fireEvent.change(field, { target: { value: 'Yolda' } });
+  // An output no variable receives is typed as written, so `ds.x.score >= 650` can be tested.
+  const score = screen.getByRole('textbox', {
+    name: f.i18n.t('designer.preview.mockField', { field: 'score' }),
+  });
+  fireEvent.change(score, { target: { value: '720' } });
+  // The advanced JSON field remounts on every change; read the current one.
+  const whole = () =>
+    JSON.parse(
+      screen.getByLabelText<HTMLTextAreaElement>(f.label('preview.mockOutputs')).value,
+    ) as unknown;
+  await waitFor(() => {
+    expect(whole()).toEqual({ status: 'Yolda', score: 720 });
+  });
+  fireEvent.change(score, { target: { value: '"720"' } });
+  await waitFor(() => {
+    expect(whole()).toEqual({ status: 'Yolda', score: '720' });
+  });
+  expect(score).toHaveProperty('value', '"720"');
+});
+it('frames the script like the agent desktop and can show the bare script instead', async () => {
+  const f = await setup();
+  // The frame speaks the script's language (Turkish by default), not the studio's.
+  const tr = await createI18n('tr');
+  const frame = screen.getByTitle<HTMLIFrameElement>(f.label('preview.deviceFrame'));
+  const body = () => within(frame.contentDocument!.body);
+  // The script's own button may also say "Next"; the frame's controls live in its footer.
+  const footer = () =>
+    within(frame.contentDocument!.querySelector<HTMLElement>('.pv-agent-footer')!);
+  // Same step header, progress and Back/Next as the agent desktop.
+  expect(await body().findByText(tr.t('agent.desktop.step', { number: 1 }))).toBeTruthy();
+  expect(body().getByRole('heading', { name: 'Home' })).toBeTruthy();
+  expect(body().getByText(tr.t('agent.desktop.progress', { current: 1, total: 1 }))).toBeTruthy();
+  const back = footer().getByRole('button', { name: tr.t('agent.desktop.back') });
+  expect(back.hasAttribute('disabled')).toBe(true);
+  fireEvent.click(footer().getByRole('button', { name: tr.t('agent.desktop.next') }));
+  // The only page leads to the end: the frame stops offering steps.
+  await waitFor(() => {
+    expect(body().queryByText(tr.t('agent.desktop.step', { number: 1 }))).toBeNull();
+  });
+  expect(
+    footer()
+      .getByRole('button', { name: tr.t('agent.desktop.next') })
+      .hasAttribute('disabled'),
+  ).toBe(true);
+  fireEvent.mouseDown(screen.getByRole('radio', { name: f.label('preview.frames.script') }), {
+    button: 0,
+  });
+  fireEvent.click(screen.getByRole('radio', { name: f.label('preview.frames.script') }));
+  await waitFor(() => {
+    expect(frame.contentDocument!.querySelector('.pv-agent-footer')).toBeNull();
+  });
 });

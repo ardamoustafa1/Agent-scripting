@@ -52,7 +52,9 @@ async function preview(page: Page) {
   await page.getByRole('option', { name: 'English', exact: true }).click();
   await expect(
     page
-      .frameLocator('iframe[title="Agent runtime device preview"]')
+      .frameLocator('iframe[title="Agent screen preview"]')
+      // The script's own button; the agent frame's footer has a Next of its own.
+      .locator('.pv-agent-runtime')
       .getByRole('button', { name: 'Next', exact: true }),
   ).toBeVisible();
 }
@@ -94,7 +96,8 @@ test('mobile editor keeps collaboration actions within its workspace', async ({ 
 test('runs actual runtime in a device frame and restores a selected state', async ({ page }) => {
   await preview(page);
   await page
-    .frameLocator('iframe[title="Agent runtime device preview"]')
+    .frameLocator('iframe[title="Agent screen preview"]')
+    .locator('.pv-agent-runtime')
     .getByRole('button', { name: 'Next', exact: true })
     .click();
   await expect(page.locator('.fd-visited-edge')).not.toHaveCount(0);
@@ -110,7 +113,7 @@ test('device preview blocks scripts and inline event handlers from frame content
   page,
 }) => {
   await preview(page);
-  await page.locator('iframe[title="Agent runtime device preview"]').evaluate((element) => {
+  await page.locator('iframe[title="Agent screen preview"]').evaluate((element) => {
     interface CanaryElement {
       textContent: string | null;
       setAttribute: (name: string, value: string) => void;
@@ -133,7 +136,7 @@ test('device preview blocks scripts and inline event handlers from frame content
     body.append(button);
     button.click();
   });
-  const body = page.frameLocator('iframe[title="Agent runtime device preview"]').locator('body');
+  const body = page.frameLocator('iframe[title="Agent screen preview"]').locator('body');
   await expect(body).not.toHaveAttribute('data-script-canary', 'executed');
   await expect(body).not.toHaveAttribute('data-inline-canary', 'executed');
 });
@@ -168,13 +171,13 @@ for (const theme of ['light', 'dark', 'high-contrast'])
       })
       .click();
     await expect(
-      page.frameLocator('iframe[title="Agent runtime device preview"]').locator('.vb-theme'),
+      page.frameLocator('iframe[title="Agent screen preview"]').locator('.vb-theme'),
     ).toHaveAttribute('data-theme', theme);
     await page.getByRole('button', { name: 'Pause', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Step', exact: true })).toBeEnabled();
     // The frame CSP forbids scripts. Audit its rendered DOM separately so Axe
     // can run its own timers without changing the production security policy.
-    const frame = page.locator('iframe[title="Agent runtime device preview"]');
+    const frame = page.locator('iframe[title="Agent screen preview"]');
     await expect(frame).toHaveAttribute('sandbox', 'allow-same-origin');
     await expect(
       frame.contentFrame().locator('meta[http-equiv="Content-Security-Policy"]'),

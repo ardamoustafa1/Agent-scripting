@@ -24,17 +24,24 @@ import {
   Alert,
   Tabs,
   Dialog,
+  Toolbar,
+  ToolbarToggleGroup,
+  ToolbarToggleItem,
   type Theme,
 } from '@verbis/ui';
 
 import { request } from '../api/client.js';
 import { useEditor, type EditorStore } from '../editor/store.js';
+import { ValueEditor, valueKind } from '../editor/value-editor.js';
 import { JsonField } from '../integrations/json-field.js';
+import { describePath, displayValue, nodeTitle } from '../lifecycle/diff-text.js';
 import { useWorkspace } from '../workspace/context.js';
 
+import { expectedFields, formatScalar, parseScalar, readPath, writePath } from './context-paths.js';
 import { PreviewController } from './controller.js';
 import { CoveragePanel, type CoverageTrace } from './coverage-panel.js';
 import { DevicePreview } from './device.js';
+import { KeyValueField } from './key-value-field.js';
 import { previewLint } from './lint.js';
 import { RegressionPanel } from './regression-panel.js';
 import { sampleFromSchema } from './sample.js';
@@ -89,6 +96,8 @@ export function PreviewStudio({
     PreviewContextSchema.parse({
       interaction: { channel: 'voice', ani: '', attachedData: {}, customer: {} },
       campaign: { id: '', name: '' },
+      // The agent desktop supplies the signed-in agent; scripts greet with `agent.firstName`.
+      agent: { firstName: t('designer.preview.sampleAgent') },
     }),
   );
   const [mocks, setMocks] = useState<TestScenario['dataSources']>(() =>
@@ -105,6 +114,8 @@ export function PreviewStudio({
   const [controller, setController] = useState<PreviewController | null>(null),
     [run, setRun] = useState(0),
     [i18n, setI18n] = useState<I18nInstance | null>(null);
+  // Agents never see a bare page: by default the preview draws the agent desktop's frame.
+  const [frame, setFrame] = useState<'agent' | 'script'>('agent');
   const [theme, setTheme] = useState<Theme>('light'),
     [width, setWidth] = useState(1280),
     [height, setHeight] = useState(800);
@@ -208,6 +219,7 @@ export function PreviewStudio({
   }, [run, state.document, scriptId, number, session.csrfToken]);
   const runtime = controller?.runtime;
   const scenarios = state.document.testScenarios ?? [];
+  const expected = expectedFields(state.document);
   const updateContext = (input: unknown) => {
     const next = PreviewContextSchema.safeParse(input);
     if (next.success) setContext(next.data);
@@ -378,7 +390,15 @@ export function PreviewStudio({
                       onValueChange={(id) => {
                         const scenario = scenarios.find((s) => s.id === id);
                         if (scenario) {
-                          setContext(scenario.context);
+                          // Saved scenarios rarely name an agent; keep the greeting readable.
+                          setContext(
+                            Object.keys(scenario.context.agent).length > 0
+                              ? scenario.context
+                              : {
+                                  ...scenario.context,
+                                  agent: { firstName: t('designer.preview.sampleAgent') },
+                                },
+                          );
                           setMocks(scenario.dataSources);
                           setLiveSources(new Set());
                           setRun((v) => v + 1);
@@ -409,14 +429,62 @@ export function PreviewStudio({
                         });
                       }}
                     />
-                    <JsonField
-                      label={t('designer.preview.campaign')}
-                      value={context.campaign}
-                      change={(value) => {
-                        updateContext({ ...context, campaign: value });
+                    <Input
+                      label={t('designer.preview.agentName')}
+                      hint={t('designer.preview.agentNameHelp')}
+                      value={textValue(context.agent['firstName'])}
+                      onChange={(e) => {
+                        updateContext({
+                          ...context,
+                          agent: { ...context.agent, firstName: e.target.value },
+                        });
                       }}
                     />
-                    <JsonField
+                    {expected.length > 0 && (
+                      <fieldset className="pv-expected">
+                        <legend>{t('designer.preview.expectedData')}</legend>
+                        <p className="ed-help">{t('designer.preview.expectedHelp')}</p>
+                        {expected.map((field) => {
+                          const current = readPath(context, field.path);
+                          const write = (value: JsonValue) => {
+                            updateContext(writePath(context, field.path, value));
+                          };
+                          const label = `${field.variable} · ${field.path}`;
+                          return field.type === 'boolean' ? (
+                            <Select
+                              key={field.path}
+                              label={label}
+                              value={current === true ? 'true' : 'false'}
+                              options={[
+                                { value: 'true', label: t('designer.value.yes') },
+                                { value: 'false', label: t('designer.value.no') },
+                              ]}
+                              onValueChange={(choice) => {
+                                write(choice === 'true');
+                              }}
+                            />
+                          ) : (
+                            <Input
+                              key={field.path}
+                              label={label}
+                              type={field.type === 'number' ? 'number' : 'text'}
+                              value={textValue(current)}
+                              onChange={(event) => {
+                                const next = event.target.value;
+                                write(
+                                  field.type === 'number'
+                                    ? next === ''
+                                      ? null
+                                      : Number(next)
+                                    : next,
+                                );
+                              }}
+                            />
+                          );
+                        })}
+                      </fieldset>
+                    )}
+                    <KeyValueField
                       label={t('designer.preview.attachedData')}
                       value={context.interaction['attachedData']}
                       change={(value) => {
@@ -426,7 +494,7 @@ export function PreviewStudio({
                         });
                       }}
                     />
-                    <JsonField
+                    <KeyValueField
                       label={t('designer.preview.customer')}
                       value={context.interaction['customer']}
                       change={(value) => {
@@ -436,11 +504,22 @@ export function PreviewStudio({
                         });
                       }}
                     />
-                    <JsonField
-                      label={t('designer.preview.initialState')}
-                      value={context}
-                      change={updateContext}
+                    <KeyValueField
+                      label={t('designer.preview.campaign')}
+                      value={context.campaign}
+                      change={(value) => {
+                        updateContext({ ...context, campaign: value });
+                      }}
                     />
+                    {/* Whole-state JSON stays available for power users, out of the way. */}
+                    <details className="pv-advanced">
+                      <summary>{t('designer.preview.advancedState')}</summary>
+                      <JsonField
+                        label={t('designer.preview.initialState')}
+                        value={context}
+                        change={updateContext}
+                      />
+                    </details>
                   </div>
                 ),
               },
@@ -505,20 +584,68 @@ export function PreviewStudio({
                             </span>
                           </div>
                         )}
-                        <JsonField
-                          key={`${source.id}-${String(samples[source.id]?.generation ?? 0)}`}
-                          label={t('designer.preview.mockOutputs')}
-                          value={mocks[source.id]?.outputs ?? {}}
-                          change={(value) => {
+                        {/* One typed field per declared output; the whole response stays as JSON
+                            under "advanced" for nested lists. */}
+                        {Object.entries(source.outputs).map(([key, output]) => {
+                          const variable = state.document.variables.find(
+                            (v) => v.key === output.variable,
+                          );
+                          const write = (value: JsonValue) => {
                             const parsed = PreviewMockSchema.safeParse({
                               ...mocks[source.id],
-                              outputs: value,
+                              outputs: { ...mocks[source.id]?.outputs, [key]: value },
                             });
                             if (parsed.success)
                               setMocks((before) => ({ ...before, [source.id]: parsed.data }));
-                            else setError(true);
-                          }}
-                        />
+                          };
+                          if (!variable)
+                            return (
+                              <Input
+                                key={`${source.id}.${key}.${String(samples[source.id]?.generation ?? 0)}`}
+                                label={t('designer.preview.mockField', { field: key })}
+                                hint={t('designer.preview.mockScalarHint')}
+                                value={formatScalar(mocks[source.id]?.outputs[key])}
+                                onChange={(event) => {
+                                  write(parseScalar(event.target.value));
+                                }}
+                              />
+                            );
+                          return (
+                            <ValueEditor
+                              key={`${source.id}.${key}.${String(samples[source.id]?.generation ?? 0)}`}
+                              label={t('designer.preview.mockField', { field: key })}
+                              value={mocks[source.id]?.outputs[key] ?? null}
+                              kind={valueKind(variable.type)}
+                              choices={variable.enumValues?.map((value) => ({
+                                value,
+                                label: value,
+                              }))}
+                              variables={[]}
+                              allowSources={false}
+                              onChange={write}
+                            />
+                          );
+                        })}
+                        <details
+                          className="pv-advanced"
+                          open={Object.keys(source.outputs).length === 0}
+                        >
+                          <summary>{t('designer.preview.advancedResponse')}</summary>
+                          <JsonField
+                            key={`${source.id}-${String(samples[source.id]?.generation ?? 0)}-${JSON.stringify(mocks[source.id]?.outputs ?? {})}`}
+                            label={t('designer.preview.mockOutputs')}
+                            value={mocks[source.id]?.outputs ?? {}}
+                            change={(value) => {
+                              const parsed = PreviewMockSchema.safeParse({
+                                ...mocks[source.id],
+                                outputs: value,
+                              });
+                              if (parsed.success)
+                                setMocks((before) => ({ ...before, [source.id]: parsed.data }));
+                              else setError(true);
+                            }}
+                          />
+                        </details>
                       </fieldset>
                     ))}
                   </div>
@@ -583,38 +710,53 @@ export function PreviewStudio({
                         })}
                       </ul>
                     )}
-                    {state.document.variables.map((variable) => (
-                      <div key={variable.key}>
-                        <Badge>{variable.scope}</Badge>
-                        {variable.key}
-                        {runtime &&
-                          (['pii', 'pci'].includes(runtime.store.classification(variable.key)) ? (
-                            <p>{t('designer.preview.masked')}</p>
-                          ) : variable.scope === 'global' ? (
-                            <pre>
-                              {JSON.stringify(runtime.store.variable(variable.key), null, 2)}
-                            </pre>
-                          ) : (
-                            <JsonField
-                              label={variable.key}
-                              value={runtime.store.variable(variable.key)}
-                              change={(value) => {
-                                try {
-                                  const parsed = JsonValueSchema.parse(value);
-                                  runtime.store.setVariable(variable.key, parsed);
-                                  runtime.recordInput({
-                                    type: 'variable',
-                                    variable: variable.key,
-                                    value: parsed,
-                                  });
-                                } catch {
-                                  setError(true);
-                                }
-                              }}
-                            />
-                          ))}
-                      </div>
-                    ))}
+                    {state.document.variables.map((variable) => {
+                      const kind = valueKind(variable.type);
+                      const set = (value: unknown) => {
+                        if (!runtime) return;
+                        try {
+                          const parsed = JsonValueSchema.parse(value);
+                          runtime.store.setVariable(variable.key, parsed);
+                          runtime.recordInput({
+                            type: 'variable',
+                            variable: variable.key,
+                            value: parsed,
+                          });
+                        } catch {
+                          setError(true);
+                        }
+                      };
+                      const current: unknown = runtime?.store.variable(variable.key);
+                      const literal = JsonValueSchema.safeParse(current ?? null);
+                      return (
+                        <div key={variable.key}>
+                          <Badge>{t(`designer.variables.scopes.${variable.scope}`)}</Badge>
+                          {variable.key}
+                          {runtime &&
+                            (['pii', 'pci'].includes(runtime.store.classification(variable.key)) ? (
+                              <p>{t('designer.preview.masked')}</p>
+                            ) : variable.scope === 'global' ? (
+                              <p>{displayValue(current, t)}</p>
+                            ) : kind === 'array' || kind === 'object' || !literal.success ? (
+                              // Lists and objects keep the JSON field: it follows runtime changes.
+                              <JsonField label={variable.key} value={current} change={set} />
+                            ) : (
+                              <ValueEditor
+                                label={variable.key}
+                                value={literal.data}
+                                kind={kind}
+                                choices={variable.enumValues?.map((value) => ({
+                                  value,
+                                  label: value,
+                                }))}
+                                variables={[]}
+                                allowSources={false}
+                                onChange={set}
+                              />
+                            ))}
+                        </div>
+                      );
+                    })}
                   </div>
                 ),
               },
@@ -665,7 +807,9 @@ export function PreviewStudio({
                             {t(`designer.preview.severity.${issue.severity}`)}
                           </Badge>
                           <p>{t(issue.messageKey, issue.params ?? {})}</p>
-                          <code>{issue.path}</code>
+                          <p className="pv-issue-path">
+                            {describePath(issue.path, state.document, t)}
+                          </p>
                         </li>
                       ))}
                     </ul>
@@ -722,6 +866,23 @@ export function PreviewStudio({
           />
         </aside>
         <div className="pv-stage">
+          <Toolbar label={t('designer.preview.frame')}>
+            <ToolbarToggleGroup
+              type="single"
+              className="ed-live-segment pv-frame-toggle"
+              aria-label={t('designer.preview.frame')}
+              value={frame}
+              onValueChange={(value) => {
+                if (value === 'agent' || value === 'script') setFrame(value);
+              }}
+            >
+              {(['agent', 'script'] as const).map((value) => (
+                <ToolbarToggleItem key={value} value={value}>
+                  {t(`designer.preview.frames.${value}`)}
+                </ToolbarToggleItem>
+              ))}
+            </ToolbarToggleGroup>
+          </Toolbar>
           {runtime && i18n && (
             <DevicePreview
               runtime={runtime}
@@ -730,6 +891,7 @@ export function PreviewStudio({
               theme={theme}
               i18n={i18n}
               title={t('designer.preview.deviceFrame')}
+              agentFrame={frame === 'agent'}
             />
           )}
           <p role="status">
@@ -779,9 +941,16 @@ export function PreviewStudio({
               >
                 {t(`designer.preview.phases.${row.event.phase}`)}
               </Badge>
-              <code>
-                {row.event.action} {row.event.node} {row.event.path} {row.event.code}
-              </code>
+              <span className="pv-event">
+                {t(`designer.preview.actions.${row.event.action}`, {
+                  defaultValue: row.event.action,
+                })}
+                {row.event.node && <> · {nodeTitle(state.document, row.event.node, t)}</>}
+                {row.event.path?.startsWith('/') && (
+                  <> · {describePath(row.event.path, state.document, t)}</>
+                )}
+                {row.event.code && <small> · {row.event.code}</small>}
+              </span>
               {row.event.durationMs !== undefined && (
                 <span>
                   {row.event.durationMs} {t('designer.preview.milliseconds')}
@@ -816,8 +985,8 @@ export function PreviewStudio({
                         {change.masked
                           ? t('designer.preview.changedMasked')
                           : t('designer.preview.changedValue', {
-                              before: JSON.stringify(change.before),
-                              after: JSON.stringify(change.after),
+                              before: displayValue(change.before, t),
+                              after: displayValue(change.after, t),
                             })}
                       </li>
                     ))}

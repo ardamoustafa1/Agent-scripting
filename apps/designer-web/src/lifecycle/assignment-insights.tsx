@@ -46,12 +46,7 @@ const Conflicts = z.array(
 
 const percent = (basisPoints: number) => `${String(Math.round(basisPoints) / 100)}%`;
 const share = (probability: number) => `${String(Math.round(probability * 1000) / 10)}%`;
-const readable = (value: unknown): string =>
-  Array.isArray(value)
-    ? value.map(readable).join(', ')
-    : typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
-      ? String(value)
-      : JSON.stringify(value);
+const DIMENSIONS = ['channels', 'locales', 'queues', 'skills', 'segments'];
 
 /** Read-only evidence for an A/B or canary assignment: who is winning and what the rollout would do next. */
 export function VariantInsights({ assignmentId }: { assignmentId: string }) {
@@ -203,7 +198,7 @@ export function ConflictList({
                 <p>
                   {t('designer.lifecycle.conflicts.overlap')}:{' '}
                   {Object.entries(c.overlap)
-                    .map(([k, v]) => `${k} = ${readable(v)}`)
+                    .map(([dimension, value]) => overlapText(dimension, value, t))
                     .join('; ')}
                 </p>
               )}
@@ -213,4 +208,28 @@ export function ConflictList({
       )}
     </article>
   );
+}
+
+/** "Channel: Voice, Chat" — dimension and values in the author's language. */
+function overlapText(
+  dimension: string,
+  value: unknown,
+  t: (key: string, options: Record<string, unknown>) => string,
+): string {
+  const label = DIMENSIONS.includes(dimension)
+    ? t(`designer.lifecycle.conflicts.dimensions.${dimension}`, {})
+    : dimension;
+  const values = Array.isArray(value)
+    ? value
+        .map((item: unknown) => {
+          const text = typeof item === 'string' || typeof item === 'number' ? String(item) : '';
+          if (dimension === 'channels')
+            return t(`designer.preview.channels.${text}`, { defaultValue: text });
+          if (dimension === 'locales') return t(`common.locale.${text}`, { defaultValue: text });
+          return text;
+        })
+        .filter(Boolean)
+        .join(', ')
+    : t('designer.lifecycle.conflicts.anyValue', {});
+  return `${label}: ${values}`;
 }

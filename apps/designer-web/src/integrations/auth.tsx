@@ -76,7 +76,7 @@ export function AuthEditor({
         value={value.type}
         options={IntegrationAuthSchema.options.map((schema) => ({
           value: schema.shape.type.value,
-          label: schema.shape.type.value,
+          label: t(`designer.integrations.authTypes.${schema.shape.type.value}`),
         }))}
         onValueChange={(type) => {
           const ref = secretRef || rows[0]?.id;
@@ -117,7 +117,10 @@ export function AuthEditor({
           <Select
             label={t('designer.integrations.placement')}
             value={value.placement}
-            options={['header', 'query'].map((value) => ({ value, label: value }))}
+            options={['header', 'query'].map((value) => ({
+              value,
+              label: t(`designer.integrations.placements.${value}`),
+            }))}
             onValueChange={(placement) => {
               patch({ placement });
             }}

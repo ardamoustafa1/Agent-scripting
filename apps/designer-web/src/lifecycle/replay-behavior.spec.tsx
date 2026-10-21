@@ -51,6 +51,14 @@ it('lists the sessions of the version, then shows the path, dwell, unreached pag
   expect(screen.getAllByText('1:10').length).toBeGreaterThan(0);
   expect(screen.getByText(/\[REDACTED\]/)).toBeTruthy();
   expect(screen.getByText(/Wrap-up/)).toBeTruthy();
+  expect(
+    screen.getByText(
+      f
+        .label('replay.step.state')
+        .replace('{{from}}', f.label('replay.state.active'))
+        .replace('{{to}}', f.label('replay.state.completed')),
+    ),
+  ).toBeTruthy();
   expect(screen.getByText(f.label('replay.truncated'))).toBeTruthy();
   expect(f.requests.some((r) => r.path === `/v1/sessions/${sessionId}/replay`)).toBe(true);
 });

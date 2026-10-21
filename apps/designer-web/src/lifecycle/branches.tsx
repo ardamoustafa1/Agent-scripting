@@ -11,6 +11,8 @@ import { Alert, Badge, Button, Dialog, Input, Radio, Select } from '@verbis/ui';
 import { ApiError, request } from '../api/client.js';
 import { useWorkspace } from '../workspace/context.js';
 
+import { describePath, excerptValue } from './diff-text.js';
+
 const Branch = z.object({
   name: z.string(),
   versionNumber: z.number(),
@@ -243,13 +245,15 @@ export function Branches({
                 {preview.data.conflicts.map((conflict) => (
                   <fieldset key={conflict.path}>
                     <legend>
-                      <code>{conflict.path}</code> ·{' '}
+                      {describePath(conflict.path, undefined, t)} ·{' '}
                       {t(`designer.branches.kind.${conflict.kind}`, {
                         defaultValue: conflict.kind,
                       })}
                     </legend>
                     <Radio
-                      label={t('designer.branches.chooseFor', { path: conflict.path })}
+                      label={t('designer.branches.chooseFor', {
+                        path: describePath(conflict.path, undefined, t),
+                      })}
                       value={choices[conflict.path] ?? ''}
                       onValueChange={(value) => {
                         setChoices({ ...choices, [conflict.path]: value as 'ours' | 'theirs' });
@@ -257,11 +261,11 @@ export function Branches({
                       options={[
                         {
                           value: 'ours',
-                          label: `${t('designer.branches.mainlineSide')}: ${conflict.ours ?? t('designer.branches.absent')}`,
+                          label: `${t('designer.branches.mainlineSide')}: ${conflict.ours === null ? t('designer.branches.absent') : excerptValue(conflict.ours, t)}`,
                         },
                         {
                           value: 'theirs',
-                          label: `${t('designer.branches.branchSide')}: ${conflict.theirs ?? t('designer.branches.absent')}`,
+                          label: `${t('designer.branches.branchSide')}: ${conflict.theirs === null ? t('designer.branches.absent') : excerptValue(conflict.theirs, t)}`,
                         },
                       ]}
                     />

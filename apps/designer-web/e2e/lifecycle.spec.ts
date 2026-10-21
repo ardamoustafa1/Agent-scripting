@@ -152,12 +152,15 @@ test('continues authoring a published script in a new draft', async ({ page }) =
   await expect(page).toHaveURL(new RegExp(`/scripts/${scriptId}/versions/2/edit$`));
   await expect(page.getByRole('button', { name: /Undo/i })).toBeVisible();
 });
-test('exposes semantic and JSON diff modes with keyboard navigation', async ({ page }) => {
+test('describes every change in words with keyboard navigation between diff modes', async ({
+  page,
+}) => {
   await page.goto(`/scripts/${scriptId}/versions/2/release`);
   await expect(page.locator('.lc-diff-pair').first()).toBeVisible();
-  await page.getByRole('tab', { name: 'Raw JSON', exact: true }).click();
-  await expect(page.getByText('/meta/name', { exact: false }).first()).toBeVisible();
-  await page.getByRole('tab', { name: 'Raw JSON', exact: true }).focus();
+  await page.getByRole('tab', { name: 'All changes', exact: true }).click();
+  await expect(page.getByText('Script details › Name', { exact: false }).first()).toBeVisible();
+  await expect(page.getByText('/meta/name', { exact: false })).toHaveCount(0);
+  await page.getByRole('tab', { name: 'All changes', exact: true }).focus();
   await page.keyboard.press('ArrowLeft');
   await expect(page.getByRole('tab', { name: 'Data sources', exact: true })).toBeFocused();
 });
@@ -211,7 +214,9 @@ test('mention notification target opens the matching node thread', async ({ page
     });
   });
   await page.goto(`/scripts/${scriptId}/versions/2/release?thread=${threadId}`);
-  await expect(page.getByRole('heading', { name: 'Node comments fixture-0' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: /^Node comments · .+ “fixture-0”$/ }),
+  ).toBeVisible();
   await expect(page.getByText('Synthetic node review', { exact: true })).toBeVisible();
 });
 

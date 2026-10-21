@@ -22,6 +22,15 @@ import { Badge, Select, Tabs, DataTable } from '@verbis/ui';
 
 import { editorRegistry } from '../editor/store.js';
 
+import {
+  componentName,
+  describePath,
+  displayValue,
+  edgeName,
+  fieldChanges,
+  stepName,
+  type DiffKind,
+} from './diff-text.js';
 import { compareNodes, compareItems, type Change } from './diff.js';
 
 function Screen({
@@ -60,7 +69,7 @@ function Screen({
         return (
           <div className={`lc-diff-node lc-${change}`} data-change={change}>
             <span className="lc-diff-label">
-              {node.id}{' '}
+              {componentName(node.type, node.id, t)}{' '}
               {change !== 'unchanged' && (
                 <Badge
                   tone={
@@ -118,7 +127,7 @@ function Flow({
         label: (
           <>
             <Badge>{t(`designer.flow.types.${node.type}`)}</Badge>
-            <strong>{node.id}</strong>
+            <strong>{stepName(document, node, t)}</strong>
             {change !== 'unchanged' && <span>{t(`designer.lifecycle.${change}`)}</span>}
           </>
         ),
@@ -131,7 +140,7 @@ function Flow({
       id: edge.id,
       source: edge.from,
       target: edge.to,
-      label: change === 'unchanged' ? edge.id : t(`designer.lifecycle.${change}`),
+      ...(change === 'unchanged' ? {} : { label: t(`designer.lifecycle.${change}`) }),
       className: `lc-flow-${change}`,
     };
   });
@@ -169,13 +178,21 @@ export function VisualDiff({
   const [page, setPage] = useState(after.pages[0]?.id ?? before.pages[0]?.id ?? '');
   const changes = useMemo(() => compareNodes(before, after), [before, after]);
   const pageIds = [...new Set([...before.pages, ...after.pages].map((p) => p.id))];
-  const table = (rows: ReturnType<typeof compareItems<unknown>>) => (
+  const table = (
+    rows: ReturnType<typeof compareItems<unknown>>,
+    kindOf: (value: unknown) => DiffKind,
+    nameOf: (id: string) => string,
+  ) => (
     <DataTable
       label={t('designer.lifecycle.diff')}
       data={rows.filter((r) => r.change !== 'unchanged')}
       getRowId={(r) => r.id}
       columns={[
-        { id: 'id', header: t('designer.workspace.name'), accessor: (r) => r.id },
+        {
+          id: 'id',
+          header: t('designer.workspace.name'),
+          accessor: (r) => nameOf(r.id),
+        },
         {
           id: 'change',
           header: t('designer.lifecycle.diff'),
@@ -191,20 +208,30 @@ export function VisualDiff({
           ),
         },
         {
-          id: 'before',
-          header: t('designer.lifecycle.before'),
-          accessor: (r) => JSON.stringify(r.before),
-          cell: (r) => <pre>{JSON.stringify(r.before, null, 2)}</pre>,
-        },
-        {
-          id: 'after',
-          header: t('designer.lifecycle.after'),
-          accessor: (r) => JSON.stringify(r.after),
-          cell: (r) => <pre>{JSON.stringify(r.after, null, 2)}</pre>,
+          id: 'details',
+          header: t('designer.lifecycle.diffText.whatChanged'),
+          accessor: (r) => r.change,
+          cell: (r) => <ChangeDetails row={r} kind={kindOf(r.after ?? r.before)} />,
         },
       ]}
     />
   );
+  const flowItems: ReturnType<typeof compareItems<unknown>> = [
+    ...compareItems(before.flow.nodes, after.flow.nodes, (v) => v.id),
+    ...compareItems(before.flow.edges, after.flow.edges, (v) => v.id),
+  ];
+  const isEdge = (value: unknown) =>
+    value !== null && typeof value === 'object' && 'from' in value && 'to' in value;
+  const flowName = (id: string) => {
+    const doc =
+      after.flow.nodes.some((n) => n.id === id) || after.flow.edges.some((e) => e.id === id)
+        ? after
+        : before;
+    const node = doc.flow.nodes.find((n) => n.id === id);
+    if (node) return stepName(doc, node, t);
+    const edge = doc.flow.edges.find((e) => e.id === id);
+    return edge ? edgeName(doc, edge, t) : id;
+  };
   return (
     <Tabs
       label={t('designer.lifecycle.diff')}
@@ -218,7 +245,13 @@ export function VisualDiff({
                 label={t('designer.editor.pages')}
                 value={page}
                 onValueChange={setPage}
-                options={pageIds.map((value) => ({ value, label: value }))}
+                options={pageIds.map((value) => ({
+                  value,
+                  label:
+                    after.pages.find((p) => p.id === value)?.name ??
+                    before.pages.find((p) => p.id === value)?.name ??
+                    value,
+                }))}
               />
               <div className="lc-diff-pair">
                 <Screen document={before} page={page} changes={changes} side="before" />
@@ -236,52 +269,87 @@ export function VisualDiff({
                 <Flow document={before} other={after} side="before" />
                 <Flow document={after} other={before} side="after" />
               </div>
-              {table([
-                ...compareItems(before.flow.nodes, after.flow.nodes, (v) => v.id),
-                ...compareItems(before.flow.edges, after.flow.edges, (v) => v.id),
-              ])}
+              {table(flowItems, (value) => (isEdge(value) ? 'edge' : 'flowNode'), flowName)}
             </>
           ),
         },
         {
           value: 'variables',
           label: t('designer.workspace.nav.variables'),
-          content: table(compareItems(before.variables, after.variables, (v) => v.key)),
+          content: table(
+            compareItems(before.variables, after.variables, (v) => v.key),
+            () => 'variable',
+            (id) => id,
+          ),
         },
         {
           value: 'sources',
           label: t('designer.lifecycle.sourceDiff'),
-          content: table(compareItems(before.dataSources, after.dataSources, (v) => v.id)),
+          content: table(
+            compareItems(before.dataSources, after.dataSources, (v) => v.id),
+            () => 'dataSource',
+            (id) => id,
+          ),
         },
         {
-          value: 'json',
+          value: 'all',
           label: t('designer.lifecycle.jsonDiff'),
           content: (
             <>
-              <ol>
-                {patch.map((item, index) => (
-                  <li
-                    key={`${index}-${item.path}`}
-                    className={`lc-${item.op === 'add' ? 'added' : item.op === 'remove' ? 'removed' : 'changed'}`}
-                  >
-                    <Badge>
-                      {t(
-                        `designer.lifecycle.${item.op === 'add' ? 'added' : item.op === 'remove' ? 'removed' : 'changed'}`,
-                      )}
-                    </Badge>{' '}
-                    <code>{item.path}</code>
-                    <pre>{JSON.stringify(item.value, null, 2)}</pre>
-                  </li>
-                ))}
+              {patch.length === 0 && <p>{t('designer.lifecycle.diffText.noChanges')}</p>}
+              <ol className="lc-change-list">
+                {patch.map((item, index) => {
+                  const change =
+                    item.op === 'add' ? 'added' : item.op === 'remove' ? 'removed' : 'changed';
+                  return (
+                    <li key={`${String(index)}-${item.path}`} className={`lc-${change}`}>
+                      <Badge>{t(`designer.lifecycle.${change}`)}</Badge>{' '}
+                      {describePath(item.path, item.op === 'remove' ? before : after, t)}
+                      {item.op !== 'remove' && <> · {displayValue(item.value, t)}</>}
+                    </li>
+                  );
+                })}
               </ol>
-              <div className="lc-diff-pair">
-                <pre>{JSON.stringify(before, null, 2)}</pre>
-                <pre>{JSON.stringify(after, null, 2)}</pre>
-              </div>
+              <details className="pv-advanced">
+                <summary>{t('designer.lifecycle.diffText.technical')}</summary>
+                <div className="lc-diff-pair">
+                  <pre aria-label={t('designer.lifecycle.before')}>
+                    {JSON.stringify(before, null, 2)}
+                  </pre>
+                  <pre aria-label={t('designer.lifecycle.after')}>
+                    {JSON.stringify(after, null, 2)}
+                  </pre>
+                </div>
+              </details>
             </>
           ),
         },
       ]}
     />
+  );
+}
+
+/** What changed in one row: added items in brief, changed fields as "before → after". */
+function ChangeDetails({
+  row,
+  kind,
+}: {
+  row: { before: unknown; after: unknown; change: Change };
+  kind: DiffKind;
+}) {
+  const { t } = useTranslation();
+  if (row.change === 'added' || row.change === 'removed')
+    return <span>{t(`designer.lifecycle.diffText.${row.change}`)}</span>;
+  const fields = fieldChanges(row.before, row.after, t, kind);
+  return (
+    <ul className="lc-field-changes">
+      {fields.map((field) => (
+        <li key={field.field}>
+          <strong>{field.field}</strong>
+          {': '}
+          {t('designer.preview.changedValue', { before: field.before, after: field.after })}
+        </li>
+      ))}
+    </ul>
   );
 }

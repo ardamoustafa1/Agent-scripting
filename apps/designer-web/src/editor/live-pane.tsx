@@ -185,6 +185,7 @@ export function LivePane({ store }: { store: EditorStore }) {
             theme={theme}
             i18n={i18n}
             title={t('designer.live.frame', { name: document.meta.name })}
+            agentFrame
           />
         )
       )}

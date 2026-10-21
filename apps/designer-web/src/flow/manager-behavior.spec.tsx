@@ -9,7 +9,7 @@ import { mountDesigner } from '../fixtures.spec.helpers.js';
 import { scriptId } from '../test-fixtures.js';
 
 import { SubflowImport } from './import-dialog.js';
-import { VariableManager } from './variable-manager.js';
+import { VariableManager, displayValue } from './variable-manager.js';
 
 async function choose(name: string, option: string) {
   fireEvent.click(screen.getByRole('combobox', { name }));
@@ -28,22 +28,20 @@ it('creates collision-free variables, validates defaults, edits enum type and pr
   const change = (key: string, value: string) =>
     fireEvent.change(within(dialog).getByLabelText(f.label(key)), { target: { value } });
   change('variables.name', 'syntheticChoice');
-  change('variables.default', '{');
-  fireEvent.click(within(dialog).getByRole('button', { name: f.label('editor.apply') }));
-  expect((await screen.findByRole('alert')).textContent).toContain(
-    f.label('variables.errors.defaultJson'),
-  );
+  // The initial value is a typed field; no JSON is ever typed.
+  expect(within(dialog).queryByRole('textbox', { name: /JSON/ })).toBeNull();
   // D-12: nothing exists until Apply succeeds.
   expect(store.getSnapshot().document.variables.map((v) => v.key)).toEqual(['variable1']);
-  expect(within(dialog).getByLabelText(f.label('variables.name')).getAttribute('value')).toBe(
-    'syntheticChoice',
-  );
   await choose(f.label('workspace.kind'), f.label('variables.types.enum'));
   change('variables.enum', 'alpha,beta');
-  change('variables.default', '"alpha"');
+  const initial = within(dialog).getByRole('combobox', { name: f.label('variables.default') });
+  expect(initial.textContent).toBe('alpha');
+  await choose(f.label('variables.default'), 'beta');
   await choose(f.label('workspace.scope'), f.label('variables.scopes.page'));
   await choose(f.label('workspace.classification'), f.label('variables.classifications.pci'));
-  change('variables.default', 'null');
+  // Card data never keeps an initial value; the field gives way to an explanation.
+  expect(within(dialog).queryByRole('combobox', { name: f.label('variables.default') })).toBeNull();
+  expect(within(dialog).getByText(f.label('variables.sensitiveDefault'))).toBeTruthy();
   fireEvent.click(within(dialog).getByRole('button', { name: f.label('editor.apply') }));
   await waitFor(() => {
     expect(screen.queryByRole('dialog')).toBeNull();
@@ -61,7 +59,7 @@ it('creates collision-free variables, validates defaults, edits enum type and pr
   fireEvent.click(screen.getByRole('button', { name: /show all rows/i }));
   expect(screen.getByText('••••')).toBeTruthy();
 });
-it('renames a variable and its bindings atomically, toggles PII and rejects wrong typed defaults', async () => {
+it('renames a variable and its bindings atomically, classifies PII and types its initial value', async () => {
   const store = new EditorStore(minimalScript());
   store.edit((doc) => {
     doc.variables.push(
@@ -76,17 +74,17 @@ it('renames a variable and its bindings atomically, toggles PII and rejects wron
   fireEvent.click(screen.getByRole('button', { name: /show all rows/i }));
   fireEvent.click(screen.getByRole('button', { name: 'amount' }));
   await screen.findByRole('dialog');
-  fireEvent.change(screen.getByLabelText(f.label('variables.default')), {
-    target: { value: '"invalid"' },
-  });
-  fireEvent.click(screen.getByRole('button', { name: f.label('editor.apply') }));
-  expect(await screen.findByRole('alert')).toBeTruthy();
-  fireEvent.change(screen.getByLabelText(f.label('variables.default')), { target: { value: '2' } });
+  // A number variable gets a number field, so a wrongly typed initial value cannot be entered.
+  const initial = screen.getByRole('spinbutton', { name: f.label('variables.default') });
+  expect(initial.getAttribute('value')).toBe('1');
+  fireEvent.change(initial, { target: { value: '2' } });
   fireEvent.change(screen.getByLabelText(f.label('variables.name')), {
     target: { value: 'total' },
   });
-  fireEvent.click(screen.getByLabelText(f.label('variables.pii')));
-  fireEvent.click(screen.getByLabelText(f.label('variables.pii')));
+  // One privacy control: the data class (no separate PII checkbox asking the same thing).
+  expect(screen.queryByRole('checkbox')).toBeNull();
+  await choose(f.label('workspace.classification'), f.label('variables.classifications.pii'));
+  await choose(f.label('workspace.classification'), f.label('variables.classifications.internal'));
   fireEvent.click(screen.getByRole('button', { name: f.label('editor.apply') }));
   await waitFor(() => {
     expect(screen.queryByRole('dialog')).toBeNull();
@@ -238,7 +236,7 @@ it('adds nothing when the add dialog is cancelled and titles it "add"', async ()
   expect(store.getSnapshot().document.variables).toHaveLength(0);
   expect(store.getSnapshot().history).toBe(0);
 });
-it('explains which field failed: invalid name, taken name, wrong default type, empty enum', async () => {
+it('explains which field failed: invalid name, taken name, empty enum', async () => {
   const store = new EditorStore(minimalScript());
   store.edit((doc) => {
     doc.variables.push(VariableSchema.parse({ key: 'taken', type: 'string', scope: 'session' }));
@@ -259,12 +257,13 @@ it('explains which field failed: invalid name, taken name, wrong default type, e
   apply();
   expect(within(dialog).getByText(f.label('variables.errors.nameTaken'))).toBeTruthy();
   change('variables.name', 'fresh');
-  change('variables.default', '5');
+  await choose(f.label('workspace.kind'), f.label('variables.types.enum'));
+  change('variables.enum', ' , ');
   apply();
-  expect(within(dialog).getByText(f.label('variables.errors.defaultType'))).toBeTruthy();
+  expect(within(dialog).getByText(f.label('variables.errors.enumEmpty'))).toBeTruthy();
   expect(field('variables.name').getAttribute('aria-invalid')).not.toBe('true');
   expect(store.getSnapshot().document.variables).toHaveLength(1);
-  change('variables.default', '"ok"');
+  change('variables.enum', 'ok');
   apply();
   await waitFor(() => {
     expect(screen.queryByRole('dialog')).toBeNull();
@@ -279,4 +278,109 @@ it('explains an empty variable list and still lets the designer add the first va
   expect(screen.getByText(f.label('variables.intro'))).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: f.label('variables.add') }));
   expect(await screen.findByRole('dialog')).toBeTruthy();
+});
+it('pre-fills a variable from call data and rejects a source outside the runtime context', async () => {
+  const store = new EditorStore(minimalScript());
+  const f = await mountDesigner(<VariableManager store={store} />);
+  fireEvent.click(screen.getByRole('button', { name: f.label('variables.add') }));
+  const dialog = await screen.findByRole('dialog');
+  expect(within(dialog).getByText(f.label('variables.addDescription'))).toBeTruthy();
+  const change = (key: string, value: string) =>
+    fireEvent.change(within(dialog).getByLabelText(f.label(key)), { target: { value } });
+  change('variables.name', 'callerNumber');
+  change('variables.source', 'window.location');
+  fireEvent.click(within(dialog).getByRole('button', { name: f.label('editor.apply') }));
+  expect((await screen.findByRole('alert')).textContent).toContain(
+    f.label('variables.errors.source'),
+  );
+  expect(store.getSnapshot().document.variables).toEqual([]);
+  change('variables.source', ' interaction.ani ');
+  fireEvent.click(within(dialog).getByRole('button', { name: f.label('editor.apply') }));
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+  expect(store.getSnapshot().document.variables).toEqual([
+    expect.objectContaining({ key: 'callerNumber', source: 'interaction.ani' }),
+  ]);
+  fireEvent.click(screen.getByRole('button', { name: /show all rows/i }));
+  fireEvent.click(screen.getByRole('button', { name: 'callerNumber' }));
+  const edit = await screen.findByRole('dialog');
+  fireEvent.change(within(edit).getByLabelText(f.label('variables.source')), {
+    target: { value: '' },
+  });
+  fireEvent.click(within(edit).getByRole('button', { name: f.label('editor.apply') }));
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+  expect(store.getSnapshot().document.variables[0]?.source).toBeUndefined();
+});
+
+it('opens a legacy PII-flagged internal variable as personal data instead of dropping the flag', async () => {
+  const store = new EditorStore(minimalScript());
+  store.edit((doc) => {
+    doc.variables.push(
+      VariableSchema.parse({
+        key: 'legacy',
+        type: 'string',
+        scope: 'session',
+        classification: 'internal',
+        pii: true,
+      }),
+    );
+  });
+  const f = await mountDesigner(<VariableManager store={store} />);
+  fireEvent.click(screen.getByRole('button', { name: /show all rows/i }));
+  fireEvent.click(screen.getByRole('button', { name: 'legacy' }));
+  const dialog = await screen.findByRole('dialog');
+  expect(
+    within(dialog).getByRole('combobox', { name: f.label('workspace.classification') }).textContent,
+  ).toBe(f.label('variables.classifications.pii'));
+  fireEvent.click(within(dialog).getByRole('button', { name: f.label('editor.apply') }));
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+  expect(store.getSnapshot().document.variables[0]).toMatchObject({
+    classification: 'pii',
+    pii: true,
+  });
+});
+it('shows initial values as authors read them, never as JSON', () => {
+  const t = (key: string) =>
+    ({ 'designer.value.yes': 'Evet', 'designer.value.no': 'Hayır' })[key] ?? key;
+  expect(displayValue('', t)).toBe('—');
+  expect(displayValue(null, t)).toBe('—');
+  expect(displayValue('Ankara', t)).toBe('Ankara');
+  expect(displayValue(true, t)).toBe('Evet');
+  expect(displayValue([1, 'a'], t)).toBe('1, a');
+  expect(displayValue({}, t)).toBe('—');
+});
+
+it('stores a display name for empty-value placeholders and drops a blank one', async () => {
+  const store = new EditorStore(minimalScript());
+  const f = await mountDesigner(<VariableManager store={store} />);
+  fireEvent.click(screen.getByRole('button', { name: f.label('variables.add') }));
+  const dialog = await screen.findByRole('dialog');
+  const change = (key: string, value: string) =>
+    fireEvent.change(within(dialog).getByLabelText(f.label(key)), { target: { value } });
+  change('variables.name', 'customerName');
+  change('variables.displayName', '  müşteri adı  ');
+  fireEvent.click(within(dialog).getByRole('button', { name: f.label('editor.apply') }));
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+  expect(store.getSnapshot().document.variables[0]).toMatchObject({
+    key: 'customerName',
+    description: 'müşteri adı',
+  });
+  fireEvent.click(screen.getByRole('button', { name: /show all rows/i }));
+  fireEvent.click(screen.getByRole('button', { name: 'customerName' }));
+  const edit = await screen.findByRole('dialog');
+  fireEvent.change(within(edit).getByLabelText(f.label('variables.displayName')), {
+    target: { value: '   ' },
+  });
+  fireEvent.click(within(edit).getByRole('button', { name: f.label('editor.apply') }));
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+  expect(store.getSnapshot().document.variables[0]?.description).toBeUndefined();
 });

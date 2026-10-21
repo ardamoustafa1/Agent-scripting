@@ -282,3 +282,112 @@
   white-space: normal;
   line-height: 1.25;
 }
+
+/* Test call data without JSON: expected fields and field/value rows. */
+.pv-expected,
+.pv-key-values {
+  margin: 0;
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  padding: var(--vb-space-3);
+  display: grid;
+  gap: var(--vb-space-2);
+  min-inline-size: 0;
+}
+.pv-expected > legend,
+.pv-key-values > legend {
+  padding-inline: var(--vb-space-1);
+  font-size: var(--vb-font-size-sm);
+  font-weight: 600;
+}
+.pv-key-value {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: var(--vb-space-2);
+  align-items: end;
+}
+.pv-advanced summary {
+  cursor: pointer;
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-sm);
+}
+@media (max-width: 480px) {
+  .pv-key-value {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Agent desktop / Script only, above the device it changes. */
+.pv-stage > [role='toolbar'] {
+  justify-content: center;
+  margin-block-end: var(--vb-space-3);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Agent desktop frame inside the device preview (agent-frame.tsx). Same parts as the agent
+   desktop; the layout follows the frame's own width, so a phone stacks the checklist below. */
+.pv-agent {
+  display: flex;
+  gap: var(--vb-space-4);
+  min-block-size: 100dvh;
+  padding: var(--vb-space-4);
+  background: var(--vb-color-bg);
+  color: var(--vb-color-text);
+}
+.pv-agent-main {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+}
+.pv-agent-runtime {
+  flex: 1;
+  background: var(--vb-color-surface-raised);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+  padding: var(--vb-space-4);
+}
+.pv-agent-footer {
+  position: sticky;
+  inset-block-end: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--vb-space-3);
+  margin-block-start: var(--vb-space-3);
+  padding-block: var(--vb-space-3);
+  background: var(--vb-color-bg);
+  border-block-start: 1px solid var(--vb-color-border);
+}
+.pv-agent-side {
+  inline-size: 18rem;
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding: var(--vb-space-4);
+  background: var(--vb-color-surface-raised);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-lg);
+}
+.pv-agent-side h2 {
+  margin: 0 0 var(--vb-space-2);
+  font-size: var(--vb-font-size-md);
+}
+@media (max-width: 44rem) {
+  .pv-agent {
+    flex-direction: column;
+    padding: var(--vb-space-3);
+  }
+  .pv-agent-side {
+    inline-size: auto;
+    align-self: stretch;
+  }
+  .pv-agent-footer {
+    flex-wrap: wrap;
+  }
+  .pv-agent-footer .ag-progress {
+    inline-size: 100%;
+    order: 3;
+  }
+}

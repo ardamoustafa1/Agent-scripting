@@ -58,3 +58,19 @@ it('switches the entire entry experience to Turkish without losing the email', a
   fireEvent.click(screen.getByRole('button', { name: 'Switch to English' }));
   expect(await screen.findByLabelText('Work email')).toHaveProperty('value', 'user@first.test');
 });
+
+it('returns to the page that was open when the session ended', async () => {
+  window.history.replaceState({}, '', '/scripts/synthetic/versions/1/edit?tab=flow');
+  try {
+    await mountDesigner(<Login />, { '/auth/discover': provider });
+    fireEvent.change(screen.getByLabelText('Work email'), { target: { value: 'user@first.test' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    const link = await screen.findByRole('link', { name: 'First SSO' });
+    const query = new URL(link.getAttribute('href') ?? '', 'http://synthetic.test').searchParams;
+    // Only the path travels; the API validates it as a same-origin path.
+    expect(query.get('returnTo')).toBe('/scripts/synthetic/versions/1/edit');
+    expect(query.get('app')).toBe('designer');
+  } finally {
+    window.history.replaceState({}, '', '/');
+  }
+});

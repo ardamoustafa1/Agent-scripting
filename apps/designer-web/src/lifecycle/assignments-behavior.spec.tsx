@@ -47,7 +47,31 @@ async function setup(extra: Record<string, unknown> = {}) {
         ],
         page: { nextCursor: null },
       },
-      '/v1/script-resolutions': { scriptId, number: 3, synthetic: true },
+      '/v1/script-resolutions': {
+        outcome: 'resolved',
+        campaignId,
+        assignmentId: tenantId,
+        scriptId,
+        version: { id: scriptId, number: 3, semver: '1.2.0', checksum: 'synthetic' },
+        variant: { key: 'b', bucket: 71 },
+        workingHours: { configured: true, open: true },
+        trace: {
+          evaluated: [
+            {
+              assignmentId: tenantId,
+              priority: 20,
+              specificity: 1,
+              eligible: true,
+              reasons: [],
+              factsRead: [],
+            },
+          ],
+          ranking: [tenantId],
+          tie: null,
+          at: '2026-10-20T10:00:00Z',
+        },
+        cache: 'miss',
+      },
       [`/v1/campaigns/${campaignId}/assignment-conflicts`]: [],
       [`/v1/assignments/${tenantId}/allocation`]: {
         assignmentId: tenantId,
@@ -167,16 +191,27 @@ it('saves campaign-scoped priorities only when the complete page is loaded', asy
     updates: [{ id: tenantId, version: 4, patch: { priority: 0 } }],
   });
 });
-it('simulates resolver decisions with synthetic attributes and rejects malformed JSON', async () => {
+it('describes a test interaction with fields and reads the decision as sentences', async () => {
   const f = await setup();
   await choose(f.label('workspace.nav.campaigns'), 'Synthetic campaign');
-  await choose(f.label('preview.channel'), 'chat');
-  const input = screen.getByLabelText(f.label('lifecycle.context'));
-  fireEvent.change(input, { target: { value: '{' } });
-  fireEvent.click(screen.getByRole('button', { name: f.label('lifecycle.resolveContext') }));
-  expect(await screen.findByRole('alert')).toBeTruthy();
-  expect(f.requests.some((r) => r.method === 'POST')).toBe(false);
-  fireEvent.change(input, { target: { value: '{"synthetic":true}' } });
+  await choose(f.label('preview.channel'), f.label('preview.channels.chat'));
+  fireEvent.change(screen.getByLabelText(f.label('lifecycle.facts.queue')), {
+    target: { value: 'synthetic-queue' },
+  });
+  fireEvent.change(screen.getByLabelText(f.label('lifecycle.facts.skills')), {
+    target: { value: 'billing, vip' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.label('preview.addField') }));
+  fireEvent.change(screen.getByLabelText(f.label('preview.fieldName')), {
+    target: { value: 'bad key' },
+  });
+  expect(screen.getByText(f.label('lifecycle.resolution.attributeInvalid'))).toBeTruthy();
+  fireEvent.change(screen.getByLabelText(f.label('preview.fieldName')), {
+    target: { value: 'segmentCode' },
+  });
+  fireEvent.change(screen.getByLabelText(f.label('preview.fieldValue')), {
+    target: { value: 'gold' },
+  });
   fireEvent.click(screen.getByRole('button', { name: f.label('lifecycle.resolveContext') }));
   await waitFor(() => {
     expect(f.requests.some((r) => r.path === '/v1/script-resolutions')).toBe(true);
@@ -185,8 +220,64 @@ it('simulates resolver decisions with synthetic attributes and rejects malformed
     campaignId,
     channel: 'chat',
     locale: 'tr',
-    attributes: { synthetic: true },
+    queue: 'synthetic-queue',
+    skills: ['billing', 'vip'],
+    attributes: { segmentCode: 'gold' },
   });
+  const result = await screen.findByRole('region', { name: f.label('lifecycle.resolution.title') });
+  expect(result.textContent).toContain('Synthetic script');
+  expect(result.textContent).toContain('1.2.0');
+  expect(result.textContent).toContain(f.label('lifecycle.resolution.workingHours.open'));
+  expect(result.textContent).toContain(f.label('lifecycle.resolution.eligible'));
+  expect(result.textContent).toContain('Synthetic script · Synthetic campaign');
+  expect(result.textContent).not.toContain('{');
+});
+it('explains why no script opens and why each assignment was rejected', async () => {
+  const f = await setup({
+    '/v1/script-resolutions': {
+      outcome: 'no_match',
+      reason: 'no_eligible_assignment',
+      campaignId,
+      workingHours: { configured: false, open: true },
+      trace: {
+        evaluated: [
+          {
+            assignmentId: tenantId,
+            priority: 20,
+            specificity: 1,
+            eligible: false,
+            reasons: ['channel_mismatch', 'expired'],
+            factsRead: [],
+          },
+        ],
+        ranking: [],
+        tie: null,
+        at: '2026-10-20T10:00:00Z',
+        abSkipped: 'missing_sticky_key',
+      },
+      cache: 'bypass',
+    },
+  });
+  await choose(f.label('workspace.nav.campaigns'), 'Synthetic campaign');
+  fireEvent.click(screen.getByRole('button', { name: f.label('lifecycle.resolveContext') }));
+  const result = await screen.findByRole('region', { name: f.label('lifecycle.resolution.title') });
+  for (const key of [
+    'noMatch',
+    'reasons.no_eligible_assignment',
+    'workingHours.none',
+    'abSkipped.missing_sticky_key',
+    'rejected',
+    'rejects.channel_mismatch',
+    'rejects.expired',
+  ])
+    expect(result.textContent).toContain(f.label(`lifecycle.resolution.${key}`));
+});
+it('reports unreadable resolver responses instead of dumping them', async () => {
+  const f = await setup({ '/v1/script-resolutions': { synthetic: true } });
+  await choose(f.label('workspace.nav.campaigns'), 'Synthetic campaign');
+  fireEvent.click(screen.getByRole('button', { name: f.label('lifecycle.resolveContext') }));
+  expect(await screen.findByText(f.label('lifecycle.resolution.unreadable'))).toBeTruthy();
+  expect(screen.queryByText(/synthetic/)).toBeNull();
 });
 it('keeps an assignment editor open when batch saving fails and allows cancel', async () => {
   const f = await setup({ '/v1/assignments/batch': Response.json({}, { status: 500 }) });
@@ -302,7 +393,7 @@ it('lists overlapping assignments of the chosen campaign with the winning rule',
         priority: 20,
         severity: 'certain',
         resolvedBy: 'specificity',
-        overlap: { 'interaction.channel': ['voice', 'chat'] },
+        overlap: { channels: ['voice', 'chat'], queues: 'any' },
       },
     ],
   });
@@ -311,7 +402,13 @@ it('lists overlapping assignments of the chosen campaign with the winning rule',
   expect(
     screen.getByText(new RegExp(f.label('lifecycle.conflicts.resolvedBy.specificity'))),
   ).toBeTruthy();
-  expect(screen.getByText(/interaction\.channel = voice, chat/)).toBeTruthy();
+  expect(
+    screen.getByText(
+      new RegExp(
+        `${f.label('lifecycle.conflicts.dimensions.channels')}: ${f.label('preview.channels.voice')}, ${f.label('preview.channels.chat')}; ${f.label('lifecycle.conflicts.dimensions.queues')}: ${f.label('lifecycle.conflicts.anyValue')}`,
+      ),
+    ),
+  ).toBeTruthy();
 });
 
 it('confirms when a campaign has no overlapping assignments', async () => {

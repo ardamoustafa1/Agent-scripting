@@ -35,6 +35,11 @@ describe('AppOrigins', () => {
   });
 
   it.each([
+    // The designer returns to the editor that was open when the session ended.
+    [
+      '/scripts/01a15d91-f651-72bf-ab78-3b8894d3fd50/versions/1/edit',
+      '/scripts/01a15d91-f651-72bf-ab78-3b8894d3fd50/versions/1/edit',
+    ],
     ['/scripts?x=1', '/'],
     ['//evil.example', '/'],
     ['/\\evil.example', '/'],

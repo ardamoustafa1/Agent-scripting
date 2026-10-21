@@ -18,6 +18,7 @@ import { Loading, Failure } from '../workspace/states.js';
 import { draftFromChanges } from './change-summary-text.js';
 import { summarizeChanges } from './change-summary.js';
 import { Comments } from './comments.js';
+import { describePath } from './diff-text.js';
 import { releaseErrorKey } from './errors.js';
 import { ReleaseRisk } from './release-risk.js';
 import { Suggestions } from './suggestions.js';
@@ -415,7 +416,9 @@ export default function ReleasePage() {
           <ul>
             {lint.map((issue, i) => (
               <li key={i}>
-                <code>{issue.path}</code> {t(issue.messageKey, issue.params ?? {})}
+                <strong>{describePath(issue.path, version.document, t)}</strong>
+                {': '}
+                {t(issue.messageKey, issue.params ?? {})}
               </li>
             ))}
           </ul>
@@ -462,6 +465,7 @@ export default function ReleasePage() {
         scriptId={id}
         number={version.number}
         nodeId="script"
+        document={version.document}
         focusedThreadId={searchParams.get('thread') ?? ''}
       />
       <Suggestions scriptId={id} number={version.number} />

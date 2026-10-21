@@ -145,7 +145,7 @@ it('downloads only approved or published versions and revokes the Blob URL', asy
     },
   );
   await choose(f.label('workspace.version'), 'v1');
-  await choose(f.label('lifecycle.target'), 'prod');
+  await choose(f.label('lifecycle.target'), f.label('workspace.env.prod'));
   fireEvent.click(screen.getByRole('button', { name: f.label('lifecycle.export') }));
   await waitFor(() => {
     expect(create).toHaveBeenCalledOnce();

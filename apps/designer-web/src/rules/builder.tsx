@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 
 import { expressionToRule, ruleToExpression } from '@verbis/expr';
 import { PredicateSchema, type Predicate } from '@verbis/script-schema';
-import { Button, Select, Input, Textarea, Alert } from '@verbis/ui';
+import { Button, Select, Input, Textarea, Alert, MultiSelect } from '@verbis/ui';
 
 import { ExpressionEditor } from '../editor/expression-lazy.js';
+import { parseList } from '../editor/value-editor.js';
 
-import { operators, type RuleField } from './fields.js';
+import { INTERACTION_FACTS, operators, type RuleField } from './fields.js';
 
 function Tree({
   value,
@@ -30,7 +31,10 @@ function Tree({
         <Select
           label={t('designer.rules.value')}
           value={value.$expr.trim()}
-          options={['true', 'false'].map((value) => ({ value, label: value }))}
+          options={[
+            { value: 'true', label: t('designer.rules.always') },
+            { value: 'false', label: t('designer.rules.never') },
+          ]}
           onValueChange={(source) => {
             change({ $expr: source });
           }}
@@ -181,8 +185,21 @@ function Tree({
         value={value.fact}
         options={[
           ...fields,
-          ...(field ? [] : [{ path: value.fact, label: value.fact, type: 'unknown' as const }]),
-        ].map((f) => ({ value: f.path, label: f.label }))}
+          ...(field
+            ? []
+            : [
+                {
+                  path: value.fact,
+                  label: value.fact,
+                  type: 'unknown' as const,
+                  group: 'variable' as const,
+                },
+              ]),
+        ].map((f) => ({
+          value: f.path,
+          label: factLabel(f, (key, options) => t(key, options ?? {})),
+          ...(f.group ? { group: t(`designer.rules.factGroups.${f.group}`) } : {}),
+        }))}
         onValueChange={(fact) => {
           const field = fields.find((f) => f.path === fact);
           change({
@@ -255,12 +272,37 @@ function Tree({
           <Select
             label={t('designer.rules.value')}
             value={value.value === true ? 'true' : 'false'}
-            options={['true', 'false'].map((value) => ({ value, label: value }))}
+            options={[
+              { value: 'true', label: t('designer.value.yes') },
+              { value: 'false', label: t('designer.value.no') },
+            ]}
             onValueChange={(choice) => {
               change({ ...value, value: choice === 'true' });
             }}
           />
-        ) : Array.isArray(value.value) || ['in', 'notIn', 'between'].includes(value.op) ? (
+        ) : value.op === 'between' ? (
+          <RangeValue value={value} change={change} />
+        ) : ['in', 'notIn'].includes(value.op) && field?.choices ? (
+          <MultiSelect
+            label={t('designer.rules.values')}
+            options={field.choices}
+            value={Array.isArray(value.value) ? value.value.map(String) : []}
+            onValueChange={(chosen) => {
+              change({ ...value, value: chosen });
+            }}
+          />
+        ) : ['in', 'notIn'].includes(value.op) ? (
+          <ListValue key={value.op} value={value} change={change} />
+        ) : field?.choices && ['eq', 'neq'].includes(value.op) ? (
+          <Select
+            label={t('designer.rules.value')}
+            value={typeof value.value === 'string' ? value.value : ''}
+            options={field.choices}
+            onValueChange={(choice) => {
+              change({ ...value, value: choice });
+            }}
+          />
+        ) : Array.isArray(value.value) ? (
           <JsonValue key={JSON.stringify(value.value)} value={value} change={change} />
         ) : (
           <Input
@@ -276,6 +318,82 @@ function Tree({
           />
         ))}
     </div>
+  );
+}
+/** Readable fact names: variables keep their name; call data and data source fields get one. */
+export function factLabel(
+  field: Pick<RuleField, 'path' | 'label' | 'group'>,
+  t: (key: string, options?: Record<string, unknown>) => string,
+): string {
+  if (field.group === 'dataSource')
+    return t('designer.rules.facts.dataSource', { field: field.label });
+  if (field.group !== 'interaction') return field.label;
+  const key = field.path.replace(/^interaction\./, '');
+  return (INTERACTION_FACTS as readonly string[]).includes(key)
+    ? t(`designer.rules.facts.${key}`)
+    : t('designer.rules.facts.custom', { path: field.path });
+}
+function ListValue({
+  value,
+  change,
+}: {
+  value: Extract<Predicate, { fact: string }>;
+  change: (value: Predicate) => void;
+}) {
+  const { t } = useTranslation();
+  const [text, setText] = useState(
+    Array.isArray(value.value)
+      ? value.value
+          .filter((item) => typeof item === 'string' || typeof item === 'number')
+          .join(', ')
+      : '',
+  );
+  return (
+    <Input
+      label={t('designer.rules.values')}
+      hint={t('designer.value.listHint')}
+      value={text}
+      onChange={(event) => {
+        setText(event.target.value);
+        change(PredicateSchema.parse({ ...value, value: parseList(event.target.value) }));
+      }}
+    />
+  );
+}
+function RangeValue({
+  value,
+  change,
+}: {
+  value: Extract<Predicate, { fact: string }>;
+  change: (value: Predicate) => void;
+}) {
+  const { t } = useTranslation();
+  const [low, high] = Array.isArray(value.value) ? value.value : [0, 1];
+  const set = (index: 0 | 1, next: string) => {
+    if (next === '' || !Number.isFinite(Number(next))) return;
+    const range = [low, high];
+    range[index] = Number(next);
+    change(PredicateSchema.parse({ ...value, value: range }));
+  };
+  return (
+    <>
+      <Input
+        label={t('designer.rules.rangeFrom')}
+        type="number"
+        value={typeof low === 'number' ? String(low) : ''}
+        onChange={(event) => {
+          set(0, event.target.value);
+        }}
+      />
+      <Input
+        label={t('designer.rules.rangeTo')}
+        type="number"
+        value={typeof high === 'number' ? String(high) : ''}
+        onChange={(event) => {
+          set(1, event.target.value);
+        }}
+      />
+    </>
   );
 }
 function JsonValue({

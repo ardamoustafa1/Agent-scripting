@@ -125,15 +125,16 @@ it.each(['decision', 'dataSource', 'setVariable', 'transfer', 'end', 'subflow'])
       }
     }
     if (type === 'setVariable') {
-      const input = screen.getByLabelText(f.label('rules.value'));
-      fireEvent.change(input, { target: { value: '"synthetic-value"' } });
-      fireEvent.blur(input);
+      // A typed field for the variable's type, not JSON.
+      fireEvent.change(screen.getByLabelText(f.label('value.fixedValue')), {
+        target: { value: 'synthetic-value' },
+      });
       expect(f.store.getSnapshot().document.flow.nodes.at(-1)).toMatchObject({
         value: 'synthetic-value',
       });
     }
     if (type !== 'end') {
-      await choose(f.label('flow.connectTarget'), 'n-end');
+      await choose(f.label('flow.connectTarget'), f.label('flow.types.end'));
       if (type === 'decision') await choose(f.label('flow.condition'), f.label('flow.else'));
       if (type === 'dataSource') await choose(f.label('flow.condition'), f.label('flow.error'));
       fireEvent.click(screen.getByRole('button', { name: f.label('flow.connect') }));
@@ -297,3 +298,56 @@ vi.mock('./layout-engine.js', () => ({
     return new ELK();
   },
 }));
+
+it('names flow steps by type instead of generated ids and lets authors rename them', async () => {
+  const f = await setup();
+  fireEvent.click(screen.getByRole('button', { name: f.label('flow.types.decision') }));
+  fireEvent.click(screen.getByRole('button', { name: f.label('flow.types.decision') }));
+  const [first, second] = f.store
+    .getSnapshot()
+    .document.flow.nodes.filter((node) => node.type === 'decision');
+  const decision = f.label('flow.types.decision');
+  await waitFor(() => {
+    const labels = [...document.querySelectorAll('.react-flow__node strong')].map(
+      (node) => node.textContent,
+    );
+    expect(labels).toEqual(expect.arrayContaining([`${decision} 1`, `${decision} 2`]));
+    expect(labels.some((label) => label.startsWith('flow-'))).toBe(false);
+  });
+  await f.select(first!.id);
+  fireEvent.click(screen.getByRole('combobox', { name: f.label('flow.connectTarget') }));
+  expect(await screen.findByRole('option', { name: `${decision} 2` })).toBeTruthy();
+  expect(screen.queryByRole('option', { name: second!.id })).toBeNull();
+  // The selected step is not offered as its own target.
+  expect(screen.queryByRole('option', { name: `${decision} 1` })).toBeNull();
+  fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' });
+  fireEvent.change(screen.getByLabelText(`${f.label('flow.stepName')} · TR`), {
+    target: { value: 'Şikayet türü?' },
+  });
+  const renamed = f.store.getSnapshot().document.flow.nodes.find((n) => n.id === first!.id)!;
+  expect(renamed.labelKey).toBeDefined();
+  expect(f.store.getSnapshot().document.i18n.messages['tr']?.[renamed.labelKey!]).toBe(
+    'Şikayet türü?',
+  );
+  await waitFor(() => {
+    expect(
+      [...document.querySelectorAll('.react-flow__node strong')].some(
+        (node) => node.textContent === 'Şikayet türü?',
+      ),
+    ).toBe(true);
+  });
+});
+it('sets a flow step value from another variable or a formula without JSON', async () => {
+  const f = await setup();
+  fireEvent.click(screen.getByRole('button', { name: f.label('flow.types.setVariable') }));
+  const added = f.store.getSnapshot().document.flow.nodes.at(-1)!;
+  await f.select(added.id);
+  expect(screen.queryByRole('textbox', { name: /JSON/ })).toBeNull();
+  expect(screen.getByRole('textbox', { name: f.label('value.fixedValue') }).tagName).toBe('INPUT');
+  await choose(f.label('value.mode'), f.label('value.modes.variable'));
+  expect(f.store.getSnapshot().document.flow.nodes.at(-1)).toMatchObject({
+    value: { $expr: 'vars.synthetic' },
+  });
+  await choose(f.label('value.mode'), f.label('value.modes.fixed'));
+  expect(f.store.getSnapshot().document.flow.nodes.at(-1)).toMatchObject({ value: '' });
+});

@@ -58,7 +58,8 @@ export default function Login() {
           <a
             className="vb-button vb-access-provider"
             key={provider.id}
-            href={loginUrl(discovery.data.tenant, provider.id)}
+            // The sign-in page replaces whatever was open when the session ended; come back there.
+            href={loginUrl(discovery.data.tenant, provider.id, window.location.pathname)}
           >
             {provider.displayName}
             <ArrowUpRight size={16} aria-hidden />

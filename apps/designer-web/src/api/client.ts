@@ -92,8 +92,12 @@ export const DiscoverySchema = z.object({
     z.object({ id: z.string(), displayName: z.string(), protocol: z.enum(['oidc', 'saml']) }),
   ),
 });
-export function loginUrl(tenant: string, provider: string): string {
-  return `/api/auth/login?${new URLSearchParams({ tenant, idp: provider, app: 'designer', returnTo: '/' }).toString()}`;
+/**
+ * Sign-in link that brings the designer back to `returnTo` (a path of this app) afterwards. The
+ * API keeps only a safe same-origin path and falls back to the start page otherwise.
+ */
+export function loginUrl(tenant: string, provider: string, returnTo = '/'): string {
+  return `/api/auth/login?${new URLSearchParams({ tenant, idp: provider, app: 'designer', returnTo }).toString()}`;
 }
 export const ResourceSchema = z.object({
   id: z.string(),

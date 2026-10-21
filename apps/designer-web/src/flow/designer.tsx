@@ -26,13 +26,13 @@ import {
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ruleToExpression } from '@verbis/expr';
-import { FlowNodeSchema, type FlowNode, type JsonValue } from '@verbis/script-schema';
+import { FlowNodeSchema, type Condition, type FlowNode } from '@verbis/script-schema';
 import { Button, Badge, Input, Textarea, Select, Alert } from '@verbis/ui';
 
-import { ExpressionEditor } from '../editor/expression-lazy.js';
 import { useEditor, type EditorStore } from '../editor/store.js';
+import { ValueEditor, emptyValue, valueKind } from '../editor/value-editor.js';
 import { RuleBuilder } from '../rules/builder.js';
+import { shortCondition } from '../rules/describe.js';
 import { ruleFields } from '../rules/fields.js';
 
 import { SubflowImport } from './import-dialog.js';
@@ -43,19 +43,12 @@ import {
   mutateFlow,
   flowProblems,
   flowNodeLabel,
+  flowNodeLabelKey,
   removeFlowElements,
 } from './model.js';
 
 import '@xyflow/react/dist/style.css';
 import './styles.css';
-
-function conditionSummary(value: unknown): string {
-  try {
-    return ruleToExpression(value);
-  } catch {
-    return '';
-  }
-}
 
 interface Data extends Record<string, unknown> {
   label: string;
@@ -198,6 +191,20 @@ function FlowCanvas({
     edge = flow.edges.find((e) => e.id === selectedEdge),
     note = flow.designer?.notes.find((n) => n.id === selection[0]);
   const fields = ruleFields(state.document);
+  const describeNodes = {
+    flow,
+    typeName: (type: FlowNode['type']) => t(`designer.flow.types.${type}`),
+  };
+  // Edge labels read as sentences ("Complaint = Damaged parcel"), never as expression source.
+  const edgeLabel = (when: Condition) => {
+    const translate = (key: string, options?: Record<string, unknown>) => t(key, options ?? {});
+    if ('$expr' in when) return shortCondition({ $expr: when.$expr }, fields, translate);
+    const rule = state.document.rules.find((r) => r.id === when.$rule);
+    if (!rule) return '';
+    // An empty description falls back to the generated sentence.
+    if (rule.description?.trim()) return rule.description.trim();
+    return shortCondition(rule.when, fields, translate);
+  };
   const groups: GraphNode[] = useMemo(
     () =>
       (flow.designer?.groups ?? []).flatMap((group) => {
@@ -239,7 +246,10 @@ function FlowCanvas({
             node.position ?? { x: (index % 3) * 260, y: Math.floor(index / 3) * 160 },
           className: traceNodes?.has(node.id) ? 'fd-visited' : '',
           data: {
-            label: flowNodeLabel(state.document, node),
+            label: flowNodeLabel(state.document, node, {
+              flow,
+              typeName: (type) => t(`designer.flow.types.${type}`),
+            }),
             kind: node.type,
             problems: problems.get(node.id) ?? [],
             visited: traceNodes?.has(node.id) ?? false,
@@ -258,7 +268,7 @@ function FlowCanvas({
             selected: selection.includes(note.id),
           })),
         ),
-    [flow, temporary, selection, state.document, problems, traceNodes, traceCurrent],
+    [flow, temporary, selection, state.document, problems, traceNodes, traceCurrent, t],
   );
   const canvasNodes = useMemo(() => [...groups, ...nodes], [groups, nodes]);
   const update = (next: FlowNode) => {
@@ -314,7 +324,8 @@ function FlowCanvas({
             value={flow.id}
             options={[state.document.flow, ...state.document.subflows].map((f) => ({
               value: f.id,
-              label: f.name ?? f.id,
+              label:
+                f.name ?? (f.id === state.document.flow.id ? t('designer.flow.mainFlow') : f.id),
             }))}
             onValueChange={(value) => {
               setFlowId(value);
@@ -496,15 +507,9 @@ function FlowCanvas({
               ? t('designer.flow.else')
               : e.port
                 ? t(`designer.flow.${e.port}`)
-                : e.when && '$expr' in e.when
-                  ? e.when.$expr
-                  : e.when && '$rule' in e.when
-                    ? conditionSummary(
-                        state.document.rules.find(
-                          (r) => r.id === (e.when && '$rule' in e.when ? e.when.$rule : ''),
-                        )?.when ?? { $expr: 'true' },
-                      )
-                    : '',
+                : e.when
+                  ? edgeLabel(e.when)
+                  : '',
             selected: e.id === selectedEdge,
             className: trace?.edges.has(e.id) ? 'fd-visited-edge' : '',
             style: trace?.edges.has(e.id)
@@ -642,27 +647,63 @@ function FlowCanvas({
             {selected && (
               <>
                 <h3>{t(`designer.flow.types.${selected.type}`)}</h3>
-                <code>{selected.id}</code>
-                {(['x', 'y'] as const).map((axis) => (
-                  <Input
-                    key={axis}
-                    type="number"
-                    label={axis.toUpperCase()}
-                    value={selected.position?.[axis] ?? 0}
-                    onChange={(event) => {
-                      const number = Number(event.target.value);
-                      if (Number.isFinite(number))
-                        update({
-                          ...selected,
-                          position: {
-                            x: selected.position?.x ?? 0,
-                            y: selected.position?.y ?? 0,
-                            [axis]: number,
-                          },
+                {/* Authors name steps; the generated id stays out of the way. */}
+                {(['tr', 'en'] as const).map((locale) => {
+                  const key = selected.labelKey ?? flowNodeLabelKey(selected.id);
+                  return (
+                    <Input
+                      key={`${selected.id}.${locale}`}
+                      label={`${t('designer.flow.stepName')} · ${locale.toUpperCase()}`}
+                      placeholder={flowNodeLabel(state.document, selected, {
+                        flow,
+                        typeName: (type) => t(`designer.flow.types.${type}`),
+                      })}
+                      value={state.document.i18n.messages[locale]?.[key] ?? ''}
+                      onChange={(event) => {
+                        if (readOnly) return;
+                        const text = event.target.value;
+                        store.execute(() => {
+                          store.edit((d) => {
+                            const target =
+                              d.flow.id === flow.id
+                                ? d.flow
+                                : d.subflows.find((f) => f.id === flow.id);
+                            const step = target?.nodes.find((n) => n.id === selected.id);
+                            if (!step) return;
+                            step.labelKey = key;
+                            d.i18n.messages[locale] ??= {};
+                            const catalog = d.i18n.messages[locale];
+                            catalog[key] = text;
+                          });
                         });
-                    }}
-                  />
-                ))}
+                      }}
+                    />
+                  );
+                })}
+                <details className="fd-position">
+                  <summary>{t('designer.flow.position')}</summary>
+                  <code>{selected.id}</code>
+                  {(['x', 'y'] as const).map((axis) => (
+                    <Input
+                      key={axis}
+                      type="number"
+                      label={axis.toUpperCase()}
+                      value={selected.position?.[axis] ?? 0}
+                      onChange={(event) => {
+                        const number = Number(event.target.value);
+                        if (Number.isFinite(number))
+                          update({
+                            ...selected,
+                            position: {
+                              x: selected.position?.x ?? 0,
+                              y: selected.position?.y ?? 0,
+                              [axis]: number,
+                            },
+                          });
+                      }}
+                    />
+                  ))}
+                </details>
                 <Button
                   variant="ghost"
                   onClick={() => {
@@ -681,8 +722,14 @@ function FlowCanvas({
                       label={t('designer.flow.connectTarget')}
                       value={connectTarget}
                       options={flow.nodes
-                        .filter((n) => n.type !== 'start')
-                        .map((n) => ({ value: n.id, label: n.id }))}
+                        .filter((n) => n.type !== 'start' && n.id !== selected.id)
+                        .map((n) => ({
+                          value: n.id,
+                          label: flowNodeLabel(state.document, n, {
+                            flow,
+                            typeName: (type) => t(`designer.flow.types.${type}`),
+                          }),
+                        }))}
                       onValueChange={setConnectTarget}
                     />
                     {(selected.type === 'decision' || selected.type === 'dataSource') && (
@@ -752,48 +799,48 @@ function FlowCanvas({
                     }}
                   />
                 )}
-                {selected.type === 'setVariable' && (
-                  <>
-                    <Select
-                      label={t('designer.variables.name')}
-                      value={selected.variable}
-                      options={state.document.variables
-                        .filter((v) => v.scope !== 'global')
-                        .map((v) => ({ value: v.key, label: v.key }))}
-                      onValueChange={(variable) => {
-                        update({ ...selected, variable });
-                      }}
-                    />
-                    <Textarea
-                      label={t('designer.rules.value')}
-                      defaultValue={JSON.stringify(selected.value)}
-                      onBlur={(event) => {
-                        store.execute(() => {
-                          update({
-                            ...selected,
-                            value: JSON.parse(event.target.value) as JsonValue,
-                          });
-                        });
-                      }}
-                    />
-                    <ExpressionEditor
-                      value={
-                        typeof selected.value === 'object' &&
-                        selected.value !== null &&
-                        '$expr' in selected.value
-                          ? typeof selected.value.$expr === 'string'
-                            ? selected.value.$expr
-                            : ''
-                          : ''
-                      }
-                      label={t('designer.editor.invalidExpression')}
-                      variables={state.document.variables.map((v) => v.key)}
-                      onChange={(value) => {
-                        if (value) update({ ...selected, value: { $expr: value } });
-                      }}
-                    />
-                  </>
-                )}
+                {selected.type === 'setVariable' &&
+                  (() => {
+                    const target = state.document.variables.find(
+                      (v) => v.key === selected.variable,
+                    );
+                    const assignable = state.document.variables.filter((v) => v.scope !== 'global');
+                    return (
+                      <>
+                        <Select
+                          label={t('designer.variables.name')}
+                          value={selected.variable}
+                          options={assignable.map((v) => ({
+                            value: v.key,
+                            label: v.key,
+                            hint: t(`designer.variables.types.${v.type}`),
+                          }))}
+                          onValueChange={(variable) => {
+                            const next = assignable.find((v) => v.key === variable);
+                            update({
+                              ...selected,
+                              variable,
+                              value:
+                                next?.type === 'enum'
+                                  ? (next.enumValues?.[0] ?? '')
+                                  : emptyValue(valueKind(next?.type)),
+                            });
+                          }}
+                        />
+                        <ValueEditor
+                          key={`${selected.id}.${selected.variable}`}
+                          label={t('designer.actions.fields.value')}
+                          value={selected.value}
+                          kind={valueKind(target?.type)}
+                          choices={target?.enumValues?.map((value) => ({ value, label: value }))}
+                          variables={assignable.map((v) => ({ key: v.key, type: v.type }))}
+                          onChange={(value) => {
+                            update({ ...selected, value });
+                          }}
+                        />
+                      </>
+                    );
+                  })()}
                 {selected.type === 'transfer' && (
                   <Input
                     label={t('designer.flow.target')}
@@ -910,7 +957,14 @@ function FlowCanvas({
             {flow.designer?.groups.map((group) => (
               <div key={group.id}>
                 <Badge>{group.label}</Badge>
-                <p>{group.nodes.join(', ')}</p>
+                <p>
+                  {group.nodes
+                    .map((id) => {
+                      const member = flow.nodes.find((n) => n.id === id);
+                      return member ? flowNodeLabel(state.document, member, describeNodes) : id;
+                    })
+                    .join(', ')}
+                </p>
                 <Button
                   variant="ghost"
                   onClick={() => {

@@ -110,7 +110,8 @@ test('opens protocol, health and consumer list, then edits a service', async ({ 
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   const request = await preview;
   expect(request.headers()['x-csrf-token']).toBe(sessionFixture.csrfToken);
-  await expect(page.locator('.ig-code')).toContainText('[REDACTED]');
+  await expect(page.locator('.ig-trace')).toContainText('Mock');
+  await expect(page.locator('.ig-trace .ig-code').last()).toContainText('[REDACTED]');
 });
 test('cURL import is data-only and rejects embedded credentials', async ({ page }) => {
   await page.goto('/integrations/new');
@@ -128,9 +129,13 @@ test('production profiles are read-only and promotion requires a saved draft and
   await expect(
     page.getByRole('button', { name: 'Request production promotion', exact: true }),
   ).toBeDisabled();
+  const production = page.locator('.ig-card').filter({
+    has: page.getByRole('heading', { name: 'Production', exact: true }),
+  });
+  await expect(production.getByRole('textbox', { name: 'Base URL', exact: true })).toBeDisabled();
   await expect(
-    page.getByRole('textbox', { name: 'Profile base URL / auth', exact: true }).last(),
-  ).toBeDisabled();
+    page.locator('.ig-card').first().getByRole('textbox', { name: 'Base URL', exact: true }),
+  ).toBeEnabled();
 });
 for (const theme of ['light', 'dark', 'high-contrast'])
   test(`integration editor ${theme} keyboard and axe`, async ({ page }) => {
@@ -226,14 +231,15 @@ test('console refuses malformed JSON instead of executing its previous valid inp
   await expect(page.locator('.ig-code')).toHaveCount(0);
   await page.getByLabel('Test input (JSON)', { exact: true }).fill('{}');
   await page.getByRole('button', { name: 'Send', exact: true }).click();
-  await expect(page.locator('.ig-code')).toContainText('"mock": true');
+  await expect(page.locator('.ig-trace')).toContainText('Mock');
+  await expect(page.locator('.ig-trace pre').first()).toBeHidden();
   expect(calls).toBe(1);
 });
 test('SQL form authors a named read-only query and passes axe', async ({ page }) => {
   await page.goto('/integrations/new');
   await page.getByRole('tab', { name: 'Request', exact: true }).click();
   await page.getByRole('combobox', { name: 'Protocol', exact: true }).click();
-  await page.getByRole('option', { name: 'SQL', exact: true }).click();
+  await page.getByRole('option', { name: 'SQL (private network)', exact: true }).click();
   await page
     .getByRole('textbox', { name: 'Private gateway client ID', exact: true })
     .fill('01990000-0000-7000-8000-000000000001');

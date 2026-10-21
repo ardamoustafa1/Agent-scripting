@@ -587,7 +587,12 @@ export function CollaborationPanel({
               onValueChange={setRecoveryId}
             />
           )}
-          <Comments scriptId={scriptId} number={number} nodeId={state.selection[0] ?? 'script'} />
+          <Comments
+            scriptId={scriptId}
+            number={number}
+            nodeId={state.selection[0] ?? 'script'}
+            document={state.document}
+          />
           <Suggestions
             scriptId={scriptId}
             number={number}

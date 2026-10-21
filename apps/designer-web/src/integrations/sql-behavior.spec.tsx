@@ -24,7 +24,9 @@ async function chooseSql(f: Awaited<ReturnType<typeof setup>>) {
     ctrlKey: false,
   });
   fireEvent.click(await screen.findByRole('combobox', { name: f.label('integrations.protocol') }));
-  fireEvent.click(await screen.findByRole('option', { name: 'SQL' }));
+  fireEvent.click(
+    await screen.findByRole('option', { name: f.label('integrations.protocols.sql') }),
+  );
 }
 it('authors a named read-only query with ordered parameters and no SQL text field', async () => {
   const f = await setup();

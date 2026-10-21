@@ -22,7 +22,7 @@ import { z } from 'zod';
 
 import { useAbility } from '@verbis/authz/react';
 import { PredicateSchema, type Predicate } from '@verbis/script-schema';
-import { Alert, Button, Input, MultiSelect, Select, Textarea, Badge } from '@verbis/ui';
+import { Alert, Button, Input, MultiSelect, Select, Badge } from '@verbis/ui';
 
 import { request, PageSchema, VersionsSchema } from '../api/client.js';
 import { RuleBuilder, containsExpression } from '../rules/builder.js';
@@ -30,6 +30,7 @@ import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure } from '../workspace/states.js';
 
 import { ConflictList, VariantInsights } from './assignment-insights.js';
+import { CHANNELS, ResolverTester } from './resolver-tester.js';
 import './styles.css';
 
 const Row = z.object({
@@ -66,7 +67,22 @@ function SortRow({
   disabled: boolean;
   name: string;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const date = (value: string) =>
+    new Intl.DateTimeFormat(i18n.language, { dateStyle: 'medium', timeStyle: 'short' }).format(
+      new Date(value),
+    );
+  const validity =
+    row.effectiveFrom && row.effectiveTo
+      ? t('designer.lifecycle.window.between', {
+          from: date(row.effectiveFrom),
+          to: date(row.effectiveTo),
+        })
+      : row.effectiveFrom
+        ? t('designer.lifecycle.window.from', { from: date(row.effectiveFrom) })
+        : row.effectiveTo
+          ? t('designer.lifecycle.window.until', { to: date(row.effectiveTo) })
+          : '';
   const { setNodeRef, transform, transition, attributes, listeners } = useSortable({
     id: row.id,
     disabled,
@@ -90,9 +106,18 @@ function SortRow({
         <GripVertical size={16} aria-hidden />
       </Button>
       <strong>{name}</strong>
-      <Badge>{row.priority}</Badge>
-      <span>{[row.effectiveFrom, row.effectiveTo].filter(Boolean).join(' – ')}</span>
-      <span>{row.variants?.map((v) => `${v.key}: ${v.weight / 100}%`).join(' / ')}</span>
+      <Badge>{t('designer.lifecycle.conflicts.priority', { priority: row.priority })}</Badge>
+      <span>{validity}</span>
+      <span>
+        {row.variants
+          ?.map((v) =>
+            t('designer.lifecycle.window.arm', {
+              arm: v.key.toUpperCase(),
+              share: v.weight / 100,
+            }),
+          )
+          .join(' / ')}
+      </span>
       <Button variant="secondary" disabled={disabled} onClick={edit}>
         {t('designer.editor.apply')}
       </Button>
@@ -146,11 +171,7 @@ export default function AssignmentsPage() {
     [useAb, setUseAb] = useState(false),
     [condition, setCondition] = useState<Predicate>({ fact: 'interaction.channel', op: 'exists' }),
     [busy, setBusy] = useState(false),
-    [failed, setFailed] = useState(false),
-    [channel, setChannel] = useState('voice'),
-    [campaign, setCampaign] = useState(''),
-    [input, setInput] = useState('{}'),
-    [result, setResult] = useState<unknown>(undefined);
+    [failed, setFailed] = useState(false);
   const variantVersions = useQuery({
     queryKey: [...key, 'variants', editing?.scriptId ?? id],
     queryFn: ({ signal }) =>
@@ -391,12 +412,34 @@ export default function AssignmentsPage() {
             value={condition}
             onChange={setCondition}
             fields={[
-              ...['channel', 'locale', 'queue', 'segment'].map((key) => ({
+              {
+                path: 'interaction.channel',
+                type: 'string',
+                label: t('designer.lifecycle.facts.channel'),
+                choices: CHANNELS.map((value) => ({
+                  value,
+                  label: t(`designer.preview.channels.${value}`),
+                })),
+              },
+              {
+                path: 'interaction.locale',
+                type: 'string',
+                label: t('designer.lifecycle.facts.locale'),
+                choices: ['tr', 'en'].map((value) => ({
+                  value,
+                  label: t(`common.locale.${value}`),
+                })),
+              },
+              ...(['queue', 'segment'] as const).map((key) => ({
                 path: `interaction.${key}`,
                 type: 'string' as const,
-                label: `interaction.${key}`,
+                label: t(`designer.lifecycle.facts.${key}`),
               })),
-              { path: 'interaction.skills', type: 'array', label: 'interaction.skills' },
+              {
+                path: 'interaction.skills',
+                type: 'array',
+                label: t('designer.lifecycle.facts.skills'),
+              },
             ]}
           />
           <Button
@@ -452,51 +495,23 @@ export default function AssignmentsPage() {
           }}
         />
       )}
-      <article className="lc-card">
-        <h2>{t('designer.lifecycle.resolver')}</h2>
-        <p>{t('designer.lifecycle.resolverHelp')}</p>
-        <Select
-          label={t('designer.workspace.nav.campaigns')}
-          value={campaign}
-          onValueChange={setCampaign}
-          options={options}
-        />
-        <Select
-          label={t('designer.preview.channel')}
-          value={channel}
-          onValueChange={setChannel}
-          options={['voice', 'chat', 'email', 'sms', 'whatsapp', 'social', 'video'].map(
-            (value) => ({ value, label: value }),
-          )}
-        />
-        <Textarea
-          label={t('designer.lifecycle.context')}
-          value={input}
-          onChange={(e) => {
-            setInput(e.target.value);
-          }}
-        />
-        <Button
-          loading={busy}
-          disabled={!campaign}
-          onClick={() => {
-            try {
-              const attributes: unknown = JSON.parse(input);
-              void perform('/v1/script-resolutions', {
-                campaignId: campaign,
-                channel,
-                locale: 'tr',
-                attributes,
-              }).then(setResult);
-            } catch {
-              setFailed(true);
-            }
-          }}
-        >
-          {t('designer.lifecycle.resolveContext')}
-        </Button>
-        {result !== undefined && <pre aria-live="polite">{JSON.stringify(result, null, 2)}</pre>}
-      </article>
+      <ResolverTester
+        campaigns={options}
+        busy={busy}
+        resolve={(body) => perform('/v1/script-resolutions', body)}
+        scriptName={(scriptId) =>
+          scripts.data?.data.find((x) => x.id === scriptId)?.name ??
+          t('designer.lifecycle.resolution.unknownScript')
+        }
+        assignmentName={(assignmentId) => {
+          const found = rows.find((r) => r.id === assignmentId);
+          const script = scripts.data?.data.find((x) => x.id === found?.scriptId)?.name;
+          const campaignName = campaigns.data.data.find((c) => c.id === found?.campaignId)?.name;
+          return script && campaignName
+            ? `${script} · ${campaignName}`
+            : (script ?? t('designer.lifecycle.resolution.otherAssignment'));
+        }}
+      />
     </section>
   );
 }

@@ -172,13 +172,20 @@ it('reports release command failures without claiming success', async () => {
   expect(await screen.findByRole('alert')).toBeTruthy();
   expect(screen.queryByText(f.label('lifecycle.done'))).toBeNull();
 });
-it('renders JSON patch details and switches baseline versions', async () => {
+it('describes every change in words and switches baseline versions', async () => {
   const f = await setup('published');
   fireEvent.mouseDown(await screen.findByRole('tab', { name: f.label('lifecycle.jsonDiff') }), {
     button: 0,
     ctrlKey: false,
   });
-  expect(await screen.findByText('/meta/name')).toBeTruthy();
+  expect(
+    await screen.findByText(
+      new RegExp(
+        `${f.label('lifecycle.diffText.fields.meta')} › ${f.label('lifecycle.diffText.fields.name')}`,
+      ),
+    ),
+  ).toBeTruthy();
+  expect(screen.queryByText('/meta/name')).toBeNull();
   fireEvent.click(screen.getByRole('combobox', { name: f.label('lifecycle.baseline') }));
   fireEvent.click(await screen.findByRole('option', { name: 'v2' }));
   await waitFor(() => {

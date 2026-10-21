@@ -7,7 +7,7 @@ import { Button, Input, Select, Alert, EmptyState } from '@verbis/ui';
 import { useEditor, type EditorStore } from '../editor/store.js';
 
 import { RuleBuilder } from './builder.js';
-import { ruleFields } from './fields.js';
+import { ruleDisplayName, ruleFields } from './fields.js';
 
 export function RuleManager({
   store,
@@ -60,7 +60,7 @@ export function RuleManager({
               value={selected}
               options={state.document.rules.map((r) => ({
                 value: r.id,
-                label: r.description ?? r.id,
+                label: ruleDisplayName(r, state.document, (k, o) => t(k, o ?? {})),
               }))}
               onValueChange={setSelected}
             />

@@ -16,10 +16,21 @@ import {
 import { Button, Input, Textarea, Select, Tabs, Alert, Badge, Dialog, Checkbox } from '@verbis/ui';
 
 import { request, ApiError } from '../api/client.js';
+import { KeyValueField } from '../preview/key-value-field.js';
 import { useWorkspace } from '../workspace/context.js';
 import { Loading, Failure, Forbidden } from '../workspace/states.js';
 
 import { AuthEditor } from './auth.js';
+import {
+  BodyField,
+  ProfileFields,
+  ProfileSummary,
+  SampleDataField,
+  SchemaFieldsEditor,
+  TestInputFields,
+  TraceView,
+  UrlListField,
+} from './forms.js';
 import {
   defaults,
   importCurl,
@@ -30,6 +41,7 @@ import {
 } from './importers.js';
 import { JsonField } from './json-field.js';
 import { MappingEditor } from './mapping.js';
+import { sampleFromSchema } from './schema-fields.js';
 import { SqlEditor } from './sql-form.js';
 import { emptySqlForm, sqlDefinitionPatch, sqlFormOf, withoutSql } from './sql-model.js';
 import './styles.css';
@@ -38,6 +50,9 @@ type Draft = z.infer<typeof IntegrationSaveSchema>;
 type Record = z.infer<typeof IntegrationRecordSchema>;
 type Trace = z.infer<typeof IntegrationConsoleSchema>;
 const object = z.record(z.string(), z.unknown());
+/** Mirrors the save schema's reserved headers so authors see the reason as they type. */
+const RESERVED_HEADER =
+  /^(authorization|proxy-authorization|cookie|host|connection|content-length|transfer-encoding)$/i;
 export default function IntegrationEditor() {
   const { id } = useParams(),
     { session } = useWorkspace(),
@@ -260,7 +275,7 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                     value={draft.protocol}
                     options={['rest', 'soap', 'graphql', 'sql'].map((value) => ({
                       value,
-                      label: value.toUpperCase(),
+                      label: t(`designer.integrations.protocols.${value}`),
                     }))}
                     onValueChange={(protocol) => {
                       const type = IntegrationSaveSchema.shape.protocol.parse(protocol);
@@ -329,27 +344,37 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                         }}
                       />
                       <p>{t('designer.integrations.templateHelp')}</p>
-                      <JsonField
+                      <KeyValueField
                         label={t('designer.integrations.headers')}
+                        keyLabel={t('designer.integrations.forms.headerName')}
+                        valueLabel={t('designer.integrations.forms.headerValue')}
+                        keyError={(key) =>
+                          RESERVED_HEADER.test(key)
+                            ? t('designer.integrations.forms.reservedHeader')
+                            : undefined
+                        }
                         value={draft.definition.headers}
                         change={(value) => {
                           patch({ headers: z.record(z.string(), z.string()).parse(value) });
                         }}
                       />
-                      <JsonField
+                      <KeyValueField
                         label={t('designer.integrations.query')}
+                        keyLabel={t('designer.integrations.forms.queryName')}
+                        valueLabel={t('designer.integrations.forms.queryValue')}
                         value={draft.definition.query}
                         change={(value) => {
                           patch({ query: z.record(z.string(), z.string()).parse(value) });
                         }}
                       />
-                      <JsonField
-                        label={t('designer.integrations.body')}
-                        value={draft.definition.body}
-                        change={(body) => {
-                          patch({ body });
-                        }}
-                      />
+                      {!['GET', 'HEAD'].includes(draft.definition.method) && (
+                        <BodyField
+                          value={draft.definition.body}
+                          onChange={(body) => {
+                            patch({ body });
+                          }}
+                        />
+                      )}
                       <AuthEditor
                         value={draft.definition.auth}
                         change={(auth) => {
@@ -357,28 +382,66 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                         }}
                       />
                       {draft.protocol === 'soap' && (
-                        <JsonField
-                          label={t('designer.integrations.soap')}
-                          value={draft.definition.soap}
-                          change={(value) => {
-                            patch({ soap: IntegrationDefinitionSchema.shape.soap.parse(value) });
-                          }}
-                        />
+                        <fieldset className="ig-schema">
+                          <legend>{t('designer.integrations.soap')}</legend>
+                          {(['namespace', 'operation', 'action'] as const).map((field) => (
+                            <Input
+                              key={field}
+                              label={t(`designer.integrations.forms.soap.${field}`)}
+                              value={draft.definition.soap?.[field] ?? ''}
+                              onChange={(e) => {
+                                patch({
+                                  soap: {
+                                    namespace: draft.definition.soap?.namespace ?? '',
+                                    operation: draft.definition.soap?.operation ?? '',
+                                    action: draft.definition.soap?.action ?? '',
+                                    [field]: e.target.value,
+                                  },
+                                });
+                              }}
+                            />
+                          ))}
+                        </fieldset>
                       )}
                       {draft.protocol === 'graphql' && (
-                        <Textarea
-                          label={t('designer.integrations.graphqlQuery')}
-                          value={draft.definition.graphql?.query ?? ''}
-                          onChange={(e) => {
-                            patch({
-                              graphql: {
-                                query: e.target.value,
-                                maxDepth: draft.definition.graphql?.maxDepth ?? 8,
-                                maxComplexity: draft.definition.graphql?.maxComplexity ?? 200,
-                              },
-                            });
-                          }}
-                        />
+                        <>
+                          <Textarea
+                            label={t('designer.integrations.graphqlQuery')}
+                            value={draft.definition.graphql?.query ?? ''}
+                            onChange={(e) => {
+                              patch({
+                                graphql: {
+                                  query: e.target.value,
+                                  maxDepth: draft.definition.graphql?.maxDepth ?? 8,
+                                  maxComplexity: draft.definition.graphql?.maxComplexity ?? 200,
+                                },
+                              });
+                            }}
+                          />
+                          {(['maxDepth', 'maxComplexity'] as const).map((limit) => (
+                            <Input
+                              key={limit}
+                              type="number"
+                              min={1}
+                              max={limit === 'maxDepth' ? 20 : 5000}
+                              label={t(`designer.integrations.forms.${limit}`)}
+                              value={
+                                draft.definition.graphql?.[limit] ??
+                                (limit === 'maxDepth' ? 8 : 200)
+                              }
+                              onChange={(e) => {
+                                patch({
+                                  graphql: {
+                                    query: draft.definition.graphql?.query ?? '',
+                                    maxDepth: draft.definition.graphql?.maxDepth ?? 8,
+                                    maxComplexity: draft.definition.graphql?.maxComplexity ?? 200,
+                                    [limit]: Number(e.target.value),
+                                  },
+                                });
+                              }}
+                            />
+                          ))}
+                        </>
                       )}
                     </>
                   )}
@@ -402,13 +465,18 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                       patch({ mapping: { ...draft.definition.mapping, response } });
                     }}
                   />
-                  <Textarea
-                    label={t('designer.integrations.requestMapping')}
-                    value={draft.definition.mapping.request ?? ''}
-                    onChange={(e) => {
-                      patch({ mapping: { ...draft.definition.mapping, request: e.target.value } });
-                    }}
-                  />
+                  <details className="pv-advanced">
+                    <summary>{t('designer.integrations.forms.requestMappingAdvanced')}</summary>
+                    <Textarea
+                      label={t('designer.integrations.requestMapping')}
+                      value={draft.definition.mapping.request ?? ''}
+                      onChange={(e) => {
+                        patch({
+                          mapping: { ...draft.definition.mapping, request: e.target.value },
+                        });
+                      }}
+                    />
+                  </details>
                   <Console draft={draft} autoPreview id={initial?.id} disabled={!editable} />
                 </>
               )}
@@ -438,14 +506,12 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                       }}
                     />
                   ))}
-                  <JsonField
+                  <UrlListField
                     label={t('designer.integrations.allowedOrigins')}
-                    value={draft.policy.allowedOrigins}
-                    change={(value) => {
-                      setDraft({
-                        ...draft,
-                        policy: { ...draft.policy, allowedOrigins: z.array(z.url()).parse(value) },
-                      });
+                    help={t('designer.integrations.forms.allowedOriginsHelp')}
+                    values={draft.policy.allowedOrigins}
+                    onChange={(allowedOrigins) => {
+                      setDraft((d) => ({ ...d, policy: { ...d.policy, allowedOrigins } }));
                     }}
                   />
                   <Checkbox
@@ -458,13 +524,35 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                       });
                     }}
                   />
-                  <JsonField
-                    label={t('designer.integrations.fallback')}
-                    value={draft.policy.fallback}
-                    change={(fallback) => {
-                      setDraft({ ...draft, policy: { ...draft.policy, fallback } });
+                  <Checkbox
+                    label={t('designer.integrations.forms.useFallback')}
+                    checked={draft.policy.fallback !== undefined}
+                    onCheckedChange={(checked) => {
+                      setDraft((d) => {
+                        const { fallback: _previous, ...policy } = d.policy;
+                        return {
+                          ...d,
+                          policy:
+                            checked === true
+                              ? {
+                                  ...policy,
+                                  fallback: sampleFromSchema(d.definition.outputSchema) ?? {},
+                                }
+                              : policy,
+                        };
+                      });
                     }}
                   />
+                  {draft.policy.fallback !== undefined && (
+                    <SampleDataField
+                      label={t('designer.integrations.fallback')}
+                      value={draft.policy.fallback}
+                      schema={draft.definition.outputSchema}
+                      onChange={(fallback) => {
+                        setDraft((d) => ({ ...d, policy: { ...d.policy, fallback } }));
+                      }}
+                    />
+                  )}
                   <p>{t('designer.integrations.resilienceHelp')}</p>
                 </>
               )}
@@ -482,10 +570,11 @@ function Editor({ initial }: { initial?: Record | undefined }) {
                       });
                     }}
                   />
-                  <JsonField
+                  <SampleDataField
                     label={t('designer.integrations.mockResponse')}
                     value={draft.definition.mock?.response ?? {}}
-                    change={(response) => {
+                    schema={draft.definition.outputSchema}
+                    onChange={(response) => {
                       patch({
                         mock: { enabled: draft.definition.mock?.enabled ?? false, response },
                       });
@@ -559,7 +648,7 @@ function ImportWizard({
         value={draft.protocol}
         options={['rest', 'soap', 'graphql', 'sql'].map((value) => ({
           value,
-          label: value.toUpperCase(),
+          label: t(`designer.integrations.protocols.${value}`),
         }))}
         onValueChange={(value) => {
           onProtocol(IntegrationSaveSchema.shape.protocol.parse(value));
@@ -677,7 +766,12 @@ function ImportWizard({
               }}
             />
           )}
-          {schema !== null && <pre className="ig-code">{JSON.stringify(schema, null, 2)}</pre>}
+          {schema !== null && (
+            <details>
+              <summary>{t('designer.integrations.forms.introspected')}</summary>
+              <pre className="ig-code">{JSON.stringify(schema, null, 2)}</pre>
+            </details>
+          )}
           {error && <Alert title={t('designer.integrations.importError')} tone="danger" />}
         </>
       )}
@@ -718,18 +812,20 @@ function SchemaEditor({
       >
         {t('designer.integrations.infer')}
       </Button>
-      <JsonField
+      <SchemaFieldsEditor
         label={t('designer.integrations.inputSchema')}
-        value={draft.definition.inputSchema}
-        change={(value) => {
-          patch({ inputSchema: object.parse(value) });
+        help={t('designer.integrations.forms.inputSchemaHelp')}
+        schema={draft.definition.inputSchema}
+        onChange={(inputSchema) => {
+          patch({ inputSchema });
         }}
       />
-      <JsonField
+      <SchemaFieldsEditor
         label={t('designer.integrations.outputSchema')}
-        value={draft.definition.outputSchema}
-        change={(value) => {
-          patch({ outputSchema: object.parse(value) });
+        help={t('designer.integrations.forms.outputSchemaHelp')}
+        schema={draft.definition.outputSchema}
+        onChange={(outputSchema) => {
+          patch({ outputSchema });
         }}
       />
       <Checkbox
@@ -828,10 +924,11 @@ function MockScenarios({
                 update({ delayMs: Number(e.target.value) });
               }}
             />
-            <JsonField
+            <SampleDataField
               label={t('designer.integrations.mockResponse')}
               value={scenario.response}
-              change={(response) => {
+              schema={draft.definition.outputSchema}
+              onChange={(response) => {
                 update({ response });
               }}
             />
@@ -918,14 +1015,14 @@ function Console({
     <>
       <p>{t('designer.integrations.redacted')}</p>
       <div ref={inputHost}>
-        <JsonField label={t('designer.integrations.testInput')} value={input} change={setInput} />
+        <TestInputFields schema={draft.definition.inputSchema} value={input} onChange={setInput} />
       </div>
       <Select
         label={t('designer.integrations.scenario')}
         value={scenario}
         options={['default', ...draft.definition.mockScenarios.map((s) => s.key)].map((value) => ({
           value,
-          label: value,
+          label: value === 'default' ? t('designer.integrations.forms.defaultScenario') : value,
         }))}
         onValueChange={setScenario}
       />
@@ -974,7 +1071,7 @@ function Console({
             {t(trace.mock ? 'designer.integrations.mock' : 'designer.integrations.live')} ·{' '}
             {trace.error ?? t('designer.integrations.success')}
           </summary>
-          <pre className="ig-code">{JSON.stringify(trace, null, 2)}</pre>
+          <TraceView trace={trace} />
         </details>
       ))}
     </>
@@ -1041,24 +1138,25 @@ function Profiles({
       <div className="ig-profile-grid">
         {(['dev', 'test', 'prod'] as const).map((env) => (
           <section className="ig-card" key={env}>
-            <h2>{env}</h2>
+            <h2>{t(`designer.workspace.env.${env}`)}</h2>
             <fieldset disabled={env === 'prod' || !ability.can('update', 'Integration')}>
-              <JsonField
-                label={t('designer.integrations.profile')}
+              <ProfileFields
                 value={
                   draft.definition.profiles[env] ?? {
                     baseUrl: draft.definition.baseUrl,
                     auth: draft.definition.auth,
                   }
                 }
-                change={(value) => {
-                  if (env !== 'prod')
-                    patch({
-                      profiles: {
-                        ...draft.definition.profiles,
-                        [env]: IntegrationProfileSchema.parse(value),
-                      },
-                    });
+                onChange={(value) => {
+                  if (env === 'prod') return;
+                  const parsed = IntegrationProfileSchema.safeParse(value);
+                  // A URL is incomplete while typing; keep the text and validate on save.
+                  patch({
+                    profiles: {
+                      ...draft.definition.profiles,
+                      [env]: parsed.success ? parsed.data : value,
+                    },
+                  });
                 }}
               />
             </fieldset>
@@ -1073,7 +1171,10 @@ function Profiles({
       <Select
         label={t('designer.integrations.promoteFrom')}
         value={from}
-        options={['dev', 'test'].map((value) => ({ value, label: value }))}
+        options={['dev', 'test'].map((value) => ({
+          value,
+          label: t(`designer.workspace.env.${value}`),
+        }))}
         onValueChange={setFrom}
       />
       <Input
@@ -1116,9 +1217,7 @@ function Profiles({
         title={t('designer.integrations.approve')}
         description={t('designer.integrations.approveHelp')}
       >
-        <pre className="ig-code">
-          {JSON.stringify(initial?.definition.pendingPromotion?.profile, null, 2)}
-        </pre>
+        <ProfileSummary value={initial?.definition.pendingPromotion?.profile} />
         <Button
           loading={busy}
           onClick={() => {

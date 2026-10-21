@@ -197,6 +197,14 @@
   font-size: var(--vb-font-size-xs);
   overflow-wrap: anywhere;
 }
+.fd-position > * + * {
+  margin-block-start: var(--vb-space-2);
+}
+.fd-position summary {
+  cursor: pointer;
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-sm);
+}
 .fd-manager details code {
   display: block;
   overflow-wrap: anywhere;

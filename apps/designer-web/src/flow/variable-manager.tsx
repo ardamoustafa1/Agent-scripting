@@ -10,15 +10,31 @@ import {
   ClassificationSchema,
   JsonValueSchema,
   IdentifierSchema,
+  type JsonValue,
   type Variable,
 } from '@verbis/script-schema';
-import { Button, Input, Textarea, Select, DataTable, Dialog, Alert, EmptyState } from '@verbis/ui';
+import { Button, Input, Select, DataTable, Dialog, Alert, EmptyState } from '@verbis/ui';
 
 import { useEditor, type EditorStore } from '../editor/store.js';
+import { ValueEditor, valueKind } from '../editor/value-editor.js';
 
 import { jsonDefault, renameVariable, variableUses } from './variables.js';
 
-type FieldErrors = Partial<Record<'name' | 'default' | 'enum' | 'linked' | 'other', string>>;
+/** Initial values as authors read them: no quotes, Yes/No, comma lists, "—" when empty. */
+export function displayValue(value: JsonValue | undefined, t: (key: string) => string): string {
+  if (value === undefined || value === null || value === '') return '—';
+  if (value === true) return t('designer.value.yes');
+  if (value === false) return t('designer.value.no');
+  if (Array.isArray(value))
+    return value.length ? value.map((item) => displayValue(item, t)).join(', ') : '—';
+  if (typeof value === 'object') return Object.keys(value).length ? '{…}' : '—';
+  return String(value);
+}
+type FieldErrors = Partial<
+  Record<'name' | 'default' | 'enum' | 'source' | 'linked' | 'other', string>
+>;
+/** Same shape as VariableSchema.source: a dotted path under a runtime context root. */
+const SOURCE_PATTERN = /^(interaction|agent|campaign)(\.[A-Za-z0-9_-]+)+$/;
 function VariableForm({
   variable,
   store,
@@ -32,10 +48,19 @@ function VariableForm({
 }) {
   const { t } = useTranslation();
   const [key, setKey] = useState(variable.key),
-    [value, setValue] = useState(variable),
-    [source, setSource] = useState(JSON.stringify(variable.default ?? null)),
+    // The data class is the single privacy control. A legacy variable flagged PII under a public
+    // or internal class opens as personal data, so editing never silently drops the protection.
+    [value, setValue] = useState<Variable>(
+      variable.pii &&
+        (variable.classification === 'public' || variable.classification === 'internal')
+        ? { ...variable, classification: 'pii' }
+        : variable,
+    ),
+    [initial, setInitial] = useState<JsonValue>(variable.default ?? jsonDefault(variable.type)),
+    [origin, setOrigin] = useState(variable.source ?? ''),
     [errors, setErrors] = useState<FieldErrors>({});
   const uses = variableUses(store.getSnapshot().document, variable.key);
+  const sensitive = value.classification === 'pii' || value.classification === 'pci';
   return (
     <>
       <Input
@@ -44,6 +69,15 @@ function VariableForm({
         value={key}
         onChange={(e) => {
           setKey(e.target.value);
+        }}
+      />
+      <Input
+        label={t('designer.variables.displayName')}
+        hint={t('designer.variables.displayNameHint')}
+        maxLength={60}
+        value={value.description ?? ''}
+        onChange={(e) => {
+          setValue({ ...value, description: e.target.value });
         }}
       />
       <Select
@@ -60,7 +94,7 @@ function VariableForm({
             type: next,
             ...(next === 'enum' ? { enumValues: ['option'] } : {}),
           });
-          setSource(JSON.stringify(jsonDefault(next)));
+          setInitial(next === 'enum' ? 'option' : jsonDefault(next));
         }}
       />
       <Select
@@ -91,32 +125,14 @@ function VariableForm({
           });
         }}
       />
-      <label>
-        <input
-          type="checkbox"
-          checked={value.pii}
-          onChange={(e) => {
-            setValue({
-              ...value,
-              pii: e.target.checked,
-              classification:
-                e.target.checked &&
-                (value.classification === 'public' || value.classification === 'internal')
-                  ? 'pii'
-                  : !e.target.checked && value.classification === 'pii'
-                    ? 'internal'
-                    : value.classification,
-            });
-          }}
-        />
-        {t('designer.variables.pii')}
-      </label>
-      <Textarea
-        label={t('designer.variables.default')}
-        {...(errors.default ? { error: t(errors.default) } : {})}
-        value={source}
+      <Input
+        label={t('designer.variables.source')}
+        hint={t('designer.variables.sourceHint')}
+        placeholder="interaction.ani"
+        {...(errors.source ? { error: t(errors.source) } : {})}
+        value={origin}
         onChange={(e) => {
-          setSource(e.target.value);
+          setOrigin(e.target.value);
         }}
       />
       {value.type === 'enum' && (
@@ -125,10 +141,35 @@ function VariableForm({
           {...(errors.enum ? { error: t(errors.enum) } : {})}
           value={value.enumValues?.join(',') ?? ''}
           onChange={(e) => {
-            setValue({ ...value, enumValues: e.target.value.split(',').map((v) => v.trim()) });
+            const enumValues = e.target.value.split(',').map((v) => v.trim());
+            setValue({ ...value, enumValues });
+            if (typeof initial !== 'string' || !enumValues.includes(initial))
+              setInitial(enumValues.find(Boolean) ?? '');
           }}
         />
       )}
+      {sensitive ? (
+        // Personal and card data never carry a stored starting value.
+        <p className="ed-help">{t('designer.variables.sensitiveDefault')}</p>
+      ) : (
+        <ValueEditor
+          key={value.type}
+          label={t('designer.variables.default')}
+          value={initial}
+          kind={valueKind(value.type)}
+          choices={value.enumValues?.filter(Boolean).map((option) => ({
+            value: option,
+            label: option,
+          }))}
+          variables={[]}
+          allowSources={false}
+          onChange={(next) => {
+            const parsed = JsonValueSchema.safeParse(next);
+            if (parsed.success) setInitial(parsed.data);
+          }}
+        />
+      )}
+      {errors.default && <Alert title={t(errors.default)} tone="danger" />}
       <details>
         <summary>{t('designer.variables.uses', { count: uses.length })}</summary>
         {uses.map((u) => (
@@ -150,20 +191,30 @@ function VariableForm({
             store.getSnapshot().document.variables.some((v) => v.key === key)
           )
             found.name = 'designer.variables.errors.nameTaken';
-          let parsedDefault: ReturnType<typeof JsonValueSchema.parse> | undefined;
-          try {
-            parsedDefault = JsonValueSchema.parse(JSON.parse(source) as unknown);
-          } catch {
-            found.default = 'designer.variables.errors.defaultJson';
-          }
+          const parsedDefault: JsonValue = sensitive
+            ? value.type === 'string'
+              ? ''
+              : null
+            : initial;
           if (value.type === 'enum' && !value.enumValues?.some((v) => v !== ''))
             found.enum = 'designer.variables.errors.enumEmpty';
-          if (Object.keys(found).length || parsedDefault === undefined) {
+          const trimmedOrigin = origin.trim();
+          if (trimmedOrigin && !SOURCE_PATTERN.test(trimmedOrigin))
+            found.source = 'designer.variables.errors.source';
+          if (Object.keys(found).length) {
             setErrors(found);
             return;
           }
           try {
-            const parsed = VariableSchema.parse({ ...value, key, default: parsedDefault });
+            const { source: _previous, description, ...rest } = value;
+            const displayName = description?.trim() ?? '';
+            const parsed = VariableSchema.parse({
+              ...rest,
+              key,
+              default: parsedDefault,
+              ...(trimmedOrigin ? { source: trimmedOrigin } : {}),
+              ...(displayName ? { description: displayName } : {}),
+            });
             if (!literalMatchesType(parsed, parsed.default ?? null)) {
               setErrors({ default: 'designer.variables.errors.defaultType' });
               return;
@@ -259,6 +310,8 @@ export function VariableManager({
             columns={[
               {
                 id: 'key',
+                // Sized to fit the 64rem manager column; the 180px default overflowed (6 × 180).
+                size: 200,
                 header: t('designer.variables.name'),
                 accessor: (v) => v.key,
                 cell: (v) => (
@@ -275,27 +328,34 @@ export function VariableManager({
               },
               {
                 id: 'type',
+                size: 130,
                 header: t('designer.workspace.kind'),
                 accessor: (v) => t(`designer.variables.types.${v.type}`),
               },
               {
                 id: 'scope',
+                size: 140,
                 header: t('designer.workspace.scope'),
                 accessor: (v) => t(`designer.variables.scopes.${v.scope}`),
               },
               {
                 id: 'pii',
+                size: 170,
                 header: t('designer.workspace.classification'),
                 accessor: (v) => t(`designer.variables.classifications.${v.classification}`),
               },
               {
                 id: 'default',
+                size: 170,
                 header: t('designer.variables.default'),
                 accessor: (v) =>
-                  v.pii || v.classification === 'pci' ? '••••' : JSON.stringify(v.default ?? null),
+                  v.pii || v.classification === 'pci'
+                    ? '••••'
+                    : displayValue(v.default, (key) => t(key)),
               },
               {
                 id: 'uses',
+                size: 110,
                 header: t('designer.variables.usageCount'),
                 accessor: (v) => variableUses(state.document, v.key).length,
               },
@@ -311,7 +371,9 @@ export function VariableManager({
             }
           }}
           title={t(draft ? 'designer.variables.add' : 'designer.variables.edit')}
-          description={t('designer.variables.renameDescription')}
+          description={t(
+            draft ? 'designer.variables.addDescription' : 'designer.variables.renameDescription',
+          )}
         >
           {variable && (
             <VariableForm

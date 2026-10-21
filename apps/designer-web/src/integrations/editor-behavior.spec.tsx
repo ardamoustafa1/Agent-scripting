@@ -113,30 +113,33 @@ it('rejects unsafe imports and keeps the last valid definition', async () => {
   expect(await screen.findByText(f.label('integrations.importError'))).toBeTruthy();
   expect(f.requests.some((r) => r.method !== 'GET')).toBe(false);
 });
-it.each(['SOAP', 'GRAPHQL'])('configures protocol-specific fields for %s', async (protocol) => {
+it.each(['soap', 'graphql'])('configures protocol-specific fields for %s', async (protocol) => {
   const f = await setup();
-  await choose(f.label('integrations.protocol'), protocol);
-  const label = protocol === 'SOAP' ? 'soap' : 'graphqlQuery';
-  expect(screen.getByLabelText(f.label(`integrations.${label}`))).toBeTruthy();
-  if (protocol === 'SOAP') {
-    change(
-      f.label('integrations.soap'),
-      JSON.stringify({
-        namespace: 'https://customer.example.io/soap',
-        operation: 'SyntheticLookup',
-        action: '',
-      }),
-    );
+  await choose(f.label('integrations.protocol'), f.label(`integrations.protocols.${protocol}`));
+  if (protocol === 'soap') {
+    change(f.label('integrations.forms.soap.namespace'), 'https://customer.example.io/soap');
+    change(f.label('integrations.forms.soap.operation'), 'SyntheticLookup');
   }
-  if (protocol === 'GRAPHQL')
+  if (protocol === 'graphql')
     change(f.label('integrations.graphqlQuery'), 'query Synthetic { synthetic }');
   fireEvent.click(screen.getByRole('button', { name: f.label('integrations.save') }));
   await waitFor(() => {
     expect(f.requests.some((r) => r.method === 'PUT')).toBe(true);
   });
   expect(f.requests.find((r) => r.method === 'PUT')!.body).toMatchObject({
-    protocol: protocol.toLowerCase(),
-    definition: { method: 'POST' },
+    protocol,
+    definition: {
+      method: 'POST',
+      ...(protocol === 'soap'
+        ? {
+            soap: {
+              namespace: 'https://customer.example.io/soap',
+              operation: 'SyntheticLookup',
+              action: '',
+            },
+          }
+        : { graphql: { query: 'query Synthetic { synthetic }' } }),
+    },
   });
 });
 it('infers response schema from a synthetic sample and saves it', async () => {
@@ -194,9 +197,10 @@ it('edits resilience policies and named mock scenarios before saving', async () 
   change(f.label('integrations.policy.timeoutMs'), '3000');
   change(f.label('integrations.policy.retries'), '2');
   fireEvent.click(screen.getByRole('checkbox', { name: f.label('integrations.allowHttp') }));
-  const origins = screen.getByLabelText(f.label('integrations.allowedOrigins'));
-  fireEvent.change(origins, { target: { value: '["https://synthetic.example.test"]' } });
-  fireEvent.blur(origins);
+  fireEvent.click(screen.getByRole('button', { name: f.label('integrations.forms.addUrl') }));
+  change(`${f.label('integrations.forms.url')} 1`, 'not a url');
+  expect(screen.getByText(f.label('integrations.forms.urlInvalid'))).toBeTruthy();
+  change(`${f.label('integrations.forms.url')} 1`, 'https://synthetic.example.test');
   await tab(f, 'mocks');
   fireEvent.click(screen.getByRole('checkbox', { name: f.label('integrations.mockEnabled') }));
   fireEvent.click(screen.getByRole('button', { name: f.label('integrations.addScenario') }));
@@ -234,7 +238,7 @@ it('edits resilience policies and named mock scenarios before saving', async () 
 it('does not send the previous valid console input when the visible JSON is malformed', async () => {
   const f = await setup();
   await tab(f, 'console');
-  change(f.label('integrations.testInput'), '{bad-json');
+  change(f.label('integrations.forms.testInputJson'), '{bad-json');
   fireEvent.click(screen.getByRole('button', { name: f.label('integrations.send') }));
   await screen.findByText(f.label('integrations.invalidJson'));
   expect(f.requests.some((r) => r.path === '/v1/data-sources/preview')).toBe(false);
@@ -255,7 +259,7 @@ it.each([200, 500])('runs synthetic console requests and handles HTTP %s', async
         : Response.json({}, { status }),
   });
   await tab(f, 'console');
-  const input = screen.getByLabelText(f.label('integrations.testInput'));
+  const input = screen.getByLabelText(f.label('integrations.forms.testInputJson'));
   fireEvent.change(input, { target: { value: '{"synthetic":true}' } });
   fireEvent.blur(input);
   fireEvent.click(screen.getByRole('button', { name: f.label('integrations.send') }));
@@ -297,7 +301,7 @@ it('requests a profile promotion using an optimistic version and an explicit rea
     [`/v1/data-sources/${scriptId}/promotion`]: { ...initial, version: 4 },
   });
   await tab(f, 'profiles');
-  await choose(f.label('integrations.promoteFrom'), 'dev');
+  await choose(f.label('integrations.promoteFrom'), f.label('workspace.env.dev'));
   change(f.label('integrations.reason'), 'Synthetic promotion reason');
   fireEvent.click(screen.getByRole('button', { name: f.label('integrations.requestPromotion') }));
   await waitFor(() => {
@@ -315,16 +319,18 @@ it.each([true, false])('imports WSDL operations with explicit namespace %s', asy
     },
   });
   await tab(f, 'import');
-  await choose(f.label('integrations.protocol'), 'SOAP');
+  await choose(f.label('integrations.protocol'), f.label('integrations.protocols.soap'));
   await tab(f, 'import');
   change(f.label('integrations.importSource'), '<synthetic-wsdl/>');
   fireEvent.click(screen.getByRole('button', { name: f.label('integrations.import') }));
   await screen.findByRole('combobox', { name: f.label('integrations.operation') });
   await choose(f.label('integrations.operation'), 'SyntheticOperation');
   await tab(f, 'request');
-  expect(
-    JSON.parse(screen.getByLabelText<HTMLTextAreaElement>(f.label('integrations.soap')).value),
-  ).toMatchObject({ operation: 'SyntheticOperation', action: 'synthetic:action' });
+  const soapField = (field: string) =>
+    screen.getByLabelText<HTMLInputElement>(f.label(`integrations.forms.soap.${field}`)).value;
+  expect(soapField('operation')).toBe('SyntheticOperation');
+  expect(soapField('action')).toBe('synthetic:action');
+  expect(soapField('namespace')).toBe(namespace ? 'https://synthetic.example.test/namespace' : '');
   const request = f.requests.find((r) => r.path.endsWith('/wsdl'))!;
   expect(request.body).toEqual({ xml: '<synthetic-wsdl/>' });
   expect(new Headers(request.init?.headers).get('x-csrf-token')).toBe('synthetic-csrf-only');
@@ -351,7 +357,7 @@ it('introspects a saved GraphQL integration through the authenticated server bou
     },
   });
   await tab(f, 'import');
-  await choose(f.label('integrations.protocol'), 'GRAPHQL');
+  await choose(f.label('integrations.protocol'), f.label('integrations.protocols.graphql'));
   await tab(f, 'import');
   fireEvent.click(screen.getByRole('button', { name: f.label('integrations.introspect') }));
   expect(await screen.findByText(/__schema/)).toBeTruthy();
@@ -362,7 +368,7 @@ it('introspects a saved GraphQL integration through the authenticated server bou
 it('requires saving a SOAP integration before importing its WSDL', async () => {
   const f = await setup(true);
   await tab(f, 'import');
-  await choose(f.label('integrations.protocol'), 'SOAP');
+  await choose(f.label('integrations.protocol'), f.label('integrations.protocols.soap'));
   await tab(f, 'import');
   expect(
     screen.getByRole('button', { name: f.label('integrations.import') }).hasAttribute('disabled'),
@@ -392,4 +398,20 @@ it('reads a local import file and rejects files beyond the authoring size limit'
     target: { files: [new NodeFile(['x'.repeat(1048577)], 'synthetic-large.txt')] },
   });
   expect(await screen.findByText(f.label('integrations.importError'))).toBeTruthy();
+});
+it('explains reserved headers as they are typed and never saves them', async () => {
+  const f = await setup();
+  fireEvent.click(screen.getAllByRole('button', { name: f.label('preview.addField') })[0]!);
+  change(f.label('integrations.forms.headerName'), 'Authorization');
+  change(f.label('integrations.forms.headerValue'), 'synthetic-value');
+  expect(screen.getByText(f.label('integrations.forms.reservedHeader'))).toBeTruthy();
+  change(f.label('integrations.forms.headerName'), 'X-Synthetic');
+  expect(screen.queryByText(f.label('integrations.forms.reservedHeader'))).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: f.label('integrations.save') }));
+  await waitFor(() => {
+    expect(f.requests.some((r) => r.method === 'PUT')).toBe(true);
+  });
+  expect(f.requests.find((r) => r.method === 'PUT')!.body).toMatchObject({
+    definition: { headers: { 'X-Synthetic': 'synthetic-value' } },
+  });
 });

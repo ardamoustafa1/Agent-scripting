@@ -48,6 +48,27 @@ async function choose(label: string, name: string) {
   fireEvent.click(screen.getByRole('combobox', { name: label }));
   fireEvent.click(await screen.findByRole('option', { name }));
 }
+it('describes what each template contains', async () => {
+  const f = await setup({
+    '/v1/templates': [
+      ...rows,
+      {
+        id: 'builtin-collections',
+        name: 'Collections',
+        category: 'collections',
+        description: null,
+        tags: [],
+        builtIn: true,
+      },
+    ],
+  });
+  expect(screen.getByText('Synthetic description')).toBeTruthy();
+  expect(
+    await screen.findByText(f.label('lifecycle.templateDescriptions.builtin-collections')),
+  ).toBeTruthy();
+  // A built-in without a curated description still explains what using it does.
+  expect(screen.getByText(f.label('lifecycle.templateHelp'))).toBeTruthy();
+});
 it('filters templates by name, industry and source', async () => {
   const f = await setup();
   fireEvent.change(screen.getByLabelText(f.label('workspace.search')), {

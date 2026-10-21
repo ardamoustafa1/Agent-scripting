@@ -12,6 +12,8 @@ import { ApiError, request } from '../api/client.js';
 import { setSuggestionMarks } from '../editor/suggest-marks.js';
 import { useWorkspace } from '../workspace/context.js';
 
+import { describePath } from './diff-text.js';
+
 const TONE = { open: 'info', accepted: 'success', rejected: 'neutral', stale: 'warning' } as const;
 
 /** Owner view of the suggestions on a draft (ADR-0051): read, accept or reject. */
@@ -28,7 +30,7 @@ export function Suggestions({
   /** The draft changed on the server; the editor must reload it. */
   onAccepted?: () => void;
 }) {
-  const { t } = useTranslation(),
+  const { t, i18n } = useTranslation(),
     { session } = useWorkspace(),
     ability = useAbility(),
     client = useQueryClient();
@@ -107,13 +109,17 @@ export function Suggestions({
             <ul aria-label={t('designer.suggest.operations')}>
               {suggestion.operations.map((operation, index) => (
                 <li key={`${operation.op}${operation.path}${String(index)}`}>
-                  <code>
-                    {t(`designer.suggest.op.${operation.op}`)} {operation.path}
-                  </code>
+                  <Badge>{t(`designer.suggest.op.${operation.op}`)}</Badge>{' '}
+                  {describePath(operation.path, document, t)}
                 </li>
               ))}
             </ul>
-            <time>{suggestion.createdAt}</time>
+            <time dateTime={suggestion.createdAt}>
+              {new Intl.DateTimeFormat(i18n.language, {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+              }).format(new Date(suggestion.createdAt))}
+            </time>
             {document && suggestion.state === 'open' && (
               <Button
                 size="sm"

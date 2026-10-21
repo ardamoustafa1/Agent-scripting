@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
 import { VariableSchema } from '@verbis/script-schema';
@@ -48,9 +48,10 @@ it('decorates changed, removed and added components and compares variables and f
       before={before}
       after={after}
       patch={[
-        { op: 'add', path: '/synthetic-added', value: true },
-        { op: 'remove', path: '/synthetic-removed' },
-        { op: 'replace', path: '/synthetic-changed', value: 'new' },
+        { op: 'add', path: '/variables/1', value: after.variables[1] },
+        { op: 'remove', path: '/variables/1' },
+        { op: 'replace', path: '/variables/0/default', value: 'new' },
+        { op: 'replace', path: '/pages/0/name', value: 'Synthetic page' },
       ]}
     />,
   );
@@ -64,7 +65,15 @@ it('decorates changed, removed and added components and compares variables and f
   expect(screen.getByRole('cell', { name: 'changed' })).toBeTruthy();
   expect(screen.getByRole('cell', { name: 'removed' })).toBeTruthy();
   expect(screen.getByRole('cell', { name: 'added' })).toBeTruthy();
-  expect(screen.getByText('"old"', { exact: false })).toBeTruthy();
+  expect(
+    screen.getByText(
+      (_, element) =>
+        element?.tagName === 'LI' &&
+        element.textContent === `${f.label('lifecycle.diffText.fields.default')}: “old” → “new”`,
+    ),
+  ).toBeTruthy();
+  expect(screen.getAllByText(f.label('lifecycle.diffText.added')).length).toBeGreaterThan(0);
+  expect(screen.queryByText(/\{/)).toBeNull();
   fireEvent.mouseDown(screen.getByRole('tab', { name: f.label('lifecycle.flowDiff') }), {
     button: 0,
   });
@@ -76,7 +85,16 @@ it('decorates changed, removed and added components and compares variables and f
   fireEvent.mouseDown(screen.getByRole('tab', { name: f.label('lifecycle.jsonDiff') }), {
     button: 0,
   });
-  expect(screen.getByText('/synthetic-added')).toBeTruthy();
-  expect(screen.getByText('/synthetic-removed')).toBeTruthy();
-  expect(screen.getByText('/synthetic-changed')).toBeTruthy();
+  const changes = within(document.querySelector<HTMLElement>('.lc-change-list')!);
+  const variable = (name: string) =>
+    f.label('lifecycle.diffText.variable').replace('{{name}}', name);
+  expect(changes.getByText(new RegExp(`${variable('added')} · `))).toBeTruthy();
+  expect(changes.getByText(variable('removed'))).toBeTruthy();
+  expect(
+    changes.getByText(
+      `${variable('changed')} › ${f.label('lifecycle.diffText.fields.default')} · “new”`,
+    ),
+  ).toBeTruthy();
+  expect(screen.queryByText(/^\/variables/)).toBeNull();
+  expect(screen.getByText(f.label('lifecycle.diffText.technical'))).toBeTruthy();
 });

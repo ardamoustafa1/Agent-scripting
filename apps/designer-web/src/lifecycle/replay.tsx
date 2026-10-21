@@ -170,7 +170,10 @@ export default function ReplayPage() {
                 {step.kind === 'field' &&
                   t('designer.replay.step.field', { variable: step.variable, value: step.value })}
                 {step.kind === 'state' &&
-                  t('designer.replay.step.state', { from: step.from, to: step.to })}
+                  t('designer.replay.step.state', {
+                    from: t(`designer.replay.state.${step.from}`, { defaultValue: step.from }),
+                    to: t(`designer.replay.state.${step.to}`, { defaultValue: step.to }),
+                  })}
                 {step.kind === 'timer' && t('designer.replay.step.timer', { timer: step.timerId })}
                 {step.kind === 'other' && t('designer.replay.step.other', { type: step.type })}
               </li>

@@ -3,7 +3,10 @@ import { createPortal } from 'react-dom';
 
 import { ScriptRenderer, type Runtime } from '@verbis/core-runtime';
 import type { I18nInstance } from '@verbis/i18n';
-import { UiProvider, type Theme } from '@verbis/ui';
+import { UiProvider, applyTheme, type Theme } from '@verbis/ui';
+
+import { AgentFrame } from './agent-frame.js';
+import '@verbis/components/agent-shell.css';
 
 // Only the parent renders and handles the trusted runtime. Frame scripts stay disabled
 // by both the sandbox and CSP; never combine allow-scripts with allow-same-origin.
@@ -11,9 +14,12 @@ const previewDocument = `<!doctype html><html><head><meta http-equiv="Content-Se
 
 const STYLE_TIMEOUT_MS = 1500;
 
-function describeFrame(document: Document, lang: string, title: string) {
+function describeFrame(document: Document, lang: string, title: string, theme: Theme) {
   document.documentElement.lang = lang;
   document.title = title;
+  // The frame root paints below short pages; without the chosen theme it follows the
+  // operating system and a light preview sits on a dark page.
+  applyTheme(theme, document.documentElement);
 }
 
 /** A same-origin frame provides a real viewport for runtime media queries. */
@@ -24,6 +30,7 @@ export function DevicePreview({
   theme,
   i18n,
   title,
+  agentFrame = false,
 }: {
   runtime: Runtime;
   width: number;
@@ -31,6 +38,8 @@ export function DevicePreview({
   theme: Theme;
   i18n: I18nInstance;
   title: string;
+  /** Draw the agent desktop's step header, progress and checklist around the script. */
+  agentFrame?: boolean;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const [availableWidth, setAvailableWidth] = useState(width);
@@ -106,8 +115,8 @@ export function DevicePreview({
   const lang = runtime.store.locale;
   useEffect(() => {
     const document = body ? frame.current?.contentDocument : undefined;
-    if (document) describeFrame(document, lang, title);
-  }, [body, lang, title]);
+    if (document) describeFrame(document, lang, title, theme);
+  }, [body, lang, title, theme]);
   return (
     // The bounded viewport must be focusable so keyboard users can scroll around the iframe.
     // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
@@ -126,7 +135,11 @@ export function DevicePreview({
           <UiProvider theme={theme} i18n={i18n}>
             <main aria-label={title}>
               <h1 className="vb-sr-only">{title}</h1>
-              <ScriptRenderer runtime={runtime} autoStart={false} />
+              {agentFrame ? (
+                <AgentFrame runtime={runtime} />
+              ) : (
+                <ScriptRenderer runtime={runtime} autoStart={false} />
+              )}
             </main>
           </UiProvider>,
           body,

@@ -114,7 +114,17 @@ export class PreviewController {
         },
         simulationInput: (input) => {
           if (isCurrent()) {
-            if (this.inputs.length < 500) this.inputs.push(structuredClone(input));
+            const last = this.inputs.at(-1);
+            // Typing a value sets it once per keystroke; consecutive sets of one variable with
+            // nothing recorded in between are one step (the timeline still points past them).
+            if (
+              input.type === 'variable' &&
+              last?.type === 'variable' &&
+              last.variable === input.variable &&
+              (this.timeline.at(-1)?.steps ?? 0) < this.inputs.length
+            )
+              this.inputs[this.inputs.length - 1] = structuredClone(input);
+            else if (this.inputs.length < 500) this.inputs.push(structuredClone(input));
             else this.error = 'VERBIS_PREVIEW_RECORDING_LIMIT';
             this.notify();
           }
