@@ -1,11 +1,12 @@
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Box, Button, useRuntimePaths, type RendererProps } from '@verbis/core-runtime';
 import type { ActionInput, JsonValue } from '@verbis/script-schema';
 
 import { readPath } from './environment.js';
-import { isSecureInput } from './secure-input-types.js';
+import { placeholderNames } from './placeholders.js';
+import { isPersonalIdInput, isSecureInput } from './secure-input-types.js';
 
 export interface ItemScope {
   item: JsonValue;
@@ -15,17 +16,24 @@ export interface ItemScope {
 export const ItemContext = createContext<ItemScope | null>(null);
 export function useLabels(component: RendererProps) {
   const { t } = useTranslation();
+  const { node, runtime } = component;
+  // An empty value shows as a named gap the agent can read ("[müşteri adı]"), not as code.
+  const gaps = useMemo(
+    () => placeholderNames(node, runtime.document, (key) => t(key)),
+    [node, runtime.document, t],
+  );
   const text = (key: string | undefined, fallback = 'components.field'): string => {
     const resolved = key ?? fallback;
     return resolved.startsWith('components.') || resolved.startsWith('runtime.')
       ? t(resolved)
-      : component.runtime.message(
+      : runtime.message(
           resolved,
           component.props['params'] &&
             typeof component.props['params'] === 'object' &&
             !Array.isArray(component.props['params'])
             ? (component.props['params'] as Record<string, JsonValue>)
             : {},
+          gaps,
         );
   };
   return { text, t };
@@ -112,17 +120,17 @@ export function useField(component: RendererProps) {
       : component.props['value'];
   const write = (next: JsonValue, prop = 'value') => {
     if (!component.enabled || component.props['disabled'] === true || masked) return;
-    if (scope && itemPath) scope.update(itemPath, next);
-    else {
+    if (scope && itemPath) {
+      // Defence in depth: personal IDs must not land in a (possibly public) repeater row.
+      if (!isPersonalIdInput(component.node.type)) scope.update(itemPath, next);
+    } else {
       const binding = component.node.bindings.find((b) => b.prop === prop && 'variable' in b);
       if (binding && 'variable' in binding) {
-        const secure = isSecureInput(component.node.type);
-        if (secure)
-          component.runtime.store.setVariable(
-            binding.variable,
-            next,
-            component.node.type === 'creditCardInput' ? 'pci' : 'pii',
-          );
+        // Card numbers are PCI; TCKN/VKN/IBAN are always personal data (ADR-0053).
+        if (isSecureInput(component.node.type))
+          component.runtime.store.setVariable(binding.variable, next, 'pci');
+        else if (isPersonalIdInput(component.node.type))
+          component.runtime.store.setVariable(binding.variable, next, 'pii');
         else component.write(prop, next);
       }
     }

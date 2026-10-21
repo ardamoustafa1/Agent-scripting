@@ -1,0 +1,76 @@
+/* The agent desktop frame around a script (agent-shell.tsx). Shared by the agent desktop and the
+   designer preview so both show the same screen. */
+
+/* Where the agent is (DIFFERENTIATORS D2) */
+.ag-step {
+  margin-block-end: var(--vb-space-4);
+}
+.ag-step-count {
+  margin: 0;
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.ag-step h2 {
+  margin: var(--vb-space-1) 0 0;
+  font-size: calc(var(--ag-font-size, var(--vb-font-size-md)) * 1.35);
+  line-height: 1.25;
+}
+.ag-step h2:focus-visible {
+  outline: 2px solid var(--vb-color-focus);
+  outline-offset: 4px;
+  border-radius: var(--vb-radius-xs);
+}
+.ag-trail {
+  margin-block-start: var(--vb-space-2);
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-sm);
+}
+.ag-trail summary {
+  cursor: pointer;
+  min-block-size: 24px;
+}
+.ag-trail ol {
+  margin: var(--vb-space-2) 0 0;
+  padding-inline-start: var(--vb-space-5);
+}
+.ag-step-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vb-space-2);
+}
+
+/* How far the call has come */
+.ag-progress {
+  margin-inline: auto;
+  inline-size: min(40%, 22rem);
+  display: grid;
+  gap: var(--vb-space-2);
+  font-size: var(--vb-font-size-xs);
+  color: var(--vb-color-text-muted);
+}
+
+/* Live compliance checklist (DIFFERENTIATORS D3): status is text + icon, never colour alone. */
+.ag-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--vb-space-2);
+}
+.ag-checklist li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--vb-space-2);
+  min-block-size: 24px;
+}
+.ag-checklist li[data-done='true'] {
+  color: var(--vb-color-text-muted);
+}
+.ag-checklist small {
+  color: var(--vb-color-text-muted);
+}

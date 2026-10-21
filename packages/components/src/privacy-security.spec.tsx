@@ -238,3 +238,82 @@ it('writes optional consent through the ordinary field boundary without preselec
     runtime.dispose();
   }
 });
+
+// ADR-0053: TCKN/VKN/IBAN are typed by the agent, kept as personal data and masked on screen.
+async function renderPersonalId(type: string) {
+  const runtime = createFixtureRuntime(type);
+  runtime.executor.debugger.resume();
+  await runtime.start();
+  const i18n = await createI18n();
+  render(
+    <UiProvider i18n={i18n}>
+      <ScriptRenderer runtime={runtime} autoStart={false} />
+    </UiProvider>,
+  );
+  return { runtime, i18n, input: screen.getByRole<HTMLInputElement>('textbox') };
+}
+it('lets the agent type a TCKN, stores digits as personal data and masks it after editing', async () => {
+  const { runtime, i18n, input } = await renderPersonalId('tcknInput');
+  try {
+    expect(screen.queryByText(i18n.t('components.secureUnavailable'))).toBeNull();
+    expect(input.autocomplete).toBe('off');
+    expect(input.inputMode).toBe('numeric');
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: '100 000 001 46' } });
+    await waitFor(() => {
+      expect(runtime.store.variable('field')).toBe('10000000146');
+    });
+    // Declared public in the fixture, raised to PII by the write.
+    expect(runtime.store.classification('field')).toBe('pii');
+    expect(input.value).toBe('10000000146');
+    fireEvent.blur(input);
+    await waitFor(() => {
+      expect(input.value).toBe('•••••••0146');
+    });
+    expect(screen.queryByText(i18n.t('components.invalid'))).toBeNull();
+    fireEvent.focus(input);
+    expect(input.value).toBe('10000000146');
+  } finally {
+    runtime.dispose();
+  }
+});
+it('flags an invalid TCKN checksum after editing', async () => {
+  const { runtime, i18n, input } = await renderPersonalId('tcknInput');
+  try {
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: '10000000147' } });
+    await waitFor(() => {
+      expect(runtime.store.variable('field')).toBe('10000000147');
+    });
+    fireEvent.blur(input);
+    expect(await screen.findByText(i18n.t('components.invalid'))).toBeTruthy();
+  } finally {
+    runtime.dispose();
+  }
+});
+it('normalizes an IBAN typed with spaces and lower case', async () => {
+  const { runtime, input } = await renderPersonalId('ibanInput');
+  try {
+    expect(input.inputMode).toBe('text');
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: 'tr33 0006 1005 1978 6457 8413 26' } });
+    await waitFor(() => {
+      expect(runtime.store.variable('field')).toBe('TR330006100519786457841326');
+    });
+    expect(runtime.store.classification('field')).toBe('pii');
+  } finally {
+    runtime.dispose();
+  }
+});
+it('shows an invalid value message once, as the field error', async () => {
+  const { runtime, i18n, input } = await renderPersonalId('tcknInput');
+  try {
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: '12345678901' } });
+    fireEvent.blur(input);
+    expect(await screen.findAllByText(i18n.t('components.invalid'))).toHaveLength(1);
+    expect(input.getAttribute('aria-describedby')).toContain('error');
+  } finally {
+    runtime.dispose();
+  }
+});

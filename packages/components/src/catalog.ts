@@ -16,6 +16,7 @@ import { PrivacyComponent, PrivacySchema } from './privacy.js';
 import {
   InputSchema,
   SecureInputSchema,
+  PersonalIdInputSchema,
   TextSchema,
   LayoutSchema,
   DataSchema,
@@ -23,7 +24,7 @@ import {
   MediaSchema,
 } from './schemas.js';
 import { ScriptContent, templateDependencies } from './script-text.js';
-import { isSecureInput } from './secure-input-types.js';
+import { isPersonalIdInput, isSecureInput } from './secure-input-types.js';
 
 import type { z } from 'zod';
 
@@ -184,13 +185,16 @@ export const LIBRARY_DEFINITIONS: readonly LibraryDefinition[] = Object.entries(
   ([category, types]) =>
     types.map((type) => {
       const secure = isSecureInput(type),
+        personal = isPersonalIdInput(type),
         container = category === 'structure' && !['divider', 'spacer'].includes(type);
       const schema = ['privacyNotice', 'explicitConsent'].includes(type)
         ? PrivacySchema
         : category === 'input'
           ? secure
             ? SecureInputSchema
-            : InputSchema
+            : personal
+              ? PersonalIdInputSchema
+              : InputSchema
           : category === 'script'
             ? TextSchema
             : category === 'structure'
@@ -278,7 +282,8 @@ export const LIBRARY_DEFINITIONS: readonly LibraryDefinition[] = Object.entries(
           draggable: true,
           properties: properties(schema, bindable).map((property) => ({
             ...property,
-            sensitive: (secure && property.key === 'value') || property.sensitive === true,
+            sensitive:
+              ((secure || personal) && property.key === 'value') || property.sensitive === true,
           })),
         },
         events: [

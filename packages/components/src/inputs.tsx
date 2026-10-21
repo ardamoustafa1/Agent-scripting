@@ -21,6 +21,7 @@ import {
 
 import { safeAssetUrl, useComponentEnvironment } from './environment.js';
 import { InputSchema, SecureInputSchema } from './schemas.js';
+import { isPersonalIdInput } from './secure-input-types.js';
 import { Frame, useField, useLabels } from './shared.js';
 
 export function formatMask(value: string, mask: string): string {
@@ -33,6 +34,20 @@ export function formatMask(value: string, mask: string): string {
   }
   return result;
 }
+/** Shows only the last four characters while the field is not being edited (ADR-0053). */
+export function maskPersonalId(value: string): string {
+  return value.length <= 4 ? value : `${'•'.repeat(value.length - 4)}${value.slice(-4)}`;
+}
+/** TCKN/VKN keep digits only; IBAN is stored upper case without spaces. */
+export function normalizePersonalId(type: string, value: string): string {
+  return type === 'ibanInput' ? value.replace(/\s+/g, '').toUpperCase() : value.replace(/\D/g, '');
+}
+const PERSONAL_ID_MAX_LENGTH: Record<string, number> = {
+  tcknInput: 11,
+  vknInput: 10,
+  // 34 IBAN characters plus the spaces agents commonly type between groups.
+  ibanInput: 42,
+};
 const validators: Record<string, (value: string) => boolean> = {
   emailInput: isEmail,
   phoneInput: isPhoneTR,
@@ -53,7 +68,9 @@ function PlainInput(component: RendererProps) {
   const p = InputSchema.parse(component.props),
     f = useField(component),
     { text, t } = useLabels(component);
-  const [invalid, setInvalid] = useState(false);
+  const [invalid, setInvalid] = useState(false),
+    [focused, setFocused] = useState(false);
+  const personal = isPersonalIdInput(component.node.type);
   const options = p.options.map((option) => ({
     value: option.value,
     label: text(option.labelKey),
@@ -312,9 +329,15 @@ function PlainInput(component: RendererProps) {
                   ? 'tel'
                   : 'text'
           }
-          inputMode={component.node.type === 'phoneInput' || p.mask ? 'tel' : 'text'}
+          inputMode={
+            component.node.type === 'phoneInput' || p.mask
+              ? 'tel'
+              : personal && component.node.type !== 'ibanInput'
+                ? 'numeric'
+                : 'text'
+          }
           autoComplete={
-            p.secure
+            p.secure || personal
               ? 'off'
               : component.node.type === 'emailInput'
                 ? 'email'
@@ -322,14 +345,31 @@ function PlainInput(component: RendererProps) {
                   ? 'tel'
                   : 'off'
           }
-          maxLength={p.maxLength}
-          value={p.mask ? formatMask(string, p.mask) : string}
+          {...(personal ? { spellCheck: false } : {})}
+          maxLength={personal ? PERSONAL_ID_MAX_LENGTH[component.node.type] : p.maxLength}
+          value={
+            p.mask
+              ? formatMask(string, p.mask)
+              : personal && !focused
+                ? maskPersonalId(string)
+                : string
+          }
           {...(p.placeholderKey ? { placeholder: text(p.placeholderKey) } : {})}
+          onFocus={() => {
+            setFocused(true);
+          }}
           onChange={(event) => {
             setInvalid(false);
-            f.write(p.mask ? event.target.value.replace(/\D/g, '') : event.target.value);
+            f.write(
+              personal
+                ? normalizePersonalId(component.node.type, event.target.value)
+                : p.mask
+                  ? event.target.value.replace(/\D/g, '')
+                  : event.target.value,
+            );
           }}
           onBlur={() => {
+            setFocused(false);
             setInvalid(
               string !== '' &&
                 validator !== undefined &&
@@ -345,10 +385,8 @@ function PlainInput(component: RendererProps) {
   }
   return (
     <Frame component={component}>
+      {/* The invalid message is the field's own error (role=alert); a second Alert repeated it. */}
       {field}
-      {invalid && component.node.type !== 'textInput' && (
-        <Alert tone="danger" title={t('components.invalid')} />
-      )}
     </Frame>
   );
 }

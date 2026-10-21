@@ -12,11 +12,13 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./styles.css": "./src/styles.css"
+    "./styles.css": "./src/styles.css",
+    "./agent-shell.css": "./src/agent-shell.css"
   },
   "files": [
     "dist",
-    "src/styles.css"
+    "src/styles.css",
+    "src/agent-shell.css"
   ],
   "scripts": {
     "build": "tsc -b tsconfig.build.json",

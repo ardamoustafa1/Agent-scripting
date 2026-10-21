@@ -73,13 +73,16 @@ export function ScriptContent(component: RendererProps) {
   let result;
   switch (component.node.type) {
     case 'callout':
-    case 'alert':
+    case 'alert': {
+      // The schema's generic field label is not a heading: an untitled notice stays untitled.
+      const heading = p.titleKey ?? (p.labelKey === 'components.field' ? undefined : p.labelKey);
       result = (
-        <Alert title={text(p.titleKey ?? p.labelKey)} tone={p.tone}>
+        <Alert {...(heading ? { title: text(heading) } : {})} tone={p.tone}>
           {content(p.textKey)}
         </Alert>
       );
       break;
+    }
     case 'checklist': {
       const values = p.value;
       result = (

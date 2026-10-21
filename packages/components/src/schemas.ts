@@ -57,6 +57,8 @@ export const InputSchema = z.strictObject({
   secure: z.boolean().default(false),
   country: z.enum(['TR', 'international']).default('TR'),
 });
+/** TCKN/VKN/IBAN never write into repeater rows, which may be public arrays (ADR-0053). */
+export const PersonalIdInputSchema = InputSchema.omit({ itemPath: true });
 export const SecureInputSchema = InputSchema.omit({
   value: true,
   secure: true,

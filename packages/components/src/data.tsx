@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { z } from 'zod';
 
-import {
-  WebService,
-  useRuntimePaths,
-  RuntimeProblem,
-  type RendererProps,
-} from '@verbis/core-runtime';
+import { WebService, useRuntimePaths, type RendererProps } from '@verbis/core-runtime';
 import { JsonValueSchema, type JsonValue } from '@verbis/script-schema';
 import { Alert, Combobox, Input, DataTable, Badge } from '@verbis/ui';
 
@@ -95,11 +90,9 @@ export function DataComponent(component: RendererProps) {
             header: text(column.labelKey),
             accessor: (row) => value(row, column.field, column.format, column.currency),
           }))}
-          getRowId={(row) => {
-            const id = display(row[p.rowKey]);
-            if (!id) throw new RuntimeProblem('VERBIS_DATA_ROW_KEY');
-            return id;
-          }}
+          // Service rows without the key column (a payment history, a cover list) still show;
+          // their position identifies them.
+          getRowId={(row, index) => display(row[p.rowKey]) || `row-${String(index)}`}
           virtualized
         />
       );
@@ -201,22 +194,29 @@ export function DataComponent(component: RendererProps) {
       );
   }
   const trigger = component.node.type === 'autoComplete' ? 'onChange' : p.trigger;
+  // Rows bound from elsewhere (a flow data source, a variable) are not this component's to
+  // fetch: no Run/Refresh controls that would call a data source the script never declared.
+  const sourced =
+    !('rows' in component.node.props) &&
+    !component.node.bindings.some((binding) => binding.prop === 'rows');
   return (
     <Frame component={component} card={component.node.type === 'customerCard'}>
-      <WebService
-        {...component}
-        node={{ ...component.node, id: `${component.node.id}-service` }}
-        props={{
-          ds: p.ds,
-          trigger,
-          visible: true,
-          debounceMs: p.debounceMs,
-          watch: trigger === 'onChange' ? [`vars.${p.queryVariable}`] : [],
-          emptyWhen: {
-            $expr: `ds.${p.ds}.loading == false && ds.${p.ds}.status == "success" && count(ds.${p.ds}.${p.output}) == 0`,
-          },
-        }}
-      />
+      {sourced && (
+        <WebService
+          {...component}
+          node={{ ...component.node, id: `${component.node.id}-service` }}
+          props={{
+            ds: p.ds,
+            trigger,
+            visible: true,
+            debounceMs: p.debounceMs,
+            watch: trigger === 'onChange' ? [`vars.${p.queryVariable}`] : [],
+            emptyWhen: {
+              $expr: `ds.${p.ds}.loading == false && ds.${p.ds}.status == "success" && count(ds.${p.ds}.${p.output}) == 0`,
+            },
+          }}
+        />
+      )}
       {rows.length ? (
         content
       ) : p.rows !== undefined ||
@@ -226,7 +226,7 @@ export function DataComponent(component: RendererProps) {
           state['status'] === 'success') ? (
         <Alert title={t('components.empty')} />
       ) : null}
-      {p.trigger === 'manual' && (
+      {sourced && p.trigger === 'manual' && (
         <CoreAction
           component={component}
           labelKey="components.refresh"

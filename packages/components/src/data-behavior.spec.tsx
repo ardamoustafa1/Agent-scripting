@@ -171,3 +171,40 @@ it('honors a per-column currency instead of coercing all amounts to TRY', () => 
     ),
   );
 });
+it('shows service rows that have no key column by their position', () => {
+  const f = mount('table', {
+    rows: [
+      { name: 'Synthetic cover', limit: '100000' },
+      { name: 'Second cover', limit: '5000' },
+    ],
+    columns: [
+      { field: 'name', labelKey: 'components.value' },
+      { field: 'limit', labelKey: 'components.value' },
+    ],
+  });
+  fireEvent.click(screen.getByRole('button', { name: i18n.t('ui.showAllRows') }));
+  expect(f.view.container.textContent).toContain('Synthetic cover');
+  expect(f.view.container.textContent).toContain('Second cover');
+});
+it('offers no run or refresh controls for rows bound from elsewhere', () => {
+  const runtime = createFixtureRuntime('table');
+  engines.push(runtime);
+  const component = syntheticRendererProps(runtime, 'table');
+  render(
+    <UiProvider i18n={i18n}>
+      <DataComponent
+        {...component}
+        props={{
+          ...component.props,
+          rows: [{ id: 'a', name: 'Synthetic' }],
+          columns: [{ field: 'name', labelKey: 'components.value' }],
+        }}
+        node={{ ...component.node, bindings: [{ prop: 'rows', expression: 'vars.field' }] }}
+        write={vi.fn()}
+        emit={vi.fn().mockResolvedValue(undefined)}
+      />
+    </UiProvider>,
+  );
+  expect(screen.queryByRole('button', { name: i18n.t('components.refresh') })).toBeNull();
+  expect(screen.getByRole('table')).toBeDefined();
+});

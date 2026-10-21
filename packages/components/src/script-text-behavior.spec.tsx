@@ -179,3 +179,11 @@ it('keeps failed component events from producing unhandled rejections', async ()
     expect(f.emit).toHaveBeenCalledWith('onChange');
   });
 });
+it('renders a notice without a heading instead of a placeholder title', () => {
+  const plain = mount('alert', { titleKey: undefined }, false);
+  expect(screen.queryByText(i18n.t('components.field'))).toBeNull();
+  expect(plain.view.container.querySelector('.vb-alert strong')).toBeNull();
+  plain.view.unmount();
+  mount('alert', { titleKey: 'components.sample.first' }, false);
+  expect(screen.getByText(i18n.t('components.sample.first'))).toBeTruthy();
+});

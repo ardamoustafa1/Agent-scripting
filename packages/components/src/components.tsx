@@ -89,13 +89,13 @@ export function AddressInput(props: RendererProps) {
   return <InputComponent {...props} node={{ ...props.node, type: 'addressInput' }} />;
 }
 export function TCKNInput(props: RendererProps) {
-  return <SecureInput {...props} node={{ ...props.node, type: 'tcknInput' }} />;
+  return <InputComponent {...props} node={{ ...props.node, type: 'tcknInput' }} />;
 }
 export function VKNInput(props: RendererProps) {
-  return <SecureInput {...props} node={{ ...props.node, type: 'vknInput' }} />;
+  return <InputComponent {...props} node={{ ...props.node, type: 'vknInput' }} />;
 }
 export function IBANInput(props: RendererProps) {
-  return <SecureInput {...props} node={{ ...props.node, type: 'ibanInput' }} />;
+  return <InputComponent {...props} node={{ ...props.node, type: 'ibanInput' }} />;
 }
 export function CreditCardInput(props: RendererProps) {
   return <SecureInput {...props} node={{ ...props.node, type: 'creditCardInput' }} />;

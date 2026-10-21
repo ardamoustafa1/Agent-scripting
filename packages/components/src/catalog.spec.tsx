@@ -147,12 +147,14 @@ it('protects payment bindings and drops their values when the runtime closes', a
   runtime.dispose();
   expect(runtime.store.variable('field')).toBeNull();
 });
-it('rejects secure fields inside public repeater paths', () => {
-  expect(
-    createComponentRegistry().get('creditCardInput').propsSchema.safeParse({ itemPath: 'card' })
-      .success,
-  ).toBe(false);
-});
+it.each(['creditCardInput', 'tcknInput', 'vknInput', 'ibanInput'])(
+  'rejects %s inside public repeater paths',
+  (type) => {
+    expect(
+      createComponentRegistry().get(type).propsSchema.safeParse({ itemPath: 'card' }).success,
+    ).toBe(false);
+  },
+);
 
 it('keeps the repeater empty/error branch on its own core Box', async () => {
   const { runtime } = await mount('repeater');
