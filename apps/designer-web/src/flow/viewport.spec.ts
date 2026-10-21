@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { openingViewport, READABLE_ZOOM } from './viewport.js';
+import { openingViewport, READABLE_ZOOM, rememberSizes } from './viewport.js';
 
 const pane = { width: 1000, height: 600 };
 
@@ -51,5 +51,29 @@ describe('flow opening viewport', () => {
     );
     expect(view.zoom).toBe(READABLE_ZOOM);
     expect(view.y + 100 * view.zoom).toBeCloseTo(48);
+  });
+});
+
+describe('measured node sizes', () => {
+  it('keeps what React Flow measured and ignores other changes', () => {
+    const empty = new Map<string, { width: number; height: number }>();
+    const first = rememberSizes(empty, [
+      { type: 'dimensions', id: 'a', dimensions: { width: 190, height: 92 } },
+      { type: 'position', id: 'a' },
+      { type: 'select', id: 'b' },
+      { type: 'dimensions', id: 'b' },
+    ]);
+    expect([...first]).toEqual([['a', { width: 190, height: 92 }]]);
+    // Nothing new: the same map comes back, so the canvas does not render again.
+    expect(
+      rememberSizes(first, [
+        { type: 'dimensions', id: 'a', dimensions: { width: 190, height: 92 } },
+      ]),
+    ).toBe(first);
+    const resized = rememberSizes(first, [
+      { type: 'dimensions', id: 'a', dimensions: { width: 220, height: 100 } },
+    ]);
+    expect(resized.get('a')).toEqual({ width: 220, height: 100 });
+    expect(first.get('a')).toEqual({ width: 190, height: 92 });
   });
 });

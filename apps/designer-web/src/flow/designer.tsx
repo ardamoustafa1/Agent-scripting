@@ -49,7 +49,7 @@ import {
   removeFlowElements,
   variableName,
 } from './model.js';
-import { openingViewport } from './viewport.js';
+import { openingViewport, rememberSizes, type Size } from './viewport.js';
 
 import '@xyflow/react/dist/style.css';
 import './styles.css';
@@ -131,6 +131,11 @@ function Group({ data }: NodeProps<GraphNode>) {
   return <div className="fd-group-label">{data.label}</div>;
 }
 const nodeTypes = { verbis: FlowCard, note: Annotation, group: Group };
+/** A node's measured size for its React Flow object, when React Flow has reported one. */
+function measuredOf(sizes: ReadonlyMap<string, Size>, id: string): { measured?: Size } {
+  const size = sizes.get(id);
+  return size ? { measured: size } : {};
+}
 /**
  * Where the canvas looks. Each flow opens where its step names are readable; after Auto Layout
  * (`arranged` changes) the whole flow is fitted, since the author asked to see the new
@@ -250,6 +255,22 @@ function FlowCanvas({
     if (rule.description?.trim()) return rule.description.trim();
     return shortCondition(rule.when, fields, translate);
   };
+  // Measured sizes go back on every node object (see `rememberSizes`).
+  const [sizes, setSizes] = useState<ReadonlyMap<string, Size>>(new Map());
+  // Fetch the layout worker while the author looks at the flow, so Auto Layout answers at once
+  // instead of downloading its 1.6 MB worker on the first click.
+  useEffect(() => {
+    if (readOnly || typeof requestIdleCallback !== 'function') return;
+    const idle = requestIdleCallback(
+      () => {
+        void layoutEngine();
+      },
+      { timeout: 2000 },
+    );
+    return () => {
+      cancelIdleCallback(idle);
+    };
+  }, [readOnly]);
   const groups: GraphNode[] = useMemo(
     () =>
       (flow.designer?.groups ?? []).flatMap((group) => {
@@ -270,10 +291,11 @@ function FlowCanvas({
               height: Math.max(...positions.map((p) => p.y)) - y + 124,
             },
             selected: selection.includes(group.id),
+            ...measuredOf(sizes, group.id),
           },
         ];
       }),
-    [flow.designer?.groups, flow.nodes, temporary, selection],
+    [flow.designer?.groups, flow.nodes, temporary, selection, sizes],
   );
   const traceNodes = trace?.nodes,
     traceCurrent = trace?.current;
@@ -301,6 +323,7 @@ function FlowCanvas({
             current: traceCurrent === node.id,
           },
           selected: selection.includes(node.id),
+          ...measuredOf(sizes, node.id),
         }))
         .concat(
           (flow.designer?.notes ?? []).map((note) => ({
@@ -311,9 +334,10 @@ function FlowCanvas({
             position: temporary.get(note.id) ?? note.position,
             data: { label: note.text, kind: 'note', problems: [] },
             selected: selection.includes(note.id),
+            ...measuredOf(sizes, note.id),
           })),
         ),
-    [flow, temporary, selection, state.document, problems, traceNodes, traceCurrent, t],
+    [flow, temporary, selection, state.document, problems, traceNodes, traceCurrent, t, sizes],
   );
   const canvasNodes = useMemo(() => [...groups, ...nodes], [groups, nodes]);
   const update = (next: FlowNode) => {
@@ -326,6 +350,7 @@ function FlowCanvas({
     });
   };
   const dragChanges = (changes: NodeChange<GraphNode>[]) => {
+    setSizes((previous) => rememberSizes(previous, changes));
     const positions = changes.filter((c) => c.type === 'position');
     if (positions.length) {
       const updated = applyNodeChanges(positions, [...groups, ...nodes]);

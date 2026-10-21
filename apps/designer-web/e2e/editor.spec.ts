@@ -14,6 +14,8 @@ import {
 } from '../src/test-fixtures.js';
 
 test.use({ locale: 'en-US' });
+/** First Auto Layout waits for its worker download as well as the layout itself. */
+const LAYOUT_TIMEOUT = 20_000;
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(
     ({ tenant, user }) => {
@@ -475,7 +477,11 @@ test('creates a script from scratch, drags a component, builds decision/service 
   await page.getByRole('option', { name: 'Main flow', exact: true }).click();
   await page.getByRole('button', { name: 'Decision', exact: true }).click();
   await page.getByRole('button', { name: 'Auto layout', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Auto layout', exact: true })).toBeEnabled();
+  // The first layout downloads the 1.6 MB layout worker (prefetched when the flow opens), which
+  // can take several seconds on a loaded runner; the button shows its busy state meanwhile.
+  await expect(page.getByRole('button', { name: 'Auto layout', exact: true })).toBeEnabled({
+    timeout: LAYOUT_TIMEOUT,
+  });
   const decision = page.locator('.react-flow__node-verbis').filter({ hasText: 'Decision' });
   await decision.click();
   const decisionId = await decision.getAttribute('data-id');
@@ -492,7 +498,9 @@ test('creates a script from scratch, drags a component, builds decision/service 
   await connect('End', 'Else');
   await page.getByRole('button', { name: 'Data source', exact: true }).click();
   await page.getByRole('button', { name: 'Auto layout', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Auto layout', exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Auto layout', exact: true })).toBeEnabled({
+    timeout: LAYOUT_TIMEOUT,
+  });
   const service = page.locator('.react-flow__node-verbis').filter({ hasText: 'Data source' });
   await service.click();
   const serviceId = await service.getAttribute('data-id');

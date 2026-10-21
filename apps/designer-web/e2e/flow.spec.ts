@@ -14,6 +14,8 @@ import {
 } from '../src/test-fixtures.js';
 
 test.use({ locale: 'en-US' });
+/** First Auto Layout waits for its worker download as well as the layout itself. */
+const LAYOUT_TIMEOUT = 20_000;
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(
     ({ tenant, user }) => {
@@ -62,7 +64,11 @@ test('add, arrange, drag and undo a flow node; Page double-click opens its canva
   await page.getByRole('button', { name: 'Auto layout', exact: true }).click();
   // ELK is asynchronous. Starting a drag before layout completes cancels that
   // layout and leaves the newly added node on top of the page node.
-  await expect(page.getByRole('button', { name: 'Auto layout', exact: true })).toBeEnabled();
+  // The first layout downloads the 1.6 MB layout worker (prefetched when the flow opens), which
+  // can take several seconds on a loaded runner; the button shows its busy state meanwhile.
+  await expect(page.getByRole('button', { name: 'Auto layout', exact: true })).toBeEnabled({
+    timeout: LAYOUT_TIMEOUT,
+  });
   const node = page.locator('.react-flow__node-verbis[data-id="n-home"]');
   const rectangle = await node.boundingBox();
   if (!rectangle) throw new Error('Missing node');
