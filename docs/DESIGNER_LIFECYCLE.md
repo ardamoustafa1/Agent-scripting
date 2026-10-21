@@ -26,6 +26,17 @@ CLAUDE.md, mevcut onay politikası, BFF/CSRF, tenant RLS ve audit/outbox kuralla
 - `/scripts/:id/packages`: onaylı/yayınlanmış sürümlerin hedef ortama imzalı export’u;
   import ön kontrolü, eksik entegrasyon oluşturma/eşleme ve yalnız secret metadata’sı üzerinden
   secret-ref eşleme. Import taslak oluşturur; hedef ortamın yayın/onay kurallarını atlamaz.
+  Paket secret adı taşımaz; dry-run her secret referansının nerede kullanıldığını döndürür
+  (`secretUses`: varsayılan bağlantı / geliştirme / test ortamı ve kimlik doğrulama türü), ekran
+  referansı kimliğiyle değil kullanımıyla adlandırır ("Varsayılan bağlantı · Erişim belirteci (Bearer)").
+- Script detayı ve listeler: "Arşivle" (onay penceresiyle) scripti emekliye ayırır: resolver arşivli
+  scripti açmaz (`script_archived`), listeler arşivlenenleri varsayılan olarak gizler ("Arşivlenmemiş
+  olanlar"; "Tüm durumlar" ile görünür). "Arşivden çıkar" yayınlanmış sürümü varsa `active`, yoksa
+  `draft` yapar. İkisi de mevcut `PATCH /v1/scripts/:id` ile, If-Match ve denetim kaydıyla yapılır.
+  Kampanya ve script listelerinde "Oluşturan" sütunu: Siz / ekip arkadaşının adı / Sistem; ad
+  `GET /v1/people?ids=` ile çözülür (script veya kampanya okuma yetkisi, en fazla 100 kimlik, yalnız
+  aynı tenant'ın aktif kullanıcıları; okuma `script.team.namesRead` olarak denetlenir). Aktif olmayan
+  kişi "Eski ekip üyesi", ad okunamazsa "Ekip üyesi" görünür.
 - `/templates`: bankacılık, telekom, sigorta, e-ticaret, tahsilat ve anket başlangıçları;
   sektör/kaynak/arama filtreleri ve tenant sürümünden şablon oluşturma.
 - Görsel editörün ekip paneli: gerçek zamanlı Yjs düzenleme, adla presence avatarları,

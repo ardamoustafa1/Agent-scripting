@@ -11,7 +11,9 @@ Bağımlılıklar ve generated Prisma client hazır olmalı; temiz checkout’ta
 - Development veritabanına migration uygulayın; `NODE_ENV=development` ve yalnız local
   PostgreSQL `verbis`/`verbis_dev`/`verbis_demo`/`verbis_test` hedefiyle `pnpm seed:demo` çağırın.
   Komut migration/seed/test zinciri çalıştırmaz; schema hazırlanmış olmalıdır. Production/remote DB
-  reddedilir. Var olan demo bundle’ı güncellenmez/silinmez; tekrar çağrı veri eklemez.
+  reddedilir. Aynı sürümdeki bundle’a tekrar çağrı veri eklemez. Eski bir bundle hiçbir satırı
+  düzenlenmeden/silinmeden yükseltilir: içeriği fikstürden farklı olan ortak ekran ve scriptler yeni
+  yayınlanmış sürüm alır, kampanya ataması o sürüme pinlenir (`prisma/demo/upgrade.ts`).
 - İsteğe bağlı izole SSO/mTLS seed ve temiz kurulum smoke hazırlığı: [smoke README](../tests/demo-smoke/README.md).
   Demo manual scoped roller yalnız dört sentetik campaign ID’sine izin verir.
 - Tenant `verbis-demo`; yönetici, tasarımcı, onaycı, agent ve denetçi kullanıcıları
@@ -35,6 +37,50 @@ Bağımlılıklar ve generated Prisma client hazır olmalı; temiz checkout’ta
   yetkili API üzerinden çalıştırın; JSON grant/token değildir. Wrap-up için demo-success sonucu kullanın.
 - Gerçek screenshot capture isteğe bağlı, ayrı yetkili komuttur (`pnpm docs:capture`); mevcut görseller
   şematik olarak etiketlenir. Görüntüde gerçek PII, secret veya auth state göstermeyin.
+
+## Yerel kurulum (bu depoda 2026-10-21’de kuruldu)
+
+Demo değerleri yalnız gitignore’daki `.env` dosyasında durur (`chmod 600`); `.env.example` boş
+anahtarları taşır. Demo realm’ini olağan dev Keycloak’a bağlamayın, ayrı konteyner kullanın.
+
+1. `.env`: `DEMO_OIDC_ISSUER=http://localhost:28081/realms/verbis-demo`,
+   `DEMO_OIDC_CLIENT_ID=verbis-demo-bff`, rastgele `DEMO_OIDC_CLIENT_SECRET`,
+   `DEMO_SMOKE_PASSWORD` (beş demo kullanıcısının ortak sentetik parolası),
+   `DEMO_KEYCLOAK_ADMIN_PASSWORD`, `DEMO_KEYCLOAK_PORT=28081` ve hub sertifikasının RFC 8705
+   parmak izi `DEMO_HUB_CERT_THUMBPRINT`. `HUB_TENANTS` listesine
+   `{"slug":"verbis-demo","clientId":"019c0000-0000-7000-8000-000000000016"}` ekleyip hub’ı yeniden
+   başlatın.
+
+   ```bash
+   openssl x509 -in .dev/tls/hub.pem -outform DER | openssl dgst -sha256 -binary | openssl base64 -A | tr '+/' '-_' | tr -d '='
+   ```
+
+2. Ayrı Keycloak (yalnız `127.0.0.1`, realm şablonu salt okunur bağlanır):
+
+   ```bash
+   export $(grep -E '^DEMO_' .env | xargs) && docker run -d --name verbis-demo-keycloak -p "127.0.0.1:${DEMO_KEYCLOAK_PORT}:8080" -e KC_HTTP_PORT=8080 -e "KC_HOSTNAME=http://localhost:${DEMO_KEYCLOAK_PORT}" -e KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true -e KC_HEALTH_ENABLED=true -e KC_BOOTSTRAP_ADMIN_USERNAME=demo-admin-console -e "KC_BOOTSTRAP_ADMIN_PASSWORD=${DEMO_KEYCLOAK_ADMIN_PASSWORD}" -e DEMO_OIDC_CLIENT_SECRET -e DEMO_SMOKE_PASSWORD -v "$PWD/tests/demo-smoke/verbis-demo-realm.template.json:/opt/keycloak/data/import/verbis-demo-realm.json:ro" quay.io/keycloak/keycloak:26.8.0 start-dev --import-realm
+   ```
+
+3. `DEMO_DATE=2026-10-21 pnpm seed:demo`: `verbis-demo` tenantı, “Keycloak (synthetic demo)” IdP’si,
+   hub service client’ı, dört kampanya ve ortak karşılama. Kullanıcılar `demo-admin`,
+   `demo-designer`, `demo-approver`, `demo-agent`, `demo-auditor`. Giriş, tenant ve IdP seçili olarak
+   uygulamanın kendi BFF’inden başlar, örneğin admin için
+   `http://localhost:5175/api/auth/login?tenant=verbis-demo&app=admin&idp=019c0000-0000-7000-8000-000000000014`
+   (designer 5173 / `app=designer`, agent 5174 / `app=agent`).
+4. Uçtan uca kabul:
+
+   ```bash
+   export $(grep -E '^DEMO_' .env | xargs) && DEMO_SMOKE=1 pnpm exec playwright test -c tests/demo-smoke/playwright.config.ts
+   ```
+
+   Test sonunda çağrıyı simülatörde sonlandırır, bu yüzden aynı tenant’ta tekrar koşar. Yarıda
+   kalan bir koşu ise çağrıyı açık bırakır: admin simülatöründe çağrıyı sonlandırın, agent
+   masaüstünde sonucu gönderin (oturum başka sekmede kilitliyse “Bu sekmede devral”).
+
+**Durum (2026-10-21):** uçtan uca geçiyor: SSO (admin/designer/agent), dört kampanya, ortak
+ekranlar, simülatör → secure launch, ortak karşılama, anket, sahte servis yanıtı, wrap-up ACK ve
+audit zinciri doğrulaması. Ajan servis çağrısını kendi aktif çağrı oturumu ve scriptin tam pin’i
+ile yapar; `execute:Integration` gerekmez ([ADR-0056](adr/0056-runtime-data-source-calls-authorized-by-the-session.md)).
 
 ## 0:00–0:30 — Tek ekran, dört kampanya
 

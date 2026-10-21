@@ -1894,12 +1894,14 @@
     "designer.health.clean",
     "designer.health.count",
     "designer.health.description",
+    "designer.health.fixes.sessionScope",
     "designer.health.go",
     "designer.health.goTo",
     "designer.health.grades.excellent",
     "designer.health.grades.fair",
     "designer.health.grades.good",
     "designer.health.grades.poor",
+    "designer.health.issues.pageScopedRequired",
     "designer.health.issues.placeholderUnbound",
     "designer.health.issues.placeholderUnknown",
     "designer.health.issues.unusedSensitive",
@@ -2436,6 +2438,9 @@
     "designer.lifecycle.scriptBindings",
     "designer.lifecycle.secretHelp",
     "designer.lifecycle.secretMapping",
+    "designer.lifecycle.secretUse.default",
+    "designer.lifecycle.secretUse.environment",
+    "designer.lifecycle.secretUse.packaged",
     "designer.lifecycle.semver",
     "designer.lifecycle.sendComment",
     "designer.lifecycle.sourceDiff",
@@ -2893,6 +2898,12 @@
     "designer.workspace.actions",
     "designer.workspace.allStatuses",
     "designer.workspace.allTags",
+    "designer.workspace.archive",
+    "designer.workspace.archiveConfirm",
+    "designer.workspace.archiveFailed",
+    "designer.workspace.archiveHelp",
+    "designer.workspace.archiveTitle",
+    "designer.workspace.archivedNotice",
     "designer.workspace.assignedScripts",
     "designer.workspace.assignmentsHint",
     "designer.workspace.back",
@@ -2916,6 +2927,7 @@
     "designer.workspace.createForbidden",
     "designer.workspace.createNextDraft",
     "designer.workspace.createdBy",
+    "designer.workspace.currentStatuses",
     "designer.workspace.denied",
     "designer.workspace.deniedDetail",
     "designer.workspace.description",
@@ -3011,7 +3023,6 @@
     "designer.workspace.noVersions",
     "designer.workspace.notifications",
     "designer.workspace.notificationsEmpty",
-    "designer.workspace.owner",
     "designer.workspace.owners.all",
     "designer.workspace.owners.former",
     "designer.workspace.owners.member",
@@ -3081,6 +3092,7 @@
     "designer.workspace.tourVisual.review",
     "designer.workspace.tourVisual.search",
     "designer.workspace.transportHint",
+    "designer.workspace.unarchive",
     "designer.workspace.unassigned",
     "designer.workspace.userMenu",
     "designer.workspace.validFrom",
@@ -5174,12 +5186,14 @@
     "designer.health.clean",
     "designer.health.count",
     "designer.health.description",
+    "designer.health.fixes.sessionScope",
     "designer.health.go",
     "designer.health.goTo",
     "designer.health.grades.excellent",
     "designer.health.grades.fair",
     "designer.health.grades.good",
     "designer.health.grades.poor",
+    "designer.health.issues.pageScopedRequired",
     "designer.health.issues.placeholderUnbound",
     "designer.health.issues.placeholderUnknown",
     "designer.health.issues.unusedSensitive",
@@ -5716,6 +5730,9 @@
     "designer.lifecycle.scriptBindings",
     "designer.lifecycle.secretHelp",
     "designer.lifecycle.secretMapping",
+    "designer.lifecycle.secretUse.default",
+    "designer.lifecycle.secretUse.environment",
+    "designer.lifecycle.secretUse.packaged",
     "designer.lifecycle.semver",
     "designer.lifecycle.sendComment",
     "designer.lifecycle.sourceDiff",
@@ -6173,6 +6190,12 @@
     "designer.workspace.actions",
     "designer.workspace.allStatuses",
     "designer.workspace.allTags",
+    "designer.workspace.archive",
+    "designer.workspace.archiveConfirm",
+    "designer.workspace.archiveFailed",
+    "designer.workspace.archiveHelp",
+    "designer.workspace.archiveTitle",
+    "designer.workspace.archivedNotice",
     "designer.workspace.assignedScripts",
     "designer.workspace.assignmentsHint",
     "designer.workspace.back",
@@ -6196,6 +6219,7 @@
     "designer.workspace.createForbidden",
     "designer.workspace.createNextDraft",
     "designer.workspace.createdBy",
+    "designer.workspace.currentStatuses",
     "designer.workspace.denied",
     "designer.workspace.deniedDetail",
     "designer.workspace.description",
@@ -6291,7 +6315,6 @@
     "designer.workspace.noVersions",
     "designer.workspace.notifications",
     "designer.workspace.notificationsEmpty",
-    "designer.workspace.owner",
     "designer.workspace.owners.all",
     "designer.workspace.owners.former",
     "designer.workspace.owners.member",
@@ -6361,6 +6384,7 @@
     "designer.workspace.tourVisual.review",
     "designer.workspace.tourVisual.search",
     "designer.workspace.transportHint",
+    "designer.workspace.unarchive",
     "designer.workspace.unassigned",
     "designer.workspace.userMenu",
     "designer.workspace.validFrom",
@@ -6562,27 +6586,27 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 1327,
+  "literalKeyCount": 1339,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
-      "line": 43
+      "line": 44
     },
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
-      "line": 86
+      "line": 87
     },
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
-      "line": 119
+      "line": 120
     },
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
-      "line": 141
+      "line": 142
     },
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
-      "line": 165
+      "line": 166
     },
     {
       "file": "apps/admin-web/src/avaya/avaya-routing-section.tsx",
@@ -6978,19 +7002,19 @@
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 215
+      "line": 227
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 216
+      "line": 228
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 216
+      "line": 228
     },
     {
       "file": "apps/admin-web/src/workspace/workspace.tsx",
-      "line": 269
+      "line": 281
     },
     {
       "file": "apps/agent-web/src/desktop/failure-notice.tsx",
@@ -7274,11 +7298,7 @@
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 596
-    },
-    {
-      "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 602
+      "line": 597
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
@@ -7286,55 +7306,59 @@
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 635
+      "line": 604
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 740
+      "line": 636
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 746
+      "line": 741
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 763
+      "line": 747
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 783
+      "line": 764
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 919
+      "line": 784
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 936
+      "line": 920
+    },
+    {
+      "file": "apps/designer-web/src/editor/editor.tsx",
+      "line": 937
     },
     {
       "file": "apps/designer-web/src/editor/health-panel.tsx",
-      "line": 114
+      "line": 117
     },
     {
       "file": "apps/designer-web/src/editor/health-panel.tsx",
-      "line": 123
+      "line": 126
     },
     {
       "file": "apps/designer-web/src/editor/health-panel.tsx",
-      "line": 130
+      "line": 133
     },
     {
       "file": "apps/designer-web/src/editor/health-panel.tsx",
-      "line": 189
+      "line": 192
     },
     {
       "file": "apps/designer-web/src/editor/health-panel.tsx",
-      "line": 211
+      "line": 214
     },
     {
       "file": "apps/designer-web/src/editor/health-panel.tsx",
-      "line": 216
+      "line": 219
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
@@ -7614,67 +7638,67 @@
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 87
+      "line": 86
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 93
+      "line": 92
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 100
+      "line": 99
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 222
+      "line": 246
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 226
+      "line": 250
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 277
+      "line": 318
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 388
+      "line": 432
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 406
+      "line": 450
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 535
+      "line": 579
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 671
+      "line": 715
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 681
+      "line": 725
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 752
+      "line": 796
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 764
+      "line": 808
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 841
+      "line": 885
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 882
+      "line": 926
     },
     {
       "file": "apps/designer-web/src/flow/designer.tsx",
-      "line": 1009
+      "line": 1053
     },
     {
       "file": "apps/designer-web/src/flow/variable-manager.tsx",
@@ -7986,23 +8010,31 @@
     },
     {
       "file": "apps/designer-web/src/lifecycle/packages.tsx",
-      "line": 141
+      "line": 150
     },
     {
       "file": "apps/designer-web/src/lifecycle/packages.tsx",
-      "line": 160
+      "line": 169
     },
     {
       "file": "apps/designer-web/src/lifecycle/packages.tsx",
-      "line": 180
-    },
-    {
-      "file": "apps/designer-web/src/lifecycle/packages.tsx",
-      "line": 215
+      "line": 189
     },
     {
       "file": "apps/designer-web/src/lifecycle/packages.tsx",
       "line": 224
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/packages.tsx",
+      "line": 233
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/packages.tsx",
+      "line": 273
+    },
+    {
+      "file": "apps/designer-web/src/lifecycle/packages.tsx",
+      "line": 275
     },
     {
       "file": "apps/designer-web/src/lifecycle/release-risk.tsx",
@@ -8174,15 +8206,15 @@
     },
     {
       "file": "apps/designer-web/src/pages/campaign-settings.tsx",
-      "line": 151
+      "line": 142
     },
     {
       "file": "apps/designer-web/src/pages/campaign-settings.tsx",
-      "line": 159
+      "line": 150
     },
     {
       "file": "apps/designer-web/src/pages/campaign-settings.tsx",
-      "line": 214
+      "line": 205
     },
     {
       "file": "apps/designer-web/src/pages/campaign.tsx",
@@ -8190,51 +8222,51 @@
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 79
+      "line": 123
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 110
+      "line": 154
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 122
+      "line": 166
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 125
+      "line": 171
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 134
+      "line": 180
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 209
+      "line": 256
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 253
+      "line": 300
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 254
+      "line": 301
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 266
+      "line": 313
     },
     {
       "file": "apps/designer-web/src/pages/library.tsx",
-      "line": 327
+      "line": 374
     },
     {
       "file": "apps/designer-web/src/pages/script.tsx",
-      "line": 201
+      "line": 249
     },
     {
       "file": "apps/designer-web/src/pages/script.tsx",
-      "line": 321
+      "line": 392
     },
     {
       "file": "apps/designer-web/src/pages/settings.tsx",
@@ -8290,55 +8322,55 @@
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 271
+      "line": 273
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 331
+      "line": 333
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 413
+      "line": 415
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 553
+      "line": 555
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 580
+      "line": 582
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 733
+      "line": 739
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 786
+      "line": 792
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 807
+      "line": 813
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 809
+      "line": 815
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 881
+      "line": 887
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 942
+      "line": 948
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 945
+      "line": 951
     },
     {
       "file": "apps/designer-web/src/preview/studio.tsx",
-      "line": 1008
+      "line": 1014
     },
     {
       "file": "apps/designer-web/src/rules/assignment-rule.tsx",

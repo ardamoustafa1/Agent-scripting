@@ -41,3 +41,15 @@ pnpm --filter @verbis/designer-web exec playwright test e2e/preview.spec.ts
 ```
 
 Canlı dış platformlar için müşteri ortamı kabulü bu yerel önizleme doğrulamasının dışındadır.
+
+## Okunur adlar ve sağlık kontrolü (2026-10-21)
+
+- Veri kaynağı panelleri ve sahte yanıt alanları kod adıyla değil, sözcüklerle görünür: alanı dolduran
+  değişkenin görünen adı (yerleşik şablonlarda Türkçe), yoksa alan adı sözcüklere ayrılmış hâliyle
+  ("Order lookup"). Türkçe arayüzde "mock" yerine "sahte yanıt" / "örnek yanıt" kullanılır.
+- Sağlık puanı, değeri sayfa kapsamlı bir değişkende tutulan zorunlu alanı yakalar
+  (`VERBIS_LINT_PAGE_SCOPED_REQUIRED`): ajan sonraki sayfaya geçince değer silinir ve tamamlayan sonuç
+  (ADR-0055) o alanda takılır; hata olarak işaretlenir. Koşullu zorunlu alan (`requiredWhen`, ör. telekom
+  şablonunda "kod doğrulanana kadar") yazarın bilinçli çözümüdür ve işaretlenmez; çağrının yalnız
+  bitebileceği son sayfalar da işaretlenmez. Taslakta "… değişkenini oturum kapsamına al" düzeltmesi tek
+  geri alma adımıdır.
