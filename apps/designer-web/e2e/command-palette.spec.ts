@@ -66,10 +66,10 @@ test('editor commands lead the palette and run from the keyboard', async ({ page
   // Find a component by its rendered text and land on it with the canvas focused.
   await run(page, 'next', /^Button on Home/);
   await expect(page.locator('#editor-canvas')).toBeFocused();
-  await expect(page.locator('.ed-selection-label')).toContainText('button');
+  await expect(page.locator('.ed-selection-label')).toContainText('Button');
 
   await run(page, 'add text input', /^Add Text input/);
-  await expect(page.locator('.ed-selection-label')).toContainText('textInput');
+  await expect(page.locator('.ed-selection-label')).toContainText('Text input');
 
   await run(page, 'flow', 'Open Flow');
   await expect(page.getByRole('button', { name: 'Flow', exact: true })).toHaveAttribute(

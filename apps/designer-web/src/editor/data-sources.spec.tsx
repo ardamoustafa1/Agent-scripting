@@ -142,3 +142,64 @@ it('reports catalog failure and does not offer a writable binding', async () => 
     f.dialog.getByRole<HTMLButtonElement>('button', { name: f.label('editor.addSource') }).disabled,
   ).toBe(true);
 });
+it('maps declared inputs and outputs as rows, prefills same-named variables and creates output variables', async () => {
+  const store = new EditorStore(minimalScript());
+  store.edit((doc) => {
+    doc.variables.push({
+      key: 'trackingNo',
+      type: 'string',
+      scope: 'session',
+      default: '',
+      classification: 'internal',
+      pii: false,
+      persist: false,
+    });
+  });
+  const f = await mountDesigner(<DataSources store={store} />, {
+    '/v1/data-sources?limit=100': { data: [first], page: { nextCursor: null } },
+    [`/v1/data-sources/${first.id}`]: {
+      definition: {
+        inputSchema: {
+          required: ['tracking_no'],
+          properties: { trackingNo: { type: 'string' }, locale: { type: 'string' } },
+        },
+        outputSchema: {
+          properties: {
+            status: { type: 'string' },
+            shipment: { type: 'object', properties: { eta: { type: 'string', format: 'date' } } },
+          },
+        },
+      },
+    },
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.label('editor.manageSources') }));
+  const dialog = within(await screen.findByRole('dialog'));
+  fireEvent.click(dialog.getByRole('combobox', { name: f.label('editor.tenantIntegration') }));
+  fireEvent.click(await screen.findByRole('option', { name: 'customer-profile · v3' }));
+  // The declared input is prefilled from the same-named variable; no JSON to write.
+  const mode = await dialog.findByRole('combobox', { name: f.label('value.sourceVariable') });
+  expect(mode.textContent).toBe('trackingNo');
+  const status = dialog.getByRole('combobox', {
+    name: f.i18n.t('designer.sources.outputField', { path: 'status' }),
+  });
+  fireEvent.click(status);
+  fireEvent.click(await screen.findByRole('option', { name: f.label('sources.newVariable') }));
+  const eta = dialog.getByRole('combobox', {
+    name: f.i18n.t('designer.sources.outputField', { path: 'shipment.eta' }),
+  });
+  fireEvent.click(eta);
+  fireEvent.click(await screen.findByRole('option', { name: f.label('sources.componentsOnly') }));
+  fireEvent.click(dialog.getByRole('button', { name: f.label('editor.addSource') }));
+  const document = store.getSnapshot().document;
+  expect(document.dataSources[0]).toMatchObject({
+    inputs: { trackingNo: { $expr: 'vars.trackingNo' } },
+    outputs: { status: { path: '$.status', variable: 'status' }, eta: { path: '$.shipment.eta' } },
+  });
+  expect(document.variables.map((v) => v.key)).toEqual(['trackingNo', 'status']);
+  // One undo removes the binding and the variable created for it together.
+  act(() => {
+    store.undo();
+  });
+  expect(store.getSnapshot().document.variables.map((v) => v.key)).toEqual(['trackingNo']);
+  expect(store.getSnapshot().document.dataSources).toEqual([]);
+});

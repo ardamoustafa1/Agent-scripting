@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -8,6 +8,7 @@ import {
   walkNodes,
   validateSemantics,
   type DataSourceRef,
+  type Variable,
 } from '@verbis/script-schema';
 import { Alert, Button, Dialog, Input, Select } from '@verbis/ui';
 
@@ -15,6 +16,8 @@ import { request } from '../api/client.js';
 import { JsonField } from '../integrations/json-field.js';
 import { useWorkspace } from '../workspace/context.js';
 
+import { inputFields, suggestInput } from './source-binding.js';
+import { SourceMapping } from './source-mapping.js';
 import { useEditor, type EditorStore } from './store.js';
 
 const Sources = z.object({
@@ -23,6 +26,17 @@ const Sources = z.object({
   ),
   page: z.object({ nextCursor: z.string().nullable() }),
 });
+/** Only the parts of a data source definition the binding form needs. */
+const SourceDetail = z
+  .object({
+    definition: z
+      .object({
+        inputSchema: z.record(z.string(), z.unknown()).default({}),
+        outputSchema: z.record(z.string(), z.unknown()).default({}),
+      })
+      .loose(),
+  })
+  .loose();
 export function DataSources({ store }: { store: EditorStore }) {
   const { t } = useTranslation(),
     { session } = useWorkspace(),
@@ -34,6 +48,7 @@ export function DataSources({ store }: { store: EditorStore }) {
     [inputs, setInputs] = useState<DataSourceRef['inputs']>({}),
     [outputs, setOutputs] = useState<DataSourceRef['outputs']>({}),
     [timeout, setTimeout] = useState(5000),
+    [pending, setPending] = useState<Variable[]>([]),
     [error, setError] = useState(false);
   const sources = useInfiniteQuery({
     queryKey: [
@@ -73,12 +88,48 @@ export function DataSources({ store }: { store: EditorStore }) {
       used.add(ds.id);
   }
   const source = rows.find((row) => row.id === selected);
+  const detail = useQuery({
+    queryKey: ['workspace', session.user.tenantId, 'editor-source-detail', selected],
+    queryFn: ({ signal }) => request(`/v1/data-sources/${selected}`, SourceDetail, { signal }),
+    staleTime: 60_000,
+    enabled: open && !!selected,
+  });
+  const definition = detail.data?.definition;
+  const queryClient = useQueryClient();
+  const detailKey = (id: string) => [
+    'workspace',
+    session.user.tenantId,
+    'editor-source-detail',
+    id,
+  ];
+  // A new binding starts with every declared input mapped to the same-named variable, if any.
+  const choose = async (id: string) => {
+    setSelected(id);
+    if (editing || !id) return;
+    const loaded = await queryClient
+      .query({
+        queryKey: detailKey(id),
+        queryFn: ({ signal }) => request(`/v1/data-sources/${id}`, SourceDetail, { signal }),
+      })
+      .catch(() => null);
+    if (!loaded) return;
+    const keys = state.document.variables.map((v) => v.key);
+    setInputs(
+      Object.fromEntries(
+        inputFields(loaded.definition.inputSchema).flatMap((field) => {
+          const suggestion = suggestInput(field.name, keys);
+          return suggestion ? [[field.name, suggestion]] : field.required ? [[field.name, '']] : [];
+        }),
+      ),
+    );
+  };
   const reset = () => {
     setSelected('');
     setEditing(null);
     setInputs({});
     setOutputs({});
     setTimeout(5000);
+    setPending([]);
     setError(false);
   };
   const apply = () => {
@@ -106,8 +157,15 @@ export function DataSources({ store }: { store: EditorStore }) {
       setError(true);
       return;
     }
+    const referenced = new Set(
+      Object.values(outputs).flatMap((o) => (o.variable ? [o.variable] : [])),
+    );
     store.execute(() => {
       store.edit((doc) => {
+        // Variables created for outputs land with the binding, in the same undoable edit.
+        for (const variable of pending)
+          if (referenced.has(variable.key) && !doc.variables.some((v) => v.key === variable.key))
+            doc.variables.push(variable);
         const index = doc.dataSources.findIndex((ds) => ds.id === editing);
         if (index < 0) doc.dataSources.push(bound.data);
         else doc.dataSources[index] = bound.data;
@@ -182,7 +240,9 @@ export function DataSources({ store }: { store: EditorStore }) {
             label={t('designer.editor.tenantIntegration')}
             value={selected}
             options={rows.map((row) => ({ value: row.id, label: `${row.key} · v${row.version}` }))}
-            onValueChange={setSelected}
+            onValueChange={(id) => {
+              void choose(id);
+            }}
           />
           {sources.hasNextPage && (
             <Button
@@ -193,20 +253,40 @@ export function DataSources({ store }: { store: EditorStore }) {
             </Button>
           )}
           <p>{t('designer.editor.sourceMappingHint')}</p>
-          <JsonField
-            label={t('designer.editor.sourceInputs')}
-            value={inputs}
-            change={(value) => {
-              setInputs(DataSourceRefSchema.shape.inputs.parse(value));
-            }}
-          />
-          <JsonField
-            label={t('designer.editor.sourceOutputs')}
-            value={outputs}
-            change={(value) => {
-              setOutputs(DataSourceRefSchema.shape.outputs.parse(value));
-            }}
-          />
+          {(source ?? editing) && (
+            <SourceMapping
+              key={`${selected}.${editing ?? ''}`}
+              document={state.document}
+              inputSchema={definition?.inputSchema}
+              outputSchema={definition?.outputSchema}
+              inputs={inputs}
+              outputs={outputs}
+              pending={pending}
+              onInputs={setInputs}
+              onOutputs={setOutputs}
+              onPending={setPending}
+            />
+          )}
+          {/* The raw mapping stays reachable for integrators, out of the authoring path. */}
+          <details className="pv-advanced">
+            <summary>{t('designer.sources.advanced')}</summary>
+            <JsonField
+              key={`inputs.${JSON.stringify(inputs)}`}
+              label={t('designer.editor.sourceInputs')}
+              value={inputs}
+              change={(value) => {
+                setInputs(DataSourceRefSchema.shape.inputs.parse(value));
+              }}
+            />
+            <JsonField
+              key={`outputs.${JSON.stringify(outputs)}`}
+              label={t('designer.editor.sourceOutputs')}
+              value={outputs}
+              change={(value) => {
+                setOutputs(DataSourceRefSchema.shape.outputs.parse(value));
+              }}
+            />
+          </details>
           <Input
             type="number"
             min={100}

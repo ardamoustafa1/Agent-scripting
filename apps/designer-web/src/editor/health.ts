@@ -1,5 +1,7 @@
 import { unusedVariables, walkNodes, type ScriptDocument } from '@verbis/script-schema';
 
+import { messageTokens, nodeTexts, parseParamsExpression } from './text-variables.js';
+
 import type { EditorIssue } from './store.js';
 
 /**
@@ -73,8 +75,47 @@ export function categoryOf(code: string): HealthCategory {
   return 'data';
 }
 
+/**
+ * `{name}` placeholders in a component's texts that nothing fills: the agent would read
+ * "[name]". Custom params expressions cannot be checked statically and are skipped.
+ */
+export function placeholderIssues(document: ScriptDocument): EditorIssue[] {
+  const variables = new Set(document.variables.map((v) => v.key));
+  const issues: EditorIssue[] = [];
+  walkNodes(document, ({ node, pointer }) => {
+    const tokens = messageTokens(...nodeTexts(document, node));
+    if (!tokens.length) return true;
+    const provided = new Set<string>();
+    const statics = node.props['params'];
+    if (statics !== null && typeof statics === 'object' && !Array.isArray(statics))
+      for (const key of Object.keys(statics)) provided.add(key);
+    const binding = node.bindings.find((b) => b.prop === 'params');
+    if (binding) {
+      const pairs = 'expression' in binding ? parseParamsExpression(binding.expression) : null;
+      if (!pairs) return true;
+      for (const key of pairs.keys()) provided.add(key);
+    }
+    for (const name of tokens)
+      if (!provided.has(name))
+        issues.push({
+          severity: 'warning',
+          code: 'VERBIS_LINT_PLACEHOLDER',
+          path: pointer,
+          messageKey: variables.has(name)
+            ? 'designer.health.issues.placeholderUnbound'
+            : 'designer.health.issues.placeholderUnknown',
+          params: { name },
+        });
+    return true;
+  });
+  return issues;
+}
+
 /** Editor issues plus document-wide hygiene checks that do not block saving. */
 export function hygieneIssues(document: ScriptDocument): EditorIssue[] {
+  return [...unusedVariableIssues(document), ...placeholderIssues(document)];
+}
+function unusedVariableIssues(document: ScriptDocument): EditorIssue[] {
   return unusedVariables(document).map(({ key, path, sensitive }) => ({
     severity: sensitive ? 'warning' : 'info',
     code: sensitive ? 'VERBIS_LINT_UNUSED_SENSITIVE' : 'VERBIS_LINT_UNUSED_VARIABLE',

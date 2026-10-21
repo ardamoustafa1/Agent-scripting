@@ -119,6 +119,65 @@ it('caches lint by document identity, reports invalid expressions and publishes 
   });
   expect(store.getSnapshot().message).toBe('designer.editor.operationFailed');
 });
+it('flags formulas the engine would reject mid-call, not only syntax errors', () => {
+  const store = fixture();
+  store.update('btn-next', (node) => {
+    node.bindings.push({ prop: 'disabled', expression: 'len(vars.name) == 4' });
+    node.visibleWhen = { $expr: 'upper(vars.name, 2) == "A"' };
+  });
+  const found = store.issues().filter((issue) => issue.code === 'VERBIS_EXPRESSION');
+  expect(found).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        messageKey: 'designer.editor.unknownFunction',
+        params: { name: 'len' },
+        severity: 'error',
+      }),
+      expect.objectContaining({
+        messageKey: 'designer.editor.argumentCount',
+        params: { name: 'upper' },
+      }),
+    ]),
+  );
+  store.update('btn-next', (node) => {
+    node.bindings = node.bindings.filter((binding) => binding.prop !== 'disabled');
+    node.visibleWhen = { $expr: "regexTest(vars.name, '^[0-9]{4}$')" };
+  });
+  expect(store.issues().some((issue) => issue.code === 'VERBIS_EXPRESSION')).toBe(false);
+});
+it('flags card data bound to a plain field, which the renderer refuses during the call', () => {
+  const store = fixture();
+  store.edit((doc) => {
+    doc.variables.push({
+      key: 'cardDigits',
+      type: 'string',
+      scope: 'session',
+      classification: 'pci',
+      pii: true,
+      persist: false,
+    });
+    doc.pages[0]?.layout.children?.push({
+      id: 'in-card-digits',
+      type: 'textInput',
+      props: { labelKey: 'common.next' },
+      bindings: [{ prop: 'value', variable: 'cardDigits' }],
+      events: {},
+      style: { base: {} },
+    });
+  });
+  expect(store.issues()).toContainEqual(
+    expect.objectContaining({
+      code: 'SENSITIVE_DATA_EXPOSED',
+      messageKey: 'designer.editor.cardOnPlainField',
+      params: { variable: 'cardDigits' },
+    }),
+  );
+  store.edit((doc) => {
+    const variable = doc.variables.find((v) => v.key === 'cardDigits');
+    if (variable) variable.classification = 'pii';
+  });
+  expect(store.issues().some((issue) => issue.code === 'SENSITIVE_DATA_EXPOSED')).toBe(false);
+});
 it('groups nested transactions and stops notifying unsubscribed listeners', () => {
   const store = fixture(),
     listener = vi.fn();
@@ -175,4 +234,15 @@ it('leaves the flow untouched when there is no edge into an end node', () => {
   });
   store.addPage('Floating');
   expect(store.getSnapshot().document.flow.edges).toEqual([]);
+});
+
+it('previews at desktop width while styles target all screens and keeps the target visible', () => {
+  const store = fixture();
+  expect(store.getSnapshot()).toMatchObject({ viewport: 'lg', breakpoint: 'base' });
+  store.setView({ breakpoint: 'xl' });
+  expect(store.getSnapshot()).toMatchObject({ viewport: 'xl', breakpoint: 'xl' });
+  store.setView({ viewport: 'md' });
+  expect(store.getSnapshot()).toMatchObject({ viewport: 'md', breakpoint: 'md' });
+  store.setView({ viewport: 'xl' });
+  expect(store.getSnapshot()).toMatchObject({ viewport: 'xl', breakpoint: 'md' });
 });

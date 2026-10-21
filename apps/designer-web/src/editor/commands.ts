@@ -72,7 +72,7 @@ export interface EditorCommandContext {
  */
 export function editorCommands(ctx: EditorCommandContext, query: string): CommandItem[] {
   const { t, store } = ctx;
-  const { document, zoom, breakpoint } = store.getSnapshot();
+  const { document, zoom, viewport: current } = store.getSnapshot();
   const group = (key: string) => t(`designer.commands.groups.${key}`);
   const componentName = (type: string) =>
     t(`designer.editor.componentNames.${type}`, { defaultValue: type });
@@ -220,9 +220,9 @@ export function editorCommands(ctx: EditorCommandContext, query: string): Comman
         viewport: t(`designer.editor.viewportNames.${viewport}`),
       }),
       group: group('view'),
-      disabled: breakpoint === viewport,
+      disabled: current === viewport,
       onSelect: () => {
-        store.setView({ breakpoint: viewport });
+        store.setView({ viewport });
       },
     })),
   );

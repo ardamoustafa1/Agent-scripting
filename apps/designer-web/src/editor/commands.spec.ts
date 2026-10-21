@@ -134,9 +134,11 @@ describe('editorCommands', () => {
     expect(byId(items, 'editor.zoom.reset').disabled).toBe(true);
     byId(items, 'editor.zoom.in').onSelect();
     expect(ctx.store.getSnapshot().zoom).toBe(1.25);
-    byId(items, 'editor.viewport.lg').onSelect();
-    expect(ctx.store.getSnapshot().breakpoint).toBe('lg');
-    expect(byId(editorCommands(ctx, ''), 'editor.viewport.lg').disabled).toBe(true);
+    // The preview opens at desktop width; changing it never retargets styles away from all screens.
+    expect(byId(items, 'editor.viewport.lg').disabled).toBe(true);
+    byId(items, 'editor.viewport.md').onSelect();
+    expect(ctx.store.getSnapshot()).toMatchObject({ viewport: 'md', breakpoint: 'base' });
+    expect(byId(editorCommands(ctx, ''), 'editor.viewport.md').disabled).toBe(true);
   });
 
   it('gives every command a unique id', () => {

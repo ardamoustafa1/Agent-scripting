@@ -47,18 +47,32 @@ test('grouping reverse-selected siblings preserves canvas order through ungroup 
   const palette = page.locator('.ed-palette');
   await palette.locator('[data-component-type="heading"]').getByRole('button').last().click();
   const inspector = page.locator('.ed-inspector');
-  const heading = await inspector.locator('code').first().innerText();
+  const heading = await inspector
+    .locator('code')
+    .first()
+    .textContent()
+    .then((id) => id ?? '');
   await palette.locator('[data-component-type="text"]').getByRole('button').last().click();
-  const text = await inspector.locator('code').first().innerText();
+  const text = await inspector
+    .locator('code')
+    .first()
+    .textContent()
+    .then((id) => id ?? '');
   await page.getByRole('tab', { name: 'Layers', exact: true }).click();
-  await page.locator(`[data-layer-id="${text}"]`).getByRole('button').last().click();
+  // Palette clicks land before the trailing Next button: [heading, text, btn-next].
+  // Select the later sibling first so the selection order is the reverse of canvas order.
+  await page.locator('[data-layer-id="btn-next"]').getByRole('button').last().click();
   await page
-    .locator('[data-layer-id="btn-next"]')
+    .locator(`[data-layer-id="${text}"]`)
     .getByRole('button')
     .last()
     .click({ modifiers: ['Shift'] });
   await page.getByRole('button', { name: 'Group', exact: true }).click();
-  const group = await inspector.locator('code').first().innerText();
+  const group = await inspector
+    .locator('code')
+    .first()
+    .textContent()
+    .then((id) => id ?? '');
   const order = (id: string) =>
     page
       .locator(`.ed-runtime [data-editor-node="${id}"]`)
@@ -68,13 +82,14 @@ test('grouping reverse-selected siblings preserves canvas order through ungroup 
           child.getAttribute('data-editor-node'),
         ),
       );
-  await expect.poll(() => order(group)).toEqual(['btn-next', text]);
-  await expect.poll(() => order('home-root')).toEqual([group, 'btn-next', text, heading]);
+  await expect.poll(() => order(group)).toEqual([text, 'btn-next']);
+  await expect.poll(() => order('home-root')).toEqual([heading, group, text, 'btn-next']);
   await page.getByRole('button', { name: 'Ungroup', exact: true }).click();
-  await expect.poll(() => order('home-root')).toEqual(['btn-next', text, heading]);
+  await expect.poll(() => order('home-root')).toEqual([heading, text, 'btn-next']);
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
+  await expect.poll(() => order('home-root')).toEqual([heading, group, text, 'btn-next']);
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
-  await expect.poll(() => order('home-root')).toEqual(['btn-next', heading, text]);
+  await expect.poll(() => order('home-root')).toEqual([heading, text, 'btn-next']);
 });
 
 test('undo and redo keep the canvas content visibly laid out', async ({ page }) => {
@@ -113,7 +128,12 @@ test('initial preview handles Next without first changing language or restarting
     .getByRole('navigation', { name: 'Editor', exact: true })
     .getByRole('button', { name: 'Preview / debugger', exact: true })
     .click();
-  await page.frameLocator('iframe').getByRole('button', { name: 'İleri', exact: true }).click();
+  // The script's own button; the agent frame's footer has a Next of its own.
+  await page
+    .frameLocator('iframe')
+    .locator('.pv-agent-runtime')
+    .getByRole('button', { name: 'İleri', exact: true })
+    .click();
   await expect(page.locator('.fd-visited-edge')).not.toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Save scenario', exact: true })).toBeEnabled();
 });
@@ -188,20 +208,24 @@ test('rule operator changes and undo keep the visible value and saved predicate 
     .getByRole('navigation', { name: 'Editor', exact: true })
     .getByRole('button', { name: 'Rules', exact: true })
     .click();
-  const value = page.getByRole('textbox', { name: 'Value', exact: true });
-  await expect(value).toHaveValue('[0,1]');
+  // A range is two number fields, never a JSON array.
+  const from = page.getByRole('spinbutton', { name: 'At least', exact: true });
+  const to = page.getByRole('spinbutton', { name: 'At most', exact: true });
+  await expect(from).toHaveValue('0');
+  await expect(to).toHaveValue('1');
   const fieldBox = await page.getByRole('combobox', { name: 'Field', exact: true }).boundingBox();
   const operatorBox = await page
     .getByRole('combobox', { name: 'Operator', exact: true })
     .boundingBox();
   if (!fieldBox || !operatorBox) throw new Error('Missing rule control rectangles');
   expect(Math.abs(fieldBox.y - operatorBox.y)).toBeLessThan(4);
-  await value.fill('[10,20]');
-  await value.press('Tab');
+  await to.fill('20');
+  await to.press('Tab');
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
-  await expect(value).toHaveValue('[0,1]');
+  await expect(to).toHaveValue('1');
   await page.getByRole('button', { name: 'Redo', exact: true }).click();
-  await expect(value).toHaveValue('[10,20]');
+  await expect(to).toHaveValue('20');
+  await expect(from).toHaveValue('0');
   await page.getByRole('combobox', { name: 'Operator', exact: true }).click();
   await page.getByRole('option', { name: 'Greater than', exact: true }).click();
   const number = page.getByRole('spinbutton', { name: 'Value', exact: true });
@@ -416,8 +440,8 @@ test('creates a script from scratch, drags a component, builds decision/service 
     .getByRole('combobox', { name: 'Campaign', exact: true })
     .selectOption({ label: 'Demo campaign' });
   await dialog.getByRole('button', { name: 'Create', exact: true }).click();
-  await expect(page).toHaveURL(new RegExp(`/scripts/${scriptId}$`));
-  await page.getByRole('button', { name: 'Create first draft', exact: true }).click();
+  // A blank script opens straight in the editor; its first draft is created on the way.
+  await expect(page).toHaveURL(new RegExp(`/scripts/${scriptId}/versions/1/edit$`));
   await expect(page.locator('[data-editor-node="home-root"]')).toBeAttached();
   const source = page.locator('.ed-palette-item[data-component-type="box"]').locator('.ed-grip');
   const from = await source.boundingBox(),
@@ -445,7 +469,7 @@ test('creates a script from scratch, drags a component, builds decision/service 
   await importDialog.getByRole('button', { name: 'Apply', exact: true }).click();
   await expect(importDialog).not.toBeVisible();
   await page.getByRole('combobox', { name: 'Flow designer', exact: true }).click();
-  await page.getByRole('option', { name: 'main', exact: true }).click();
+  await page.getByRole('option', { name: 'Main flow', exact: true }).click();
   await page.getByRole('button', { name: 'Decision', exact: true }).click();
   await page.getByRole('button', { name: 'Auto layout', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Auto layout', exact: true })).toBeEnabled();
@@ -460,8 +484,9 @@ test('creates a script from scratch, drags a component, builds decision/service 
     await page.getByRole('option', { name: port, exact: true }).click();
     await page.getByRole('button', { name: 'Connect nodes', exact: true }).click();
   };
-  await connect('n-home', 'Condition');
-  await connect('n-end', 'Else');
+  // Targets are listed by readable step names, not generated ids.
+  await connect('Page 1', 'Condition');
+  await connect('End', 'Else');
   await page.getByRole('button', { name: 'Data source', exact: true }).click();
   await page.getByRole('button', { name: 'Auto layout', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Auto layout', exact: true })).toBeEnabled();
@@ -469,8 +494,8 @@ test('creates a script from scratch, drags a component, builds decision/service 
   await service.click();
   const serviceId = await service.getAttribute('data-id');
   expect(serviceId).toBeTruthy();
-  await connect(decisionId!, 'Success');
-  await connect('n-end', 'Error');
+  await connect('Decision', 'Success');
+  await connect('End', 'Error');
   await page.getByRole('button', { name: 'Set as entry', exact: true }).click();
   await expect
     .poll(() => saved)
@@ -526,7 +551,11 @@ for (const definition of editorRegistry.list().filter((item) => item.designerMet
       .click();
     const inspector = page.locator('.ed-inspector');
     await expect(inspector).toBeVisible();
-    const id = await inspector.locator('code').first().innerText();
+    const id = await inspector
+      .locator('code')
+      .first()
+      .textContent()
+      .then((id) => id ?? '');
     if (['explicitConsent', 'repeater'].includes(definition.type)) {
       await expect(
         page.getByRole('status').filter({ hasText: '0 validation errors' }),

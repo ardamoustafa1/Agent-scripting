@@ -472,6 +472,13 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
       document.querySelector('.ed-selection')?.scrollIntoView({ block: 'nearest' });
     });
   };
+  // Breadcrumb steps read as page and component names, not as type identifiers.
+  const crumbName = (id: string) => {
+    const page = state.document.pages.find((p) => p.layout.id === id);
+    if (page) return page.name;
+    const type = store.node(id)?.type ?? '';
+    return t(`designer.editor.componentNames.${type}`, { defaultValue: type });
+  };
   const insertComponent = (type: string) => {
     let parent = target();
     while (parent && !store.canDrop(parent, type)) parent = store.location(parent)?.parent?.id;
@@ -745,7 +752,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
                 store.select(id);
               }}
             >
-              {store.node(id)?.type} /
+              {crumbName(id)} /
             </Button>
           ))}
         </nav>
@@ -882,14 +889,14 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
         </span>
         <Select
           label={t('designer.editor.breakpoint')}
-          value={state.breakpoint}
+          value={state.viewport}
           options={['base', 'sm', 'md', 'lg', 'xl'].map((value) => ({
             value,
             label: t(`designer.editor.viewportNames.${value}`),
           }))}
           onValueChange={(value) => {
             if (['base', 'sm', 'md', 'lg', 'xl'].includes(value))
-              store.setView({ breakpoint: value as typeof state.breakpoint });
+              store.setView({ viewport: value as typeof state.viewport });
           }}
         />
         <Select

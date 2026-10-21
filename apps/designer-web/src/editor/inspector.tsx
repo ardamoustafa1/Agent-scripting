@@ -11,16 +11,27 @@ import {
   findNode,
   type Action,
   type Node,
+  type Variable,
 } from '@verbis/script-schema';
 import { Input, Textarea, Select, Button, Tabs, Alert } from '@verbis/ui';
 
 import { RuleBuilder } from '../rules/builder.js';
-import { ruleFields } from '../rules/fields.js';
+import { ruleDisplayName, ruleFields } from '../rules/fields.js';
 
-import { ActionFields } from './actions.js';
+import { ActionFields, useActionLabel, type ActionContext } from './actions.js';
 import { ExpressionEditor } from './expression-lazy.js';
 import { inputFieldKeys } from './inspector-fields.js';
-import { editorRegistry, useEditor, type EditorStore } from './store.js';
+import { BREAKPOINTS, editorRegistry, useEditor, type EditorStore } from './store.js';
+import {
+  BlocksField,
+  ColumnsField,
+  ConfirmField,
+  isBlockRows,
+  isColumnRows,
+} from './structured-fields.js';
+import { applyParamsSync } from './text-variables.js';
+import { variableForInput, variableKeyFromLabel } from './value-variable.js';
+import { VariableTextField } from './variable-text-field.js';
 
 function BindingField({
   prop,
@@ -64,6 +75,72 @@ function BindingField({
         {t('designer.editor.applyExpression')}
       </Button>
     </>
+  );
+}
+
+const NEW_VARIABLE = '__new__';
+/** Content texts where authors insert variables (`{musteriAdi}`); labels stay plain. */
+const TEXT_WITH_VARIABLES = new Set(['textKey', 'titleKey', 'descriptionKey']);
+const INPUT_TYPES = new Set(
+  editorRegistry
+    .list()
+    .filter((d) => d.designerMeta.category === 'input')
+    .map((d) => d.type),
+);
+/**
+ * The variable an input writes to. Offered on the Properties tab because an unbound input keeps
+ * its value only in the page and nothing downstream (rules, flow, outcome) can read it.
+ */
+function ValueVariableField({ store, node }: { store: EditorStore; node: Node }) {
+  const { t } = useTranslation();
+  const state = useEditor(store);
+  const binding = node.bindings.find((b) => b.prop === 'value');
+  const bound = binding && 'variable' in binding ? binding.variable : undefined;
+  const expression = binding && 'expression' in binding;
+  const labelKey = typeof node.props['labelKey'] === 'string' ? node.props['labelKey'] : undefined;
+  const bind = (variable: string | null, created?: Variable) => {
+    store.execute(() => {
+      store.edit((d) => {
+        if (created) d.variables.push(created);
+        const current = findNode(d, node.id)?.node;
+        if (!current) return;
+        current.bindings = current.bindings.filter((b) => b.prop !== 'value');
+        if (variable) current.bindings.push({ prop: 'value', variable });
+      });
+    });
+  };
+  return (
+    <div className="ed-value-variable">
+      <Select
+        label={t('designer.editor.valueVariable')}
+        value={bound ?? (expression ? 'expression' : 'none')}
+        options={[
+          { value: 'none', label: t('designer.editor.none') },
+          ...(expression
+            ? [{ value: 'expression', label: t('designer.editor.boundByExpression') }]
+            : []),
+          ...state.document.variables.map((v) => ({ value: v.key, label: v.key })),
+          { value: NEW_VARIABLE, label: t('designer.editor.newVariable') },
+        ]}
+        onValueChange={(value) => {
+          if (value === 'expression') return;
+          if (value !== NEW_VARIABLE) {
+            bind(value === 'none' ? null : value);
+            return;
+          }
+          const typed = labelKey ? state.document.i18n.messages['tr']?.[labelKey] : undefined;
+          const label = typed?.trim()
+            ? typed
+            : t(`designer.editor.componentNames.${node.type}`, { defaultValue: node.type });
+          const key = variableKeyFromLabel(
+            label,
+            state.document.variables.map((v) => v.key),
+          );
+          bind(key, variableForInput(node.type, key, typed?.trim() ? typed : undefined));
+        }}
+      />
+      <p className="ed-help">{t('designer.editor.valueVariableHint')}</p>
+    </div>
   );
 }
 
@@ -145,22 +222,26 @@ function OptionsField({
   label,
   rows,
   messages,
+  prop = 'options',
 }: {
   store: EditorStore;
   nodeId: string;
   label: string;
   rows: OptionRow[];
   messages: Record<string, Record<string, string> | undefined>;
+  /** `options` for choice fields, `items` for tabs, accordions and steppers. */
+  prop?: 'options' | 'items';
 }) {
+  const copy = prop === 'items' ? 'designer.editor.itemRows' : 'designer.editor.options';
   const { t } = useTranslation(),
     [problem, setProblem] = useState<{ index: number; key: string } | null>(null);
-  const base = `editor.${nodeId.replaceAll('-', '.')}.options`;
+  const base = `editor.${nodeId.replaceAll('-', '.')}.${prop}`;
   useEffect(() => {
-    store.setFieldProblem(`${nodeId}.options`, !!problem);
+    store.setFieldProblem(`${nodeId}.${prop}`, !!problem);
     return () => {
-      store.setFieldProblem(`${nodeId}.options`, false);
+      store.setFieldProblem(`${nodeId}.${prop}`, false);
     };
-  }, [store, nodeId, problem]);
+  }, [store, nodeId, problem, prop]);
   const commit = (
     next: OptionRow[],
     text?: { key: string; locale: string; value: string },
@@ -170,7 +251,7 @@ function OptionsField({
       store.edit((d) => {
         const current = findNode(d, nodeId)?.node;
         if (!current) return;
-        current.props['options'] = JsonValueSchema.parse(next);
+        current.props[prop] = JsonValueSchema.parse(next);
         // D-09: label messages of removed options would otherwise linger in the catalogs.
         for (const catalog of Object.values(d.i18n.messages))
           for (const key of dropped) Reflect.deleteProperty(catalog, key);
@@ -191,19 +272,19 @@ function OptionsField({
   };
   return (
     <fieldset className="ed-options">
-      <legend>{t('designer.editor.options.title')}</legend>
-      <p className="ed-help">{t('designer.editor.options.hint')}</p>
+      <legend>{t(`${copy}.title`)}</legend>
+      <p className="ed-help">{t(`${copy}.hint`)}</p>
       {rows.map((row, index) => (
         <fieldset key={row.labelKey} className="ed-option-row" aria-label={`#${index + 1}`}>
           <Input
-            label={t('designer.editor.options.value')}
+            label={t(`${copy}.value`)}
             defaultValue={row.value}
             onChange={(event) => {
               const value = event.target.value.trim();
               const reason = !value
-                ? 'designer.editor.options.empty'
+                ? `${copy}.empty`
                 : rows.some((other, i) => i !== index && other.value === value)
-                  ? 'designer.editor.options.duplicate'
+                  ? `${copy}.duplicate`
                   : null;
               setProblem(reason ? { index, key: reason } : null);
               if (!reason) commit(rows.map((r, i) => (i === index ? { ...r, value } : r)));
@@ -217,7 +298,7 @@ function OptionsField({
           {['tr', 'en'].map((locale) => (
             <Input
               key={locale}
-              label={`${t('designer.editor.options.label')} · ${locale.toUpperCase()}`}
+              label={`${t(`${copy}.label`)} · ${locale.toUpperCase()}`}
               value={messages[locale]?.[row.labelKey] ?? ''}
               onChange={(event) => {
                 commit(rows, { key: row.labelKey, locale, value: event.target.value });
@@ -229,7 +310,7 @@ function OptionsField({
               size="sm"
               variant="ghost"
               disabled={index === 0}
-              aria-label={t('designer.editor.options.moveUp')}
+              aria-label={t(`${copy}.moveUp`)}
               onClick={() => {
                 move(index, -1);
               }}
@@ -240,7 +321,7 @@ function OptionsField({
               size="sm"
               variant="ghost"
               disabled={index === rows.length - 1}
-              aria-label={t('designer.editor.options.moveDown')}
+              aria-label={t(`${copy}.moveDown`)}
               onClick={() => {
                 move(index, 1);
               }}
@@ -259,7 +340,7 @@ function OptionsField({
                 );
               }}
             >
-              {t('designer.editor.options.remove')}
+              {t(`${copy}.remove`)}
             </Button>
           </div>
         </fieldset>
@@ -274,7 +355,7 @@ function OptionsField({
           commit([...rows, { value: `option${n}`, labelKey: `${base}.option${n}` }]);
         }}
       >
-        {t('designer.editor.options.add')}
+        {t(`${copy}.add`)}
       </Button>
       <span className="vb-sr-only">{label}</span>
     </fieldset>
@@ -286,17 +367,18 @@ function ActionRow({
   change,
   remove,
   move,
-  variables,
+  context,
 }: {
   id: string;
   action: Action;
   change: (action: Action) => void;
   remove: () => void;
   move: (delta: number) => void;
-  variables: readonly string[];
+  context: ActionContext;
 }) {
   const { t } = useTranslation();
   const sort = useSortable({ id });
+  const name = useActionLabel(context);
   return (
     <div ref={sort.setNodeRef} className="ed-action">
       <Button
@@ -305,9 +387,9 @@ function ActionRow({
         {...sort.listeners}
         aria-label={t('designer.editor.reorder')}
       >
-        <MoveVertical size={14} aria-hidden /> {action.type}
+        <MoveVertical size={14} aria-hidden /> {name(action)}
       </Button>
-      <ActionFields action={action} onChange={change} variables={variables} />
+      <ActionFields action={action} onChange={change} context={context} />
       <Button
         variant="ghost"
         aria-label={t('designer.editor.moveUp')}
@@ -357,6 +439,23 @@ export function Inspector({ store }: { store: EditorStore }) {
       store.update(node.id, work);
     });
   };
+  const actionContext: ActionContext = {
+    document: state.document,
+    message: (key, locale) => state.document.i18n.messages[locale]?.[key] ?? '',
+    editMessage: (key, locale, text) => {
+      store.execute(() => {
+        store.edit((d) => {
+          d.i18n.messages[locale] ??= {};
+          const catalog = d.i18n.messages[locale];
+          catalog[key] = text;
+        });
+      });
+    },
+    newMessageKey: () =>
+      `editor.${node.id.replace(/[^a-zA-Z0-9]+/g, '.')}.message.${crypto.randomUUID().slice(0, 8)}`,
+    isInput: (type) => INPUT_TYPES.has(type),
+    pageId: state.pageId,
+  };
   const properties = definition.designerMeta.properties ?? [];
   const schema = z.toJSONSchema(definition.propsSchema, { unrepresentable: 'any' }) as {
     properties?: Record<string, { type?: string; enum?: string[]; default?: unknown }>;
@@ -370,9 +469,13 @@ export function Inspector({ store }: { store: EditorStore }) {
       }));
   const selectedEvent = definition.events.includes(event) ? event : (definition.events[0] ?? '');
   const actions = node.events[selectedEvent] ?? [];
+  // Inputs are almost always bound by their value, so open the binding tab on it.
   const selectedProp = definition.bindableProps.includes(prop)
     ? prop
-    : (definition.bindableProps[0] ?? '');
+    : (['value', 'checked'].find((key) => definition.bindableProps.includes(key)) ??
+      definition.bindableProps[0] ??
+      '');
+  const propertyLabel = (key: string) => t(`components.properties.${key}`, { defaultValue: key });
   const binding = node.bindings.find((b) => b.prop === selectedProp);
   const setActions = (value: Action[]) => {
     update((n) => {
@@ -409,7 +512,7 @@ export function Inspector({ store }: { store: EditorStore }) {
                 'itemKey',
               ]
             : definition.designerMeta.category === 'data'
-              ? ['labelKey', 'ds', 'output', 'trigger', 'columns', 'rows', 'queryVariable']
+              ? ['labelKey', 'ds', 'output', 'trigger', 'columns', 'queryVariable']
               : definition.designerMeta.category === 'action'
                 ? [
                     'labelKey',
@@ -437,6 +540,13 @@ export function Inspector({ store }: { store: EditorStore }) {
   const advancedFields = fields.filter((field) =>
     inputKeys ? inputKeys.advanced.includes(field.key) : !primaryKeys.includes(field.key),
   );
+  // Enumerated property values read as words ("Bold", "Horizontal"), not as code values.
+  const choiceLabel = (value: string) =>
+    t(`designer.editor.choices.${value}`, {
+      defaultValue: t(`designer.editor.styleValues.${value.replace('/', '_')}`, {
+        defaultValue: value,
+      }),
+    });
   const renderProperty = (field: (typeof fields)[number]) => {
     const description = schema.properties?.[field.key],
       value = node.props[field.key] ?? definition.defaults[field.key];
@@ -472,26 +582,43 @@ export function Inspector({ store }: { store: EditorStore }) {
       return (
         <div key={field.key}>
           {/* D-08: the generated i18n key is an implementation detail; only TR/EN text is edited. */}
-          {['tr', 'en'].map((locale) => (
-            <Textarea
-              key={locale}
-              label={`${label} · ${locale.toUpperCase()}`}
-              value={state.document.i18n.messages[locale]?.[key] ?? ''}
-              onChange={(e) => {
-                const text = e.target.value;
-                store.execute(() => {
-                  store.edit((d) => {
-                    const current = findNode(d, node.id)?.node;
-                    if (!current) return;
-                    current.props[field.key] = key;
-                    d.i18n.messages[locale] ??= {};
-                    const catalog = d.i18n.messages[locale];
-                    catalog[key] = text;
-                  });
+          {['tr', 'en'].map((locale) => {
+            const write = (text: string) => {
+              store.execute(() => {
+                store.edit((d) => {
+                  const current = findNode(d, node.id)?.node;
+                  if (!current) return;
+                  current.props[field.key] = key;
+                  d.i18n.messages[locale] ??= {};
+                  const catalog = d.i18n.messages[locale];
+                  catalog[key] = text;
+                  // Placeholders in any of the node's texts drive its params binding.
+                  applyParamsSync(d, current, definition.bindableProps.includes('params'));
                 });
-              }}
-            />
-          ))}
+              });
+            };
+            const fieldLabel = `${label} · ${locale.toUpperCase()}`;
+            const text = state.document.i18n.messages[locale]?.[key] ?? '';
+            return TEXT_WITH_VARIABLES.has(field.key) &&
+              definition.bindableProps.includes('params') ? (
+              <VariableTextField
+                key={locale}
+                label={fieldLabel}
+                value={text}
+                variables={variables}
+                onChange={write}
+              />
+            ) : (
+              <Textarea
+                key={locale}
+                label={fieldLabel}
+                value={text}
+                onChange={(e) => {
+                  write(e.target.value);
+                }}
+              />
+            );
+          })}
         </div>
       );
     }
@@ -512,7 +639,7 @@ export function Inspector({ store }: { store: EditorStore }) {
               'AlertTriangle',
               'ArrowRight',
             ]
-          ).map((value) => ({ value, label: value }))}
+          ).map((value) => ({ value, label: choiceLabel(value) }))}
           onValueChange={write}
         />
       );
@@ -523,12 +650,15 @@ export function Inspector({ store }: { store: EditorStore }) {
           label={label}
           value={typeof value === 'string' ? value : 'neutral'}
           options={(options ?? ['neutral', 'primary', 'success', 'warning', 'danger', 'info']).map(
-            (value) => ({ value, label: value }),
+            (value) => ({ value, label: choiceLabel(value) }),
           )}
           onValueChange={write}
         />
       );
-    if (field.key === 'options' && (value === undefined || isOptionRows(value)))
+    if (
+      (field.key === 'options' || field.key === 'items') &&
+      (value === undefined || isOptionRows(value))
+    )
       return (
         <OptionsField
           key={`${node.id}.${field.key}`}
@@ -537,6 +667,59 @@ export function Inspector({ store }: { store: EditorStore }) {
           label={label}
           rows={value ?? []}
           messages={state.document.i18n.messages}
+          prop={field.key}
+        />
+      );
+    if (field.key === 'blocks' && (value === undefined || isBlockRows(value)))
+      return (
+        <BlocksField
+          key={`${node.id}.blocks`}
+          store={store}
+          node={node}
+          rows={value ?? []}
+          messages={state.document.i18n.messages}
+          variables={variables}
+          bindableParams={definition.bindableProps.includes('params')}
+        />
+      );
+    if (
+      field.key === 'columns' &&
+      definition.designerMeta.category === 'data' &&
+      (value === undefined || isColumnRows(value))
+    )
+      return (
+        <ColumnsField
+          key={`${node.id}.columns`}
+          store={store}
+          node={node}
+          rows={value ?? []}
+          messages={state.document.i18n.messages}
+        />
+      );
+    if (field.key === 'confirm')
+      return (
+        <ConfirmField
+          key={`${node.id}.confirm`}
+          store={store}
+          node={node}
+          messages={state.document.i18n.messages}
+        />
+      );
+    // Fields naming a variable pick from the script's variables instead of free text.
+    if (/^(array|query)Variable$/.test(field.key))
+      return (
+        <Select
+          key={field.key}
+          label={label}
+          value={typeof value === 'string' ? value : ''}
+          options={state.document.variables
+            .filter((v) => field.key !== 'arrayVariable' || v.type === 'array')
+            .map((v) => ({
+              value: v.key,
+              label: v.key,
+              hint: t(`designer.variables.types.${v.type}`),
+            }))}
+          onValueChange={write}
         />
       );
     if (field.control === 'json' || typeof value === 'object')
@@ -556,7 +739,7 @@ export function Inspector({ store }: { store: EditorStore }) {
           key={field.key}
           label={label}
           value={String(value ?? '')}
-          options={options.map((value) => ({ value, label: value }))}
+          options={options.map((value) => ({ value, label: choiceLabel(value) }))}
           onValueChange={write}
         />
       );
@@ -599,7 +782,11 @@ export function Inspector({ store }: { store: EditorStore }) {
         <strong>
           {t(`designer.editor.componentNames.${node.type}`, { defaultValue: node.type })}
         </strong>
-        <code>{node.id}</code>
+        {/* The stable id matters to integrators and support, not to authors: tucked away. */}
+        <details className="ed-technical">
+          <summary>{t('designer.editor.technical')}</summary>
+          <code>{node.id}</code>
+        </details>
       </div>
       <Tabs
         label={t('designer.editor.properties')}
@@ -617,6 +804,10 @@ export function Inspector({ store }: { store: EditorStore }) {
       >
         {tab === 'properties' && (
           <>
+            {definition.designerMeta.category === 'input' &&
+              definition.bindableProps.includes('value') && (
+                <ValueVariableField store={store} node={node} />
+              )}
             <div className="ed-property-group">{mainFields.map(renderProperty)}</div>
             {advancedFields.length > 0 && (
               <details className="ed-advanced-properties" key={node.id}>
@@ -628,7 +819,20 @@ export function Inspector({ store }: { store: EditorStore }) {
         )}
         {tab === 'style' && (
           <>
-            <p>{t('designer.editor.override', { breakpoint: state.breakpoint })}</p>
+            {/* Mobile-first like the runtime: "all screens" is the safe default; narrower
+                targets than the preview stay visible on the canvas. */}
+            <Select
+              label={t('designer.editor.styleScope')}
+              value={state.breakpoint}
+              options={BREAKPOINTS.map((value) => ({
+                value,
+                label: t(`designer.editor.styleScopes.${value}`),
+              }))}
+              onValueChange={(value) => {
+                const target = BREAKPOINTS.find((point) => point === value);
+                if (target) store.setView({ breakpoint: target });
+              }}
+            />
             {Object.entries({
               display: ['flex', 'grid', 'block'],
               direction: ['row', 'column'],
@@ -645,7 +849,12 @@ export function Inspector({ store }: { store: EditorStore }) {
                 value={String(Reflect.get(node.style?.[state.breakpoint] ?? {}, key) ?? '')}
                 options={[
                   { value: 'inherit', label: t('designer.editor.inherit') },
-                  ...options.map((value) => ({ value, label: value })),
+                  ...options.map((value) => ({
+                    value,
+                    label: t(`designer.editor.styleValues.${value.replace('/', '_')}`, {
+                      defaultValue: value,
+                    }),
+                  })),
                 ]}
                 onValueChange={(value) => {
                   update((n) => {
@@ -679,7 +888,10 @@ export function Inspector({ store }: { store: EditorStore }) {
             <Select
               label={t('designer.editor.property')}
               value={selectedProp}
-              options={definition.bindableProps.map((value) => ({ value, label: value }))}
+              options={definition.bindableProps.map((value) => ({
+                value,
+                label: propertyLabel(value),
+              }))}
               onValueChange={setProp}
             />
             <BindingField
@@ -701,7 +913,10 @@ export function Inspector({ store }: { store: EditorStore }) {
             <Select
               label={t('designer.editor.event')}
               value={selectedEvent}
-              options={definition.events.map((value) => ({ value, label: value }))}
+              options={definition.events.map((value) => ({
+                value,
+                label: t(`designer.editor.eventNames.${value}`, { defaultValue: value }),
+              }))}
               onValueChange={setEvent}
             />
             <DndContext
@@ -726,7 +941,7 @@ export function Inspector({ store }: { store: EditorStore }) {
                   <ActionRow
                     key={i}
                     id={String(i)}
-                    variables={variables}
+                    context={actionContext}
                     move={(delta) => {
                       const to = i + delta;
                       if (to < 0 || to >= actions.length) return;
@@ -817,7 +1032,10 @@ export function Inspector({ store }: { store: EditorStore }) {
                 value={node[key] && '$rule' in node[key] ? node[key].$rule : 'none'}
                 options={[
                   { value: 'none', label: t('designer.editor.none') },
-                  ...state.document.rules.map((r) => ({ value: r.id, label: r.id })),
+                  ...state.document.rules.map((r) => ({
+                    value: r.id,
+                    label: ruleDisplayName(r, state.document, (k, o) => t(k, o ?? {})),
+                  })),
                 ]}
                 onValueChange={(value) => {
                   update((n) => {

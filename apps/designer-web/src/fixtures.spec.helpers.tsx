@@ -34,6 +34,7 @@ export async function mountDesigner(
     path?: string;
     route?: string;
     environment?: 'dev' | 'test' | 'prod';
+    state?: unknown;
   } = {},
 ) {
   const i18n = await locale;
@@ -65,7 +66,11 @@ export async function mountDesigner(
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   clients.push(client);
   const router = createMemoryRouter([{ path: options.route ?? '*', element: children }], {
-    initialEntries: [options.path ?? '/'],
+    initialEntries: [
+      options.state === undefined
+        ? (options.path ?? '/')
+        : { pathname: options.path ?? '/', state: options.state },
+    ],
   });
   routers.push(router);
   const ui = render(

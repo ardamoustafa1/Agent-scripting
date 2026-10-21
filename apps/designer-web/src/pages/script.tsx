@@ -10,7 +10,7 @@ import {
   Plus,
   Workflow,
 } from 'lucide-react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { z } from 'zod';
@@ -67,6 +67,29 @@ export default function ScriptPage() {
   const queryClient = useQueryClient();
   const latestVersion = versions.data?.data[0];
   const latest = latestVersion?.number;
+  const members = useQuery({
+    queryKey: [...key, 'members', latest],
+    enabled: latest !== undefined,
+    queryFn: ({ signal }) =>
+      request(
+        `/v1/scripts/${id ?? ''}/versions/${String(latest)}/team-members`,
+        z.array(z.object({ id: z.uuid(), name: z.string() })),
+        { signal },
+      ),
+  });
+  // Authors are stored as actor references (`user:<id>`, `service:<name>`); people read names.
+  const ownerName = (actor: string | null | undefined) => {
+    if (!actor) return t('designer.workspace.unassigned');
+    const [kind, ...rest] = actor.includes(':') ? actor.split(':') : ['user', actor];
+    if (kind !== 'user') return t('designer.workspace.owners.system');
+    const user = rest.join(':');
+    if (user === session.user.id) return t('designer.workspace.you');
+    if (!members.data) return '';
+    return (
+      members.data.find((member) => member.id === user)?.name ??
+      t('designer.workspace.owners.former')
+    );
+  };
   const creationKey = useRef<{ source: string; key: string } | null>(null);
   const createDraft = useMutation({
     mutationFn: async () => {
@@ -114,6 +137,25 @@ export default function ScriptPage() {
       void navigate(`/scripts/${id}/versions/${version.number}/edit`);
     },
   });
+  // A blank script created from "New script" opens straight in the editor: its first draft is
+  // created here once (router state, never a URL parameter), with the usual CSRF and idempotency.
+  const openEditor =
+    (location.state as { openEditor?: unknown } | null | undefined)?.openEditor === true;
+  const autoOpened = useRef(false);
+  const mutateDraft = createDraft.mutate;
+  useEffect(() => {
+    if (
+      !openEditor ||
+      autoOpened.current ||
+      !script.data ||
+      !versions.data ||
+      versions.data.data.length > 0 ||
+      !ability.can('create', 'Script')
+    )
+      return;
+    autoOpened.current = true;
+    mutateDraft();
+  }, [openEditor, script.data, versions.data, ability, mutateDraft]);
   const document = useQuery({
     queryKey: [...key, 'document', latest],
     queryFn: ({ signal }) =>
@@ -285,7 +327,7 @@ export default function ScriptPage() {
                       {
                         id: 'owner',
                         header: t('designer.workspace.owner'),
-                        accessor: (row) => row.createdBy ?? t('designer.workspace.unassigned'),
+                        accessor: (row) => ownerName(row.createdBy),
                       },
                       {
                         id: 'release',

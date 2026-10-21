@@ -13,7 +13,7 @@ import { walkNodes } from '@verbis/script-schema';
 import { Alert, Button } from '@verbis/ui';
 
 import { useNodeHeat } from './heatmap.js';
-import { editorRegistry, useEditor, type EditorStore } from './store.js';
+import { editorRegistry, useEditor, type EditorState, type EditorStore } from './store.js';
 import { useSuggestionMark } from './suggest-marks.js';
 
 function renderedChild(element: Element): Element | null {
@@ -72,6 +72,8 @@ function hostKeyOf(preview: Runtime | null): number {
   }
   return key;
 }
+/** Preview widths each editor has already fitted, so returning to the canvas keeps the author's zoom. */
+const autoFitted = new WeakMap<EditorStore, EditorState['viewport']>();
 const typingInCoalescedField = () =>
   Boolean(document.activeElement?.closest('[data-coalesce-edits]'));
 export function useCoalesced<T>(
@@ -124,16 +126,16 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
     width: number;
     height: number;
   } | null>(null);
-  // Document, page and breakpoint move together so a coalesced document never pairs with a page
-  // it does not contain yet.
+  // Document, page and preview width move together so a coalesced document never pairs with a
+  // page it does not contain yet. The canvas renders the styles that apply at the preview width.
   const {
     document: docSource,
     pageId,
-    breakpoint,
+    viewport,
   } = useCoalesced(
     useMemo(
-      () => ({ document: state.document, pageId: state.pageId, breakpoint: state.breakpoint }),
-      [state.document, state.pageId, state.breakpoint],
+      () => ({ document: state.document, pageId: state.pageId, viewport: state.viewport }),
+      [state.document, state.pageId, state.viewport],
     ),
     CANVAS_BURST_MS,
   );
@@ -145,8 +147,8 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
           const points = ['base', 'sm', 'md', 'lg', 'xl'];
           walkNodes(doc, ({ node }) => {
             const base = {};
-            for (const point of points.slice(0, points.indexOf(breakpoint) + 1))
-              Object.assign(base, node.style?.[point as typeof breakpoint]);
+            for (const point of points.slice(0, points.indexOf(viewport) + 1))
+              Object.assign(base, node.style?.[point as typeof viewport]);
             node.style = { base };
             return true;
           });
@@ -165,7 +167,7 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
     } catch {
       return null;
     }
-  }, [docSource, pageId, breakpoint]);
+  }, [docSource, pageId, viewport]);
   useEffect(
     () => () => {
       preview?.dispose();
@@ -214,8 +216,27 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
     };
     // Measure after the rendered (coalesced) document changes, not on every store revision:
     // reading every node's box forces layout and costs O(nodes) per keystroke (P-16).
-  }, [selected, preview, state.zoom, state.breakpoint]);
-  const width = { base: 375, sm: 640, md: 768, lg: 1024, xl: 1280 }[state.breakpoint];
+  }, [selected, preview, state.zoom, state.viewport]);
+  const width = { base: 375, sm: 640, md: 768, lg: 1024, xl: 1280 }[state.viewport];
+  const fitZoom = () => {
+    const canvas = host.current;
+    if (!canvas) return undefined;
+    const css = getComputedStyle(canvas);
+    const available =
+      canvas.clientWidth - (parseFloat(css.paddingLeft) || 0) - (parseFloat(css.paddingRight) || 0);
+    if (available <= 0) return undefined;
+    return Math.max(0.1, Math.min(2, Math.floor((available / width) * 100) / 100));
+  };
+  // A page wider than the canvas (1024 px desktop in a laptop window) opens clipped otherwise.
+  // Fit once per preview width and only shrink, so a deliberate zoom survives tab switches.
+  useEffect(() => {
+    if (autoFitted.get(store) === state.viewport) return;
+    const zoom = fitZoom();
+    if (zoom === undefined) return;
+    autoFitted.set(store, state.viewport);
+    if (zoom < store.getSnapshot().zoom) store.setView({ zoom });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fitZoom reads the measured host
+  }, [store, state.viewport]);
   return (
     <section
       ref={drop.setNodeRef}
@@ -227,16 +248,8 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
           size="sm"
           variant="secondary"
           onClick={() => {
-            const canvas = host.current;
-            if (!canvas) return;
-            const css = getComputedStyle(canvas);
-            const available =
-              canvas.clientWidth -
-              (parseFloat(css.paddingLeft) || 0) -
-              (parseFloat(css.paddingRight) || 0);
-            store.setView({
-              zoom: Math.max(0.1, Math.min(2, Math.floor((available / width) * 100) / 100)),
-            });
+            const zoom = fitZoom();
+            if (zoom !== undefined) store.setView({ zoom });
           }}
         >
           {t('designer.editor.fitCanvas')}
@@ -423,7 +436,10 @@ export function Canvas({ store, heatControl }: { store: EditorStore; heatControl
               {...drag.attributes}
               className="ed-selection-label"
             >
-              {store.node(selected ?? '')?.type} <GripVertical size={14} aria-hidden />
+              {t(`designer.editor.componentNames.${store.node(selected ?? '')?.type ?? ''}`, {
+                defaultValue: store.node(selected ?? '')?.type ?? '',
+              })}{' '}
+              <GripVertical size={14} aria-hidden />
             </button>
             <button
               className="ed-resize"

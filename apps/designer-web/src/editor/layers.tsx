@@ -30,6 +30,7 @@ import { Input, Button, Tabs, Badge } from '@verbis/ui';
 import { BLOCK_IDS } from './blocks.js';
 import { findComponents, searchText } from './search.js';
 import { editorRegistry, useEditor, type EditorStore } from './store.js';
+import { paletteInsertIndex } from './value-variable.js';
 
 const COMPONENT_ICONS: Record<string, LucideIcon> = {
   box: Box,
@@ -211,9 +212,11 @@ export function LeftPanel({ store }: { store: EditorStore }) {
   const insert = (type: string) => {
     let target = page?.layout.id;
     while (target && !store.canDrop(target, type)) target = store.location(target)?.parent?.id;
+    // Keep "Next"/"Back" at the bottom: page-root clicks land before trailing navigation.
+    const index = page && target === page.layout.id ? paletteInsertIndex(page.layout) : undefined;
     if (target)
       store.execute(() => {
-        store.insert(type, target);
+        store.insert(type, target, index);
       });
   };
   return (

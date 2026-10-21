@@ -88,6 +88,30 @@ it('inserts palette components into a selected leaf’s allowed ancestor', async
   });
 });
 
+it('keeps the page Next button last when a palette click adds to the page', async () => {
+  vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(500);
+  vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(300);
+  const store = new EditorStore(editorFixture(1).document);
+  const f = await mountDesigner(<LeftPanel store={store} />);
+  const add = (type: string) => {
+    fireEvent.change(screen.getByLabelText(f.label('editor.search')), {
+      target: { value: f.label(`editor.componentNames.${type}`) },
+    });
+    fireEvent.click(
+      screen
+        .getAllByRole('button', { name: f.label(`editor.componentNames.${type}`) })
+        .find((node) => node.classList.contains('vb-button'))!,
+    );
+  };
+  add('heading');
+  add('textInput');
+  expect(store.getSnapshot().document.pages[0]!.layout.children!.map((n) => n['type'])).toEqual([
+    'heading',
+    'textInput',
+    'button',
+  ]);
+});
+
 it('finds a component on another page and jumps to it without editing the document', async () => {
   const doc = editorFixture().document;
   const second = structuredClone(doc.pages[0]!);

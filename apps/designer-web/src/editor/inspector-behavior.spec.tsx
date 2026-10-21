@@ -95,7 +95,7 @@ it('prioritizes heading content and keeps secondary settings in a collapsed adva
 it('sets responsive styles, columns and removes inherited overrides', async () => {
   const f = await setup();
   f.tab('style');
-  await choose(f.label('editor.styleLabels.padding'), 'lg');
+  await choose(f.label('editor.styleLabels.padding'), f.label('editor.styleValues.lg'));
   fireEvent.change(screen.getByLabelText(f.label('editor.columns')), { target: { value: '3' } });
   expect(f.store.node('btn-next')!.style?.base).toMatchObject({ padding: 'lg', columns: 3 });
   await choose(f.label('editor.styleLabels.padding'), f.label('editor.inherit'));
@@ -107,17 +107,22 @@ it('adds, reorders and removes nested event actions', async () => {
   fireEvent.click(screen.getByRole('button', { name: f.label('editor.addAction') }));
   fireEvent.click(screen.getByRole('button', { name: f.label('editor.addConditional') }));
   expect(f.store.node('btn-next')!.events['onPress']).toHaveLength(3);
-  fireEvent.click(screen.getAllByRole('button', { name: f.label('editor.moveUp') })[2]!);
+  // Each top-level row's own controls come after the nested lists inside its form.
+  const row = (index: number, name: string) =>
+    within(document.querySelectorAll<HTMLElement>('.ed-action')[index]!)
+      .getAllByRole('button', { name })
+      .at(-1)!;
+  fireEvent.click(row(2, f.label('editor.moveUp')));
   expect(f.store.node('btn-next')!.events['onPress']?.[1]?.type).toBe('conditional');
-  fireEvent.click(screen.getAllByRole('button', { name: f.label('editor.moveDown') })[1]!);
+  fireEvent.click(row(1, f.label('editor.moveDown')));
   expect(f.store.node('btn-next')!.events['onPress']?.[2]?.type).toBe('conditional');
-  fireEvent.click(screen.getAllByRole('button', { name: f.label('editor.delete') })[2]!);
+  fireEvent.click(row(2, f.label('editor.delete')));
   expect(f.store.node('btn-next')!.events['onPress']).toHaveLength(2);
 });
 it('creates and removes two-way variable bindings', async () => {
   const f = await setup();
   f.tab('binding');
-  await choose(f.label('editor.property'), 'disabled');
+  await choose(f.label('editor.property'), f.i18n.t('components.properties.disabled'));
   await choose(f.label('editor.twoWay'), 'syntheticFlag');
   expect(f.store.node('btn-next')!.bindings).toEqual([
     { prop: 'disabled', variable: 'syntheticFlag' },
@@ -128,7 +133,12 @@ it('creates and removes two-way variable bindings', async () => {
 it('attaches and clears rule references for component visibility', async () => {
   const f = await setup();
   f.tab('rules');
-  await choose(f.label('editor.ruleReference'), 'synthetic-rule', 0);
+  // Rules read by name; an unnamed rule never shows its generated id.
+  await choose(
+    f.label('editor.ruleReference'),
+    f.i18n.t('designer.rules.unnamed', { number: 1 }),
+    0,
+  );
   expect(f.store.node('btn-next')!.visibleWhen).toEqual({ $rule: 'synthetic-rule' });
   await choose(f.label('editor.ruleReference'), f.label('editor.none'), 0);
   expect(f.store.node('btn-next')!.visibleWhen).toBeUndefined();
@@ -156,7 +166,8 @@ it('uses the declared icon enumeration instead of incompatible visual icon names
     f.store.insert('outcomeSubmit', 'home-root');
   });
   const id = f.store.getSnapshot().selection[0]!;
-  await choose(f.i18n.t('components.properties.iconKey'), 'next');
+  // Icon and enum choices read as words; the stored value stays the same.
+  await choose(f.i18n.t('components.properties.iconKey'), f.label('editor.choices.next'));
   expect(f.store.node(id)!.props['iconKey']).toBe('next');
   expect(f.store.getSnapshot().message).toBeNull();
 });
@@ -174,9 +185,9 @@ it('edits JSON, enum and tone properties and preserves the last valid JSON value
   fireEvent.change(params, { target: { value: '{"synthetic":"value"}' } });
   fireEvent.blur(params);
   expect(f.store.node(id)!.props['params']).toEqual({ synthetic: 'value' });
-  await choose(f.i18n.t('components.properties.emphasis'), 'strong');
+  await choose(f.i18n.t('components.properties.emphasis'), f.label('editor.choices.strong'));
   expect(f.store.node(id)!.props['emphasis']).toBe('strong');
-  await choose(f.i18n.t('components.properties.tone'), 'warning');
+  await choose(f.i18n.t('components.properties.tone'), f.label('editor.styleValues.warning'));
   expect(f.store.node(id)!.props['tone']).toBe('warning');
 });
 it('writes numeric limits and text input properties through their typed fields', async () => {
@@ -367,4 +378,97 @@ it('counts a duplicate option value and removes the removed option label message
   expect(f.store.getSnapshot().fieldProblems).toBe(0);
   expect(f.store.getSnapshot().document.i18n.messages['tr']?.[removed]).toBeUndefined();
   expect(f.store.getSnapshot().document.i18n.messages['en']?.[removed]).toBeUndefined();
+});
+
+it('stores an input value in a new variable named after its label in one undoable edit', async () => {
+  const store = new EditorStore(minimalScript());
+  store.insert('textInput', 'home-root');
+  const id = store.getSnapshot().selection[0]!;
+  const f = await mountDesigner(<Inspector store={store} />);
+  const label = f.i18n.t('components.properties.labelKey');
+  fireEvent.change(screen.getByLabelText(`${label} · TR`), {
+    target: { value: 'Kargo takip numarası' },
+  });
+  await choose(f.label('editor.valueVariable'), f.label('editor.newVariable'));
+  expect(store.node(id)!.bindings).toEqual([{ prop: 'value', variable: 'kargoTakipNumarasi' }]);
+  expect(store.getSnapshot().document.variables).toContainEqual(
+    expect.objectContaining({ key: 'kargoTakipNumarasi', type: 'string', scope: 'session' }),
+  );
+  act(() => {
+    store.undo();
+  });
+  expect(store.node(id)!.bindings).toEqual([]);
+  expect(store.getSnapshot().document.variables.some((v) => v.key === 'kargoTakipNumarasi')).toBe(
+    false,
+  );
+});
+it('binds an input to an existing variable and clears it again', async () => {
+  const f = await setup();
+  act(() => {
+    f.store.insert('checkbox', 'home-root');
+  });
+  const id = f.store.getSnapshot().selection[0]!;
+  await choose(f.label('editor.valueVariable'), 'syntheticFlag');
+  expect(f.store.node(id)!.bindings).toEqual([{ prop: 'value', variable: 'syntheticFlag' }]);
+  await choose(f.label('editor.valueVariable'), f.label('editor.none'));
+  expect(f.store.node(id)!.bindings).toEqual([]);
+});
+it('opens the binding tab on the value with readable property and event names', async () => {
+  const store = new EditorStore(minimalScript());
+  store.insert('textInput', 'home-root');
+  const f = await mountDesigner(<Inspector store={store} />);
+  const aside = within(screen.getByRole('complementary'));
+  fireEvent.mouseDown(aside.getByRole('tab', { name: f.label('editor.binding') }), { button: 0 });
+  const property = screen.getByRole('combobox', { name: f.label('editor.property') });
+  expect(property.textContent).toContain(f.i18n.t('components.properties.value'));
+  fireEvent.click(property);
+  expect(
+    await screen.findByRole('option', { name: f.i18n.t('components.properties.labelKey') }),
+  ).toBeTruthy();
+  expect(screen.queryByRole('option', { name: 'labelKey' })).toBeNull();
+  fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' });
+  fireEvent.mouseDown(aside.getByRole('tab', { name: f.label('editor.events') }), { button: 0 });
+  const event = screen.getByRole('combobox', { name: f.label('editor.event') });
+  expect(event.textContent).toBe(f.label('editor.eventNames.onPress'));
+});
+it('applies styles to all screens by default and to wider screens only when chosen', async () => {
+  const f = await setup();
+  f.tab('style');
+  const scope = screen.getByRole('combobox', { name: f.label('editor.styleScope') });
+  expect(scope.textContent).toBe(f.label('editor.styleScopes.base'));
+  await choose(f.label('editor.styleLabels.padding'), f.label('editor.styleValues.sm'));
+  expect(f.store.node('btn-next')!.style?.base?.padding).toBe('sm');
+  await choose(f.label('editor.styleScope'), f.label('editor.styleScopes.xl'));
+  // A target wider than the preview widens the preview so the change stays visible.
+  expect(f.store.getSnapshot()).toMatchObject({ breakpoint: 'xl', viewport: 'xl' });
+  await choose(f.label('editor.styleLabels.padding'), f.label('editor.styleValues.lg'));
+  expect(f.store.node('btn-next')!.style).toMatchObject({
+    base: { padding: 'sm' },
+    xl: { padding: 'lg' },
+  });
+});
+it('inserts a variable into script text and keeps the params binding in step with the text', async () => {
+  const store = new EditorStore(minimalScript());
+  store.edit((doc) => {
+    doc.variables.push(
+      VariableSchema.parse({ key: 'musteriAdi', type: 'string', scope: 'session', default: '' }),
+    );
+  });
+  store.insert('scriptText', 'home-root');
+  const id = store.getSnapshot().selection[0]!;
+  const f = await mountDesigner(<Inspector store={store} />);
+  const field = `${f.i18n.t('components.properties.textKey')} · TR`;
+  fireEvent.change(screen.getByRole('textbox', { name: field }), {
+    target: { value: 'Merhaba,' },
+  });
+  await choose(f.i18n.t('designer.textVariables.insert', { field }), '{musteriAdi}');
+  const key = store.node(id)!.props['textKey'] as string;
+  expect(store.getSnapshot().document.i18n.messages['tr']?.[key]).toBe('Merhaba, {musteriAdi}');
+  expect(store.node(id)!.bindings).toEqual([
+    { prop: 'params', expression: '{ musteriAdi: vars.musteriAdi }' },
+  ]);
+  fireEvent.change(screen.getByRole('textbox', { name: field }), {
+    target: { value: 'Merhaba' },
+  });
+  expect(store.node(id)!.bindings).toEqual([]);
 });

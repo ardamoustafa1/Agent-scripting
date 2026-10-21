@@ -97,7 +97,7 @@ test('go to selects the component and hands focus to the canvas', async ({ page 
     .click();
   await expect(sheet).toBeHidden();
   await expect(page.locator('#editor-canvas')).toBeFocused();
-  await expect(page.locator('.ed-selection-label')).toContainText('textInput');
+  await expect(page.locator('.ed-selection-label')).toContainText('Text input');
 });
 
 test('health panel fits a phone viewport without horizontal scroll', async ({ page }) => {

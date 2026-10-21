@@ -58,7 +58,7 @@ test('tenant source selected in Designer binds the document and passes the publi
   await page.goto(`/scripts/${scriptId}/versions/1/edit`);
   await page.getByRole('button', { name: 'Manage data sources', exact: true }).click();
   const dialog = page.getByRole('dialog');
-  await dialog.getByRole('combobox', { name: 'Tenant integration', exact: true }).click();
+  await dialog.getByRole('combobox', { name: 'Team integration', exact: true }).click();
   await page.getByRole('option', { name: 'customer-profile · v3', exact: true }).click();
   await dialog.getByRole('button', { name: 'Add data source', exact: true }).click();
   await dialog.getByRole('button', { name: 'Close', exact: true }).click();
@@ -105,8 +105,10 @@ test('repeated click insertion stays at page root and the palette has a keyboard
     )
     .toBe(3);
   const inserted = ScriptDocumentSchema.parse(saved!.document).pages[0]!.layout.children!;
-  expect(inserted.map((node) => node['type'])).toEqual(['button', 'box', 'card']);
-  expect(inserted[1]!['children'] ?? []).toEqual([]);
+  // Palette clicks land before the page's trailing Next button.
+  expect(inserted.map((node) => node['type'])).toEqual(['box', 'card', 'button']);
+  expect(inserted[0]!['children'] ?? []).toEqual([]);
+  const boxId = String(inserted[0]!['id']);
   const boxButton = page.locator('[data-component-type="box"]').getByRole('button').last();
   await boxButton.focus();
   await page.keyboard.press('Shift+Space');
@@ -122,7 +124,7 @@ test('repeated click insertion stays at page root and the palette has a keyboard
   await page.keyboard.press('Home');
   await expect(page.locator('.ed-inspector')).toContainText('home-root');
   await page.keyboard.press('ArrowDown');
-  await expect(page.locator('.ed-inspector')).toContainText('btn-next');
+  await expect(page.locator('.ed-inspector')).toContainText(boxId);
   await page.keyboard.press('Alt+ArrowDown');
   await expect
     .poll(
@@ -130,5 +132,5 @@ test('repeated click insertion stays at page root and the palette has a keyboard
         saved &&
         ScriptDocumentSchema.parse(saved.document).pages[0]?.layout.children?.[0]?.['type'],
     )
-    .toBe('box');
+    .toBe('card');
 });

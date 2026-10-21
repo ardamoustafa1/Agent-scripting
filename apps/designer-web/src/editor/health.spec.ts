@@ -8,6 +8,7 @@ import {
   categoryOf,
   hygieneIssues,
   issueTarget,
+  placeholderIssues,
   scriptHealth,
 } from './health.js';
 
@@ -169,4 +170,40 @@ describe('issueTarget', () => {
     expect(issueTarget(document, '/dataSources/0')).toBeUndefined();
     expect(issueTarget(document, '/pages/7/layout')).toBeUndefined();
   });
+});
+
+it('flags text placeholders that nothing fills and skips custom params expressions', () => {
+  const doc = ScriptDocumentSchema.parse(minimalScript());
+  doc.variables.push(
+    VariableSchema.parse({ key: 'musteriAdi', type: 'string', scope: 'session', default: '' }),
+  );
+  doc.i18n.messages['tr'] = {
+    ...doc.i18n.messages['tr'],
+    'a.text': 'Merhaba {musteriAdi}, {bilinmeyen}',
+    'b.text': 'Sayın {musteriAdi}',
+    'c.text': 'Kalan {left}',
+  };
+  doc.pages[0]!.layout.children!.push(
+    { id: 'a', type: 'scriptText', props: { textKey: 'a.text' }, bindings: [], events: {} },
+    {
+      id: 'b',
+      type: 'scriptText',
+      props: { textKey: 'b.text' },
+      bindings: [{ prop: 'params', expression: '{ musteriAdi: vars.musteriAdi }' }],
+      events: {},
+    },
+    {
+      id: 'c',
+      type: 'scriptText',
+      props: { textKey: 'c.text' },
+      bindings: [{ prop: 'params', expression: '{ left: 3 - vars.attempts }' }],
+      events: {},
+    },
+  );
+  const found = placeholderIssues(doc).map((issue) => [issue.messageKey, issue.params]);
+  expect(found).toEqual([
+    ['designer.health.issues.placeholderUnbound', { name: 'musteriAdi' }],
+    ['designer.health.issues.placeholderUnknown', { name: 'bilinmeyen' }],
+  ]);
+  expect(hygieneIssues(doc).some((issue) => issue.code === 'VERBIS_LINT_PLACEHOLDER')).toBe(true);
 });

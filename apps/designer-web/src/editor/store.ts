@@ -3,7 +3,7 @@ import { useSyncExternalStore } from 'react';
 import { z } from 'zod';
 
 import { createComponentRegistry } from '@verbis/components';
-import { parseExpression as parse } from '@verbis/expr';
+import { analyzeExpression } from '@verbis/expr';
 import { resources } from '@verbis/i18n';
 import {
   migrate,
@@ -29,6 +29,7 @@ import {
 import { insertBlock, type BlockId } from './blocks.js';
 
 export const editorRegistry = createComponentRegistry();
+export const BREAKPOINTS: readonly Breakpoint[] = ['base', 'sm', 'md', 'lg', 'xl'];
 export interface EditorState {
   document: ScriptDocument;
   selection: readonly string[];
@@ -36,7 +37,10 @@ export interface EditorState {
   revision: number;
   history: number;
   future: number;
+  /** Which screens a style edit applies to: `base` = all screens (runtime styles are mobile-first). */
   breakpoint: Breakpoint;
+  /** Canvas preview width. Independent of the style target so authors see the desktop agent view. */
+  viewport: Breakpoint;
   zoom: number;
   message: string | null;
   writeSuspended: boolean;
@@ -53,6 +57,30 @@ export interface EditorIssue {
 interface HistoryEntry {
   patches: EditResult['patches'];
   inversePatches: EditResult['inversePatches'];
+}
+/**
+ * Syntax plus the problems the engine would only raise mid-call: a function it does not have
+ * (`len(...)`) or the wrong number of arguments. Types are left to the runtime.
+ */
+function expressionIssue(source: string): Pick<EditorIssue, 'messageKey' | 'params'> | undefined {
+  let diagnostics;
+  try {
+    diagnostics = analyzeExpression(source).diagnostics;
+  } catch {
+    return { messageKey: 'designer.editor.invalidExpression' };
+  }
+  const found = diagnostics.find(
+    (d) => d.code === 'UNKNOWN_FUNCTION' || d.code === 'ARGUMENT_COUNT',
+  );
+  if (!found) return undefined;
+  const name = /^[A-Za-z_][A-Za-z0-9_]*/.exec(source.slice(found.position))?.[0] ?? '';
+  return {
+    messageKey:
+      found.code === 'UNKNOWN_FUNCTION'
+        ? 'designer.editor.unknownFunction'
+        : 'designer.editor.argumentCount',
+    params: { name },
+  };
 }
 export class EditorStore {
   private fieldProblemKeys = new Set<string>();
@@ -109,6 +137,7 @@ export class EditorStore {
       history: 0,
       future: 0,
       breakpoint: 'base',
+      viewport: 'lg',
       zoom: 1,
       message: null,
       writeSuspended: false,
@@ -241,8 +270,16 @@ export class EditorStore {
     const parent = id ? this.location(id)?.parent : undefined;
     this.publish({ selection: parent ? [parent.id] : [] });
   }
-  setView(update: Partial<Pick<EditorState, 'pageId' | 'breakpoint' | 'zoom'>>) {
-    this.publish({ ...update, ...(update.pageId ? { selection: [] } : {}) });
+  setView(update: Partial<Pick<EditorState, 'pageId' | 'breakpoint' | 'viewport' | 'zoom'>>) {
+    // A style target wider than the preview would be invisible: keep target ≤ preview width.
+    const next = { ...update };
+    const viewport = next.viewport ?? this.state.viewport,
+      target = next.breakpoint ?? this.state.breakpoint;
+    if (BREAKPOINTS.indexOf(target) > BREAKPOINTS.indexOf(viewport)) {
+      if (next.breakpoint) next.viewport = target;
+      else next.breakpoint = viewport;
+    }
+    this.publish({ ...next, ...(next.pageId ? { selection: [] } : {}) });
   }
   insert(type: string, parentId: string, index?: number) {
     this.writable([parentId]);
@@ -509,33 +546,39 @@ export class EditorStore {
             params: { property: issue.path.join('.') },
           });
       for (const binding of location.node.bindings)
-        if ('expression' in binding) {
-          try {
-            parse(binding.expression);
-          } catch {
+        if ('variable' in binding) {
+          // Mirrors the renderer: card data reaches only the hosted card field's secure binding;
+          // on any other field the component refuses to render during the call.
+          const variable = this.state.document.variables.find((v) => v.key === binding.variable);
+          if (
+            variable?.classification === 'pci' &&
+            !definition.secureBindings?.includes(binding.prop)
+          )
+            issues.push({
+              severity: 'error',
+              code: 'SENSITIVE_DATA_EXPOSED',
+              path: location.pointer,
+              messageKey: 'designer.editor.cardOnPlainField',
+              params: { variable: variable.key },
+            });
+        } else {
+          const problem = expressionIssue(binding.expression);
+          if (problem)
             issues.push({
               severity: 'error',
               code: 'VERBIS_EXPRESSION',
               path: location.pointer,
-              messageKey: 'designer.editor.invalidExpression',
+              ...problem,
             });
-          }
         }
     }
     const scan = (value: unknown, path: string): void => {
       if (value === null || typeof value !== 'object') return;
       for (const [key, child] of Object.entries(value)) {
         if (key === '$expr' && typeof child === 'string') {
-          try {
-            parse(child);
-          } catch {
-            issues.push({
-              severity: 'error',
-              code: 'VERBIS_EXPRESSION',
-              path,
-              messageKey: 'designer.editor.invalidExpression',
-            });
-          }
+          const problem = expressionIssue(child);
+          if (problem)
+            issues.push({ severity: 'error', code: 'VERBIS_EXPRESSION', path, ...problem });
         } else scan(child, `${path}/${key}`);
       }
     };

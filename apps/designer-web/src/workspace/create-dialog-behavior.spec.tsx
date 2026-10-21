@@ -41,6 +41,8 @@ it.each(['campaigns', 'scripts'] as const)(
       expect(close).toHaveBeenCalledWith(false);
     });
     expect(f.router.state.location.pathname).toBe(`/${kind}/${item.id}`);
+    // A new blank script asks its page to open the editor; campaigns open their detail page.
+    expect(f.router.state.location.state).toEqual(kind === 'scripts' ? { openEditor: true } : null);
     const request = f.requests.find((r) => r.method === 'POST')!;
     expect(request.body).toMatchObject({
       name: 'Synthetic resource',

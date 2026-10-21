@@ -65,7 +65,8 @@ it('resizes selected nodes by keyboard and pointer at the active breakpoint', as
   expect(f.store.node('btn-next')!.style?.base?.width).toBe('full');
   fireEvent.keyDown(resize, { key: 'Escape' });
   act(() => {
-    f.store.setView({ breakpoint: 'md' });
+    // Drag ratios are measured against the visible preview width, so preview at tablet width.
+    f.store.setView({ viewport: 'md', breakpoint: 'md' });
   });
   fireEvent.pointerDown(resize, { clientX: 20, pointerId: 1 });
   fireEvent.pointerUp(resize, { clientX: 304, pointerId: 1 });
@@ -131,6 +132,36 @@ it('fits the wide viewport inside available space without changing selection or 
   expect(f.store.getSnapshot().zoom).toBeGreaterThan(0.1);
   expect(f.store.getSnapshot().selection).toEqual(['btn-next']);
   expect(f.store.getSnapshot().document).toBe(before);
+});
+
+it('opens a page wider than the canvas fitted, once per preview width', async () => {
+  const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (
+    this: HTMLElement,
+  ) {
+    return this.classList.contains('ed-canvas') ? 600 : 0;
+  });
+  const store = new EditorStore(minimalScript());
+  const f = await mountDesigner(<Canvas store={store} />);
+  // Desktop preview (1024 px) in a 600 px canvas: the whole page is visible on open.
+  expect(store.getSnapshot().zoom).toBe(0.58);
+  act(() => {
+    store.setView({ zoom: 1 });
+  });
+  f.ui.unmount();
+  // Returning to the canvas (another editor tab and back) keeps the author's zoom.
+  const again = await mountDesigner(<Canvas store={store} />);
+  expect(store.getSnapshot().zoom).toBe(1);
+  act(() => {
+    store.setView({ viewport: 'xl' });
+  });
+  expect(store.getSnapshot().zoom).toBe(0.46);
+  act(() => {
+    store.setView({ viewport: 'base', zoom: 1 });
+  });
+  // A page that already fits is never enlarged.
+  expect(store.getSnapshot().zoom).toBe(1);
+  again.ui.unmount();
+  width.mockRestore();
 });
 
 it('keeps the current page rendered after undo and redo', async () => {

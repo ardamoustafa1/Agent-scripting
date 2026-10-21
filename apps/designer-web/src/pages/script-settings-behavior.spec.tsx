@@ -12,19 +12,26 @@ import ScriptPage from './script.js';
 import Settings from './settings.js';
 
 const base = `/v1/scripts/${scriptId}`;
+const authorId = '01928f3a-0000-7000-8000-0000000000a1';
 const version = {
   id: editorFixture().id,
   number: 1,
   state: 'published',
   createdAt: 'synthetic',
-  createdBy: 'Synthetic author',
+  createdBy: `user:${authorId}`,
 };
-async function setup(extra: Record<string, unknown> = {}, path = '', allowed = true) {
+async function setup(
+  extra: Record<string, unknown> = {},
+  path = '',
+  allowed = true,
+  state?: unknown,
+) {
   return mountDesigner(
     <ScriptPage />,
     {
       [base]: scriptFixture,
       [`${base}/versions?limit=100&sort=-number`]: { data: [version], page: { nextCursor: null } },
+      [`${base}/versions/1/team-members`]: [{ id: authorId, name: 'Synthetic author' }],
       [`${base}/versions/1`]: {
         document: {
           variables: [
@@ -38,6 +45,7 @@ async function setup(extra: Record<string, unknown> = {}, path = '', allowed = t
       route: '/scripts/:id/*',
       path: `/scripts/${scriptId}${path}`,
       ...(allowed ? {} : { ability: createAbility([{ action: 'read', subject: 'Script' }]) }),
+      ...(state === undefined ? {} : { state }),
     },
   );
 }
@@ -56,6 +64,25 @@ it('opens the latest editor and links review, assignments and package management
   await waitFor(() => {
     expect(f.router.state.location.pathname).toBe(`/scripts/${scriptId}/versions/1/edit`);
   });
+});
+it('names version authors instead of showing actor references', async () => {
+  const rows = [
+    { ...version, number: 4, createdBy: `user:${sessionFixture.user.id}` },
+    { ...version, number: 3, createdBy: 'service:template-gallery' },
+    { ...version, number: 2, createdBy: 'user:01928f3a-0000-7000-8000-0000000000ff' },
+    { ...version, number: 1 },
+  ];
+  const f = await setup({
+    [`${base}/versions?limit=100&sort=-number`]: { data: rows, page: { nextCursor: null } },
+    [`${base}/versions/4/team-members`]: [{ id: authorId, name: 'Synthetic author' }],
+  });
+  await screen.findByRole('heading', { name: scriptFixture.name });
+  fireEvent.click(await screen.findByRole('button', { name: /show all rows/i }));
+  expect(await screen.findByText('Synthetic author')).toBeTruthy();
+  expect(screen.getByText(f.label('workspace.you'))).toBeTruthy();
+  expect(screen.getByText(f.label('workspace.owners.system'))).toBeTruthy();
+  expect(screen.getByText(f.label('workspace.owners.former'))).toBeTruthy();
+  expect(document.body.textContent).not.toContain('user:');
 });
 it('shows the latest variable inventory and hides mutation controls from readers', async () => {
   const f = await setup({}, '/variables', false);
@@ -181,4 +208,43 @@ it('explains missing access instead of a loading skeleton when the versions are 
   });
   expect(await screen.findByText(f.label('workspace.denied'))).toBeTruthy();
   expect(screen.queryByLabelText(f.label('workspace.loading'))).toBeNull();
+});
+
+it('opens a script created from "New script" straight in the editor with its first draft', async () => {
+  const f = await setup(
+    {
+      [`${base}/versions?limit=100&sort=-number`]: { data: [], page: { nextCursor: null } },
+      [`POST ${base}/versions`]: { number: 1 },
+    },
+    '',
+    true,
+    { openEditor: true },
+  );
+  await waitFor(() => {
+    expect(f.router.state.location.pathname).toBe(`/scripts/${scriptId}/versions/1/edit`);
+  });
+  const posts = f.requests.filter((r) => r.method === 'POST');
+  expect(posts).toHaveLength(1);
+  expect(new Headers(posts[0]!.init?.headers).get('idempotency-key')).toBeTruthy();
+  expect(
+    ScriptDocumentSchema.safeParse((posts[0]!.body as { document: unknown }).document).success,
+  ).toBe(true);
+});
+it('does not create a draft by itself when the script already has versions', async () => {
+  const f = await setup({}, '', true, { openEditor: true });
+  await screen.findByRole('heading', { name: scriptFixture.name });
+  fireEvent.click(await screen.findByRole('button', { name: /show all rows/i }));
+  expect(screen.getByText('Synthetic author')).toBeTruthy();
+  expect(f.requests.some((r) => r.method === 'POST')).toBe(false);
+  expect(f.router.state.location.pathname).toBe(`/scripts/${scriptId}`);
+});
+it('does not create a draft by itself for a user who cannot create scripts', async () => {
+  const f = await setup(
+    { [`${base}/versions?limit=100&sort=-number`]: { data: [], page: { nextCursor: null } } },
+    '',
+    false,
+    { openEditor: true },
+  );
+  expect(await screen.findByText(f.label('workspace.firstDraftHint'))).toBeTruthy();
+  expect(f.requests.some((r) => r.method === 'POST')).toBe(false);
 });

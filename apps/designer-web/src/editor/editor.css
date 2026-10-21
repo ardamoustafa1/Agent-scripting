@@ -713,6 +713,21 @@ button:focus-visible {
   outline: 2px solid var(--vb-color-focus);
   outline-offset: -2px;
 }
+/* Which variable an input stores its value in; first thing an author sets on a field. */
+.ed-value-variable {
+  display: grid;
+  gap: var(--vb-space-1);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  background: var(--vb-color-info-soft);
+  padding: var(--vb-space-3);
+  margin-block-end: var(--vb-space-3);
+}
+.ed-value-variable .ed-help {
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-xs);
+  margin: 0;
+}
 /* D-09: option row editor */
 .ed-options {
   display: grid;
@@ -1169,4 +1184,77 @@ button:focus-visible {
   background: var(--vb-color-warning-soft, var(--vb-color-surface));
   border: 1px dashed var(--vb-color-warning, var(--vb-color-border));
   border-radius: var(--vb-radius-sm);
+}
+
+/* Code-free action, value and text editors (design tokens only). */
+.ed-help {
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-xs);
+  margin: 0;
+}
+.ed-action-fields,
+.ed-value,
+.ed-variable-text {
+  display: grid;
+  gap: var(--vb-space-2);
+  min-inline-size: 0;
+}
+.ed-value,
+.ed-condition,
+.ed-attribute-rows,
+.ed-action-list {
+  margin: 0;
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  padding: var(--vb-space-3);
+  display: grid;
+  gap: var(--vb-space-2);
+  min-inline-size: 0;
+}
+.ed-value > legend,
+.ed-condition > legend,
+.ed-attribute-rows > legend,
+.ed-action-list > legend {
+  padding-inline: var(--vb-space-1);
+  font-size: var(--vb-font-size-sm);
+  font-weight: 600;
+}
+.ed-action-card {
+  display: grid;
+  gap: var(--vb-space-2);
+  border-radius: var(--vb-radius-sm);
+  background: var(--vb-color-surface);
+  padding: var(--vb-space-2);
+}
+.ed-action-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--vb-space-1);
+}
+.ed-action-card-head strong {
+  flex: 1;
+  min-inline-size: 0;
+  font-size: var(--vb-font-size-sm);
+  overflow-wrap: anywhere;
+}
+.ed-attribute-row {
+  display: grid;
+  gap: var(--vb-space-2);
+  border-block-end: 1px solid var(--vb-color-border);
+  padding-block-end: var(--vb-space-2);
+}
+.ed-technical summary {
+  cursor: pointer;
+  color: var(--vb-color-text-muted);
+  font-size: var(--vb-font-size-xs);
+}
+.ed-technical code {
+  font-size: var(--vb-font-size-xs);
+  overflow-wrap: anywhere;
+}
+.ed-inline-add {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--vb-space-2);
+  align-items: end;
 }

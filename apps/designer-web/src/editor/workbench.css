@@ -199,6 +199,10 @@
   white-space: nowrap;
   text-align: center;
 }
+/* Components · Layers · Pages fit one row at the default panel width in TR and EN. */
+.ed-workspace .ed-left .vb-tab {
+  padding-inline: var(--vb-space-2);
+}
 .ed-workspace .ed-left .vb-tab-panel,
 .ed-workspace .ed-left [role='tabpanel'] {
   padding: var(--vb-space-3);

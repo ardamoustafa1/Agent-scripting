@@ -111,7 +111,10 @@ export function CreateDialog({
     onSuccess: (item) => {
       void query.invalidateQueries({ queryKey: ['workspace', session.user.tenantId] });
       onOpenChange(false);
-      void navigate(`/${kind}/${item.id}`);
+      void navigate(
+        `/${kind}/${item.id}`,
+        kind === 'scripts' ? { state: { openEditor: true } } : undefined,
+      );
     },
   });
   const failure = fromTemplate ? instantiate.error : create.error;
