@@ -127,7 +127,7 @@ export const surveyScript: ScriptDocumentInput = {
         children: [
           {
             id: 'in-reasons-low',
-            type: 'select',
+            type: 'multiSelect',
             props: {
               labelKey: 'reasons.question',
               options: [
@@ -157,7 +157,7 @@ export const surveyScript: ScriptDocumentInput = {
         children: [
           {
             id: 'in-reasons-high',
-            type: 'select',
+            type: 'multiSelect',
             props: {
               labelKey: 'reasons.question',
               options: [

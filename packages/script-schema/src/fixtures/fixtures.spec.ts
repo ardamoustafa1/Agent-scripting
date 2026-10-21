@@ -2,9 +2,25 @@ import { describe, expect, it } from 'vitest';
 
 import { scriptDocumentJsonSchema } from '../json-schema.js';
 import { ACTION_TYPES } from '../schema/actions.js';
+import { walkNodes } from '../tree/tree.js';
 import { validateScriptDocument } from '../validation/validate.js';
 
 import { BROKEN_FIXTURES, VALID_FIXTURES } from './index.js';
+
+import type { Variable } from '../schema/variable.js';
+
+/** Variable types each input can hold, from what it writes on change (`@verbis/components` inputs). */
+const WRITES: Partial<Record<string, readonly Variable['type'][]>> = {
+  select: ['string', 'enum'],
+  radioGroup: ['string', 'enum'],
+  multiSelect: ['array'],
+  checkboxGroup: ['array'],
+  checkbox: ['boolean'],
+  toggle: ['boolean'],
+  numberInput: ['number'],
+  rating: ['number'],
+  slider: ['number'],
+};
 
 describe('valid fixtures (acceptance)', () => {
   it.each(Object.entries(VALID_FIXTURES))(
@@ -24,6 +40,33 @@ describe('valid fixtures (acceptance)', () => {
     );
     expect(ACTION_TYPES.filter((type) => !used.has(type))).toEqual([]);
   });
+
+  it.each(Object.entries(VALID_FIXTURES))(
+    '%s binds every input to a variable of the type it writes',
+    (_name, input) => {
+      const result = validateScriptDocument(input);
+      if (!result.ok) throw new Error('fixture must validate');
+      const document = result.document;
+      const types = new Map(document.variables.map((v) => [v.key, v.type]));
+      const mismatches: string[] = [];
+      // The runtime rejects a write of the wrong type, so the agent could not answer the field.
+      walkNodes(document, ({ node }) => {
+        const accepted = WRITES[node.type];
+        for (const binding of node.bindings)
+          if (
+            accepted &&
+            'variable' in binding &&
+            (binding.prop === 'value' || binding.prop === 'checked')
+          ) {
+            const type = types.get(binding.variable);
+            if (type && !accepted.includes(type))
+              mismatches.push(`${node.id}: ${node.type} -> ${binding.variable} (${type})`);
+          }
+        return true;
+      });
+      expect(mismatches).toEqual([]);
+    },
+  );
 
   it('use distinct script ids', () => {
     const ids = Object.values(VALID_FIXTURES).map((doc) => doc.id);
