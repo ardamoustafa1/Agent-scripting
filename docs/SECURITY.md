@@ -140,6 +140,7 @@ sequenceDiagram
 - Re-launch for the same interaction (e.g. reconnect) creates a **new** intent; previous session is resumed only if bound to the same user and still active.
 - Embedding: agent-web allows framing only by tenant-configured origins (`frame-ancestors`); `SameSite` third-party cookie constraints handled with partitioned cookies (CHIPS) or top-level popup fallback.
 - Designer "preview/test run" uses a distinct `preview` session type: requires designer permission, runs against sandbox/mock data sources, marked in audit, never attached to a real interaction.
+- A data-source call from a real interaction session is authorized by that session ([ADR-0056](adr/0056-runtime-data-source-calls-authorized-by-the-session.md)): owner, active, instance-level `update:Session`, and the exact revision pinned by the session's published script. It does not need, and agents do not get, `execute:Integration`; previews still require it.
 
 ## 5. Application security controls
 

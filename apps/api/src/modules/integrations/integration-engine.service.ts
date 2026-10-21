@@ -50,6 +50,11 @@ const ClaimsSchema = z.object({
   bff: z.string(),
   scp: z.literal('integration:execute'),
 });
+/**
+ * How a data-source lookup is authorized: an Integration action, or the caller's own active
+ * interaction session, which `prepareAuthorized` has already checked (ADR-0056).
+ */
+type SourceAccess = 'read' | 'update' | 'execute' | { readonly sessionId: string };
 export function environmentVault(env: ApiEnv): EnvelopeVault {
   const transit =
     env.INTEGRATION_KEY_PROVIDER === 'vault-transit'
@@ -99,12 +104,12 @@ export class IntegrationEngineService {
     if (!principal) throw new UnauthenticatedError();
     return principal;
   }
-  private async source(id: string, action: 'read' | 'update' | 'execute' = 'read') {
+  private async source(id: string, access: SourceAccess = 'read') {
     const row = await this.db
       .current()
       .dataSource.findFirst({ where: { tenantId: this.db.tenantId(), id, deletedAt: null } });
     if (!row) throw new NotFoundError('DataSource');
-    this.authz.authorize(action, asSubject('Integration', row));
+    if (typeof access === 'string') this.authz.authorize(access, asSubject('Integration', row));
     return {
       row,
       source: {
@@ -123,10 +128,10 @@ export class IntegrationEngineService {
   private async pinnedSource(
     id: string,
     version: number,
-    action: 'read' | 'update' | 'execute' = 'execute',
+    access: SourceAccess = 'execute',
     stale: 'forbidden' | 'mismatch' = 'forbidden',
   ) {
-    const live = await this.source(id, action);
+    const live = await this.source(id, access);
     const snapshot = await this.db.current().dataSourceVersion.findFirst({
       where: { tenantId: this.db.tenantId(), dataSourceId: id, version },
     });
@@ -451,7 +456,7 @@ export class IntegrationEngineService {
     }
     return this.executeAuthorized(id, sessionId, call);
   }
-  /** Server-only BFF bridge; ownership, active session, scoped permission and exact pin are checked below. */
+  /** Server-only BFF bridge; ownership, active session, its authorization (ADR-0056) and exact pin are checked below. */
   async executeAuthorized(id: string, sessionId: string, call: Call) {
     const context = requestContext.require();
     const prepared = await this.db.run(this.db.tenantId(), (tx) =>
@@ -487,7 +492,21 @@ export class IntegrationEngineService {
     if (!session) throw new ForbiddenError();
     // Designer previews run on mock data unless the preview was started with live-data permission.
     if (!previewMayUseLiveData(session)) throw new ForbiddenError('Preview sessions use mock data');
-    const live = await this.source(id, 'execute');
+    // ADR-0056: in a real call the agent's own session authorizes what its published script pins;
+    // integration-execute stays an authoring permission, required for previews.
+    let access: SourceAccess = 'execute';
+    if (session.kind === 'interaction') {
+      this.authz.authorize(
+        'update',
+        asSubject('Session', {
+          agentId: session.userId,
+          teamId: session.teamId ?? '__unassigned__',
+          tenantId: session.tenantId,
+        }),
+      );
+      access = { sessionId: session.id };
+    }
+    const live = await this.source(id, access);
     const document = z
       .object({
         dataSources: z.array(
@@ -498,7 +517,7 @@ export class IntegrationEngineService {
     const pin = document.dataSources.find((ref) => ref.ref === `tenant-datasource:${live.row.key}`);
     if (!pin) throw new ForbiddenError();
     // The pin resolves to the immutable revision, not to the (possibly edited) live row.
-    const { row, source } = await this.pinnedSource(id, pin.version, 'execute');
+    const { row, source } = await this.pinnedSource(id, pin.version, access);
     const environment = z
       .enum(['dev', 'test', 'prod'])
       .parse(this.env?.VERBIS_ENVIRONMENT ?? 'prod');

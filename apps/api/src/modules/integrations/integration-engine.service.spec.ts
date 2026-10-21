@@ -1,12 +1,21 @@
 import { exportJWK, generateKeyPair, SignJWT } from 'jose';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
+import {
+  asSubject,
+  buildRules,
+  createAbility,
+  SYSTEM_ROLE_KEYS,
+  SYSTEM_ROLES,
+  type SystemRoleKey,
+} from '@verbis/authz';
+
 import { testEnv } from '../../../test/support/env.js';
 import { requestContext } from '../../common/context/request-context.js';
 import { type TenantDb } from '../../infra/database/tenant-db.js';
 import { type RedisService } from '../../infra/redis/redis.service.js';
 import { type AuditService } from '../audit/audit.service.js';
-import { type AuthzService } from '../authz/authz.service.js';
+import { AuthzService } from '../authz/authz.service.js';
 
 import {
   DefinitionSchema,
@@ -30,7 +39,21 @@ beforeAll(async () => {
 afterEach(() => {
   vi.unstubAllEnvs();
 });
-function fixture(state = 'active', declaredVersion = 1, environment = 'prod') {
+interface FixtureOptions {
+  /** `interaction` is a real call; `preview` is the designer's session (ADR-0017). */
+  kind?: 'interaction' | 'preview';
+  decisionTrace?: unknown;
+  /** Refs the session's published script pins; defaults to the `lookup` source. */
+  refs?: string[];
+  /** Real CASL checks instead of the permissive stub; pair with `run(fn, roles)`. */
+  authz?: AuthzService;
+}
+function fixture(
+  state = 'active',
+  declaredVersion = 1,
+  environment = 'prod',
+  options: FixtureOptions = {},
+) {
   const audits = vi.fn(() => Promise.resolve({})),
     emitted = vi.fn().mockResolvedValue(undefined);
   const tx = {
@@ -55,16 +78,23 @@ function fixture(state = 'active', declaredVersion = 1, environment = 'prod') {
         Promise.resolve(
           state === 'active'
             ? {
-                kind: 'interaction',
+                id: sessionId,
+                tenantId,
+                userId,
+                teamId: null,
+                kind: options.kind ?? 'interaction',
+                decisionTrace: options.decisionTrace ?? {},
                 sequence: 1,
                 state: 'active',
                 scriptVersion: {
                   documentEncoding: 'json',
                   documentCompressed: null,
                   document: {
-                    dataSources: [
-                      { id: 'lookup', ref: 'tenant-datasource:lookup', version: declaredVersion },
-                    ],
+                    dataSources: (options.refs ?? ['tenant-datasource:lookup']).map((ref) => ({
+                      id: 'lookup',
+                      ref,
+                      version: declaredVersion,
+                    })),
                   },
                 },
               }
@@ -96,7 +126,7 @@ function fixture(state = 'active', declaredVersion = 1, environment = 'prod') {
     db as unknown as TenantDb,
     { record: emitted },
     { record: audits } as unknown as AuditService,
-    { authorize: vi.fn() } as unknown as AuthzService,
+    options.authz ?? ({ authorize: vi.fn() } as unknown as AuthzService),
     {
       client: { get: () => Promise.resolve(null), set: () => Promise.resolve('OK') },
     } as unknown as RedisService,
@@ -116,7 +146,7 @@ function fixture(state = 'active', declaredVersion = 1, environment = 'prod') {
       error: null,
     },
   });
-  const run = <T>(fn: () => T) =>
+  const run = <T>(fn: () => T, roles: readonly SystemRoleKey[] = []) =>
     requestContext.run(
       {
         requestId: 'request',
@@ -124,10 +154,18 @@ function fixture(state = 'active', declaredVersion = 1, environment = 'prod') {
         ip: '',
         userAgent: '',
         principal: { id: userId, tenantId, type: 'user', scopes: [], sessionId: 'bff-session' },
+        ...(roles.length ? { authz: authzFor(roles) } : {}),
       },
       fn,
     );
   return { service, tx, audits, execute, run, emitted };
+}
+function authzFor(roles: readonly SystemRoleKey[]) {
+  const rules = buildRules({
+    userId,
+    grants: roles.map((key) => ({ rules: SYSTEM_ROLES[key].rules, scope: {} })),
+  });
+  return { ability: createAbility(rules), rules, roles: [...roles], separationOfDuties: true };
 }
 async function token(overrides: Record<string, unknown> = {}) {
   return new SignJWT({
@@ -285,6 +323,99 @@ it('failed real executions emit safe latency metadata before surfacing the upstr
     },
   });
   expect(JSON.stringify(f.emitted.mock.calls)).not.toContain('sensitive-fixture');
+});
+
+describe("runtime calls are authorized by the agent's own interaction session (ADR-0056)", () => {
+  const call = { input: {}, environment: 'prod' as const };
+  const ownSession = asSubject('Session', { agentId: userId, teamId: '__unassigned__', tenantId });
+
+  it('lets an agent-only user call the exact pin of its own active interaction', async () => {
+    expect(authzFor(['agent']).ability.can('execute', 'Integration')).toBe(false);
+    const f = fixture('active', 1, 'prod', { authz: new AuthzService() });
+    await expect(
+      f.run(() => f.service.executeAuthorized(id, sessionId, call), ['agent']),
+    ).resolves.toMatchObject({ value: { ok: true } });
+    expect(f.execute).toHaveBeenCalledOnce();
+    expect(f.audits).toHaveBeenCalledWith(
+      f.tx,
+      expect.objectContaining({
+        action: 'integration.datasource.executed',
+        target: { type: 'DataSource', id },
+        metadata: expect.objectContaining({ sessionId }) as unknown,
+      }),
+    );
+  });
+
+  it.each(SYSTEM_ROLE_KEYS.map((role) => [role]))(
+    '%s may call from its own interaction exactly when it may update that session',
+    async (role) => {
+      const f = fixture('active', 1, 'prod', { authz: new AuthzService() });
+      const pending = f.run(() => f.service.executeAuthorized(id, sessionId, call), [role]);
+      if (authzFor([role]).ability.can('update', ownSession))
+        await expect(pending).resolves.toMatchObject({ value: { ok: true } });
+      else {
+        await expect(pending).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+        expect(f.execute).not.toHaveBeenCalled();
+      }
+    },
+  );
+
+  it('keeps live previews on the authoring permission', async () => {
+    const preview = {
+      authz: new AuthzService(),
+      kind: 'preview' as const,
+      decisionTrace: { preview: true, liveDataSources: true },
+    };
+    const agent = fixture('active', 1, 'prod', preview);
+    await expect(
+      agent.run(() => agent.service.executeAuthorized(id, sessionId, call), ['agent']),
+    ).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+    expect(agent.execute).not.toHaveBeenCalled();
+    const engineer = fixture('active', 1, 'prod', preview);
+    await expect(
+      engineer.run(
+        () => engineer.service.executeAuthorized(id, sessionId, call),
+        ['integration_engineer'],
+      ),
+    ).resolves.toMatchObject({ value: { ok: true } });
+  });
+
+  it('refuses an agent a source its session script does not pin', async () => {
+    const f = fixture('active', 1, 'prod', {
+      authz: new AuthzService(),
+      refs: ['tenant-datasource:another'],
+    });
+    await expect(
+      f.run(() => f.service.executeAuthorized(id, sessionId, call), ['agent']),
+    ).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+    expect(f.execute).not.toHaveBeenCalled();
+  });
+
+  it('refuses an agent a revision other than the pinned one', async () => {
+    const f = fixture('active', 1, 'prod', { authz: new AuthzService() });
+    const live = await f.tx.dataSource.findFirst();
+    f.tx.dataSource.findFirst.mockResolvedValue({ ...live, version: 2 });
+    await expect(
+      f.run(() => f.service.executeAuthorized(id, sessionId, call), ['agent']),
+    ).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+    expect(f.execute).not.toHaveBeenCalled();
+  });
+
+  it("looks only for the agent's own active, unended session", async () => {
+    const ended = fixture('ended', 1, 'prod', { authz: new AuthzService() });
+    await expect(
+      ended.run(() => ended.service.executeAuthorized(id, sessionId, call), ['agent']),
+    ).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+    expect(ended.execute).not.toHaveBeenCalled();
+    expect(ended.tx.session.findFirst.mock.calls[0]?.[0].where).toEqual({
+      id: sessionId,
+      tenantId,
+      userId,
+      state: 'active',
+      endedAt: null,
+      deletedAt: null,
+    });
+  });
 });
 
 describe('integration authoring execution fences', () => {

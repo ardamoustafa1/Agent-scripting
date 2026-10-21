@@ -5,7 +5,7 @@ import { exportJWK, generateKeyPair, SignJWT } from 'jose';
 import { pino } from 'pino';
 import { afterAll, beforeAll, describe, expect, inject, it, vi } from 'vitest';
 
-import { createAbility } from '@verbis/authz';
+import { buildRules, createAbility, SYSTEM_ROLES } from '@verbis/authz';
 import { DataSourceRefSchema, ScriptDocumentSchema } from '@verbis/script-schema';
 import { surveyScript } from '@verbis/script-schema/fixtures';
 
@@ -117,8 +117,14 @@ async function fixture(pci = false, testApp = app) {
     overrideTenant: TenantFixture = tenant,
     instance: NestFastifyApplication = testApp,
     ownTransactions = false,
+    agentOnly = false,
   ) {
-    const rules = [{ action: 'manage' as const, subject: 'all' as const }];
+    const rules = agentOnly
+      ? buildRules({
+          userId: overrideTenant.adminId,
+          grants: [{ rules: SYSTEM_ROLES.agent.rules, scope: {} }],
+        })
+      : [{ action: 'manage' as const, subject: 'all' as const }];
     return requestContext.run(
       {
         requestId: uuidv7(),
@@ -136,7 +142,7 @@ async function fixture(pci = false, testApp = app) {
         authz: {
           ability: createAbility(rules),
           rules,
-          roles: ['tenant_admin'],
+          roles: [agentOnly ? 'agent' : 'tenant_admin'],
           separationOfDuties: true,
         },
       },
@@ -517,8 +523,8 @@ describe('runtime PostgreSQL / Redis boundaries', () => {
   });
 });
 
-it('allows a concurrent writer during slow upstream I/O and rejects the fenced late result', async () => {
-  const f = await fixture();
+/** Pins a `lookup` REST source in the fixture's script and starts it as a live-data preview. */
+async function pinLookup(f: Awaited<ReturnType<typeof fixture>>) {
   const row = await owner.session.findUniqueOrThrow({
     where: { id: f.session.id },
     include: { scriptVersion: true },
@@ -553,6 +559,24 @@ it('allows a concurrent writer during slow upstream I/O and rejects the fenced l
       updatedBy: 'fixture',
     },
   });
+  return row;
+}
+const executed = {
+  value: { ok: true },
+  trace: {
+    request: null,
+    response: null,
+    mapped: null,
+    durationMs: 250,
+    cached: false,
+    mock: false,
+    error: null,
+  },
+};
+
+it('allows a concurrent writer during slow upstream I/O and rejects the fenced late result', async () => {
+  const f = await fixture();
+  const row = await pinLookup(f);
   const integration = app.get(IntegrationEngineService);
   let signalStarted!: () => void;
   const started = new Promise<void>((resolve) => {
@@ -566,18 +590,7 @@ it('allows a concurrent writer during slow upstream I/O and rejects the fenced l
     expect(requestContext.require().tx).toBeUndefined();
     signalStarted();
     await waiting;
-    return {
-      value: { ok: true },
-      trace: {
-        request: null,
-        response: null,
-        mapped: null,
-        durationMs: 250,
-        cached: false,
-        mock: false,
-        error: null,
-      },
-    };
+    return executed;
   });
   const pending = f.run(
     () =>
@@ -618,6 +631,62 @@ it('allows a concurrent writer during slow upstream I/O and rejects the fenced l
     await owner.auditEvent.count({
       where: { tenantId: f.tenant.tenantId, action: 'integration.datasource.executed' },
     }),
+  ).toBe(1);
+});
+
+it('lets an agent-only user call what its interaction script pins, while live previews stay an authoring operation (ADR-0056)', async () => {
+  const f = await fixture();
+  const row = await pinLookup(f);
+  const integration = app.get(IntegrationEngineService);
+  const spy = vi.spyOn(integration.executor, 'execute').mockResolvedValue(executed);
+  const call = () =>
+    f.run(
+      () =>
+        app
+          .get(AgentDesktopController)
+          .call(row.id, { ...f.claim, expectedSequence: 2, sourceId: 'lookup', input: {} }),
+      f.tenant,
+      app,
+      true,
+      true,
+    );
+  try {
+    // The agent role holds no integration-execute, which a live-data preview still needs.
+    await expect(call()).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+    expect(spy).not.toHaveBeenCalled();
+    const interaction = await owner.interaction.create({
+      data: {
+        tenantId: f.tenant.tenantId,
+        externalId: `conv-${uuidv7()}`,
+        channelType: 'voice',
+        direction: 'inbound',
+        status: 'connected',
+        agentId: f.tenant.adminId,
+        startedAt: new Date(),
+        createdBy: 'fixture',
+        updatedBy: 'fixture',
+      },
+    });
+    await owner.session.update({
+      where: { id: row.id },
+      data: { kind: 'interaction', interactionId: interaction.id },
+    });
+    await expect(call()).resolves.toMatchObject({ value: { ok: true } });
+    expect(spy).toHaveBeenCalledOnce();
+  } finally {
+    spy.mockRestore();
+  }
+  expect(
+    await owner.auditEvent.count({
+      where: {
+        tenantId: f.tenant.tenantId,
+        action: 'integration.datasource.executed',
+        outcome: 'success',
+      },
+    }),
+  ).toBe(1);
+  expect(
+    await owner.sessionEvent.count({ where: { sessionId: row.id, type: 'datasource.called' } }),
   ).toBe(1);
 });
 
