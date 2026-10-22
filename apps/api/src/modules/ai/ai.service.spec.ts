@@ -15,6 +15,7 @@ import type { OutboxWriter } from '../../infra/outbox/outbox.writer.js';
 import type { AuditService } from '../audit/audit.service.js';
 import type { AuthzService } from '../authz/authz.service.js';
 import type { EnvelopeVault } from '../integrations/engine/vault.js';
+import type { KnowledgeService } from '../knowledge/knowledge.service.js';
 import type { RuntimeEngineService } from '../runtime/runtime-engine.service.js';
 import type { TranscriptStore } from '../runtime/transcript.store.js';
 import type { ScriptsService } from '../scripts/scripts.service.js';
@@ -48,6 +49,7 @@ it('disabled tenant does not decrypt secrets or invoke a provider', async () => 
     {} as ScriptsService,
     { complete },
     { read: vi.fn().mockResolvedValue([]) } as unknown as TranscriptStore,
+    { retrieve: vi.fn().mockResolvedValue([]) } as unknown as KnowledgeService,
   );
   await requestContext.run(
     {
@@ -121,6 +123,7 @@ function enabledService(quotaAllowed = true, agentEnabled = false) {
   };
   const scripts = { authorizeRead: vi.fn().mockResolvedValue(undefined) };
   const transcripts = { read: vi.fn<TranscriptStore['read']>().mockResolvedValue([]) };
+  const knowledge = { retrieve: vi.fn<KnowledgeService['retrieve']>().mockResolvedValue([]) };
   const tx = {
     tenant: {
       findFirstOrThrow: vi.fn().mockResolvedValue({
@@ -179,8 +182,10 @@ function enabledService(quotaAllowed = true, agentEnabled = false) {
     scripts as unknown as ScriptsService,
     { complete },
     transcripts as unknown as TranscriptStore,
+    knowledge as unknown as KnowledgeService,
   );
   return {
+    knowledge,
     service,
     complete,
     audit,
@@ -768,5 +773,112 @@ describe('notices (ADR-0052 E5)', () => {
     await expect(ask(setup({ noticeIds: ['invented'], reason: 'x' }))).rejects.toMatchObject({
       code: 'VERBIS_AI_OUTPUT',
     });
+  });
+});
+
+describe('answer from the knowledge base (ADR-0057)', () => {
+  const article = (key: string, body: string) => ({
+    id: '00000000-0000-7000-8000-0000000000a1',
+    key,
+    title: `Synthetic ${key}`,
+    body,
+    tags: [],
+    locale: 'tr',
+    status: 'published',
+    publishedAt: new Date('2026-10-22T10:00:00.000Z'),
+    createdAt: new Date('2026-10-22T10:00:00.000Z'),
+    createdBy: 'user:fixture',
+    updatedAt: new Date('2026-10-22T10:00:00.000Z'),
+    updatedBy: 'user:fixture',
+    version: 1,
+  });
+  const setup = (output: unknown, articles = [article('refund-policy', 'Iade 14 gun icinde.')]) => {
+    const f = enabledService(true, true);
+    f.row.interaction.channelType = 'voice';
+    f.knowledge.retrieve.mockResolvedValue(articles);
+    vi.mocked(postJson).mockImplementation((_url, _addresses, body) =>
+      Promise.resolve({ text: (body as { text: string }).text, count: 0, complete: true }),
+    );
+    f.complete.mockResolvedValue({ text: JSON.stringify(output), inputTokens: 8, outputTokens: 4 });
+    return f;
+  };
+  const ask = (f: ReturnType<typeof enabledService>, text = 'Iade suresi ne kadar?') =>
+    requestContext.run(context, () =>
+      f.service.generate(
+        AiRequestSchema.parse({
+          requestId: request().requestId,
+          task: 'answer',
+          text,
+          sessionId: context.principal.id,
+        }),
+      ),
+    );
+
+  it('sends only the question and the retrieved articles, then returns a cited suggestion', async () => {
+    const f = setup({ answer: '14 gun', articleKeys: ['refund-policy'], reason: 'Stated' });
+    await expect(ask(f)).resolves.toMatchObject({
+      task: 'answer',
+      requiresHumanApproval: true,
+      value: { answer: '14 gun', articleKeys: ['refund-policy'] },
+    });
+    expect(f.knowledge.retrieve).toHaveBeenCalledWith(
+      f.tx,
+      '00000000-0000-7000-8000-000000000001',
+      'Iade suresi ne kadar?',
+      5,
+    );
+    const sent = (vi.mocked(postJson).mock.calls.at(-1)![2] as { text: string }).text;
+    expect(sent).toContain('articleChoices');
+    expect(sent).toContain('Iade 14 gun icinde.');
+    // A voice call needs no transcript for this task, and none is read or sent.
+    expect(f.transcripts.read).not.toHaveBeenCalled();
+    expect(sent).not.toContain('Synthetic customer transcript');
+    expect(JSON.stringify(f.audit.record.mock.calls)).not.toContain('Iade suresi');
+  });
+
+  it('answers "not found" without a model call or spend when nothing matches', async () => {
+    const f = setup({}, []);
+    await expect(ask(f)).resolves.toMatchObject({
+      value: { answer: null, articleKeys: [] },
+      inputTokens: 0,
+      outputTokens: 0,
+    });
+    expect(f.complete).not.toHaveBeenCalled();
+    expect(f.tx.$executeRaw).not.toHaveBeenCalled();
+  });
+
+  it('refuses a key outside the retrieved articles and hides an uncited answer', async () => {
+    await expect(
+      ask(setup({ answer: 'x', articleKeys: ['invented'], reason: 'x' })),
+    ).rejects.toMatchObject({ code: 'VERBIS_AI_OUTPUT' });
+    await expect(
+      ask(setup({ answer: 'Guess', articleKeys: [], reason: 'Not in the articles' })),
+    ).resolves.toMatchObject({ value: { answer: null, articleKeys: [] } });
+  });
+
+  it('bounds the article text sent to the model', async () => {
+    const long = Array.from({ length: 5 }, (_, i) =>
+      article(`long-${String(i)}`, 'a '.repeat(5_000)),
+    );
+    const f = setup({ answer: null, articleKeys: [], reason: 'x' }, long);
+    await ask(f);
+    const sent = JSON.parse(
+      (vi.mocked(postJson).mock.calls.at(-1)![2] as { text: string }).text,
+    ) as { articleChoices: { text: string }[] };
+    expect(sent.articleChoices.map((choice) => choice.text.length)).toEqual([4_000, 4_000, 4_000]);
+  });
+
+  it('needs a question, the agent switch and a session in a working state', async () => {
+    await expect(ask(setup({}), '   ')).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+    await expect(ask(setup({}), 'x'.repeat(501))).rejects.toMatchObject({
+      code: 'VERBIS_AUTHZ_FORBIDDEN',
+    });
+    const ended = setup({});
+    ended.row.state = 'completed';
+    await expect(ask(ended)).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+    const off = setup({});
+    off.config.agentEnabled = false;
+    await expect(ask(off)).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+    for (const f of [ended, off]) expect(f.complete).not.toHaveBeenCalled();
   });
 });
