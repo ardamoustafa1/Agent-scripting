@@ -84,3 +84,25 @@ export const genericWebhookMapper = defineMapper<GenericWebhookPayload>({
     ...(p.interaction.context === undefined ? {} : { context: p.interaction.context }),
   }),
 });
+
+/**
+ * Live speech-to-text line for an interaction this webhook already reported (ADR-0052). Same HMAC
+ * signature as lifecycle events; text only, never audio.
+ */
+export const GenericWebhookTranscriptSchema = z.strictObject({
+  id: z
+    .string()
+    .min(1)
+    .max(128)
+    .regex(/^[A-Za-z0-9._:-]+$/),
+  type: z.literal('transcript.segment'),
+  occurred_at: z.iso.datetime({ offset: true }),
+  interaction_id: z.string().min(1).max(256),
+  speaker: z.enum(['customer', 'agent']),
+  text: z.string().max(2_000),
+  final: z.boolean().default(true),
+  language: z
+    .string()
+    .regex(/^[a-z]{2}(-[A-Z]{2})?$/)
+    .optional(),
+});

@@ -1,4 +1,8 @@
-import { ConnectorError, type InteractionEvent } from '@verbis/sdk-connector';
+import {
+  ConnectorError,
+  type InteractionEvent,
+  type TranscriptSegment,
+} from '@verbis/sdk-connector';
 
 import type {
   ConnectorHealthReport,
@@ -18,7 +22,9 @@ export class FakeVerbisApi implements VerbisApi {
   readonly ingested: { connectorId: string; event: InteractionEvent }[] = [];
   readonly launches: { connectorId: string; interactionId: string; userId: string }[] = [];
   readonly health: { connectorId: string; report: ConnectorHealthReport }[] = [];
+  readonly transcripts: { connectorId: string; segment: TranscriptSegment }[] = [];
   failIngest = 0;
+  failTranscript = 0;
   readonly #ids = new Map<string, string>();
 
   tenantSlugs() {
@@ -52,6 +58,14 @@ export class FakeVerbisApi implements VerbisApi {
       event.type === 'transferred' ? (event.transferTo ?? event.agent) : event.agent;
     const agentId = platformUser === undefined ? null : (this.users[platformUser.id] ?? null);
     return Promise.resolve({ interactionId, agentId, status: event.type });
+  }
+  transcript(_slug: string, connectorId: string, segment: TranscriptSegment) {
+    if (this.failTranscript > 0) {
+      this.failTranscript -= 1;
+      return Promise.reject(new ConnectorError('API responded 503', 'http_503', true));
+    }
+    this.transcripts.push({ connectorId, segment });
+    return Promise.resolve({ accepted: true });
   }
   createLaunchIntent(
     _slug: string,

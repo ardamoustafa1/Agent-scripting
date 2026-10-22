@@ -220,3 +220,74 @@ describe('EventPipeline', () => {
     expect(store.records).toHaveLength(1);
   });
 });
+
+describe('EventPipeline transcript segments', () => {
+  const segment = (segmentId: string, pid = 'v1') => ({
+    segmentId,
+    platformInteractionId: pid,
+    speaker: 'customer' as const,
+    text: 'iptal etmek istiyorum',
+    final: true,
+    occurredAt: '2026-10-22T10:00:00.000Z',
+  });
+  const stored = async (store: DeadLetterStore) => {
+    const items: PipelineItem[] = [];
+    await store.replay(TENANT_ID, 10, (item) => items.push(item));
+    return items;
+  };
+  const offerSegment = (pipeline: EventPipeline, segmentId: string, pid?: string) => {
+    pipeline.offerTranscript({
+      slug: TENANT_SLUG,
+      tenantId: TENANT_ID,
+      connectorId: CONNECTOR,
+      segment: segment(segmentId, pid),
+    });
+  };
+
+  it('delivers segments in order per interaction and retries outages', async () => {
+    const { api, pipeline } = setup();
+    api.failTranscript = 2;
+    for (const id of ['s1', 's2', 's3']) offerSegment(pipeline, id);
+    offerSegment(pipeline, 'x1', 'v2');
+    await pipeline.drain();
+    expect(
+      api.transcripts
+        .filter((t) => t.segment.platformInteractionId === 'v1')
+        .map((t) => t.segment.segmentId),
+    ).toEqual(['s1', 's2', 's3']);
+    expect(api.transcripts).toHaveLength(4);
+    expect(pipeline.transcriptStats().retried).toBe(2);
+    expect(api.ingested).toEqual([]);
+  });
+
+  it('drops a segment after three attempts and never dead-letters its text', async () => {
+    const store = new MemoryDeadLetterStore();
+    const { api, pipeline } = setup(store);
+    api.failTranscript = 3;
+    offerSegment(pipeline, 's1');
+    await pipeline.drain();
+    expect(api.transcripts).toEqual([]);
+    expect(pipeline.transcriptStats().deadLettered).toBe(1);
+    expect(pipeline.deadLetterStats().persisted).toBe(0);
+    expect(await stored(store)).toEqual([]);
+  });
+
+  it('applies backpressure and discards undelivered speech on shutdown', async () => {
+    const api = new FakeVerbisApi();
+    const store = new MemoryDeadLetterStore();
+    const pipeline = new EventPipeline(api, {
+      capacity: 1,
+      concurrency: 1,
+      sleep: () => new Promise(() => undefined),
+      deadLetters: store,
+    });
+    api.failTranscript = 1;
+    offerSegment(pipeline, 's1');
+    expect(() => {
+      offerSegment(pipeline, 's2');
+    }).toThrow(BackpressureError);
+    pipeline.close();
+    await pipeline.persistPendingAndClose();
+    expect(await stored(store)).toEqual([]);
+  });
+});

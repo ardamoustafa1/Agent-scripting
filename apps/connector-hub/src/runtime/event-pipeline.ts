@@ -4,7 +4,12 @@ import { Logger } from '@nestjs/common';
 import { context, type Context } from '@opentelemetry/api';
 
 import { instruments, inSpan } from '@verbis/observability';
-import { ConnectorError, type ChannelType, type InteractionEvent } from '@verbis/sdk-connector';
+import {
+  ConnectorError,
+  type ChannelType,
+  type InteractionEvent,
+  type TranscriptSegment,
+} from '@verbis/sdk-connector';
 
 import { AgentWorkload } from './agent-workload.js';
 import {
@@ -30,6 +35,14 @@ export interface PipelineItem {
   readonly maxConcurrent: Partial<Record<ChannelType, number>>;
 }
 
+/** A live transcript segment on its way to the API (ADR-0052). */
+export interface TranscriptItem {
+  readonly slug: string;
+  readonly tenantId: string;
+  readonly connectorId: string;
+  readonly segment: TranscriptSegment;
+}
+
 /**
  * Normalized event → API (interaction upsert + user mapping) → launch intent for the mapped agent
  * when the interaction becomes connected. Each (interaction, agent) pair launches once, so an
@@ -39,6 +52,8 @@ export interface PipelineItem {
 export class EventPipeline {
   readonly #logger = new Logger(EventPipeline.name);
   readonly #queue: DeliveryQueue<PipelineItem>;
+  /** Speech is ephemeral: its own queue, never dead-lettered with its text. */
+  readonly #transcripts: DeliveryQueue<TranscriptItem>;
   readonly #contexts = new WeakMap<PipelineItem, Context>();
   readonly sampleDepth = (result: { observe(value: number): void }) => {
     result.observe(this.#queue.stats().depth);
@@ -77,12 +92,46 @@ export class EventPipeline {
       },
       ...(options.sleep === undefined ? {} : { sleep: options.sleep }),
     });
+    this.#transcripts = new DeliveryQueue<TranscriptItem>({
+      capacity: options.capacity,
+      concurrency: options.concurrency,
+      maxAttempts: 3,
+      key: (item) => `${item.connectorId}:${item.segment.platformInteractionId}`,
+      handle: async (item) => {
+        await inSpan('connector.transcript.deliver', () =>
+          this.api.transcript(item.slug, item.connectorId, item.segment),
+        );
+      },
+      onDeadLetter: (item, error, reason) => {
+        const errorName =
+          error instanceof ConnectorError
+            ? error.code
+            : error instanceof Error
+              ? error.name
+              : 'none';
+        instruments.operationFailures.add(1, { operation: 'connector.transcript.deliver' });
+        // Ids only: the segment text is personal data.
+        this.#logger.warn(
+          `Dropped transcript segment ${item.segment.segmentId} (connector ${item.connectorId}, ${reason}: ${errorName})`,
+        );
+      },
+      ...(options.sleep === undefined ? {} : { sleep: options.sleep }),
+    });
   }
 
   /** Throws BackpressureError when full; the connector must push back on its platform. */
   offer(item: PipelineItem): void {
     this.#contexts.set(item, context.active());
     this.#queue.offer(item);
+  }
+
+  /** Same backpressure rule as `offer`; ordered per interaction. */
+  offerTranscript(item: TranscriptItem): void {
+    this.#transcripts.offer(item);
+  }
+
+  transcriptStats(): QueueStats {
+    return this.#transcripts.stats();
   }
 
   stats(): QueueStats {
@@ -97,13 +146,14 @@ export class EventPipeline {
     };
   }
 
-  drain(): Promise<void> {
-    return this.#queue.drain();
+  async drain(): Promise<void> {
+    await Promise.all([this.#queue.drain(), this.#transcripts.drain()]);
   }
 
   close(): void {
     instruments.connectorQueue.removeCallback(this.sampleDepth);
     this.#queue.close();
+    this.#transcripts.close();
   }
 
   /** Re-offers a tenant's dead letters (bounded by `limit` and by queue backpressure). */
@@ -119,6 +169,8 @@ export class EventPipeline {
    */
   async persistPendingAndClose(): Promise<void> {
     for (const item of this.#queue.takePending()) this.#deadLetter(item, 'shutdown', undefined);
+    // Undelivered speech is dropped, not persisted (ADR-0052).
+    this.#transcripts.takePending();
     await Promise.allSettled([...this.#pendingWrites]);
     await this.#deadLetters.close();
   }

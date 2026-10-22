@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import { signWebhook } from '@verbis/sdk-connector';
-import { runConnectorContract, startHarness } from '@verbis/sdk-connector/testing';
+import {
+  runConnectorContract,
+  startHarness,
+  type ContractSubject,
+} from '@verbis/sdk-connector/testing';
 
 import { loadInvalid, loadScenario } from '../../test/scenario.js';
 
@@ -36,6 +40,53 @@ const sign = (payload: unknown) => {
   };
 };
 const invalid = loadInvalid(new URL('./fixtures/invalid.json', import.meta.url));
+const lifecycle = (id: string, type: string, second: number) => ({
+  id,
+  type,
+  occurred_at: `2026-10-01T10:05:0${String(second)}.000Z`,
+  interaction: { id: 'call-2001', channel: 'voice', agent: { id: 'agent-009' } },
+});
+const segment = (id: string, second: number, extra: Record<string, unknown> = {}) => ({
+  id,
+  type: 'transcript.segment',
+  occurred_at: `2026-10-01T10:05:0${String(second)}.000Z`,
+  interaction_id: 'call-2001',
+  speaker: 'customer',
+  text: 'Faturamda bir hata var.',
+  ...extra,
+});
+const transcriptFixtures: ContractSubject['transcriptFixtures'] = [
+  { name: 'offered', payload: lifecycle('call-2001-e1', 'interaction.offered', 0), expected: [] },
+  {
+    name: 'speech before connect is ignored',
+    payload: segment('seg-0', 1),
+    expected: [],
+  },
+  {
+    name: 'connected',
+    payload: lifecycle('call-2001-e2', 'interaction.connected', 2),
+    expected: [],
+  },
+  {
+    name: 'final customer line',
+    payload: segment('seg-1', 3, { language: 'tr' }),
+    expected: [
+      {
+        segmentId: 'seg-1',
+        platformInteractionId: 'call-2001',
+        speaker: 'customer',
+        text: 'Faturamda bir hata var.',
+        final: true,
+        language: 'tr',
+      },
+    ],
+  },
+  {
+    name: 'interim agent line',
+    payload: segment('seg-2', 4, { speaker: 'agent', text: 'Hemen bakıyorum', final: false }),
+    expected: [{ segmentId: 'seg-2', speaker: 'agent', final: false }],
+  },
+];
 
 for (const file of ['voice-call.json', 'chat-transfer.json', 'email.json']) {
   const scenario = loadScenario(new URL(`./fixtures/${file}`, import.meta.url));
@@ -47,6 +98,7 @@ for (const file of ['voice-call.json', 'chat-transfer.json', 'email.json']) {
     fixtures: scenario.fixtures,
     invalidPayloads: invalid,
     participant: scenario.participant,
+    transcriptFixtures,
     ingest: async (connector, payload) => {
       const { body, signature } = sign(payload);
       await (connector as GenericWebhookConnector).handleWebhook(body, signature);
@@ -156,5 +208,46 @@ describe('generic webhook transport', () => {
       await connector.handleWebhook(body, signature);
     }
     expect(harness.events.map((e) => e.type)).toEqual(['interactionOffered', 'ended']);
+  });
+});
+
+describe('generic webhook transcript segments', () => {
+  const subject = {
+    name: 'gw-transcript',
+    create,
+    config,
+    secrets,
+    fixtures: [],
+    invalidPayloads: [],
+    participant: { platformUserId: 'x', platformInteractionId: 'y' },
+    ingest: () => Promise.resolve(),
+  };
+
+  it('rejects malformed or blank segments and needs a valid signature', async () => {
+    const harness = await startHarness(subject, () => NOW);
+    const connector = harness.connector as GenericWebhookConnector;
+    for (const payload of [
+      segment('seg-x', 1, { text: '   ' }),
+      segment('seg-x', 1, { speaker: 'bot' }),
+      segment('seg-x', 1, { audio: 'AAAA' }),
+      { ...segment('seg-x', 1), interaction_id: undefined },
+    ])
+      await expect(connector.ingest(payload)).rejects.toThrow(/payload rejected/i);
+    const { body } = sign(segment('seg-x', 1));
+    await expect(connector.handleWebhook(body, 'v1,t=0,bad')).rejects.toBeInstanceOf(
+      WebhookSignatureError,
+    );
+    expect(harness.transcripts).toEqual([]);
+  });
+
+  it('stops forwarding speech once the interaction ended', async () => {
+    const harness = await startHarness(subject, () => NOW);
+    const connector = harness.connector as GenericWebhookConnector;
+    await connector.ingest(lifecycle('call-2001-e1', 'interaction.offered', 0));
+    await connector.ingest(lifecycle('call-2001-e2', 'interaction.connected', 1));
+    expect(await connector.ingest(segment('seg-1', 2))).toBe(1);
+    await connector.ingest(lifecycle('call-2001-e3', 'interaction.ended', 3));
+    expect(await connector.ingest(segment('seg-2', 4))).toBe(0);
+    expect(harness.transcripts.map((t) => t.segmentId)).toEqual(['seg-1']);
   });
 });

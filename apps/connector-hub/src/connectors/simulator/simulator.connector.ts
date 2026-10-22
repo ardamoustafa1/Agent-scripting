@@ -16,6 +16,7 @@ import {
   type ConnectorHealth,
   type InteractionEventInput,
   type InteractionEventType,
+  type TranscriptSegment,
   type WrapUp,
 } from '@verbis/sdk-connector';
 
@@ -48,8 +49,19 @@ export const SimCreateSchema = z.strictObject({
   autoConnect: z.boolean().default(false),
 });
 export const SimActionSchema = z.strictObject({
-  action: z.enum(['connect', 'hold', 'resume', 'transfer', 'customerMessage', 'wrapup', 'end']),
+  action: z.enum([
+    'connect',
+    'hold',
+    'resume',
+    'transfer',
+    'customerMessage',
+    'utterance',
+    'wrapup',
+    'end',
+  ]),
   message: z.string().max(8_000).optional(),
+  /** `utterance`: who said `message` (a spoken line of the live transcript, ADR-0052). */
+  speaker: z.enum(['customer', 'agent']).optional(),
   transferToPlatformUserId: z.string().min(1).max(256).optional(),
 });
 
@@ -178,7 +190,13 @@ export class SimulatorConnector implements Connector {
   readonly kind = 'simulator';
   readonly capabilities = {
     channels: CHANNEL_TYPES,
-    features: ['writeBack', 'wrapUpCodes', 'recordingControl', 'transferContext'] as const,
+    features: [
+      'writeBack',
+      'wrapUpCodes',
+      'recordingControl',
+      'transferContext',
+      'liveTranscript',
+    ] as const,
     maxConcurrent: { chat: 3, email: 2, sms: 3, whatsapp: 3, social: 3 },
   };
   readonly configSchema = SimulatorConfigSchema;
@@ -273,6 +291,11 @@ export class SimulatorConnector implements Connector {
         this.#state.record(event);
         accepted += 1;
       }
+      const spoken = this.#utterance(payload);
+      if (spoken !== null) {
+        await ctx.emitTranscript(spoken);
+        accepted += 1;
+      }
     } catch (error) {
       // Refused downstream (backpressure): undo the simulated platform change so a retry re-emits.
       if (typeof pid === 'string') {
@@ -307,6 +330,24 @@ export class SimulatorConnector implements Connector {
   }
 
   // ─── internals ──────────────────────────────────────────────────────────────
+
+  /** A spoken line on a connected simulated call becomes one final transcript segment. */
+  #utterance(payload: unknown): TranscriptSegment | null {
+    const parsed = SimPayloadSchema.safeParse(payload);
+    if (!parsed.success || parsed.data.op !== 'action') return null;
+    const { input, platformInteractionId, requestId, at } = parsed.data;
+    const text = input.message?.trim() ?? '';
+    if (input.action !== 'utterance' || text === '') return null;
+    if (this.#interactions.get(platformInteractionId)?.status !== 'connected') return null;
+    return {
+      segmentId: `sim-${requestId}`.slice(0, 128),
+      platformInteractionId,
+      speaker: input.speaker ?? 'customer',
+      text: text.slice(0, 2_000),
+      final: true,
+      occurredAt: at,
+    };
+  }
 
   #apply(payload: SimPayload): InteractionEventInput | null {
     if (payload.op === 'create') {
@@ -349,6 +390,8 @@ export class SimulatorConnector implements Connector {
       resume: 'resumed',
       transfer: 'transferred',
       customerMessage: interaction.status === 'connected' ? 'connected' : null,
+      // Speech is not a lifecycle change; `ingest` emits it as a transcript segment.
+      utterance: null,
       wrapup: 'wrapupRequired',
       end: 'ended',
     };

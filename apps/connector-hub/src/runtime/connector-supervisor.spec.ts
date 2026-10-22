@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { type SimulatorConnector } from '../connectors/simulator/simulator.connector.js';
 import { FakeVerbisApi, TENANT_ID } from '../test/fake-api.js';
 
 import { ConnectorSupervisor } from './connector-supervisor.js';
@@ -36,7 +37,7 @@ function setup(simulatorEnabled = true) {
     refreshIntervalMs: 60_000,
     random: () => 0,
   });
-  return { api, supervisor };
+  return { api, supervisor, pipeline };
 }
 
 describe('ConnectorSupervisor', () => {
@@ -104,6 +105,37 @@ describe('ConnectorSupervisor', () => {
     expect(supervisor.byId(SIM)?.connector).not.toBe(before);
     expect(supervisor.byId(WEBHOOK)?.state).toBe('stopped');
     expect(supervisor.byId(OTHER)).toBeUndefined();
+    await supervisor.shutdown();
+  });
+});
+
+describe('ConnectorSupervisor transcript segments', () => {
+  it("forwards a declared connector's speech and refuses it without the feature", async () => {
+    const { api, supervisor, pipeline } = setup();
+    await supervisor.sync();
+    const simulator = supervisor.byId(SIM)?.connector as SimulatorConnector;
+    const call = await simulator.create({
+      channel: 'voice',
+      agentPlatformUserId: 'agent-1',
+      autoConnect: true,
+    });
+    await simulator.act(call.platformInteractionId, {
+      action: 'utterance',
+      message: 'İptal etmek istiyorum',
+    });
+    await pipeline.drain();
+    expect(api.transcripts.map((t) => [t.connectorId, t.segment.text, t.segment.final])).toEqual([
+      [SIM, 'İptal etmek istiyorum', true],
+    ]);
+
+    Object.assign(simulator, {
+      capabilities: { ...simulator.capabilities, features: ['writeBack'] },
+    });
+    await expect(
+      simulator.act(call.platformInteractionId, { action: 'utterance', message: 'Tekrar' }),
+    ).rejects.toThrow('liveTranscript is not declared');
+    await pipeline.drain();
+    expect(api.transcripts).toHaveLength(1);
     await supervisor.shutdown();
   });
 });

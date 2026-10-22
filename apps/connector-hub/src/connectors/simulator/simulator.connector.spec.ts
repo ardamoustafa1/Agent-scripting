@@ -1,20 +1,89 @@
 import { describe, expect, it } from 'vitest';
 
 import { ConnectorError } from '@verbis/sdk-connector';
-import { runConnectorContract, startHarness } from '@verbis/sdk-connector/testing';
+import {
+  runConnectorContract,
+  startHarness,
+  type ContractSubject,
+} from '@verbis/sdk-connector/testing';
 
 import { loadInvalid, loadScenario } from '../../test/scenario.js';
 
 import { SimulatorConnector } from './simulator.connector.js';
 
 const scenario = loadScenario(new URL('./fixtures/chat-lifecycle.json', import.meta.url));
-const subject = {
+const subject: ContractSubject & { create: () => SimulatorConnector } = {
   name: `simulator / ${scenario.name}`,
   create: () => new SimulatorConnector(),
   config: { kind: 'simulator' },
   fixtures: scenario.fixtures,
   invalidPayloads: loadInvalid(new URL('./fixtures/invalid.json', import.meta.url)),
   participant: scenario.participant,
+  transcriptFixtures: [
+    {
+      name: 'create a call for speech',
+      payload: {
+        op: 'create',
+        requestId: 'speech-create',
+        at: '2026-10-22T10:00:00.000Z',
+        platformInteractionId: 'sim-speech-1',
+        input: { channel: 'voice', agentPlatformUserId: 'agent-7', autoConnect: false },
+      },
+      expected: [],
+    },
+    {
+      name: 'speech before the call is connected is ignored',
+      payload: {
+        op: 'action',
+        requestId: 'speech-early',
+        at: '2026-10-22T10:00:01.000Z',
+        platformInteractionId: 'sim-speech-1',
+        input: { action: 'utterance', message: 'Alo?' },
+      },
+      expected: [],
+    },
+    {
+      name: 'connect',
+      payload: {
+        op: 'action',
+        requestId: 'speech-connect',
+        at: '2026-10-22T10:00:02.000Z',
+        platformInteractionId: 'sim-speech-1',
+        input: { action: 'connect' },
+      },
+      expected: [],
+    },
+    {
+      name: 'customer line',
+      payload: {
+        op: 'action',
+        requestId: 'speech-1',
+        at: '2026-10-22T10:00:03.000Z',
+        platformInteractionId: 'sim-speech-1',
+        input: { action: 'utterance', message: ' Aboneliğimi iptal etmek istiyorum. ' },
+      },
+      expected: [
+        {
+          segmentId: 'sim-speech-1',
+          platformInteractionId: 'sim-speech-1',
+          speaker: 'customer',
+          text: 'Aboneliğimi iptal etmek istiyorum.',
+          final: true,
+        },
+      ],
+    },
+    {
+      name: 'agent line',
+      payload: {
+        op: 'action',
+        requestId: 'speech-2',
+        at: '2026-10-22T10:00:04.000Z',
+        platformInteractionId: 'sim-speech-1',
+        input: { action: 'utterance', speaker: 'agent', message: 'Size yardımcı olayım.' },
+      },
+      expected: [{ speaker: 'agent', text: 'Size yardımcı olayım.' }],
+    },
+  ],
   ingest: async (connector: unknown, payload: unknown) => {
     await (connector as SimulatorConnector).ingest(payload);
   },

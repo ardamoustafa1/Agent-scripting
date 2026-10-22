@@ -3,6 +3,9 @@ import { Logger } from '@nestjs/common';
 import {
   backoffDelay,
   BackpressureError,
+  ConnectorError,
+  supportsFeature,
+  TranscriptSegmentSchema,
   type Connector,
   type ConnectorContext,
   type ConnectorHealth,
@@ -256,6 +259,31 @@ export class ConnectorSupervisor {
             connectorId: instance.connectorId,
             event,
             maxConcurrent,
+          });
+          return Promise.resolve();
+        } catch (error) {
+          return Promise.reject(
+            error instanceof BackpressureError ? error : new BackpressureError('queue unavailable'),
+          );
+        }
+      },
+      emitTranscript: (segment) => {
+        const connector = instance.connector;
+        if (connector === undefined || !supportsFeature(connector.capabilities, 'liveTranscript'))
+          return Promise.reject(
+            new ConnectorError('liveTranscript is not declared', 'feature_unsupported', false),
+          );
+        const parsed = TranscriptSegmentSchema.safeParse(segment);
+        if (!parsed.success)
+          return Promise.reject(
+            new ConnectorError('Transcript segment rejected', 'payload_rejected', false),
+          );
+        try {
+          this.pipeline.offerTranscript({
+            slug: instance.slug,
+            tenantId: instance.tenantId,
+            connectorId: instance.connectorId,
+            segment: parsed.data,
           });
           return Promise.resolve();
         } catch (error) {

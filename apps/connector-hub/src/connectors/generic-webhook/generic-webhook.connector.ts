@@ -4,6 +4,7 @@ import {
   CommandNotSupportedError,
   ConnectorError,
   mapPlatformEvent,
+  PayloadRejectedError,
   signWebhook,
   verifyWebhook,
   type Attributes,
@@ -16,7 +17,7 @@ import {
 
 import { InteractionState } from '../interaction-state.js';
 
-import { genericWebhookMapper } from './mapper.js';
+import { GenericWebhookTranscriptSchema, genericWebhookMapper } from './mapper.js';
 
 export const GenericWebhookConfigSchema = z.strictObject({
   kind: z.literal('webhook'),
@@ -60,7 +61,7 @@ export class GenericWebhookConnector implements Connector {
   readonly kind = 'webhook';
   readonly capabilities = {
     channels: ['voice', 'chat', 'email', 'sms', 'whatsapp', 'social', 'video', 'callback'] as const,
-    features: ['writeBack', 'wrapUpCodes', 'transferContext'] as const,
+    features: ['writeBack', 'wrapUpCodes', 'transferContext', 'liveTranscript'] as const,
     maxConcurrent: { chat: 3, email: 2, sms: 3, whatsapp: 3, social: 3 },
   };
   readonly configSchema = GenericWebhookConfigSchema;
@@ -123,6 +124,8 @@ export class GenericWebhookConnector implements Connector {
   /** Maps and emits; returns the number of events accepted. */
   async ingest(payload: unknown): Promise<number> {
     const ctx = this.#require();
+    if ((payload as { type?: unknown } | null)?.type === 'transcript.segment')
+      return this.#transcript(ctx, payload);
     let accepted = 0;
     for (const event of mapPlatformEvent(genericWebhookMapper, payload)) {
       if (!this.#state.accepts(event)) continue;
@@ -132,6 +135,27 @@ export class GenericWebhookConnector implements Connector {
       accepted += 1;
     }
     return accepted;
+  }
+
+  /** A spoken line of a live interaction; lines of unknown or finished ones are ignored. */
+  async #transcript(ctx: ConnectorContext, payload: unknown): Promise<number> {
+    const parsed = GenericWebhookTranscriptSchema.safeParse(payload);
+    if (!parsed.success || parsed.data.text.trim() === '')
+      throw new PayloadRejectedError('generic-webhook transcript segment');
+    const line = parsed.data;
+    const status = this.#state.status(line.interaction_id);
+    if (status !== 'connected' && status !== 'held') return 0;
+    await ctx.emitTranscript({
+      segmentId: line.id,
+      platformInteractionId: line.interaction_id,
+      speaker: line.speaker,
+      text: line.text,
+      final: line.final,
+      occurredAt: line.occurred_at,
+      ...(line.language === undefined ? {} : { language: line.language }),
+    });
+    this.#lastEventAt = ctx.now();
+    return 1;
   }
 
   writeAttributes(target: CommandTarget, attributes: Attributes): Promise<void> {

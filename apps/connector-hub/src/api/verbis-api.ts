@@ -4,7 +4,11 @@ import { request as httpsRequest } from 'node:https';
 
 import { z } from 'zod';
 
-import { ConnectorError, type InteractionEvent } from '@verbis/sdk-connector';
+import {
+  ConnectorError,
+  type InteractionEvent,
+  type TranscriptSegment,
+} from '@verbis/sdk-connector';
 
 import type { HubEnv } from '../env.js';
 
@@ -37,6 +41,12 @@ export interface VerbisApi {
   resolveSecrets(slug: string, connectorId: string): Promise<Record<string, string>>;
   reportHealth(slug: string, connectorId: string, report: ConnectorHealthReport): Promise<void>;
   ingest(slug: string, connectorId: string, event: InteractionEvent): Promise<IngestResult>;
+  /** Live transcript segment (ADR-0052); `accepted: false` when the tenant has not opted in. */
+  transcript(
+    slug: string,
+    connectorId: string,
+    segment: TranscriptSegment,
+  ): Promise<{ accepted: boolean }>;
   createLaunchIntent(
     slug: string,
     input: { connectorId: string; interactionId: string; userId: string },
@@ -127,6 +137,20 @@ export class HttpVerbisApi implements VerbisApi {
       },
     );
     return IngestResultSchema.parse(body);
+  }
+
+  async transcript(
+    slug: string,
+    connectorId: string,
+    segment: TranscriptSegment,
+  ): Promise<{ accepted: boolean }> {
+    const body = await this.json(
+      slug,
+      'POST',
+      `/v1/connector-hub/connectors/${connectorId}/transcript-segments`,
+      { segment },
+    );
+    return z.object({ accepted: z.boolean() }).parse(body);
   }
 
   async createLaunchIntent(
