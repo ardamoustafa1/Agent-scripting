@@ -6,6 +6,8 @@ export const CONNECTOR_FEATURES = [
   'wrapUpCodes',
   'recordingControl',
   'transferContext',
+  /** Emits live speech-to-text segments with `ctx.emitTranscript` (ADR-0052). */
+  'liveTranscript',
 ] as const;
 export type ConnectorFeature = (typeof CONNECTOR_FEATURES)[number];
 

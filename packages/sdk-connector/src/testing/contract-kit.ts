@@ -11,6 +11,7 @@ import {
 } from '../connector.js';
 import { CommandNotSupportedError, PayloadRejectedError } from '../errors.js';
 import { InteractionEventSchema, type InteractionEvent } from '../interaction.js';
+import { TranscriptSegmentSchema, type TranscriptSegment } from '../transcript.js';
 
 /** A recorded platform payload and the normalized events it must produce. */
 export interface ConnectorFixture {
@@ -34,11 +35,18 @@ export interface ContractSubject {
   ingest(connector: Connector, payload: unknown): Promise<void>;
   /** After all fixtures were ingested: a pair that must verify, from the fixtures. */
   readonly participant: { readonly platformUserId: string; readonly platformInteractionId: string };
+  /** Payloads that carry speech-to-text; required when the connector declares `liveTranscript`. */
+  readonly transcriptFixtures?: readonly {
+    readonly name: string;
+    readonly payload: unknown;
+    readonly expected: readonly Partial<TranscriptSegment>[];
+  }[];
 }
 
 export interface TestHarness {
   readonly connector: Connector;
   readonly events: InteractionEvent[];
+  readonly transcripts: TranscriptSegment[];
   readonly logs: { level: string; message: string; fields?: Record<string, unknown> }[];
   setBackpressure(on: boolean): void;
 }
@@ -51,6 +59,7 @@ export async function startHarness(
   // Bind cleanup to the current test, including concurrent contract runs and assertion failures.
   onTestFinished(() => connector.shutdown());
   const events: InteractionEvent[] = [];
+  const transcripts: TranscriptSegment[] = [];
   const logs: TestHarness['logs'] = [];
   let backpressure = false;
   const log =
@@ -77,11 +86,19 @@ export async function startHarness(
       events.push(InteractionEventSchema.parse(event));
       return Promise.resolve();
     },
+    emitTranscript: (segment) => {
+      if (!supportsFeature(connector.capabilities, 'liveTranscript'))
+        return Promise.reject(new Error('liveTranscript is not declared'));
+      if (backpressure) return Promise.reject(new BackpressureError('queue full'));
+      transcripts.push(TranscriptSegmentSchema.parse(segment));
+      return Promise.resolve();
+    },
   };
   await connector.init(ctx);
   return {
     connector,
     events,
+    transcripts,
     logs,
     setBackpressure: (on) => {
       backpressure = on;
@@ -197,6 +214,24 @@ export function runConnectorContract(subject: ContractSubject): void {
         } else {
           await expect(run()).rejects.toBeInstanceOf(CommandNotSupportedError);
         }
+      }
+    });
+
+    it('emits transcript segments only when it declares liveTranscript', async () => {
+      const harness = await startHarness(subject);
+      await ingestAll(subject, harness);
+      expect(harness.transcripts).toEqual([]);
+      const declares = supportsFeature(harness.connector.capabilities, 'liveTranscript');
+      const fixtures = subject.transcriptFixtures ?? [];
+      expect(fixtures.length > 0).toBe(declares);
+      for (const fixture of fixtures) {
+        const before = harness.transcripts.length;
+        await subject.ingest(harness.connector, fixture.payload);
+        const emitted = harness.transcripts.slice(before);
+        expect(emitted, fixture.name).toHaveLength(fixture.expected.length);
+        fixture.expected.forEach((expected, index) => {
+          expect(emitted[index]).toMatchObject(expected);
+        });
       }
     });
 

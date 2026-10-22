@@ -5,6 +5,7 @@ export * from './channel-context.js';
 export * from './connector.js';
 export * from './errors.js';
 export * from './interaction.js';
+export * from './transcript.js';
 export * from './mapper.js';
 export * from './webhook-signature.js';
 export * from './platforms/genesys-cloud.js';

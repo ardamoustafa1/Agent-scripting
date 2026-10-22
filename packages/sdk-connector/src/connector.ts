@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { type AdapterType } from './adapter.js';
 import { type CommandName, type ConnectorCapabilities } from './capabilities.js';
 import { type InteractionEvent } from './interaction.js';
+import { type TranscriptSegment } from './transcript.js';
 
 /** Health as the hub reports it per connector instance. */
 export type ConnectorHealthStatus = 'up' | 'degraded' | 'down';
@@ -40,6 +41,12 @@ export interface ConnectorContext {
    * (stop polling, NACK, answer the webhook with 503) instead of dropping events.
    */
   emit(event: InteractionEvent): Promise<void>;
+  /**
+   * Hands a live transcript segment to the hub (ADR-0052). Only for connectors that declare the
+   * `liveTranscript` feature; others are refused. Same backpressure rule as `emit`. Segments are
+   * ephemeral: the hub may drop one it cannot deliver, so never retry from a durable store.
+   */
+  emitTranscript(segment: TranscriptSegment): Promise<void>;
 }
 
 export class BackpressureError extends Error {
