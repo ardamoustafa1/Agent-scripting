@@ -246,6 +246,11 @@ export class Runtime {
     const oldHistory = [...this.history];
     const next = this.page(id),
       currentId = this.store.get('runtime.page');
+    // Resolve the flow position first: a page outside the current flow must fail before the
+    // current page is left or the move is persisted.
+    const frame = preserveFlow ? undefined : (this.frames.at(-1) ?? this.frame(this.document.flow));
+    const flowNode = frame?.flow.nodes.find((n) => n.type === 'page' && n.page === id);
+    if (frame && !flowNode) throw new RuntimeProblem('VERBIS_FLOW_PAGE_UNKNOWN');
     if (typeof currentId === 'string') {
       const current = this.page(currentId);
       if (current.mandatory && (await this.validation.page(currentId, signal)).length)
@@ -273,10 +278,7 @@ export class Runtime {
     }
     this.clearTimers();
     for (const controller of this.calls.values()) controller.abort();
-    if (!preserveFlow) {
-      const frame = this.frames.at(-1) ?? this.frame(this.document.flow);
-      const flowNode = frame.flow.nodes.find((n) => n.type === 'page' && n.page === id);
-      if (!flowNode) throw new RuntimeProblem('VERBIS_FLOW_PAGE_UNKNOWN');
+    if (frame && flowNode) {
       frame.cursor = flowNode.id;
       this.frames = [...this.frames.slice(0, -1), frame];
     }

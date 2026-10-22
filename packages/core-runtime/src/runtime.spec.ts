@@ -900,3 +900,25 @@ describe('completing outcomes validate the call that happened', () => {
     await runtime.executor.execute([...complete]);
   });
 });
+it('refuses a page outside the current flow before persisting or leaving the current page', async () => {
+  const document = runtimeFixture();
+  const home = document.pages[0]!;
+  document.pages.push({
+    ...structuredClone(home),
+    id: 'detour',
+    name: 'Detour',
+    layout: { ...structuredClone(home.layout), id: 'detour-root', children: [] },
+    onEnter: [],
+  });
+  home.onLeave = [{ type: 'setVariable', variable: 'name', value: 'left' }];
+  const pageChange = vi.fn().mockResolvedValue(undefined),
+    { runtime } = engine(document, { pageChange });
+  await runtime.start();
+  pageChange.mockClear();
+  await expect(runtime.navigate('detour')).rejects.toThrow('VERBIS_FLOW_PAGE_UNKNOWN');
+  expect(pageChange).not.toHaveBeenCalled();
+  expect(runtime.store.get('runtime.page')).toBe('home');
+  expect(runtime.store.variable('name')).not.toBe('left');
+  await runtime.next();
+  expect(runtime.store.get('runtime.page')).toBe('second');
+});
