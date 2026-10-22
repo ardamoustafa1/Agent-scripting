@@ -16,6 +16,7 @@ import type { AuditService } from '../audit/audit.service.js';
 import type { AuthzService } from '../authz/authz.service.js';
 import type { EnvelopeVault } from '../integrations/engine/vault.js';
 import type { RuntimeEngineService } from '../runtime/runtime-engine.service.js';
+import type { TranscriptStore } from '../runtime/transcript.store.js';
 import type { ScriptsService } from '../scripts/scripts.service.js';
 
 vi.mock('./transport.js', () => ({ postJson: vi.fn() }));
@@ -46,6 +47,7 @@ it('disabled tenant does not decrypt secrets or invoke a provider', async () => 
     {} as RuntimeEngineService,
     {} as ScriptsService,
     { complete },
+    { read: vi.fn().mockResolvedValue([]) } as unknown as TranscriptStore,
   );
   await requestContext.run(
     {
@@ -102,6 +104,7 @@ function enabledService(quotaAllowed = true, agentEnabled = false) {
   const row = {
     kind: 'interaction',
     state: 'active',
+    interactionId: '00000000-0000-7000-8000-000000000009' as string | null,
     interaction: {
       channelType: 'chat',
       campaignId: '00000000-0000-7000-8000-000000000005' as string | null,
@@ -117,6 +120,7 @@ function enabledService(quotaAllowed = true, agentEnabled = false) {
     snapshot: vi.fn().mockResolvedValue({ currentPage: 'home' }),
   };
   const scripts = { authorizeRead: vi.fn().mockResolvedValue(undefined) };
+  const transcripts = { read: vi.fn<TranscriptStore['read']>().mockResolvedValue([]) };
   const tx = {
     tenant: {
       findFirstOrThrow: vi.fn().mockResolvedValue({
@@ -174,8 +178,21 @@ function enabledService(quotaAllowed = true, agentEnabled = false) {
     runtime as unknown as RuntimeEngineService,
     scripts as unknown as ScriptsService,
     { complete },
+    transcripts as unknown as TranscriptStore,
   );
-  return { service, complete, audit, tx, config, env, runtime, scripts, row, document };
+  return {
+    service,
+    complete,
+    audit,
+    tx,
+    config,
+    env,
+    runtime,
+    scripts,
+    row,
+    document,
+    transcripts,
+  };
 }
 const context = {
   requestId: 'fixture',
@@ -620,6 +637,73 @@ describe('navigate (ADR-0052 E4)', () => {
     f.row.state = 'wrapup';
     await expect(ask(f)).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
     expect(f.complete).not.toHaveBeenCalled();
+  });
+});
+
+describe('voice calls through the live transcript (ADR-0052 §4)', () => {
+  const spoken = [
+    {
+      segmentId: 's1',
+      speaker: 'customer' as const,
+      text: 'Synthetic spoken complaint',
+      final: true,
+      at: '2026-10-22T10:00:00.000Z',
+    },
+  ];
+  const voice = (liveTranscript: boolean, lines = spoken) => {
+    const f = enabledService(true, true);
+    f.row.interaction.channelType = 'voice';
+    f.tx.tenant.findFirstOrThrow.mockResolvedValue({
+      id: '00000000-0000-7000-8000-000000000001',
+      version: 1,
+      status: 'active',
+      settings: { ai: f.config, ...(liveTranscript ? { liveTranscript: { enabled: true } } : {}) },
+    });
+    f.transcripts.read.mockResolvedValue(lines);
+    vi.mocked(postJson).mockResolvedValue({
+      text: 'Synthetic masked transcript',
+      count: 0,
+      complete: true,
+    });
+    f.complete.mockResolvedValue({
+      text: JSON.stringify({ reply: 'Synthetic', reason: 'Synthetic' }),
+      inputTokens: 8,
+      outputTokens: 4,
+    });
+    return f;
+  };
+  const reply = (f: ReturnType<typeof enabledService>) =>
+    requestContext.run(context, () =>
+      f.service.generate(
+        AiRequestSchema.parse({
+          requestId: request().requestId,
+          task: 'reply',
+          sessionId: context.principal.id,
+        }),
+      ),
+    );
+
+  it('reads the opted-in window and sends it through the PII gate', async () => {
+    const f = voice(true);
+    await expect(reply(f)).resolves.toMatchObject({ requiresHumanApproval: true });
+    expect(f.transcripts.read).toHaveBeenCalledWith(
+      '00000000-0000-7000-8000-000000000001',
+      '00000000-0000-7000-8000-000000000009',
+    );
+    const redacted = (vi.mocked(postJson).mock.calls.at(-1)![2] as { text: string }).text;
+    expect(redacted).toContain('Synthetic spoken complaint');
+    expect(JSON.stringify(f.audit.record.mock.calls)).not.toContain('Synthetic spoken complaint');
+  });
+
+  it('stays closed for voice without the opt-in or without any transcript yet', async () => {
+    const optedOut = voice(false),
+      silent = voice(true, []);
+    for (const f of [optedOut, silent]) {
+      await expect(reply(f)).rejects.toMatchObject({ code: 'VERBIS_AUTHZ_FORBIDDEN' });
+      expect(f.complete).not.toHaveBeenCalled();
+    }
+    expect(optedOut.transcripts.read).not.toHaveBeenCalled();
+    expect(silent.transcripts.read).toHaveBeenCalledOnce();
   });
 });
 

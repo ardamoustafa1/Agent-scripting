@@ -24,6 +24,7 @@ import { AuditService } from '../audit/audit.service.js';
 import { AuthzService } from '../authz/authz.service.js';
 import { INTEGRATION_VAULT } from '../integrations/integration-engine.service.js';
 import { RuntimeEngineService } from '../runtime/runtime-engine.service.js';
+import { TranscriptStore } from '../runtime/transcript.store.js';
 import { ScriptsService } from '../scripts/scripts.service.js';
 
 import { extractText } from './import.js';
@@ -58,6 +59,7 @@ export class AiService {
     @Inject(RuntimeEngineService) private readonly runtime: RuntimeEngineService,
     @Inject(ScriptsService) private readonly scripts: ScriptsService,
     @Inject(AI_PROVIDER) private readonly provider: LlmProvider,
+    @Inject(TranscriptStore) private readonly transcripts: TranscriptStore,
   ) {}
   private endpoints() {
     return z.array(EndpointSchema).parse(JSON.parse(this.env.AI_ENDPOINTS_JSON));
@@ -184,7 +186,7 @@ export class AiService {
     const principal = ctx.principal;
     if (principal?.type !== 'user' || principal.authMethod !== 'sso') throw new ForbiddenError();
     const prepared = await this.scoped(async (tx) => {
-      const { tenant, config } = await this.tenant(tx);
+      const { tenant, settings, config } = await this.tenant(tx);
       if (tenant.status !== 'active' || !this.env.AI_ENABLED || !config.enabled)
         throw new DomainError('VERBIS_AI_DISABLED');
       const endpoint = this.endpoints().find((e) => e.id === config.endpointId);
@@ -202,10 +204,19 @@ export class AiService {
           throw new ForbiddenError();
         const row = await this.runtime.row(input.sessionId);
         this.runtime.authorize(row, true);
+        // A voice call has text only through the opted-in live transcript (ADR-0052).
+        const spoken =
+          row.interaction?.channelType === 'voice' &&
+          row.interactionId !== null &&
+          z.object({ enabled: z.literal(true) }).safeParse(settings['liveTranscript']).success
+            ? await this.transcripts.read(tenant.id, row.interactionId)
+            : [];
         if (
           row.kind !== 'interaction' ||
           !row.interaction ||
-          (input.task !== 'summary' && !['chat', 'email'].includes(row.interaction.channelType))
+          (input.task !== 'summary' &&
+            !['chat', 'email'].includes(row.interaction.channelType) &&
+            spoken.length === 0)
         )
           throw new ForbiddenError();
         if (input.task !== 'summary' && !['active', 'paused'].includes(row.state))
@@ -216,10 +227,12 @@ export class AiService {
         const interaction = this.runtime.interaction(row);
         text = JSON.stringify({
           transcript:
-            interaction['channel.chat.transcript'] ??
-            interaction['transcript'] ??
-            interaction['email.body'] ??
-            '',
+            spoken.length > 0
+              ? spoken.map((line) => ({ from: line.speaker, text: line.text, at: line.at }))
+              : (interaction['channel.chat.transcript'] ??
+                interaction['transcript'] ??
+                interaction['email.body'] ??
+                ''),
           operatorContext: input.text,
         });
         const snapshot = await this.runtime.snapshot(row);
