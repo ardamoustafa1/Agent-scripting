@@ -3,6 +3,7 @@ import type { RendererProps } from '@verbis/core-runtime';
 import { ActionComponent } from './actions.js';
 import { DataComponent } from './data.js';
 import { InputComponent, SecureInput } from './inputs.js';
+import { KnowledgeComponent } from './knowledge.js';
 import { LayoutComponent } from './layout.js';
 import { MediaComponent, Signature as SignatureRenderer } from './media.js';
 import { ScriptContent } from './script-text.js';
@@ -21,6 +22,9 @@ export function Checklist(props: RendererProps) {
 }
 export function KnowledgeLink(props: RendererProps) {
   return <ScriptContent {...props} node={{ ...props.node, type: 'knowledgeLink' }} />;
+}
+export function KnowledgePanel(props: RendererProps) {
+  return <KnowledgeComponent {...props} node={{ ...props.node, type: 'knowledgePanel' }} />;
 }
 export function Text(props: RendererProps) {
   return <ScriptContent {...props} node={{ ...props.node, type: 'text' }} />;

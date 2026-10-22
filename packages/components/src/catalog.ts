@@ -10,6 +10,7 @@ import { isEmail, isPhoneTR, isTCKN, isVKN, isIBAN, luhn } from '@verbis/expr';
 import { ActionComponent } from './actions.js';
 import { DataComponent } from './data.js';
 import { InputComponent, SecureInput } from './inputs.js';
+import { KnowledgeComponent, KnowledgePanelSchema } from './knowledge.js';
 import { LayoutComponent } from './layout.js';
 import { MediaComponent, Signature } from './media.js';
 import { PrivacyComponent, PrivacySchema } from './privacy.js';
@@ -43,6 +44,7 @@ const categories = {
     'objectionHandler',
     'checklist',
     'knowledgeLink',
+    'knowledgePanel',
     'text',
     'heading',
     'richContent',
@@ -145,38 +147,41 @@ function properties(schema: z.ZodObject, bindable: readonly string[]): DesignerP
     control:
       key === 'columns' && Object.hasOwn(schema.shape, 'rowKey')
         ? 'json'
-        : propertyChoices[key]
-          ? 'select'
-          : key.endsWith('Key') && !['rowKey', 'itemKey', 'iconKey'].includes(key)
-            ? 'i18nKey'
-            : [
-                  'disabled',
-                  'required',
-                  'loading',
-                  'secure',
-                  'mustRead',
-                  'acknowledged',
-                  'open',
-                ].includes(key)
-              ? 'boolean'
+        : key === 'articles'
+          ? 'knowledgeArticles'
+          : propertyChoices[key]
+            ? 'select'
+            : key.endsWith('Key') && !['rowKey', 'itemKey', 'iconKey'].includes(key)
+              ? 'i18nKey'
               : [
-                    'min',
-                    'max',
-                    'step',
-                    'columns',
-                    'durationSec',
-                    'debounceMs',
-                    'maxLength',
-                    'limit',
+                    'disabled',
+                    'required',
+                    'loading',
+                    'secure',
+                    'mustRead',
+                    'acknowledged',
+                    'open',
+                    'searchable',
                   ].includes(key)
-                ? 'number'
-                : ['params', 'options', 'items', 'blocks', 'validation', 'rows'].includes(key)
-                  ? 'json'
-                  : key === 'url' || key.endsWith('Url')
-                    ? 'asset'
-                    : key === 'arrayVariable' || key === 'queryVariable'
-                      ? 'variable'
-                      : 'text',
+                ? 'boolean'
+                : [
+                      'min',
+                      'max',
+                      'step',
+                      'columns',
+                      'durationSec',
+                      'debounceMs',
+                      'maxLength',
+                      'limit',
+                    ].includes(key)
+                  ? 'number'
+                  : ['params', 'options', 'items', 'blocks', 'validation', 'rows'].includes(key)
+                    ? 'json'
+                    : key === 'url' || key.endsWith('Url')
+                      ? 'asset'
+                      : key === 'arrayVariable' || key === 'queryVariable'
+                        ? 'variable'
+                        : 'text',
     bindable: bindable.includes(key),
     sensitive: key === 'secure',
   }));
@@ -189,23 +194,25 @@ export const LIBRARY_DEFINITIONS: readonly LibraryDefinition[] = Object.entries(
         container = category === 'structure' && !['divider', 'spacer'].includes(type);
       const schema = ['privacyNotice', 'explicitConsent'].includes(type)
         ? PrivacySchema
-        : category === 'input'
-          ? secure
-            ? SecureInputSchema
-            : personal
-              ? PersonalIdInputSchema
-              : InputSchema
-          : category === 'script'
-            ? TextSchema
-            : category === 'structure'
-              ? LayoutSchema
-              : category === 'data'
-                ? DataSchema
-                : category === 'action'
-                  ? ActionPropsSchema
-                  : type === 'note'
-                    ? InputSchema
-                    : MediaSchema;
+        : type === 'knowledgePanel'
+          ? KnowledgePanelSchema
+          : category === 'input'
+            ? secure
+              ? SecureInputSchema
+              : personal
+                ? PersonalIdInputSchema
+                : InputSchema
+            : category === 'script'
+              ? TextSchema
+              : category === 'structure'
+                ? LayoutSchema
+                : category === 'data'
+                  ? DataSchema
+                  : category === 'action'
+                    ? ActionPropsSchema
+                    : type === 'note'
+                      ? InputSchema
+                      : MediaSchema;
       const bindable = Object.keys(schema.shape).filter(
         (key) =>
           ![
@@ -217,27 +224,30 @@ export const LIBRARY_DEFINITIONS: readonly LibraryDefinition[] = Object.entries(
             'blocks',
             'validation',
             'secure',
+            'articles',
           ].includes(key),
       );
       const renderer = ['privacyNotice', 'explicitConsent'].includes(type)
         ? PrivacyComponent
-        : category === 'input'
-          ? secure
-            ? SecureInput
-            : InputComponent
-          : category === 'script'
-            ? ScriptContent
-            : category === 'structure'
-              ? LayoutComponent
-              : category === 'data'
-                ? DataComponent
-                : category === 'action'
-                  ? ActionComponent
-                  : type === 'signature'
-                    ? Signature
-                    : type === 'note'
-                      ? InputComponent
-                      : MediaComponent;
+        : type === 'knowledgePanel'
+          ? KnowledgeComponent
+          : category === 'input'
+            ? secure
+              ? SecureInput
+              : InputComponent
+            : category === 'script'
+              ? ScriptContent
+              : category === 'structure'
+                ? LayoutComponent
+                : category === 'data'
+                  ? DataComponent
+                  : category === 'action'
+                    ? ActionComponent
+                    : type === 'signature'
+                      ? Signature
+                      : type === 'note'
+                        ? InputComponent
+                        : MediaComponent;
       const builtOn: readonly CorePrimitiveType[] =
         category === 'data' ? ['box', 'webService'] : ['box'];
       const conditionalBuiltOn: readonly CorePrimitiveType[] =
@@ -306,7 +316,7 @@ export const LIBRARY_DEFINITIONS: readonly LibraryDefinition[] = Object.entries(
               ? [
                   `vars.${typeof node.props['arrayVariable'] === 'string' ? node.props['arrayVariable'] : 'items'}`,
                 ]
-              : category === 'script'
+              : category === 'script' && type !== 'knowledgePanel'
                 ? [
                     `runtime.read.${node.id}`,
                     ...Object.values(document.i18n.messages).flatMap((messages) =>
