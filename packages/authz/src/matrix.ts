@@ -51,6 +51,7 @@ export const SCOPE_FIELDS: Readonly<
     site: { field: 'siteId', value: '${scope.siteIds}' },
     own: { field: 'agentId', value: '${user.id}' },
   },
+  knowledge: {},
 };
 
 const MatrixCellSchema = z
