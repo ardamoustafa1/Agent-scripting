@@ -224,7 +224,8 @@ Optional top-level `triggers` (additive; no `schemaVersion` bump). Each trigger 
   "actions": [                               // 1–3
     { "type": "suggestPage", "pageId": "retention" },               // "Go to …?"; navigates only on the agent's click
     { "type": "alert", "messageKey": "triggers.cancel.alert1", "tone": "warning" },
-    { "type": "markNotice", "noticeId": "notice-recording" }          // "probably said"; never acknowledges
+    { "type": "markNotice", "noticeId": "notice-recording" },         // "probably said"; never acknowledges
+    { "type": "suggestArticle", "articleKey": "refund-policy" }       // ADR-0057: "Open the article"; opens only on the agent's click
   ]
 }
 ```
@@ -232,6 +233,20 @@ Optional top-level `triggers` (additive; no `schemaVersion` bump). Each trigger 
 - Matching is deterministic (`matchPhrase` in `@verbis/script-schema`, shared by the API and the designer): Turkish-aware folding, words in order; a phrase word matches a word that starts with it ("iptal" → "iptalini"), words shorter than three letters match whole. Only final segments are evaluated, against the pinned version, the current page and earlier hits of the session.
 - Validation: duplicate ids (`DUPLICATE_ID`), no phrase (`TRIGGER_PHRASES_MISSING`), unknown pages (`PAGE_REF_BROKEN`), a suggested page that is not a page step of the main flow (`TRIGGER_PAGE_NOT_IN_FLOW`; the runtime can only move along the main flow), a notice that is not a `mustRead` node (`TRIGGER_NOTICE_REF_BROKEN`), and a missing hint text (`I18N_KEY_MISSING`).
 - Limits: 100 triggers, 20 phrases per locale, 80 characters per phrase, 3 actions.
+- `suggestArticle` names a tenant knowledge article by its key (kebab-case, at most 64 characters). The article lives outside the document, so validation checks only the key format; the designer's picker marks a key with no article, and the agent sees "not published right now" instead of a link.
+
+### 7.2 Knowledge articles in the script (ADR-0057)
+
+The `knowledgePanel` screen component shows tenant knowledge articles on a page, read in place, plus an optional search over the published knowledge base:
+
+```jsonc
+{ "id": "kb-refunds", "type": "knowledgePanel",
+  "props": { "labelKey": "kb.title", "articles": ["refund-policy", "card-loss"], "searchable": true } }
+```
+
+- `articles`: up to 10 article keys, picked in the designer from the knowledge base. Content is fetched when the page is shown (the latest published text), not frozen into the script version: articles are reference material, while legal and must-read wording stays in versioned script text.
+- A key with no published article is counted ("1 pinned article is not published right now"); it never blocks the page or validation.
+- Scripts carry keys only, never URLs or article text, so a package imported into another tenant resolves the keys against that tenant's own articles.
 
 ## 8. i18n
 

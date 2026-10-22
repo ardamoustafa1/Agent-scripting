@@ -23,6 +23,7 @@ flowchart LR
         Variable
         DataSource
         Secret
+        KnowledgeArticle
     end
     subgraph routing["Routing"]
         Campaign
@@ -320,6 +321,9 @@ Definition of a web service call: protocol (`rest | soap | graphql`), endpoint t
 
 ### Secret
 Encrypted at rest (envelope: tenant data key wrapped by KMS/Vault). Write-only through API: plaintext never returned after creation; only metadata (name, kind, version, rotatedAt, lastUsedAt). Used by DataSource, IdentityProvider, Connector. Rotation creates new `keyVersion`; access is audited.
+
+### KnowledgeArticle
+Tenant reference article agents read beside the script ([ADR-0057](adr/0057-in-script-knowledge-base.md)): stable kebab-case `key` (unique per tenant, immutable; scripts reference articles by key), `title`, plain-text `body` (paragraphs, `## ` subheadings, `- `/`1. ` lists), `tags`, `locale`, `status` `draft → published ⇄ archived`, optimistic `version`. Search columns hold Turkish-folded text with a generated weighted `tsvector`. Agents see published articles only, through their own session. Never deleted; archived instead.
 
 ### Assignment
 Binds a Script to a Campaign (**many-to-many** via this entity). Fields: `priority` (lower wins), `validFrom/validTo`, `rule` (no-code predicate over channel, language, queue, direction, interaction attributes, agent attributes), optional `pinnedVersionId` (otherwise latest published), optional `abTest` (variants + weights + sticky key). Resolution algorithm: filter active & in-window & rule-true → sort by priority → tie-break by specificity then recency → first match; deterministic and explainable (the decision trace is stored on the Session).

@@ -66,7 +66,25 @@ feedback" badge with the reason in node and script-wide comment views. Only the 
 limiter applies; a dedicated per-session limit is a follow-up.
 
 Context sidebar fields are connector-provided: `history`, `knowledge`, `objections` arrays, plus
-`channel.chat.transcript` from normalized chat events. No invented CRM or knowledge API is called.
+`channel.chat.transcript` from normalized chat events. No invented CRM API is called.
+
+**Knowledge base ([ADR-0057](adr/0057-in-script-knowledge-base.md)).** The "Knowledge base" tab
+searches the tenant's published articles as the agent types (300 ms after the last key) and opens a
+result in place; "Back to results" keeps the search. Alt+K opens the tab and puts the caret in the
+search box (same rules as the other Alt shortcuts: not while typing, never behind a dialog). The
+connector's `knowledge` items follow under "From the contact-center platform". On a voice call with
+a live transcript, "Use the customer's last sentence" copies the last final customer line into the
+box; the agent edits it before anything is sent. When the tenant enabled agent AI, "Answer with AI"
+sends the question only (no conversation text) to the `answer` task; the answer is shown with its
+source articles and "Check the sources before telling the customer", or as "The knowledge base does
+not answer this question". The tab's query, open article and answer survive tab switches.
+Searches go to `POST /v1/sessions/{id}/desktop/knowledge/search` (the words never sit in a URL and
+are not stored or audited) and articles to `GET /v1/sessions/{id}/desktop/knowledge/{key}`; both
+are owner-only and need an `active`, `paused` or `wrapup` interaction session. A `knowledgePanel`
+on the page shows the author's pinned articles as expandable sections and its own search box, whose
+Enter never reaches the "next step" shortcut. A transcript trigger's `suggestArticle` card names the
+article ("Related article: …") and "Open the article" shows it in the tab; a card that also suggests
+a page stays until the agent decides on the page.
 Transferred sessions revoke the old writer; hold/resume and customer disconnect update editability
 and wrap-up banners. Outcome fields, note, subcodes and callback are checked by the server; PCI fields
 are excluded from browser persistence and ordinary wrap-up inputs. Secure payment capture requires

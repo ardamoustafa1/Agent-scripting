@@ -241,6 +241,14 @@ Masked by default (`•••• 1234`); "reveal" is permission-gated, time-boxe
 - **Access.** Lines are pushed only to the session owner's Socket.IO room; supervisor sockets do not join it. `GET /v1/sessions/{id}/desktop/transcript` is owner-only and audited (`runtime.transcript.viewed`). The first line of an interaction is audited without text (`runtime.transcript.started`).
 - **Triggers.** A hit is a session event with ids only. Suggestions never act by themselves; page moves go through the runtime guards, notice hints never acknowledge. Hits are not used for per-agent scoring.
 
+### 6.6 Knowledge base (ADR-0057)
+
+- **Content.** Articles are tenant reference content; authors must not put customer data in them. The body is plain text parsed into paragraphs, subheadings and lists (`parseArticleBody`) and rendered as elements: no HTML, no links, no `dangerouslySetInnerHTML`.
+- **Access.** Authoring needs `KnowledgeArticle` permissions (`script_designer` create/update, `script_approver` publish/archive). Agents hold no knowledge permission: they read published articles only through their own SSO interaction session (owner check, `active`/`paused`/`wrapup`), as ADR-0056 does for data sources. RLS isolates tenants; keys are unique per tenant.
+- **Search text.** Agents may type customers' words. Search runs as a POST body, is folded into letters and digits before it reaches `to_tsquery` (no query syntax from users), and is never stored, logged, audited or counted in analytics. Request logs keep paths only.
+- **AI answer.** The `answer` task sends the agent's question and at most five published articles (4,000 characters each, 12,000 in total) through the PII gate, quota and audit of ADR-0032, as untrusted data. Cited keys outside the retrieved articles fail the call; an answer without a citation is replaced by "not found". No match means no model call. Nothing is sent to the customer.
+- **Audit.** Every create, edit, publish and archive is audited with its before/after in the same transaction; outbox events carry ids and metadata only. Reading an article is not audited (not personal data).
+
 ## 7. Audit integrity
 
 - Per-tenant chain: `hash_n = SHA-256( hash_{n-1} ‖ canonical_json(event_n) )`; gap-free `seq` assigned by the sequencer inside a serializable section.
