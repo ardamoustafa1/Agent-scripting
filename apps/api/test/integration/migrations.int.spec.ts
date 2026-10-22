@@ -20,7 +20,7 @@ afterAll(async () => {
 const NOT_FORCED = ['tenants', 'outbox_events', 'audit_archives'];
 /** Reviewed SQL objects Prisma cannot model (ADR-0014): partitions, the v1 audit copy, the policy row. */
 const PRISMA_UNMODELLED =
-  /(audit_events|session_events)_(y\d{4}m\d{2}|default)|audit_events_v1|audit_policy|audit_events_search_idx|"search"/;
+  /(audit_events|session_events)_(y\d{4}m\d{2}|default)|audit_events_v1|audit_policy|audit_events_search_idx|knowledge_articles_search_idx|"search"/;
 
 describe('migrations', () => {
   it('apply cleanly to an empty database', async () => {
@@ -57,6 +57,7 @@ describe('migrations', () => {
       '20261006200000_location_catalog',
       '20261007210000_script_suggestions',
       '20261007220000_script_branches',
+      '20261022120000_knowledge_articles',
     ]);
     expect(rows.every((row) => row.finished_at !== null && row.rolled_back_at === null)).toBe(true);
   });
@@ -116,7 +117,7 @@ describe('isolation catalogue', () => {
          AND c.relname NOT IN ('_prisma_migrations', 'audit_policy')
        GROUP BY c.relname, c.relrowsecurity, c.relforcerowsecurity
        ORDER BY c.relname`);
-    expect(rows.length).toBe(62);
+    expect(rows.length).toBe(63);
     for (const row of rows) {
       expect(row.rls, row.table).toBe(true);
       expect(row.forced, row.table).toBe(!NOT_FORCED.includes(row.table));

@@ -277,6 +277,19 @@
     },
     {
       "method": "PATCH",
+      "path": "/v1/knowledge-articles/:id",
+      "controller": "KnowledgeController",
+      "handler": "update",
+      "file": "apps/api/src/modules/knowledge/knowledge.controller.ts",
+      "line": 103,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
       "path": "/v1/locations/:id",
       "controller": "LocationsController",
       "handler": "update",
@@ -1021,6 +1034,45 @@
     },
     {
       "method": "POST",
+      "path": "/v1/knowledge-articles",
+      "controller": "KnowledgeController",
+      "handler": "create",
+      "file": "apps/api/src/modules/knowledge/knowledge.controller.ts",
+      "line": 84,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/knowledge-articles/:id/archive",
+      "controller": "KnowledgeController",
+      "handler": "archive",
+      "file": "apps/api/src/modules/knowledge/knowledge.controller.ts",
+      "line": 135,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/knowledge-articles/:id/publish",
+      "controller": "KnowledgeController",
+      "handler": "publish",
+      "file": "apps/api/src/modules/knowledge/knowledge.controller.ts",
+      "line": 121,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
       "path": "/v1/launch-intents",
       "controller": "LaunchController",
       "handler": "create",
@@ -1632,6 +1684,19 @@
       "auditEvidence": [
         "apps/api/src/modules/audit/audit.interceptors.ts"
       ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/desktop/knowledge/search",
+      "controller": "KnowledgeDesktopController",
+      "handler": "search",
+      "file": "apps/api/src/modules/knowledge/knowledge-desktop.controller.ts",
+      "line": 39,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": []
     },
     {
       "method": "POST",

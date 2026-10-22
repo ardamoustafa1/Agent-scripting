@@ -6,6 +6,9 @@ import { catalogInventory } from './i18n-inventory.mjs';
 
 // Deliberately narrow: home-realm discovery reads providers and never changes domain state.
 const readOnly = new Set(['POST /auth/discover']);
+// Knowledge search (ADR-0057) is a POST so the agent's words stay out of URLs; it changes nothing,
+// and the words must never reach the audit trail.
+const searchOnly = new Set(['POST /v1/sessions/:id/desktop/knowledge/search']);
 // Transient gateway wire packets are not domain writes. Their result is audited by the engine;
 // persisting transport bodies in the generic request audit would duplicate sensitive payloads.
 const transportOnly = new Set([
@@ -33,6 +36,12 @@ test('every mutation-shaped controller route maps to a transaction audit or expl
     if (readOnly.has(key)) {
       assert.equal(route.handler, 'discover');
       assert.deepEqual(route.decorators, ['Public']);
+      continue;
+    }
+    if (searchOnly.has(key)) {
+      assert.equal(route.controller, 'KnowledgeDesktopController');
+      assert.equal(route.handler, 'search');
+      assert.deepEqual(route.decorators, ['SkipAudit']);
       continue;
     }
     if (transportOnly.has(key)) {

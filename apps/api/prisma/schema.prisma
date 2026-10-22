@@ -255,6 +255,7 @@ model Tenant {
   scriptSuggestions           ScriptSuggestion[]
   collaborationConflicts      CollaborationConflict[]
   locations                   Location[]
+  knowledgeArticles           KnowledgeArticle[]
   collaborationSnapshots      CollaborationSnapshot[]
   scheduledReleases           ScheduledRelease[]
   adminPrivacyRequests        AdminPrivacyRequest[]
@@ -1770,4 +1771,36 @@ model Location {
   @@unique([tenantId, code], map: "locations_tenant_code_active_key", where: raw("deleted_at IS NULL"))
   @@index([tenantId, createdAt, id])
   @@map("locations")
+}
+
+/// In-script knowledge base (ADR-0057). Scripts reference an article by `key`. The `search*`
+/// columns hold Turkish-folded text written by the application; `search` (GIN) is generated.
+model KnowledgeArticle {
+  id          String                   @id @default(uuid(7)) @db.Uuid
+  tenantId    String                   @map("tenant_id") @db.Uuid
+  /// Stable kebab-case key; unique per tenant, immutable after creation.
+  key         String                   @db.VarChar(64)
+  title       String                   @db.VarChar(160)
+  body        String                   @default("")
+  tags        String[]                 @default([])
+  locale      String                   @default("tr") @db.VarChar(16)
+  /// draft | published | archived (CHECK in the migration).
+  status      String                   @default("draft") @db.VarChar(16)
+  publishedAt DateTime?                @map("published_at") @db.Timestamptz(3)
+  searchTitle String                   @default("") @map("search_title")
+  searchTags  String                   @default("") @map("search_tags")
+  searchBody  String                   @default("") @map("search_body")
+  search      Unsupported("tsvector")?
+  createdAt   DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy   String                   @map("created_by") @db.VarChar(128)
+  updatedAt   DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedBy   String                   @map("updated_by") @db.VarChar(128)
+  deletedAt   DateTime?                @map("deleted_at") @db.Timestamptz(3)
+  version     Int                      @default(1)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@unique([tenantId, key], map: "knowledge_articles_tenant_key_active_key", where: raw("deleted_at IS NULL"))
+  @@index([tenantId, updatedAt, id])
+  @@map("knowledge_articles")
 }
