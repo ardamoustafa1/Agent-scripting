@@ -36,7 +36,8 @@ flowchart TB
   "rules": [ ... ],
   "theme": { "mode": "inherit", "tokens": { "density": "comfortable" } },
   "i18n": { "defaultLocale": "tr", "messages": { "tr": { "rpc.title": "Kişi teyidi" }, "en": { "rpc.title": "Right party contact" } } },
-  "componentRegistry": [ { "type": "acme.creditGauge", "version": "1.2.0", "integrity": "sha384-..." } ]
+  "componentRegistry": [ { "type": "acme.creditGauge", "version": "1.2.0", "integrity": "sha384-..." } ],
+  "triggers": [ ... ]                          // optional: live transcript phrase rules (§7.1)
 }
 ```
 
@@ -206,6 +207,31 @@ flowchart LR
   - unreachable nodes (`FLOW_NODE_UNREACHABLE`);
   - dead ends (`FLOW_DEAD_END`);
   - `dataSource` nodes without an `error` edge (`FLOW_DATASOURCE_NO_ERROR_EDGE`).
+
+### 7.1 Transcript triggers (ADR-0052)
+
+Optional top-level `triggers` (additive; no `schemaVersion` bump). Each trigger listens to the live transcript of a call (text only; the tenant must opt in) and offers the agent something. Nothing runs by itself.
+
+```jsonc
+{
+  "id": "cancel-intent",                     // kebab-case, stable
+  "name": "İptal niyeti",                    // authoring name, designer only
+  "enabled": true,
+  "phrases": { "tr": ["iptal etmek", "aboneliğimi kapat"], "en": ["cancel"] },
+  "speaker": "customer",                     // customer (default) | agent | any
+  "pages": ["offer"],                        // optional: only while one of these pages is shown
+  "repeat": "once",                          // once per session (default) | { "cooldownSeconds": 10–3600 }
+  "actions": [                               // 1–3
+    { "type": "suggestPage", "pageId": "retention" },               // "Go to …?"; navigates only on the agent's click
+    { "type": "alert", "messageKey": "triggers.cancel.alert1", "tone": "warning" },
+    { "type": "markNotice", "noticeId": "notice-recording" }          // "probably said"; never acknowledges
+  ]
+}
+```
+
+- Matching is deterministic (`matchPhrase` in `@verbis/script-schema`, shared by the API and the designer): Turkish-aware folding, words in order; a phrase word matches a word that starts with it ("iptal" → "iptalini"), words shorter than three letters match whole. Only final segments are evaluated, against the pinned version, the current page and earlier hits of the session.
+- Validation: duplicate ids (`DUPLICATE_ID`), no phrase (`TRIGGER_PHRASES_MISSING`), unknown pages (`PAGE_REF_BROKEN`), a suggested page that is not a page step of the main flow (`TRIGGER_PAGE_NOT_IN_FLOW`; the runtime can only move along the main flow), a notice that is not a `mustRead` node (`TRIGGER_NOTICE_REF_BROKEN`), and a missing hint text (`I18N_KEY_MISSING`).
+- Limits: 100 triggers, 20 phrases per locale, 80 characters per phrase, 3 actions.
 
 ## 8. i18n
 

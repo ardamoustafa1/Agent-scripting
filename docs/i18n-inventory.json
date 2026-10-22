@@ -107,8 +107,10 @@
     "admin.onboarding.help",
     "admin.onboarding.name",
     "admin.onboarding.title",
+    "admin.simulator.action.agentSays",
     "admin.simulator.action.connect",
     "admin.simulator.action.customerMessage",
+    "admin.simulator.action.customerSays",
     "admin.simulator.action.end",
     "admin.simulator.action.hold",
     "admin.simulator.action.resume",
@@ -471,6 +473,9 @@
     "adminWorkspace.legalHold",
     "adminWorkspace.light",
     "adminWorkspace.liveEvents",
+    "adminWorkspace.liveTranscript",
+    "adminWorkspace.liveTranscriptEnabled",
+    "adminWorkspace.liveTranscriptHint",
     "adminWorkspace.loading",
     "adminWorkspace.logoUrl",
     "adminWorkspace.logout",
@@ -732,8 +737,11 @@
     "agent.desktop.history",
     "agent.desktop.interaction",
     "agent.desktop.interactions",
+    "agent.desktop.interim",
     "agent.desktop.keepDraft",
     "agent.desktop.knowledge",
+    "agent.desktop.liveEmpty",
+    "agent.desktop.liveTranscript",
     "agent.desktop.logout",
     "agent.desktop.manualData",
     "agent.desktop.next",
@@ -750,6 +758,13 @@
     "agent.desktop.probablySaid",
     "agent.desktop.progress",
     "agent.desktop.progressLabel",
+    "agent.desktop.prompts.dismiss",
+    "agent.desktop.prompts.go",
+    "agent.desktop.prompts.heard.agent",
+    "agent.desktop.prompts.heard.customer",
+    "agent.desktop.prompts.ok",
+    "agent.desktop.prompts.region",
+    "agent.desktop.prompts.suggestPage",
     "agent.desktop.readOnly",
     "agent.desktop.recent",
     "agent.desktop.recording.hint",
@@ -777,6 +792,8 @@
     "agent.desktop.sizes.large",
     "agent.desktop.sizes.medium",
     "agent.desktop.sizes.small",
+    "agent.desktop.speaker.agent",
+    "agent.desktop.speaker.customer",
     "agent.desktop.states.abandoned",
     "agent.desktop.states.active",
     "agent.desktop.states.completed",
@@ -1874,6 +1891,7 @@
     "designer.flow.tools.preview",
     "designer.flow.tools.rules",
     "designer.flow.tools.screen",
+    "designer.flow.tools.triggers",
     "designer.flow.tools.variables",
     "designer.flow.types.dataSource",
     "designer.flow.types.decision",
@@ -2841,6 +2859,51 @@
     "designer.suggest.toggle",
     "designer.textVariables.insert",
     "designer.textVariables.placeholder",
+    "designer.triggers.action",
+    "designer.triggers.actionType",
+    "designer.triggers.actions",
+    "designer.triggers.add",
+    "designer.triggers.addAction",
+    "designer.triggers.cooldown",
+    "designer.triggers.defaultName",
+    "designer.triggers.disabledName",
+    "designer.triggers.emptyBody",
+    "designer.triggers.emptyTitle",
+    "designer.triggers.enabled",
+    "designer.triggers.intro",
+    "designer.triggers.message",
+    "designer.triggers.name",
+    "designer.triggers.noFlowPages",
+    "designer.triggers.noNotices",
+    "designer.triggers.notice",
+    "designer.triggers.page",
+    "designer.triggers.pages",
+    "designer.triggers.pagesHint",
+    "designer.triggers.phrases",
+    "designer.triggers.phrasesHint",
+    "designer.triggers.remove",
+    "designer.triggers.removeAction",
+    "designer.triggers.repeat",
+    "designer.triggers.repeats.cooldown",
+    "designer.triggers.repeats.once",
+    "designer.triggers.speaker",
+    "designer.triggers.speakers.agent",
+    "designer.triggers.speakers.any",
+    "designer.triggers.speakers.customer",
+    "designer.triggers.title",
+    "designer.triggers.tone",
+    "designer.triggers.tones.danger",
+    "designer.triggers.tones.info",
+    "designer.triggers.tones.success",
+    "designer.triggers.tones.warning",
+    "designer.triggers.tryHit",
+    "designer.triggers.tryNone",
+    "designer.triggers.trySentence",
+    "designer.triggers.trySpeaker",
+    "designer.triggers.tryTitle",
+    "designer.triggers.types.alert",
+    "designer.triggers.types.markNotice",
+    "designer.triggers.types.suggestPage",
     "designer.value.fixedValue",
     "designer.value.formula",
     "designer.value.json",
@@ -3147,6 +3210,9 @@
     "script.validation.subflowCycle",
     "script.validation.subflowRefBroken",
     "script.validation.timerRefBroken",
+    "script.validation.triggerNoticeRefBroken",
+    "script.validation.triggerPageNotInFlow",
+    "script.validation.triggerPhrasesMissing",
     "script.validation.variableClassificationMismatch",
     "script.validation.variableEnumValuesMissing",
     "script.validation.variablePciPersisted",
@@ -3399,8 +3465,10 @@
     "admin.onboarding.help",
     "admin.onboarding.name",
     "admin.onboarding.title",
+    "admin.simulator.action.agentSays",
     "admin.simulator.action.connect",
     "admin.simulator.action.customerMessage",
+    "admin.simulator.action.customerSays",
     "admin.simulator.action.end",
     "admin.simulator.action.hold",
     "admin.simulator.action.resume",
@@ -3763,6 +3831,9 @@
     "adminWorkspace.legalHold",
     "adminWorkspace.light",
     "adminWorkspace.liveEvents",
+    "adminWorkspace.liveTranscript",
+    "adminWorkspace.liveTranscriptEnabled",
+    "adminWorkspace.liveTranscriptHint",
     "adminWorkspace.loading",
     "adminWorkspace.logoUrl",
     "adminWorkspace.logout",
@@ -4024,8 +4095,11 @@
     "agent.desktop.history",
     "agent.desktop.interaction",
     "agent.desktop.interactions",
+    "agent.desktop.interim",
     "agent.desktop.keepDraft",
     "agent.desktop.knowledge",
+    "agent.desktop.liveEmpty",
+    "agent.desktop.liveTranscript",
     "agent.desktop.logout",
     "agent.desktop.manualData",
     "agent.desktop.next",
@@ -4042,6 +4116,13 @@
     "agent.desktop.probablySaid",
     "agent.desktop.progress",
     "agent.desktop.progressLabel",
+    "agent.desktop.prompts.dismiss",
+    "agent.desktop.prompts.go",
+    "agent.desktop.prompts.heard.agent",
+    "agent.desktop.prompts.heard.customer",
+    "agent.desktop.prompts.ok",
+    "agent.desktop.prompts.region",
+    "agent.desktop.prompts.suggestPage",
     "agent.desktop.readOnly",
     "agent.desktop.recent",
     "agent.desktop.recording.hint",
@@ -4069,6 +4150,8 @@
     "agent.desktop.sizes.large",
     "agent.desktop.sizes.medium",
     "agent.desktop.sizes.small",
+    "agent.desktop.speaker.agent",
+    "agent.desktop.speaker.customer",
     "agent.desktop.states.abandoned",
     "agent.desktop.states.active",
     "agent.desktop.states.completed",
@@ -5166,6 +5249,7 @@
     "designer.flow.tools.preview",
     "designer.flow.tools.rules",
     "designer.flow.tools.screen",
+    "designer.flow.tools.triggers",
     "designer.flow.tools.variables",
     "designer.flow.types.dataSource",
     "designer.flow.types.decision",
@@ -6133,6 +6217,51 @@
     "designer.suggest.toggle",
     "designer.textVariables.insert",
     "designer.textVariables.placeholder",
+    "designer.triggers.action",
+    "designer.triggers.actionType",
+    "designer.triggers.actions",
+    "designer.triggers.add",
+    "designer.triggers.addAction",
+    "designer.triggers.cooldown",
+    "designer.triggers.defaultName",
+    "designer.triggers.disabledName",
+    "designer.triggers.emptyBody",
+    "designer.triggers.emptyTitle",
+    "designer.triggers.enabled",
+    "designer.triggers.intro",
+    "designer.triggers.message",
+    "designer.triggers.name",
+    "designer.triggers.noFlowPages",
+    "designer.triggers.noNotices",
+    "designer.triggers.notice",
+    "designer.triggers.page",
+    "designer.triggers.pages",
+    "designer.triggers.pagesHint",
+    "designer.triggers.phrases",
+    "designer.triggers.phrasesHint",
+    "designer.triggers.remove",
+    "designer.triggers.removeAction",
+    "designer.triggers.repeat",
+    "designer.triggers.repeats.cooldown",
+    "designer.triggers.repeats.once",
+    "designer.triggers.speaker",
+    "designer.triggers.speakers.agent",
+    "designer.triggers.speakers.any",
+    "designer.triggers.speakers.customer",
+    "designer.triggers.title",
+    "designer.triggers.tone",
+    "designer.triggers.tones.danger",
+    "designer.triggers.tones.info",
+    "designer.triggers.tones.success",
+    "designer.triggers.tones.warning",
+    "designer.triggers.tryHit",
+    "designer.triggers.tryNone",
+    "designer.triggers.trySentence",
+    "designer.triggers.trySpeaker",
+    "designer.triggers.tryTitle",
+    "designer.triggers.types.alert",
+    "designer.triggers.types.markNotice",
+    "designer.triggers.types.suggestPage",
     "designer.value.fixedValue",
     "designer.value.formula",
     "designer.value.json",
@@ -6439,6 +6568,9 @@
     "script.validation.subflowCycle",
     "script.validation.subflowRefBroken",
     "script.validation.timerRefBroken",
+    "script.validation.triggerNoticeRefBroken",
+    "script.validation.triggerPageNotInFlow",
+    "script.validation.triggerPhrasesMissing",
     "script.validation.variableClassificationMismatch",
     "script.validation.variableEnumValuesMissing",
     "script.validation.variablePciPersisted",
@@ -6586,7 +6718,7 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 1339,
+  "literalKeyCount": 1378,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
@@ -6654,43 +6786,43 @@
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 97
+      "line": 106
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 132
+      "line": 141
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 149
+      "line": 158
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 175
+      "line": 184
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 220
+      "line": 229
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 222
+      "line": 231
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 234
-    },
-    {
-      "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 235
-    },
-    {
-      "file": "apps/admin-web/src/simulator/simulator-section.tsx",
-      "line": 242
+      "line": 251
     },
     {
       "file": "apps/admin-web/src/simulator/simulator-section.tsx",
       "line": 252
+    },
+    {
+      "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+      "line": 259
+    },
+    {
+      "file": "apps/admin-web/src/simulator/simulator-section.tsx",
+      "line": 269
     },
     {
       "file": "apps/admin-web/src/workspace/ai-page.tsx",
@@ -6894,43 +7026,43 @@
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 312
+      "line": 331
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 313
+      "line": 332
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 365
+      "line": 384
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 366
+      "line": 385
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 367
+      "line": 386
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 368
+      "line": 387
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 369
+      "line": 388
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 438
+      "line": 457
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 439
+      "line": 458
     },
     {
       "file": "apps/admin-web/src/workspace/tenant-pages.tsx",
-      "line": 440
+      "line": 459
     },
     {
       "file": "apps/admin-web/src/workspace/trust-page.tsx",
@@ -7021,44 +7153,56 @@
       "line": 18
     },
     {
-      "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 390
+      "file": "apps/agent-web/src/desktop/live-transcript.tsx",
+      "line": 53
+    },
+    {
+      "file": "apps/agent-web/src/desktop/live-transcript.tsx",
+      "line": 82
+    },
+    {
+      "file": "apps/agent-web/src/desktop/live-transcript.tsx",
+      "line": 123
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 403
+      "line": 392
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 428
+      "line": 405
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 464
+      "line": 430
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 488
+      "line": 466
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 549
+      "line": 490
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 663
+      "line": 551
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 809
+      "line": 672
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 837
+      "line": 834
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 839
+      "line": 862
+    },
+    {
+      "file": "apps/agent-web/src/desktop/session-view.tsx",
+      "line": 864
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
@@ -7214,19 +7358,15 @@
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
-      "line": 76
+      "line": 83
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
-      "line": 78
+      "line": 85
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
-      "line": 84
-    },
-    {
-      "file": "apps/designer-web/src/editor/commands.ts",
-      "line": 102
+      "line": 91
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
@@ -7234,23 +7374,27 @@
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
-      "line": 125
+      "line": 116
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
-      "line": 165
+      "line": 132
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
-      "line": 167
+      "line": 172
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
-      "line": 170
+      "line": 174
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
-      "line": 220
+      "line": 177
+    },
+    {
+      "file": "apps/designer-web/src/editor/commands.ts",
+      "line": 227
     },
     {
       "file": "apps/designer-web/src/editor/data-map-view.tsx",
@@ -7274,67 +7418,67 @@
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 440
+      "line": 444
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 445
+      "line": 449
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 489
+      "line": 493
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 509
+      "line": 513
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 569
+      "line": 573
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 574
+      "line": 578
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 597
+      "line": 601
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 603
+      "line": 607
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 604
+      "line": 608
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 636
+      "line": 640
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 741
+      "line": 745
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 747
+      "line": 751
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 764
+      "line": 768
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 784
+      "line": 788
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 920
+      "line": 930
     },
     {
       "file": "apps/designer-web/src/editor/editor.tsx",
-      "line": 937
+      "line": 947
     },
     {
       "file": "apps/designer-web/src/editor/health-panel.tsx",
@@ -8435,6 +8579,30 @@
     {
       "file": "apps/designer-web/src/rules/manager.tsx",
       "line": 99
+    },
+    {
+      "file": "apps/designer-web/src/triggers/manager.tsx",
+      "line": 140
+    },
+    {
+      "file": "apps/designer-web/src/triggers/manager.tsx",
+      "line": 207
+    },
+    {
+      "file": "apps/designer-web/src/triggers/manager.tsx",
+      "line": 234
+    },
+    {
+      "file": "apps/designer-web/src/triggers/manager.tsx",
+      "line": 354
+    },
+    {
+      "file": "apps/designer-web/src/triggers/manager.tsx",
+      "line": 419
+    },
+    {
+      "file": "apps/designer-web/src/triggers/manager.tsx",
+      "line": 462
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",

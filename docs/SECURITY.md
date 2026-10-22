@@ -233,6 +233,14 @@ Masked by default (`•••• 1234`); "reveal" is permission-gated, time-boxe
 - Segmentation: payment-related connectors run in an isolated deployment profile; quarterly ASV scans and annual pentest planned (see [PROGRESS](PROGRESS.md) step 35).
 - Mapped controls: req 3 (no storage), 4 (TLS), 6 (secure SDLC, SAST/DAST), 7/8 (RBAC, MFA via IdP), 10 (audit logging, time sync, chain integrity), 11 (testing), 12 (policies).
 
+### 6.5 Live transcript (ADR-0052)
+
+- **Text only, opt-in.** Verbis never receives audio. Connectors declaring `liveTranscript` send text segments; the API discards them unless the tenant enabled `settings.liveTranscript` (default off, audited settings change).
+- **Card numbers.** Before a line is stored, pushed or evaluated, any run of 13+ digits holding a Luhn-valid card number keeps only its last four (`maskCardNumbers`). Digits a recognizer writes as words are not caught: payment steps must pause transcription on the platform (recording pause, or hosted capture per §6.4).
+- **Storage.** Final lines only, sealed per tenant and interaction (AAD `runtime:transcript:<tenant>:<interaction>`) in Redis, at most 200 lines, expiring 60 minutes after the last line and deleted when the interaction ends. Never PostgreSQL, audit, outbox/NATS, analytics or logs; the hub drops an undeliverable segment instead of dead-lettering it.
+- **Access.** Lines are pushed only to the session owner's Socket.IO room; supervisor sockets do not join it. `GET /v1/sessions/{id}/desktop/transcript` is owner-only and audited (`runtime.transcript.viewed`). The first line of an interaction is audited without text (`runtime.transcript.started`).
+- **Triggers.** A hit is a session event with ids only. Suggestions never act by themselves; page moves go through the runtime guards, notice hints never acknowledge. Hits are not used for per-agent scoring.
+
 ## 7. Audit integrity
 
 - Per-tenant chain: `hash_n = SHA-256( hash_{n-1} ‖ canonical_json(event_n) )`; gap-free `seq` assigned by the sequencer inside a serializable section.
