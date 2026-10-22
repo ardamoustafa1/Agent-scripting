@@ -5,7 +5,15 @@ import { createComponentRegistry } from '@verbis/components';
 import { Runtime, RuntimeProblem, abortable } from '@verbis/core-runtime';
 import { JsonValueSchema, type JsonValue } from '@verbis/script-schema';
 
-import { api, Desktop, View, AgentError } from './api.js';
+import {
+  api,
+  Desktop,
+  View,
+  AgentError,
+  TranscriptLine,
+  TranscriptWindow,
+  type Prompt,
+} from './api.js';
 import { classifyAgentFailure, type AgentFailure } from './failure.js';
 import { type DraftVault } from './vault.js';
 
@@ -40,6 +48,30 @@ export interface AgentState {
   probablySaid: readonly string[];
   /** What this tab last asked the telephony platform for; the platform confirms asynchronously. */
   recordingPaused: boolean | null;
+  /** Live transcript (ADR-0052): tenant opt-in, the lines of this call and pending prompts. */
+  transcriptEnabled: boolean;
+  transcript: readonly TranscriptLine[];
+  prompts: readonly Prompt[];
+}
+/** Lines kept in memory per call; the server keeps the same window for a reload. */
+export const TRANSCRIPT_LINES = 200;
+/** Adds or replaces a line by segment id (an interim line is replaced by its final version). */
+export function mergeLine(
+  lines: readonly TranscriptLine[],
+  line: TranscriptLine,
+): readonly TranscriptLine[] {
+  const index = lines.findIndex((existing) => existing.segmentId === line.segmentId);
+  if (index >= 0) {
+    if (lines[index]?.final && !line.final) return lines;
+    return lines.map((existing, i) => (i === index ? line : existing));
+  }
+  return [...lines, line].slice(-TRANSCRIPT_LINES);
+}
+/** Notices a pending prompt marks as probably said (hints only, never a confirmation). */
+export function promptNotices(prompts: readonly Prompt[]): string[] {
+  return prompts.flatMap((prompt) =>
+    prompt.actions.flatMap((action) => (action.type === 'markNotice' ? [action.noticeId] : [])),
+  );
 }
 /** One independent controller per securely launched interaction; writes remain server sequenced. */
 export class AgentController {
@@ -82,6 +114,9 @@ export class AgentController {
       note: '',
       probablySaid: [],
       recordingPaused: null,
+      transcriptEnabled: desktop.transcript.enabled,
+      transcript: [],
+      prompts: desktop.prompts,
       disposition: '',
       callbackAt: '',
       notice: null,
@@ -531,7 +566,11 @@ export class AgentController {
     if (context || ['completed', 'abandoned', 'expired'].includes(view.state)) {
       const desktop = await api(`/v1/sessions/${this.id}/desktop`, Desktop);
       this.desktop.interaction = desktop.interaction;
-      this.publish({ writeback: desktop.writeback });
+      this.publish({
+        writeback: desktop.writeback,
+        transcriptEnabled: desktop.transcript.enabled,
+        prompts: desktop.prompts,
+      });
       if (
         ['completed', 'abandoned', 'expired'].includes(view.state) &&
         desktop.writeback !== 'queued'
@@ -679,6 +718,45 @@ export class AgentController {
       );
     });
   }
+  /** Stored lines after a (re)connect; live lines that arrived meanwhile are kept. */
+  async loadTranscript() {
+    if (!this.state.transcriptEnabled) return;
+    const window = await api(`/v1/sessions/${this.id}/desktop/transcript`, TranscriptWindow);
+    let lines: readonly TranscriptLine[] = window.lines;
+    for (const line of this.state.transcript) lines = mergeLine(lines, line);
+    this.publish({ transcriptEnabled: window.enabled, transcript: lines });
+  }
+  /** A line pushed by the server (owner-only channel). */
+  receiveTranscript(raw: unknown) {
+    const line = TranscriptLine.safeParse(raw);
+    if (!line.success || this.disposed) return;
+    this.publish({ transcript: mergeLine(this.state.transcript, line.data) });
+  }
+  /**
+   * Resolves a trigger prompt. Accepting a page suggestion navigates first, through the runtime's
+   * own guards; if that is refused the prompt stays open. Notice hints of the prompt are kept.
+   */
+  async resolvePrompt(prompt: Prompt, resolution: 'accepted' | 'dismissed') {
+    const page = prompt.actions.find((action) => action.type === 'suggestPage');
+    if (resolution === 'accepted' && page?.type === 'suggestPage')
+      await this.runtime.navigate(page.pageId);
+    await this.serial(async () => {
+      await this.flush();
+      if (!this.state.online) throw new AgentError(503, 'VERBIS_OFFLINE');
+      this.accept(
+        await api(
+          `/v1/sessions/${this.id}/desktop/prompts/${encodeURIComponent(prompt.triggerId)}`,
+          View,
+          this.csrf,
+          { ...this.claim(), resolution },
+        ),
+      );
+      this.publish({
+        prompts: this.state.prompts.filter((p) => p.triggerId !== prompt.triggerId),
+        probablySaid: [...new Set([...this.state.probablySaid, ...promptNotices([prompt])])],
+      });
+    });
+  }
   /** Marks notices as probably said; the agent's own confirmation stays the only thing that counts. */
   markProbablySaid(ids: readonly string[]) {
     this.publish({ probablySaid: [...new Set([...this.state.probablySaid, ...ids])] });
@@ -725,9 +803,13 @@ export class AgentController {
           reconnection: false,
         });
         this.socket = socket;
+        socket.on('runtime.transcript', (line: unknown) => {
+          this.receiveTranscript(line);
+        });
         socket.on('runtime.resume', () => {
           void this.serial(async () => {
             await this.refresh(true);
+            await this.loadTranscript().catch(() => undefined);
             if (
               !['completed', 'abandoned', 'expired'].includes(this.state.view.state) &&
               this.leaseUntil <= Date.now()

@@ -177,6 +177,58 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+/* Live transcript and trigger prompts (ADR-0052) */
+.ag-prompts {
+  display: grid;
+  gap: var(--vb-space-3);
+  margin-block-end: var(--vb-space-4);
+}
+.ag-prompt-quote {
+  display: block;
+  margin-block: var(--vb-space-1) var(--vb-space-2);
+  color: var(--vb-color-text-muted);
+  font-style: italic;
+}
+.ag-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vb-space-2);
+  margin-block-start: var(--vb-space-2);
+}
+.ag-muted {
+  color: var(--vb-color-text-muted);
+}
+.ag-live-transcript {
+  max-block-size: 28rem;
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+.ag-live-transcript ol {
+  display: grid;
+  gap: var(--vb-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ag-live-transcript li {
+  display: grid;
+  gap: var(--vb-space-1);
+  padding: var(--vb-space-2) var(--vb-space-3);
+  border-radius: var(--vb-radius-md);
+  background: var(--vb-color-surface);
+}
+.ag-live-transcript li[data-speaker='agent'] {
+  background: var(--vb-color-primary-soft);
+}
+.ag-live-transcript li[data-final='false'] {
+  color: var(--vb-color-text-muted);
+  font-style: italic;
+}
+.ag-live-speaker {
+  font-size: var(--vb-font-size-xs);
+  font-weight: 600;
+  color: var(--vb-color-text-muted);
+}
 .ag-footer {
   border-block-start: 1px solid var(--vb-color-border);
   border-block-end: 0;

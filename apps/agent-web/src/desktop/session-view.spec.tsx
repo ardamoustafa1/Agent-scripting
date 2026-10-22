@@ -308,6 +308,50 @@ it('lists required notices in a live checklist that follows the runtime acknowle
   // Nothing pending any more: the tab no longer shows a count.
   expect(screen.getByRole('tab', { name: i18n.t('agent.desktop.compliance') })).toBeDefined();
 });
+it('opens a voice call with a live transcript tab and puts transcript hints on pending notices', async () => {
+  await mount('active', 'voice', false, {
+    decorate: (desktop) => {
+      desktop.transcript = { enabled: true };
+      desktop.prompts = [
+        {
+          triggerId: 'recording',
+          segmentId: 's1',
+          speaker: 'agent',
+          firedAt: '2026-10-22T10:00:00.000Z',
+          actions: [{ type: 'markNotice', noticeId: 'txt-recording' }],
+        },
+      ];
+      desktop.document.pages[0]?.layout.children?.push(
+        NodeSchema.parse({
+          id: 'txt-recording',
+          type: 'scriptText',
+          props: { mustRead: true, titleKey: 'notice.rec', textKey: 'notice.rec' },
+        }),
+      );
+      for (const locale of ['tr', 'en'])
+        desktop.document.i18n.messages[locale] = {
+          ...desktop.document.i18n.messages[locale],
+          'notice.rec': 'Recording notice',
+        };
+    },
+  });
+  // The side panel is open from the start on a transcribed voice call.
+  const live = await screen.findByRole('tab', { name: i18n.t('agent.desktop.liveTranscript') });
+  fireEvent.mouseDown(live, { button: 0, ctrlKey: false });
+  expect(await screen.findByText(i18n.t('agent.desktop.liveEmpty'))).toBeDefined();
+  // A notice-only prompt is a checklist hint, not a card.
+  expect(screen.queryByRole('region', { name: i18n.t('agent.desktop.prompts.region') })).toBeNull();
+  fireEvent.mouseDown(
+    screen.getByRole('tab', { name: `${i18n.t('agent.desktop.compliance')} (1)` }),
+    { button: 0, ctrlKey: false },
+  );
+  expect(await screen.findByText(i18n.t('agent.desktop.probablySaid'))).toBeDefined();
+});
+it('hides the live transcript tab when the tenant has not opted in', async () => {
+  await mount('active', 'chat');
+  await screen.findByRole('tab', { name: i18n.t('agent.desktop.summary') });
+  expect(screen.queryByRole('tab', { name: i18n.t('agent.desktop.liveTranscript') })).toBeNull();
+});
 it('hides the checklist tab when the script has no required notices', async () => {
   await mount('active', 'chat');
   await screen.findByRole('tab', { name: i18n.t('agent.desktop.summary') });

@@ -49,9 +49,10 @@ import { agentScreenReady, agentLaunchFailed, agentPageTransition } from '../obs
 
 import { AgentAiPanel } from './ai-panel.js';
 import { api, Desktop } from './api.js';
-import { AgentController } from './controller.js';
+import { AgentController, promptNotices } from './controller.js';
 import { FailureNotice } from './failure-notice.js';
 import { classifyAgentFailure, type AgentFailure } from './failure.js';
+import { LivePrompts, LiveTranscript } from './live-transcript.js';
 import { describeTarget, pageFocusTarget, shortcutIntent } from './navigation.js';
 import { type DraftVault } from './vault.js';
 
@@ -198,7 +199,8 @@ function Interaction({
     }),
     [c],
   );
-  const [side, setSide] = useState(false),
+  // A voice call with a live transcript opens with the side panel, where the transcript lives.
+  const [side, setSide] = useState(() => c.getSnapshot().transcriptEnabled),
     [help, setHelp] = useState(false),
     [failure, setFailure] = useState<AgentFailure | null>(null),
     [subCodes, setSubCodes] = useState<string[]>([]),
@@ -614,6 +616,13 @@ function Interaction({
             </section>
           ) : (
             <>
+              <LivePrompts
+                controller={c}
+                prompts={s.prompts}
+                lines={s.transcript}
+                disabled={busy || s.readOnly || !s.online || s.view.state !== 'active'}
+                run={run}
+              />
               <StepHeader
                 step={trail.length + 1}
                 title={currentTitle}
@@ -675,7 +684,14 @@ function Interaction({
                           pending > 0
                             ? `${t('agent.desktop.compliance')} (${String(pending)})`
                             : t('agent.desktop.compliance'),
-                        content: <ComplianceList items={checklist} probablySaid={s.probablySaid} />,
+                        content: (
+                          <ComplianceList
+                            items={checklist}
+                            probablySaid={[
+                              ...new Set([...s.probablySaid, ...promptNotices(s.prompts)]),
+                            ]}
+                          />
+                        ),
                       },
                     ]
                   : []),
@@ -709,6 +725,15 @@ function Interaction({
                   label: t('agent.desktop.objections'),
                   content: <ContextList value={c.desktop.interaction.context['objections']} />,
                 },
+                ...(s.transcriptEnabled
+                  ? [
+                      {
+                        value: 'live',
+                        label: t('agent.desktop.liveTranscript'),
+                        content: <LiveTranscript lines={s.transcript} />,
+                      },
+                    ]
+                  : []),
                 ...(c.desktop.interaction.channel === 'chat'
                   ? [
                       {

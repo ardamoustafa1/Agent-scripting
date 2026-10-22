@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ScriptDocumentSchema, JsonValueSchema } from '@verbis/script-schema';
+import { ScriptDocumentSchema, JsonValueSchema, TriggerActionSchema } from '@verbis/script-schema';
 
 export const View = z.object({
   id: z.uuid(),
@@ -15,6 +15,29 @@ export const View = z.object({
   }),
 });
 export type View = z.infer<typeof View>;
+/** One line of the live transcript (ADR-0052); text is shown, never stored by the browser. */
+export const TranscriptLine = z.object({
+  segmentId: z.string().min(1).max(128),
+  speaker: z.enum(['customer', 'agent']),
+  text: z.string().min(1).max(2_000),
+  final: z.boolean(),
+  at: z.string(),
+  language: z.string().optional(),
+});
+export type TranscriptLine = z.infer<typeof TranscriptLine>;
+/** A transcript trigger hit the agent has not resolved yet. */
+export const Prompt = z.object({
+  triggerId: z.string(),
+  segmentId: z.string(),
+  speaker: z.enum(['customer', 'agent']),
+  firedAt: z.string(),
+  actions: z.array(TriggerActionSchema),
+});
+export type Prompt = z.infer<typeof Prompt>;
+export const TranscriptWindow = z.object({
+  enabled: z.boolean(),
+  lines: z.array(TranscriptLine),
+});
 export const Desktop = z.object({
   view: View,
   document: ScriptDocumentSchema,
@@ -51,6 +74,9 @@ export const Desktop = z.object({
     })
     .optional(),
   writeback: z.enum(['none', 'queued', 'success']),
+  /** Live transcript opt-in and pending trigger prompts; absent from older API responses. */
+  transcript: z.object({ enabled: z.boolean() }).default({ enabled: false }),
+  prompts: z.array(Prompt).default([]),
 });
 export type Desktop = z.infer<typeof Desktop>;
 export class AgentError extends Error {
