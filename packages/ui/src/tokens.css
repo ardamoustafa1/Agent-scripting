@@ -933,6 +933,24 @@ body {
 .vb-accordion-content > div {
   padding-block-end: var(--vb-space-4);
 }
+/* Knowledge article body (ADR-0057). */
+.vb-article {
+  display: grid;
+  gap: var(--vb-space-2);
+  color: var(--vb-color-text);
+  line-height: var(--vb-line-height);
+  overflow-wrap: anywhere;
+}
+.vb-article :is(h3, h4, h5) {
+  margin: var(--vb-space-2) 0 0;
+  font-size: var(--vb-font-size-md);
+}
+.vb-article :is(p, ul, ol) {
+  margin: 0;
+}
+.vb-article :is(ul, ol) {
+  padding-inline-start: var(--vb-space-5);
+}
 .vb-toolbar {
   display: flex;
   flex-wrap: wrap;

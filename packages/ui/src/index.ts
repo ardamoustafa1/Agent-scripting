@@ -23,6 +23,7 @@ export { icons as lucideIcons } from 'lucide-react';
 export * from './components/analytics-dashboard.js';
 
 export * from './components/ai-assistant.js';
+export * from './components/article.js';
 export * from './security.js';
 
 export * from './components/access-layout.js';
