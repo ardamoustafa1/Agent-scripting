@@ -280,6 +280,11 @@ export const PROBLEM_CATALOG = {
     slug: 'suggestion/not-open',
     title: 'The suggestion has already been decided',
   },
+  VERBIS_KNOWLEDGE_INVALID_TRANSITION: {
+    status: 409,
+    slug: 'knowledge/invalid-transition',
+    title: 'The article cannot make this lifecycle transition',
+  },
   VERBIS_SCRIPT_SEMVER_NOT_INCREASING: {
     status: 422,
     slug: 'script/semver-not-increasing',

@@ -14,3 +14,4 @@ export * from './trust-center.js';
 export * from './ai.js';
 export * from './cti-identities.js';
 export * from './suggestions.js';
+export * from './knowledge.js';
