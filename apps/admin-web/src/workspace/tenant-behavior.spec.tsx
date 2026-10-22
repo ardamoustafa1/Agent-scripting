@@ -102,6 +102,30 @@ it('saves session, network, embedding and separation-of-duties settings under th
     },
   });
 });
+it('opts the tenant in to the live transcript with its own save, off by default', async () => {
+  const f = await mountAdmin(<Security />, { '/v1/tenant': tenant });
+  const toggle = await screen.findByLabelText<HTMLInputElement>(f.label('liveTranscriptEnabled'));
+  expect(toggle.checked).toBe(false);
+  expect(screen.getByText(f.label('liveTranscriptHint'))).toBeTruthy();
+  fireEvent.click(toggle);
+  submitWithin(f.label('liveTranscriptEnabled'));
+  await screen.findByText(f.label('saved'));
+  const write = f.requests.find((request) => request.method === 'PATCH');
+  expect(write).toMatchObject({
+    path: '/v1/tenant/settings',
+    body: { liveTranscript: { enabled: true } },
+  });
+  expect(Object.keys(write?.body as object)).toEqual(['liveTranscript']);
+  expect(write?.init?.headers).toMatchObject({ 'if-match': '"3"' });
+});
+it('shows an opted-in tenant as enabled', async () => {
+  const f = await mountAdmin(<Security />, {
+    '/v1/tenant': { ...tenant, settings: { liveTranscript: { enabled: true } } },
+  });
+  expect(
+    (await screen.findByLabelText<HTMLInputElement>(f.label('liveTranscriptEnabled'))).checked,
+  ).toBe(true);
+});
 it('creates only public launch verification keys and updates an existing issuer with its version', async () => {
   const keys = {
     keys: [{ kty: 'OKP', kid: 'synthetic', crv: 'Ed25519', x: 'synthetic-public', alg: 'EdDSA' }],

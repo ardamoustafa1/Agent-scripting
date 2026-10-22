@@ -731,6 +731,10 @@ export const tr: Catalog = {
     ips: 'IP / CIDR allowlist (boş: sınırsız)',
     frames: 'İzinli frame-ancestors (HTTPS)',
     sod: 'Görevler ayrılığı (SoD)',
+    liveTranscript: 'Canlı döküm ve script tetikleyicileri',
+    liveTranscriptHint:
+      'Bağlayıcıların görüşmenin metnini (asla sesi değil) göndermesine izin verir; böylece scriptler söylenene tepki verebilir. Metin en fazla bir saat şifreli tutulur; veritabanına, loglara ve denetim kaydına yazılmaz, yalnız görüşmedeki ajan görür. Aydınlatma metninizin gerektirdiği şekilde müşteriyi kayıt ve dökümden haberdar edin.',
+    liveTranscriptEnabled: 'Canlı dökümü kullan',
     jwks: 'Launch JWS anahtarları',
     issuer: 'Yayımcı (issuer)',
     publicKeys: 'Açık anahtar kümesi (JWKS)',
@@ -3847,7 +3851,7 @@ export const tr: Catalog = {
         subject: 'E-posta konusu',
         message: 'İlk müşteri mesajı',
         autoConnect: 'Hemen yanıtla',
-        customerMessage: 'Sonraki müşteri mesajı',
+        customerMessage: 'Sonraki mesaj ya da konuşma satırı',
         transferTo: 'Aktarılacak kişi (platform kullanıcı kimliği)',
       },
       column: {
@@ -3881,6 +3885,8 @@ export const tr: Catalog = {
         hold: 'Beklet',
         resume: 'Devam',
         customerMessage: 'Müşteri yazsın',
+        customerSays: 'Müşteri söylesin',
+        agentSays: 'Ajan söylesin',
         transfer: 'Aktar',
         wrapup: 'Kapanışa al',
         end: 'Bitir',

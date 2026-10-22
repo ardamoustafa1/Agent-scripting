@@ -10,6 +10,8 @@ import {
   simulateAction,
   SimulatorApiError,
   simulatorState,
+  SPOKEN,
+  SPOKEN_CHANNELS,
   type NewSimulation,
   type SimAction,
   type SimChannel,
@@ -19,7 +21,7 @@ import {
 /** Actions that make sense in each status (buttons for others are not rendered). */
 const ALLOWED: Record<SimInteraction['status'], readonly SimAction[]> = {
   alerting: ['connect', 'end'],
-  connected: ['hold', 'customerMessage', 'transfer', 'wrapup', 'end'],
+  connected: ['hold', 'customerMessage', 'customerSays', 'agentSays', 'transfer', 'wrapup', 'end'],
   held: ['resume', 'transfer', 'end'],
   transferred: ['connect', 'end'],
   wrapup: ['end'],
@@ -67,17 +69,24 @@ export function SimulatorSection({ csrfToken }: { csrfToken: string }) {
     onSuccess: refresh,
   });
   const act = useMutation({
-    mutationFn: (input: { pid: string; action: SimAction }) =>
-      simulateAction(
+    mutationFn: (input: { pid: string; action: SimAction }) => {
+      const speaker = SPOKEN[input.action];
+      return simulateAction(
         connectorId ?? '',
         input.pid,
-        {
-          action: input.action,
-          ...(input.action === 'customerMessage' && message !== '' ? { message } : {}),
-          ...(input.action === 'transfer' ? { transferToPlatformUserId: transferTo } : {}),
-        },
+        speaker !== undefined
+          ? { action: 'utterance', speaker, message }
+          : {
+              action:
+                input.action === 'customerSays' || input.action === 'agentSays'
+                  ? 'utterance'
+                  : input.action,
+              ...(input.action === 'customerMessage' && message !== '' ? { message } : {}),
+              ...(input.action === 'transfer' ? { transferToPlatformUserId: transferTo } : {}),
+            },
         csrfToken,
-      ),
+      );
+    },
     onSuccess: refresh,
   });
 
@@ -221,15 +230,23 @@ export function SimulatorSection({ csrfToken }: { csrfToken: string }) {
                     <td>{interaction.agentPlatformUserId}</td>
                     <td>{t(`admin.simulator.status.${interaction.status}`)}</td>
                     <td>
-                      {SIM_ACTIONS.filter((action) =>
-                        ALLOWED[interaction.status].includes(action),
+                      {SIM_ACTIONS.filter(
+                        (action) =>
+                          ALLOWED[interaction.status].includes(action) &&
+                          // Spoken lines only where people speak (voice, video, callback).
+                          (SPOKEN[action] === undefined ||
+                            SPOKEN_CHANNELS.includes(interaction.channel)),
                       ).map((action) => (
                         <button
                           key={action}
                           className="vb-button"
                           data-variant="secondary"
                           type="button"
-                          disabled={act.isPending || (action === 'transfer' && transferTo === '')}
+                          disabled={
+                            act.isPending ||
+                            (action === 'transfer' && transferTo === '') ||
+                            (SPOKEN[action] !== undefined && message.trim() === '')
+                          }
                           aria-label={t('admin.simulator.actionFor', {
                             action: t(`admin.simulator.action.${action}`),
                             channel: t(`admin.simulator.channel.${interaction.channel}`),

@@ -17,11 +17,21 @@ export const SIM_ACTIONS = [
   'hold',
   'resume',
   'customerMessage',
+  'customerSays',
+  'agentSays',
   'transfer',
   'wrapup',
   'end',
 ] as const;
 export type SimAction = (typeof SIM_ACTIONS)[number];
+/** Spoken lines of the live transcript (ADR-0052) are one API action with a speaker. */
+export const SPOKEN: Partial<Record<SimAction, 'customer' | 'agent'>> = {
+  customerSays: 'customer',
+  agentSays: 'agent',
+};
+/** Channels where people speak rather than write. */
+export const SPOKEN_CHANNELS: readonly SimChannel[] = ['voice', 'video', 'callback'];
+export type SimApiAction = Exclude<SimAction, 'customerSays' | 'agentSays'> | 'utterance';
 
 const ConnectorPageSchema = z.object({
   data: z.array(
@@ -120,7 +130,12 @@ export async function simulate(
 export async function simulateAction(
   connectorId: string,
   platformInteractionId: string,
-  input: { action: SimAction; message?: string; transferToPlatformUserId?: string },
+  input: {
+    action: SimApiAction;
+    message?: string;
+    speaker?: 'customer' | 'agent';
+    transferToPlatformUserId?: string;
+  },
   csrf: string,
 ): Promise<void> {
   await call(

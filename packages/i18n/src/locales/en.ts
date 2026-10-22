@@ -725,6 +725,10 @@ export const en = {
     ips: 'IP / CIDR allowlist (empty: unrestricted)',
     frames: 'Allowed frame ancestors (HTTPS)',
     sod: 'Separation of duties (SoD)',
+    liveTranscript: 'Live transcript and script triggers',
+    liveTranscriptHint:
+      'Lets connectors send the text of the conversation (never audio) so scripts can react to what is said. Text is kept encrypted for at most an hour, never in the database, logs or audit, and only the agent on the call sees it. Tell customers about recording and transcription as your privacy notice requires.',
+    liveTranscriptEnabled: 'Use the live transcript',
     jwks: 'Launch JWS keys',
     issuer: 'Issuer',
     publicKeys: 'Public JWKS',
@@ -3820,7 +3824,7 @@ export const en = {
         subject: 'Email subject',
         message: 'First customer message',
         autoConnect: 'Answer immediately',
-        customerMessage: 'Next customer message',
+        customerMessage: 'Next message or spoken line',
         transferTo: 'Transfer to (platform user id)',
       },
       column: {
@@ -3854,6 +3858,8 @@ export const en = {
         hold: 'Hold',
         resume: 'Resume',
         customerMessage: 'Customer writes',
+        customerSays: 'Customer says',
+        agentSays: 'Agent says',
         transfer: 'Transfer',
         wrapup: 'Wrap up',
         end: 'End',

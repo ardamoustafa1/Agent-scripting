@@ -290,8 +290,27 @@ function SecurityForm({ tenant }: { tenant: z.infer<typeof TenantSchema> }) {
           <Check label={l('sod')} checked={sod} onChange={setSod} />
         </SaveForm>
       </Card>
+      <LiveTranscriptForm tenant={tenant} />
       <LaunchKeys />
     </>
+  );
+}
+/** Tenant opt-in for the live transcript and script triggers (ADR-0052); off by default. */
+function LiveTranscriptForm({ tenant }: { tenant: z.infer<typeof TenantSchema> }) {
+  const l = useLabels(),
+    write = useWrite(),
+    [enabled, setEnabled] = useState(record(tenant.settings['liveTranscript'])['enabled'] === true);
+  return (
+    <Card title={l('liveTranscript')}>
+      <p>{l('liveTranscriptHint')}</p>
+      <SaveForm
+        onSave={() =>
+          write('/v1/tenant/settings', { liveTranscript: { enabled } }, 'PATCH', tenant.version)
+        }
+      >
+        <Check label={l('liveTranscriptEnabled')} checked={enabled} onChange={setEnabled} />
+      </SaveForm>
+    </Card>
   );
 }
 function LaunchKeys() {
