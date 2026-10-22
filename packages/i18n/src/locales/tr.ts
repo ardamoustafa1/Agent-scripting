@@ -587,6 +587,7 @@ export const tr: Catalog = {
         audit: 'Denetim kaydı',
         report: 'Rapor',
         session: 'Oturum',
+        knowledge: 'Bilgi bankası makalesi',
       },
       action: {
         read: 'Görüntüle',

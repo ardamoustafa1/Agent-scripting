@@ -582,6 +582,7 @@ export const en = {
         audit: 'Audit log',
         report: 'Report',
         session: 'Session',
+        knowledge: 'Knowledge article',
       },
       action: {
         read: 'View',
