@@ -4,6 +4,7 @@ export type ShortcutIntent =
   | { type: 'back' }
   | { type: 'help' }
   | { type: 'focusMode' }
+  | { type: 'knowledge' }
   | { type: 'tab'; index: number };
 
 export interface ShortcutEvent {
@@ -51,7 +52,8 @@ export function describeTarget(target: EventTarget | null): ShortcutTarget {
 /**
  * Enter advances unless a control or multi-line field owns it; Ctrl/⌘+Enter advances even
  * from those (notes, long answers); Alt+← goes back; ? or Ctrl+/ toggles help; Alt+F toggles focus mode;
- * Alt+1…9 picks an interaction. Physical key codes keep Alt shortcuts layout-independent.
+ * Alt+K opens the knowledge base search (ADR-0057); Alt+1…9 picks an interaction. Physical key codes
+ * keep Alt shortcuts layout-independent.
  */
 export function shortcutIntent(event: ShortcutEvent, at: ShortcutTarget): ShortcutIntent | null {
   if (event.isComposing || at.dialog) return null;
@@ -62,6 +64,7 @@ export function shortcutIntent(event: ShortcutEvent, at: ShortcutTarget): Shortc
     if (event.key === 'ArrowLeft' && !at.typing) return { type: 'back' };
     if (at.typing) return null;
     if (event.code === 'KeyF') return { type: 'focusMode' };
+    if (event.code === 'KeyK') return { type: 'knowledge' };
     const digit = /^Digit([1-9])$/.exec(event.code)?.[1];
     if (digit) return { type: 'tab', index: Number(digit) - 1 };
     return null;

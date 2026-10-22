@@ -51,6 +51,7 @@ describe('catalogs', () => {
         'Ctrl + /',
         'Ctrl/⌘ + Enter',
         'Alt + F',
+        'Alt + K',
         'Alt + 1…9',
         '? · Ctrl + /',
         'Enter',

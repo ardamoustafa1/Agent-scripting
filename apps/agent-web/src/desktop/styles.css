@@ -198,6 +198,62 @@
 .ag-muted {
   color: var(--vb-color-text-muted);
 }
+/* Knowledge base tab (ADR-0057). */
+.ag-knowledge,
+.ag-knowledge-reader {
+  display: grid;
+  gap: var(--vb-space-3);
+}
+.ag-knowledge-reader h3 {
+  margin: 0;
+}
+.ag-knowledge > button {
+  justify-self: start;
+}
+.ag-knowledge-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vb-space-2);
+}
+.ag-knowledge-answer {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.ag-knowledge-sources {
+  margin: var(--vb-space-2) 0 0;
+  font-size: var(--vb-font-size-sm);
+}
+.ag-knowledge-results {
+  display: grid;
+  gap: var(--vb-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ag-knowledge-hit {
+  display: grid;
+  gap: var(--vb-space-1);
+  inline-size: 100%;
+  min-block-size: 24px;
+  padding: var(--vb-space-2) var(--vb-space-3);
+  color: var(--vb-color-text);
+  text-align: start;
+  font: inherit;
+  background: var(--vb-color-surface);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-sm);
+  cursor: pointer;
+}
+.ag-knowledge-hit:hover {
+  background: var(--vb-color-surface-raised);
+}
+.ag-knowledge-hit:focus-visible {
+  outline: 2px solid var(--vb-color-focus);
+  outline-offset: 2px;
+}
+.ag-knowledge-hit span {
+  color: var(--vb-color-text-muted);
+}
 .ag-live-transcript {
   max-block-size: 28rem;
   overflow: auto;
