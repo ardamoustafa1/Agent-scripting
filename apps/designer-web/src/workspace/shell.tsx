@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Activity,
+  BookOpen,
   Layers3,
   Megaphone,
   Workflow,
@@ -67,6 +68,8 @@ const Packages = lazy(() => import('../lifecycle/packages.js'));
 const Templates = lazy(() => import('../lifecycle/templates.js'));
 const IntegrationList = lazy(() => import('../integrations/list.js'));
 const IntegrationEditor = lazy(() => import('../integrations/editor.js'));
+const KnowledgeList = lazy(() => import('../knowledge/list.js'));
+const KnowledgeEditor = lazy(() => import('../knowledge/editor.js'));
 const Library = lazy(() => import('../pages/library.js'));
 const Campaign = lazy(() => import('../pages/campaign.js'));
 const Editor = lazy(() => import('../editor/editor.js'));
@@ -74,6 +77,7 @@ const Script = lazy(() => import('../pages/script.js'));
 const Settings = lazy(() => import('../pages/settings.js'));
 const icons = {
   Activity,
+  BookOpen,
   Megaphone,
   Workflow,
   PanelsTopLeft,
@@ -469,9 +473,14 @@ export default function Shell({
                     {destinations
                       .filter(
                         (item) =>
-                          !['settings', 'integrations', 'templates', 'analytics', 'ai'].includes(
-                            item.id,
-                          ),
+                          ![
+                            'settings',
+                            'integrations',
+                            'knowledge',
+                            'templates',
+                            'analytics',
+                            'ai',
+                          ].includes(item.id),
                       )
                       .map((item) => (
                         <Route
@@ -479,7 +488,9 @@ export default function Shell({
                           path={`/${item.id}`}
                           element={
                             <Library
-                              kind={item.id as Exclude<typeof item.id, 'analytics' | 'ai'>}
+                              kind={
+                                item.id as Exclude<typeof item.id, 'analytics' | 'ai' | 'knowledge'>
+                              }
                               onCreate={(kind) => {
                                 setCreate(kind);
                               }}
@@ -537,6 +548,22 @@ export default function Shell({
                       path="/integrations/:id"
                       element={
                         ability.can('read', 'Integration') ? <IntegrationEditor /> : <Forbidden />
+                      }
+                    />
+                    <Route
+                      path="/knowledge"
+                      element={
+                        ability.can('read', 'KnowledgeArticle') ? <KnowledgeList /> : <Forbidden />
+                      }
+                    />
+                    <Route
+                      path="/knowledge/:id"
+                      element={
+                        ability.can('read', 'KnowledgeArticle') ? (
+                          <KnowledgeEditor />
+                        ) : (
+                          <Forbidden />
+                        )
                       }
                     />
                     <Route

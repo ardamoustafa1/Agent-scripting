@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
+import { KNOWLEDGE_PANEL_MAX_ARTICLES } from '@verbis/components';
 import {
   ActionSchema,
   JsonValueSchema,
@@ -15,6 +16,7 @@ import {
 } from '@verbis/script-schema';
 import { Input, Textarea, Select, Button, Tabs, Alert } from '@verbis/ui';
 
+import { ArticlePicker } from '../knowledge/picker.js';
 import { RuleBuilder } from '../rules/builder.js';
 import { ruleDisplayName, ruleFields } from '../rules/fields.js';
 
@@ -486,56 +488,58 @@ export function Inspector({ store }: { store: EditorStore }) {
   const primaryKeys =
     node.type === 'heading' || node.type === 'text'
       ? ['textKey', 'params', 'emphasis']
-      : definition.designerMeta.category === 'script'
-        ? [
-            'textKey',
-            'labelKey',
-            'titleKey',
-            'blocks',
-            'options',
-            'mustRead',
-            'acknowledged',
-            'tone',
-          ]
-        : inputKeys
-          ? inputKeys.primary
-          : definition.designerMeta.category === 'structure'
-            ? [
-                'titleKey',
-                'descriptionKey',
-                'labelKey',
-                'items',
-                'columns',
-                'gap',
-                'size',
-                'arrayVariable',
-                'itemKey',
-              ]
-            : definition.designerMeta.category === 'data'
-              ? ['labelKey', 'ds', 'output', 'trigger', 'columns', 'queryVariable']
-              : definition.designerMeta.category === 'action'
-                ? [
-                    'labelKey',
-                    'variant',
-                    'size',
-                    'options',
-                    'outcome',
-                    'target',
-                    'scheduledAt',
-                    'disabled',
-                  ]
-                : definition.designerMeta.category === 'media'
+      : node.type === 'knowledgePanel'
+        ? ['labelKey', 'descriptionKey', 'articles', 'searchable']
+        : definition.designerMeta.category === 'script'
+          ? [
+              'textKey',
+              'labelKey',
+              'titleKey',
+              'blocks',
+              'options',
+              'mustRead',
+              'acknowledged',
+              'tone',
+            ]
+          : inputKeys
+            ? inputKeys.primary
+            : definition.designerMeta.category === 'structure'
+              ? [
+                  'titleKey',
+                  'descriptionKey',
+                  'labelKey',
+                  'items',
+                  'columns',
+                  'gap',
+                  'size',
+                  'arrayVariable',
+                  'itemKey',
+                ]
+              : definition.designerMeta.category === 'data'
+                ? ['labelKey', 'ds', 'output', 'trigger', 'columns', 'queryVariable']
+                : definition.designerMeta.category === 'action'
                   ? [
                       'labelKey',
-                      'url',
-                      'altKey',
-                      'captionsUrl',
-                      'durationSec',
-                      'value',
-                      'tone',
-                      'max',
+                      'variant',
+                      'size',
+                      'options',
+                      'outcome',
+                      'target',
+                      'scheduledAt',
+                      'disabled',
                     ]
-                  : fields.map((field) => field.key);
+                  : definition.designerMeta.category === 'media'
+                    ? [
+                        'labelKey',
+                        'url',
+                        'altKey',
+                        'captionsUrl',
+                        'durationSec',
+                        'value',
+                        'tone',
+                        'max',
+                      ]
+                    : fields.map((field) => field.key);
   const mainFields = fields.filter((field) => primaryKeys.includes(field.key));
   const advancedFields = fields.filter((field) =>
     inputKeys ? inputKeys.advanced.includes(field.key) : !primaryKeys.includes(field.key),
@@ -720,6 +724,16 @@ export function Inspector({ store }: { store: EditorStore }) {
               hint: t(`designer.variables.types.${v.type}`),
             }))}
           onValueChange={write}
+        />
+      );
+    if (field.control === 'knowledgeArticles')
+      return (
+        <ArticlePicker
+          key={`${node.id}.${field.key}`}
+          label={label}
+          value={Array.isArray(value) ? value.filter((key) => typeof key === 'string') : []}
+          max={KNOWLEDGE_PANEL_MAX_ARTICLES}
+          onChange={write}
         />
       );
     if (field.control === 'json' || typeof value === 'object')

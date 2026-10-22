@@ -6,6 +6,7 @@ export const navigation = [
   { id: 'scripts', subject: 'Script', icon: 'Workflow' },
   { id: 'screens', subject: 'Screen', icon: 'PanelsTopLeft' },
   { id: 'integrations', subject: 'Integration', icon: 'Plug' },
+  { id: 'knowledge', subject: 'KnowledgeArticle', icon: 'BookOpen' },
   { id: 'variables', subject: 'Script', icon: 'Braces' },
   { id: 'ai', subject: 'Script', icon: 'Braces' },
   { id: 'templates', subject: 'Script', icon: 'LayoutTemplate' },

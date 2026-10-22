@@ -33,7 +33,7 @@ function LibraryBody({
   kind,
   onCreate,
 }: {
-  kind: Exclude<Destination, 'analytics' | 'ai'>;
+  kind: Exclude<Destination, 'analytics' | 'ai' | 'knowledge'>;
   onCreate: (kind: 'campaigns' | 'scripts') => void;
 }) {
   const { t, i18n } = useTranslation();

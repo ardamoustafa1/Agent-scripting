@@ -129,3 +129,40 @@ it('is read-only for a published version', async () => {
   const name = screen.getByRole('textbox', { name: f.label('triggers.name') });
   expect(name.closest('fieldset')?.disabled).toBe(true);
 });
+
+it('suggests a knowledge base article picked by search (ADR-0057)', async () => {
+  const store = new EditorStore(minimalScript());
+  const f = await mountDesigner(<TriggerManager store={store} />, {
+    '/v1/knowledge-articles/search?q=refund&limit=10': {
+      results: [
+        {
+          key: 'refund-policy',
+          title: 'Refund policy',
+          snippet: 'Refunds within 14 days.',
+          tags: [],
+          locale: 'en',
+          status: 'published',
+          updatedAt: '2026-10-22T10:00:00.000Z',
+        },
+      ],
+    },
+  });
+  fireEvent.click(screen.getByRole('button', { name: f.label('triggers.add') }));
+  await choose(
+    f.i18n.t('designer.triggers.actionType', { number: 1 }),
+    f.label('triggers.types.suggestArticle'),
+  );
+  fireEvent.change(screen.getByRole('searchbox', { name: f.label('knowledge.picker.search') }), {
+    target: { value: 'refund' },
+  });
+  fireEvent.click(await screen.findByRole('button', { name: 'Add “Refund policy”' }));
+  expect(triggers(store)[0]?.actions).toEqual([
+    { type: 'suggestArticle', articleKey: 'refund-policy' },
+  ]);
+  // The hint text of the replaced alert action is cleaned up with it.
+  expect(
+    Object.keys(store.getSnapshot().document.i18n.messages['tr'] ?? {}).some((key) =>
+      key.startsWith('triggers.'),
+    ),
+  ).toBe(false);
+});
