@@ -18,7 +18,8 @@ const Envelope = z.strictObject({
 export class RuntimeCipher {
   constructor(@Inject(IDENTITY_KEYRING) private readonly root: Keyring) {}
   tenant(aad: string): string {
-    const match = /^runtime:(state|outcome|interaction|privacy|privacyReason):([^:]+):/.exec(aad);
+    const match =
+      /^runtime:(state|outcome|interaction|privacy|privacyReason|transcript):([^:]+):/.exec(aad);
     if (match?.[2] === undefined) throw new Error('Invalid runtime encryption scope');
     return match[2];
   }

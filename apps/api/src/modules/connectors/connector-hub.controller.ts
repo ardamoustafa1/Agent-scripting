@@ -26,6 +26,9 @@ const HealthReportSchema = z
   })
   .meta({ id: 'ConnectorHealthReport' });
 const IngestSchema = z.strictObject({ event: z.unknown() }).meta({ id: 'ConnectorEventIngest' });
+const TranscriptIngestSchema = z
+  .strictObject({ segment: z.unknown() })
+  .meta({ id: 'ConnectorTranscriptIngest' });
 const IngestResultSchema = z
   .object({ interactionId: UuidSchema, agentId: UuidSchema.nullable(), status: z.string() })
   .meta({ id: 'ConnectorEventIngested' });
@@ -85,5 +88,21 @@ export class ConnectorHubController {
     @ZBody(IngestSchema) input: z.infer<typeof IngestSchema>,
   ) {
     return this.hub.ingest(id, input.event);
+  }
+
+  @Post(':id/transcript-segments')
+  @HttpCode(200)
+  @RequirePermissions('update:Connector')
+  @SkipAudit()
+  @NoResponseReplay()
+  @ApiOperation({
+    summary: 'Hub: live transcript segment (text only); discarded unless the tenant opted in',
+  })
+  @ApiResponse(200, 'Accepted or discarded', z.object({ accepted: z.boolean() }))
+  transcript(
+    @ZParam('id', UuidSchema) id: string,
+    @ZBody(TranscriptIngestSchema) input: z.infer<typeof TranscriptIngestSchema>,
+  ) {
+    return this.hub.transcript(id, input.segment);
   }
 }

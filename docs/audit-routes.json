@@ -794,7 +794,7 @@
       "controller": "ConnectorHubController",
       "handler": "ingest",
       "file": "apps/api/src/modules/connectors/connector-hub.controller.ts",
-      "line": 78,
+      "line": 81,
       "decorators": [
         "SkipAudit"
       ],
@@ -809,7 +809,7 @@
       "controller": "ConnectorHubController",
       "handler": "health",
       "file": "apps/api/src/modules/connectors/connector-hub.controller.ts",
-      "line": 65,
+      "line": 68,
       "decorators": [
         "SkipAudit"
       ],
@@ -824,7 +824,22 @@
       "controller": "ConnectorHubController",
       "handler": "secrets",
       "file": "apps/api/src/modules/connectors/connector-hub.controller.ts",
-      "line": 50,
+      "line": 53,
+      "decorators": [
+        "SkipAudit"
+      ],
+      "strategy": "explicit",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/connector-hub/connectors/:id/transcript-segments",
+      "controller": "ConnectorHubController",
+      "handler": "transcript",
+      "file": "apps/api/src/modules/connectors/connector-hub.controller.ts",
+      "line": 93,
       "decorators": [
         "SkipAudit"
       ],
@@ -1570,7 +1585,7 @@
       "controller": "AgentDesktopController",
       "handler": "call",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 275,
+      "line": 329,
       "decorators": [
         "OwnTenantTransactions"
       ],
@@ -1585,7 +1600,7 @@
       "controller": "AgentDesktopController",
       "handler": "recovery",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 227,
+      "line": 281,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1598,7 +1613,7 @@
       "controller": "AgentDesktopController",
       "handler": "failure",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 185,
+      "line": 239,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1611,7 +1626,20 @@
       "controller": "AgentDesktopController",
       "handler": "feedback",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 211,
+      "line": 265,
+      "decorators": [],
+      "strategy": "transaction-interceptor",
+      "auditEvidence": [
+        "apps/api/src/modules/audit/audit.interceptors.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/sessions/:id/desktop/prompts/:triggerId",
+      "controller": "AgentDesktopController",
+      "handler": "resolvePrompt",
+      "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
+      "line": 183,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1624,7 +1652,7 @@
       "controller": "AgentDesktopController",
       "handler": "telemetry",
       "file": "apps/api/src/modules/runtime/agent-desktop.controller.ts",
-      "line": 148,
+      "line": 202,
       "decorators": [],
       "strategy": "transaction-interceptor",
       "auditEvidence": [
@@ -1782,7 +1810,7 @@
       "controller": "SimulatorController",
       "handler": "create",
       "file": "apps/api/src/modules/connectors/simulator.controller.ts",
-      "line": 86,
+      "line": 97,
       "decorators": [
         "SkipAudit"
       ],
@@ -1797,7 +1825,7 @@
       "controller": "SimulatorController",
       "handler": "act",
       "file": "apps/api/src/modules/connectors/simulator.controller.ts",
-      "line": 100,
+      "line": 111,
       "decorators": [
         "SkipAudit"
       ],

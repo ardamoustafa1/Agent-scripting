@@ -23,6 +23,15 @@ describe('tenant envelope encryption', () => {
       cipher.openString(JSON.stringify(tampered), 'runtime:state:tenant-a:session-a'),
     ).toThrow();
   });
+  it('binds transcript lines to their own scope', () => {
+    const cipher = new RuntimeCipher(new Keyring(`test:${Buffer.alloc(32, 6).toString('base64')}`));
+    const sealed = cipher.seal('synthetic line', 'runtime:transcript:tenant-a:call-a');
+    expect(sealed).not.toContain('synthetic line');
+    expect(cipher.openString(sealed, 'runtime:transcript:tenant-a:call-a')).toBe('synthetic line');
+    expect(() => cipher.openString(sealed, 'runtime:transcript:tenant-b:call-a')).toThrow();
+    expect(() => cipher.openString(sealed, 'runtime:interaction:tenant-a:call-a')).toThrow();
+    expect(() => cipher.seal('x', 'runtime:unknown:tenant-a:call-a')).toThrow();
+  });
   it('opens old DEK wraps after root-key rotation', () => {
     const oldKey = Buffer.alloc(32, 4).toString('base64'),
       nextKey = Buffer.alloc(32, 5).toString('base64');

@@ -24,6 +24,8 @@ import {
 } from './runtime-data.service.js';
 import { RuntimeEngineService } from './runtime-engine.service.js';
 import { SecureCaptureService } from './secure-capture.service.js';
+import { TranscriptPromptSchema, TranscriptService } from './transcript.service.js';
+import { TranscriptLineSchema } from './transcript.store.js';
 
 const DataRecovery = CommandSchema.omit({ command: true }).extend({
   sourceId: z.string().max(128),
@@ -52,7 +54,17 @@ export const AgentDesktopSchema = z.object({
     firstName: z.string().nullable(),
   }),
   writeback: z.enum(['none', 'queued', 'success']),
+  /** Live transcript (ADR-0052): tenant opt-in and the trigger prompts still pending. */
+  transcript: z.object({ enabled: z.boolean() }),
+  prompts: z.array(TranscriptPromptSchema),
 });
+const PromptResolution = CommandSchema.omit({ command: true }).extend({
+  resolution: z.enum(['accepted', 'dismissed']),
+});
+const TriggerIdSchema = z
+  .string()
+  .regex(/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/)
+  .max(64);
 @ApiTag('agent-desktop')
 @Controller('v1/sessions')
 export class AgentDesktopController {
@@ -63,6 +75,7 @@ export class AgentDesktopController {
     @Inject(AuditService) private readonly audit: AuditService,
     @Inject(SecureCaptureService) private readonly capture: SecureCaptureService,
     @Inject(AgentFeedbackService) private readonly feedbackService: AgentFeedbackService,
+    @Inject(TranscriptService) private readonly transcripts: TranscriptService,
   ) {}
   private requireOwner(userId: string) {
     assertRuntimeOwner(userId);
@@ -112,6 +125,7 @@ export class AgentDesktopController {
       metadata: { contextRead: true },
     });
     const attached = z.record(z.string(), JsonValueSchema).safeParse(interaction);
+    const live = await this.transcripts.enabled();
     return {
       view: await this.runtime.viewFromRow(row),
       document: this.runtime.document(row),
@@ -143,7 +157,47 @@ export class AgentDesktopController {
         firstName: displayName?.split(/\s+/)[0] ?? null,
       },
       writeback: row.state === 'completed' ? (acknowledgement ? 'success' : 'queued') : 'none',
+      transcript: { enabled: live },
+      prompts: live
+        ? await this.transcripts.prompts(row, (await this.runtime.snapshot(row)).currentPage)
+        : [],
     };
+  }
+  @Get(':id/desktop/transcript')
+  @RequirePermissions('read:Session')
+  @Header('Cache-Control', 'no-store')
+  @ApiOperation({
+    summary: 'Owner-only live transcript window of the call (sealed in Redis, never persisted)',
+  })
+  @ApiResponse(
+    200,
+    'Transcript window, oldest first',
+    z.object({ enabled: z.boolean(), lines: z.array(TranscriptLineSchema) }),
+  )
+  async transcript(@ZParam('id', UuidSchema) id: string) {
+    const row = await this.runtime.row(id);
+    this.runtime.authorize(row);
+    this.requireOwner(row.userId);
+    return this.transcripts.window(row);
+  }
+  @Post(':id/desktop/prompts/:triggerId')
+  @HttpCode(200)
+  @RequirePermissions('update:Session')
+  @NoResponseReplay()
+  @ApiOperation({
+    summary: 'Writer accepts or dismisses a transcript trigger prompt; never navigates by itself',
+  })
+  @ApiResponse(200, 'Authoritative state', RuntimeViewSchema)
+  async resolvePrompt(
+    @ZParam('id', UuidSchema) id: string,
+    @ZParam('triggerId', TriggerIdSchema) triggerId: string,
+    @ZBody(PromptResolution) input: z.infer<typeof PromptResolution>,
+  ) {
+    const row = await this.runtime.row(id, true);
+    this.requireOwner(row.userId);
+    this.runtime.claim(row, input);
+    await this.transcripts.resolve(row, triggerId, input.resolution);
+    return this.runtime.view(id);
   }
   @Post(':id/desktop/telemetry')
   @RequirePermissions('update:Session')

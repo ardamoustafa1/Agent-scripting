@@ -47,8 +47,19 @@ export const SimulatedInteractionSchema = z
   .meta({ id: 'SimulatedInteraction' });
 export const SimulatorActionSchema = z
   .strictObject({
-    action: z.enum(['connect', 'hold', 'resume', 'transfer', 'customerMessage', 'wrapup', 'end']),
+    action: z.enum([
+      'connect',
+      'hold',
+      'resume',
+      'transfer',
+      'customerMessage',
+      'utterance',
+      'wrapup',
+      'end',
+    ]),
     message: z.string().max(8_000).optional(),
+    /** `utterance`: a spoken line of the live transcript (ADR-0052). */
+    speaker: z.enum(['customer', 'agent']).optional(),
     transferToPlatformUserId: z.string().min(1).max(256).optional(),
   })
   .meta({ id: 'SimulatorAction' });

@@ -12,6 +12,8 @@ import { ConnectorHubService } from './connector-hub.service.js';
 import type { TenantDb } from '../../infra/database/tenant-db.js';
 import type { AuditService } from '../audit/audit.service.js';
 import type { RuntimeInteractionsHandler } from '../runtime/runtime-interactions.handler.js';
+import type { TranscriptService } from '../runtime/transcript.service.js';
+import type { TranscriptStore } from '../runtime/transcript.store.js';
 
 async function fixture() {
   const tenantId = randomUUID(),
@@ -52,6 +54,10 @@ async function fixture() {
   const interactions = {
     handle: vi.fn<RuntimeInteractionsHandler['handle']>().mockResolvedValue(undefined),
   };
+  const transcripts = {
+    receive: vi.fn<TranscriptService['receive']>().mockResolvedValue({ accepted: true }),
+  };
+  const transcriptStore = { clear: vi.fn<TranscriptStore['clear']>().mockResolvedValue() };
   const service = new ConnectorHubService(
     { current: () => tx, tenantId: () => tenantId } as unknown as TenantDb,
     audit as unknown as AuditService,
@@ -59,6 +65,8 @@ async function fixture() {
     cipher,
     interactions as unknown as RuntimeInteractionsHandler,
     vault,
+    transcripts as unknown as TranscriptService,
+    transcriptStore as unknown as TranscriptStore,
   );
   const principal = {
     type: 'service' as const,
@@ -81,6 +89,8 @@ async function fixture() {
     service,
     run,
     cipher,
+    transcripts,
+    transcriptStore,
   };
 }
 const event = {
@@ -208,5 +218,54 @@ describe('connector hub secret, health and normalized event boundaries', () => {
         ),
       ).rejects.toThrow('mTLS');
     expect(f.tx.connector.findMany).not.toHaveBeenCalled();
+  });
+});
+
+describe('connector hub live transcript segments (ADR-0052)', () => {
+  const segment = {
+    segmentId: 'utt-1',
+    platformInteractionId: 'synthetic-conversation',
+    speaker: 'customer',
+    text: 'Aboneliğimi iptal etmek istiyorum',
+    final: true,
+    occurredAt: '2026-10-22T10:00:00.000Z',
+  };
+  it('hands a valid segment of a known interaction to the runtime', async () => {
+    const f = await fixture();
+    const interactionId = randomUUID();
+    f.tx.interaction.findFirst.mockResolvedValue({ id: interactionId, status: 'connected' });
+    expect(await f.run(() => f.service.transcript(f.id, segment))).toEqual({ accepted: true });
+    expect(f.tx.interaction.findFirst.mock.calls[0]?.[0]).toMatchObject({
+      where: { tenantId: f.tenantId, connectorId: f.id, externalId: 'synthetic-conversation' },
+    });
+    expect(f.transcripts.receive).toHaveBeenCalledWith(
+      { id: interactionId, status: 'connected', connectorId: f.id },
+      expect.objectContaining({ segmentId: 'utt-1' }),
+    );
+    expect(f.audit.record).not.toHaveBeenCalled();
+  });
+  it('discards segments of unknown interactions and rejects malformed ones', async () => {
+    const f = await fixture();
+    expect(await f.run(() => f.service.transcript(f.id, segment))).toEqual({ accepted: false });
+    await expect(
+      f.run(() => f.service.transcript(f.id, { ...segment, speaker: 'bot' })),
+    ).rejects.toThrow('Transcript segment is invalid');
+    await expect(
+      f.run(() => f.service.transcript(f.id, { ...segment, audio: 'AAAA' })),
+    ).rejects.toThrow('Transcript segment is invalid');
+    expect(f.transcripts.receive).not.toHaveBeenCalled();
+  });
+  it('refuses an inactive connector', async () => {
+    const f = await fixture();
+    f.tx.connector.findFirst.mockResolvedValue(null);
+    await expect(f.run(() => f.service.transcript(f.id, segment))).rejects.toThrow();
+    expect(f.transcripts.receive).not.toHaveBeenCalled();
+  });
+  it('clears the stored transcript when the interaction ends', async () => {
+    const f = await fixture();
+    await f.run(() => f.service.ingest(f.id, { ...event, eventId: 'e-end', type: 'ended' }));
+    expect(f.transcriptStore.clear).toHaveBeenCalledWith(f.tenantId, expect.any(String));
+    await f.run(() => f.service.ingest(f.id, event));
+    expect(f.transcriptStore.clear).toHaveBeenCalledTimes(1);
   });
 });

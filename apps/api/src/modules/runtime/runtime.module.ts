@@ -24,6 +24,8 @@ import { RuntimeGateway } from './runtime.gateway.js';
 import { RuntimeRepository } from './runtime.repository.js';
 import { RuntimeService } from './runtime.service.js';
 import { SecureCaptureService } from './secure-capture.service.js';
+import { TranscriptService } from './transcript.service.js';
+import { TranscriptStore } from './transcript.store.js';
 
 @Module({
   imports: [AuditModule, IdentityModule, IntegrationsModule],
@@ -48,6 +50,8 @@ import { SecureCaptureService } from './secure-capture.service.js';
     RuntimePorts,
     SecureCaptureService,
     AgentFeedbackService,
+    TranscriptStore,
+    TranscriptService,
   ],
   exports: [
     RuntimeStateStore,
@@ -55,6 +59,8 @@ import { SecureCaptureService } from './secure-capture.service.js';
     RuntimePorts,
     RuntimeCipher,
     RuntimeInteractionsHandler,
+    TranscriptService,
+    TranscriptStore,
   ],
 })
 export class RuntimeModule {}

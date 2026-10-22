@@ -12,6 +12,7 @@ import { RuntimeDataService } from './runtime-data.service.js';
 
 import type { RuntimeEngineService } from './runtime-engine.service.js';
 import type { SecureCaptureService } from './secure-capture.service.js';
+import type { TranscriptService } from './transcript.service.js';
 import type { TenantDb } from '../../infra/database/tenant-db.js';
 import type { AuditService } from '../audit/audit.service.js';
 import type { IntegrationEngineService } from '../integrations/integration-engine.service.js';
@@ -64,6 +65,12 @@ function fixture(state = 'active') {
     run: vi.fn(async (_tenant: string, work: (value: typeof tx) => Promise<unknown>) => work(tx)),
   };
   const audit = { record: vi.fn().mockResolvedValue(undefined) };
+  const transcripts = {
+    enabled: vi.fn<TranscriptService['enabled']>().mockResolvedValue(false),
+    prompts: vi.fn<TranscriptService['prompts']>().mockResolvedValue([]),
+    window: vi.fn<TranscriptService['window']>().mockResolvedValue({ enabled: true, lines: [] }),
+    resolve: vi.fn<TranscriptService['resolve']>().mockResolvedValue(),
+  };
   const integration = {
     failure: vi.fn(
       (error: string | null) =>
@@ -85,8 +92,9 @@ function fixture(state = 'active') {
     audit as unknown as AuditService,
     { publicProfile: () => undefined } as unknown as SecureCaptureService,
     new AgentFeedbackService(db as unknown as TenantDb, audit as unknown as AuditService),
+    transcripts as unknown as TranscriptService,
   );
-  return { controller, runtime, tx, audit, integration, document, db };
+  return { controller, runtime, tx, audit, integration, document, db, transcripts };
 }
 function asUser<T>(user: string, work: () => T) {
   return requestContext.run(
@@ -411,4 +419,63 @@ it('does not present an e-mail fallback display name as the agent name', async (
   });
   const result = await asUser(owner, () => f.controller.desktop(id));
   expect(result.agent).toEqual({ id: owner, displayName: null, firstName: null });
+});
+
+describe('live transcript desktop routes (ADR-0052)', () => {
+  const claim = { expectedSequence: 1, tabId: id, writeToken: 'a'.repeat(43) };
+  it('lists pending prompts only when the tenant opted in', async () => {
+    const f = fixture();
+    const off = await asUser(owner, () => f.controller.desktop(id));
+    expect(off.transcript).toEqual({ enabled: false });
+    expect(off.prompts).toEqual([]);
+    expect(f.transcripts.prompts).not.toHaveBeenCalled();
+    f.transcripts.enabled.mockResolvedValue(true);
+    const prompt = {
+      triggerId: 'cancel-intent',
+      segmentId: 's1',
+      speaker: 'customer' as const,
+      firedAt: '2026-10-22T10:00:00.000Z',
+      actions: [{ type: 'alert' as const, messageKey: 'hint.cancel', tone: 'info' as const }],
+    };
+    f.transcripts.prompts.mockResolvedValue([prompt]);
+    const on = await asUser(owner, () => f.controller.desktop(id));
+    expect(on.transcript).toEqual({ enabled: true });
+    expect(on.prompts).toEqual([prompt]);
+  });
+  it('returns the transcript window to the owner only', async () => {
+    const f = fixture();
+    await expect(asUser('another-user', () => f.controller.transcript(id))).rejects.toThrow();
+    expect(f.transcripts.window).not.toHaveBeenCalled();
+    expect(await asUser(owner, () => f.controller.transcript(id))).toEqual({
+      enabled: true,
+      lines: [],
+    });
+  });
+  it('resolves a prompt only for the fenced writer', async () => {
+    const f = fixture();
+    await expect(
+      asUser('another-user', () =>
+        f.controller.resolvePrompt(id, 'cancel-intent', { ...claim, resolution: 'dismissed' }),
+      ),
+    ).rejects.toThrow();
+    f.runtime.claim.mockImplementationOnce(() => {
+      throw Error('fenced');
+    });
+    await expect(
+      asUser(owner, () =>
+        f.controller.resolvePrompt(id, 'cancel-intent', { ...claim, resolution: 'dismissed' }),
+      ),
+    ).rejects.toThrow('fenced');
+    expect(f.transcripts.resolve).not.toHaveBeenCalled();
+    expect(
+      await asUser(owner, () =>
+        f.controller.resolvePrompt(id, 'cancel-intent', { ...claim, resolution: 'accepted' }),
+      ),
+    ).toEqual({ id });
+    expect(f.transcripts.resolve).toHaveBeenCalledWith(
+      expect.objectContaining({ userId: owner }),
+      'cancel-intent',
+      'accepted',
+    );
+  });
 });

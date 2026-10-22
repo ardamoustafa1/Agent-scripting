@@ -13,7 +13,12 @@ import { instruments } from '@verbis/observability';
 
 import { RedisService } from '../../infra/redis/redis.service.js';
 
-import { RuntimeRealtimeService, type RuntimeGrant, room } from './runtime-realtime.service.js';
+import {
+  RuntimeRealtimeService,
+  type RuntimeGrant,
+  ownerRoom,
+  room,
+} from './runtime-realtime.service.js';
 
 import type { Redis } from 'ioredis';
 
@@ -76,7 +81,11 @@ export class RuntimeGateway
         await this.realtime.observation(grant, 'started');
         this.#observers.set(client.id, grant);
       }
-      await client.join(room(grant.tenantId, grant.sessionId));
+      await client.join(
+        grant.supervisor
+          ? room(grant.tenantId, grant.sessionId)
+          : [room(grant.tenantId, grant.sessionId), ownerRoom(grant.tenantId, grant.sessionId)],
+      );
       client.emit('runtime.resume', await this.realtime.resume(grant));
       if (!client.connected) return;
       // Commands stay on the HTTP BFF/CSRF/RLS pipeline. This socket is read-only.
@@ -105,6 +114,12 @@ export class RuntimeGateway
   publish(tenantId: string, sessionId: string, payload: Record<string, unknown>): void {
     if (!this.#ready) throw new Error('Runtime channel unavailable');
     this.server.to(room(tenantId, sessionId)).emit('runtime.event', payload);
+  }
+  /** Live transcript line for the session owner; skipped while the channel is down (ADR-0052). */
+  transcript(tenantId: string, sessionId: string, line: Record<string, unknown>): boolean {
+    if (!this.#ready) return false;
+    this.server.to(ownerRoom(tenantId, sessionId)).emit('runtime.transcript', line);
+    return true;
   }
   onModuleDestroy(): void {
     for (const check of this.#checks.values()) clearInterval(check);

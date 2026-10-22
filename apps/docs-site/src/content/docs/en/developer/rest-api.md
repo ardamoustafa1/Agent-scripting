@@ -8908,6 +8908,80 @@ Requires: read:Connector
 }
 ```
 
+## POST /v1/connector-hub/connectors/{id}/transcript-segments
+
+Hub: live transcript segment (text only); discarded unless the tenant opted in
+
+Requires: update:Connector
+
+```json
+{
+  "operationId": "ConnectorHub.transcript",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ConnectorTranscriptIngest"
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Accepted or discarded",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "accepted": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "accepted"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## GET /v1/connectors
 
 List connectors
@@ -28909,6 +28983,24 @@ Requires: read:Session
                   "queued",
                   "success"
                 ]
+              },
+              "transcript": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "enabled"
+                ],
+                "additionalProperties": false
+              },
+              "prompts": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TranscriptPrompt"
+                }
               }
             },
             "required": [
@@ -28919,7 +29011,9 @@ Requires: read:Session
               "interaction",
               "campaign",
               "agent",
-              "writeback"
+              "writeback",
+              "transcript",
+              "prompts"
             ],
             "additionalProperties": false
           }
@@ -29480,6 +29574,195 @@ Requires: read:Session
 }
 ```
 
+## POST /v1/sessions/{id}/desktop/prompts/{triggerId}
+
+Writer accepts or dismisses a transcript trigger prompt; never navigates by itself
+
+Requires: update:Session
+
+```json
+{
+  "operationId": "AgentDesktop.resolvePrompt",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "triggerId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 64,
+        "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+      }
+    },
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "expectedSequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "tabId": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "writeToken": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            },
+            "resolution": {
+              "type": "string",
+              "enum": [
+                "accepted",
+                "dismissed"
+              ]
+            }
+          },
+          "required": [
+            "expectedSequence",
+            "tabId",
+            "writeToken",
+            "resolution"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Authoritative state",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "launching",
+                  "active",
+                  "paused",
+                  "wrapup",
+                  "completed",
+                  "abandoned",
+                  "expired"
+                ]
+              },
+              "sequence": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "readOnly": {
+                "type": "boolean"
+              },
+              "snapshot": {
+                "type": "object",
+                "properties": {
+                  "variables": {
+                    "default": {},
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "$ref": "#/components/schemas/JsonValue"
+                    }
+                  },
+                  "currentPage": {
+                    "default": null,
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "history": {
+                    "default": [],
+                    "maxItems": 100,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "timers": {
+                    "default": {},
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  }
+                },
+                "required": [
+                  "variables",
+                  "currentPage",
+                  "history",
+                  "timers"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "state",
+              "sequence",
+              "readOnly",
+              "snapshot"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## POST /v1/sessions/{id}/desktop/telemetry
 
 Writer-fenced node timing and required-read acknowledgment; metadata only
@@ -29667,6 +29950,77 @@ Requires: update:Session
               "sequence",
               "readOnly",
               "snapshot"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## GET /v1/sessions/{id}/desktop/transcript
+
+Owner-only live transcript window of the call (sealed in Redis, never persisted)
+
+Requires: read:Session
+
+```json
+{
+  "operationId": "AgentDesktop.transcript",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Transcript window, oldest first",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "lines": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TranscriptLine"
+                }
+              }
+            },
+            "required": [
+              "enabled",
+              "lines"
             ],
             "additionalProperties": false
           }
@@ -36703,6 +37057,16 @@ Requires: update:User
     ],
     "additionalProperties": false
   },
+  "ConnectorTranscriptIngest": {
+    "type": "object",
+    "properties": {
+      "segment": {}
+    },
+    "required": [
+      "segment"
+    ],
+    "additionalProperties": false
+  },
   "CreateAssignment": {
     "type": "object",
     "properties": {
@@ -40079,6 +40443,18 @@ Requires: update:User
     ],
     "additionalProperties": false
   },
+  "LiveTranscriptSettings": {
+    "type": "object",
+    "properties": {
+      "enabled": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "enabled"
+    ],
+    "additionalProperties": false
+  },
   "Location": {
     "type": "object",
     "properties": {
@@ -42698,6 +43074,13 @@ Requires: update:User
           ],
           "additionalProperties": false
         }
+      },
+      "triggers": {
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ScriptTrigger"
+        }
       }
     },
     "required": [
@@ -43180,6 +43563,102 @@ Requires: update:User
     },
     "required": [
       "channel"
+    ],
+    "additionalProperties": false
+  },
+  "ScriptTrigger": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 120
+      },
+      "enabled": {
+        "default": true,
+        "type": "boolean"
+      },
+      "phrases": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+        },
+        "additionalProperties": {
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        }
+      },
+      "speaker": {
+        "default": "customer",
+        "type": "string",
+        "enum": [
+          "customer",
+          "agent",
+          "any"
+        ]
+      },
+      "pages": {
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+        }
+      },
+      "repeat": {
+        "default": "once",
+        "anyOf": [
+          {
+            "type": "string",
+            "const": "once"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "cooldownSeconds": {
+                "type": "integer",
+                "minimum": 10,
+                "maximum": 3600
+              }
+            },
+            "required": [
+              "cooldownSeconds"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "actions": {
+        "minItems": 1,
+        "maxItems": 3,
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TriggerAction"
+        }
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "enabled",
+      "phrases",
+      "speaker",
+      "repeat",
+      "actions"
     ],
     "additionalProperties": false
   },
@@ -44926,6 +45405,7 @@ Requires: update:User
           "resume",
           "transfer",
           "customerMessage",
+          "utterance",
           "wrapup",
           "end"
         ]
@@ -44933,6 +45413,13 @@ Requires: update:User
       "message": {
         "type": "string",
         "maxLength": 8000
+      },
+      "speaker": {
+        "type": "string",
+        "enum": [
+          "customer",
+          "agent"
+        ]
       },
       "transferToPlatformUserId": {
         "type": "string",
@@ -45608,6 +46095,9 @@ Requires: update:User
       },
       "embedding": {
         "$ref": "#/components/schemas/EmbeddingSettings"
+      },
+      "liveTranscript": {
+        "$ref": "#/components/schemas/LiveTranscriptSettings"
       }
     },
     "additionalProperties": {}
@@ -45650,6 +46140,160 @@ Requires: update:User
       "onElapsed"
     ],
     "additionalProperties": false
+  },
+  "TranscriptLine": {
+    "type": "object",
+    "properties": {
+      "segmentId": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      },
+      "speaker": {
+        "type": "string",
+        "enum": [
+          "customer",
+          "agent"
+        ]
+      },
+      "text": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2000
+      },
+      "final": {
+        "type": "boolean"
+      },
+      "at": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+      },
+      "language": {
+        "type": "string",
+        "maxLength": 5
+      }
+    },
+    "required": [
+      "segmentId",
+      "speaker",
+      "text",
+      "final",
+      "at"
+    ],
+    "additionalProperties": false
+  },
+  "TranscriptPrompt": {
+    "type": "object",
+    "properties": {
+      "triggerId": {
+        "type": "string"
+      },
+      "segmentId": {
+        "type": "string"
+      },
+      "speaker": {
+        "type": "string",
+        "enum": [
+          "customer",
+          "agent"
+        ]
+      },
+      "firedAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+      },
+      "actions": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TriggerAction"
+        }
+      }
+    },
+    "required": [
+      "triggerId",
+      "segmentId",
+      "speaker",
+      "firedAt",
+      "actions"
+    ],
+    "additionalProperties": false
+  },
+  "TriggerAction": {
+    "oneOf": [
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "suggestPage"
+          },
+          "pageId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+          }
+        },
+        "required": [
+          "type",
+          "pageId"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "alert"
+          },
+          "messageKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9]*(\\.[a-zA-Z0-9]+)*$"
+          },
+          "tone": {
+            "default": "info",
+            "type": "string",
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "danger"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "messageKey",
+          "tone"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "markNotice"
+          },
+          "noticeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+          }
+        },
+        "required": [
+          "type",
+          "noticeId"
+        ],
+        "additionalProperties": false
+      }
+    ]
   },
   "TrustCenter": {
     "type": "object",
@@ -46794,6 +47438,9 @@ Requires: update:User
           "separationOfDuties"
         ],
         "additionalProperties": false
+      },
+      "liveTranscript": {
+        "$ref": "#/components/schemas/LiveTranscriptSettings"
       }
     },
     "additionalProperties": false

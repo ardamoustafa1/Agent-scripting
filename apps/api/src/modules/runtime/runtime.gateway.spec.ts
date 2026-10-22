@@ -26,13 +26,15 @@ describe('gateway lifecycle and reconnect', () => {
     };
     publisher.duplicate.mockReturnValue(publisher);
     const redis = { client: { duplicate: vi.fn().mockReturnValue(publisher) } };
-    const server = { server: { adapter: vi.fn() } };
+    const emit = vi.fn();
+    const server = { server: { adapter: vi.fn() }, to: vi.fn().mockReturnValue({ emit }) };
     const gateway = new RuntimeGateway(
       realtime as unknown as RuntimeRealtimeService,
       redis as unknown as RedisService,
     );
     await gateway.afterInit(server as unknown as Namespace);
-    return { gateway, realtime, publisher };
+    gateway.server = server as unknown as Namespace;
+    return { gateway, realtime, publisher, server, emit };
   }
   function client(id: string, ticket: string) {
     return {
@@ -56,7 +58,10 @@ describe('gateway lifecycle and reconnect', () => {
     const { gateway, realtime } = await harness();
     const first = client('first', 'ticket-1');
     await gateway.handleConnection(first as unknown as Socket);
-    expect(first.join).toHaveBeenCalledWith('runtime:tenant:session');
+    expect(first.join).toHaveBeenCalledWith([
+      'runtime:tenant:session',
+      'runtime:tenant:session:owner',
+    ]);
     expect(first.emit).toHaveBeenCalledWith(
       'runtime.resume',
       expect.objectContaining({ sequence: 3 }),
@@ -99,5 +104,28 @@ describe('gateway lifecycle and reconnect', () => {
     f.gateway.handleDisconnect(c as unknown as Socket);
     expect(f.realtime.observation).toHaveBeenCalledWith(grant, 'stopped');
     expect(f.realtime.observation).toHaveBeenCalledTimes(2);
+  });
+  it('keeps supervisors out of the owner room that carries transcript text', async () => {
+    const f = await harness();
+    f.realtime.consume.mockResolvedValue({
+      tenantId: 'tenant',
+      sessionId: 'session',
+      supervisor: true,
+    });
+    const c = client('supervisor', 'ticket');
+    await f.gateway.handleConnection(c as unknown as Socket);
+    expect(c.join).toHaveBeenCalledWith('runtime:tenant:session');
+    f.gateway.handleDisconnect(c as unknown as Socket);
+  });
+  it('sends transcript lines to the owner room only, and not while the channel is down', async () => {
+    const f = await harness();
+    expect(f.gateway.transcript('tenant', 'session', { segmentId: 's1' })).toBe(true);
+    expect(f.server.to).toHaveBeenCalledWith('runtime:tenant:session:owner');
+    expect(f.emit).toHaveBeenCalledWith('runtime.transcript', { segmentId: 's1' });
+    const down = new RuntimeGateway(
+      f.realtime as unknown as RuntimeRealtimeService,
+      { client: { duplicate: vi.fn() } } as unknown as RedisService,
+    );
+    expect(down.transcript('tenant', 'session', { segmentId: 's2' })).toBe(false);
   });
 });

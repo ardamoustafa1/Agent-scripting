@@ -7,6 +7,7 @@ import {
   parseInteractionEvent,
   STATUS_OF_EVENT,
   toScriptVariables,
+  TranscriptSegmentSchema,
   type InteractionEvent,
 } from '@verbis/sdk-connector';
 import { normalizeCtiPlatform } from '@verbis/shared-types';
@@ -22,6 +23,8 @@ import { EnvelopeVault } from '../integrations/engine/vault.js';
 import { INTEGRATION_VAULT } from '../integrations/integration-engine.service.js';
 import { RuntimeCipher } from '../runtime/runtime-cipher.js';
 import { RuntimeInteractionsHandler } from '../runtime/runtime-interactions.handler.js';
+import { TranscriptService } from '../runtime/transcript.service.js';
+import { TranscriptStore } from '../runtime/transcript.store.js';
 
 import { matchUser, type PlatformUserRef } from './user-mapping.js';
 
@@ -53,6 +56,8 @@ export class ConnectorHubService {
     @Inject(RuntimeCipher) private readonly cipher: RuntimeCipher,
     @Inject(RuntimeInteractionsHandler) private readonly interactions: RuntimeInteractionsHandler,
     @Inject(INTEGRATION_VAULT) private readonly vault: EnvelopeVault,
+    @Inject(TranscriptService) private readonly transcripts: TranscriptService,
+    @Inject(TranscriptStore) private readonly transcriptStore: TranscriptStore,
   ) {}
 
   async listConnectors(): Promise<HubConnectorDto[]> {
@@ -235,7 +240,29 @@ export class ConnectorHubService {
         campaignMapped: campaignId !== undefined,
       },
     });
+    // Spoken text does not outlive the interaction (ADR-0052).
+    if (event.type === 'ended') await this.transcriptStore.clear(tenantId, interactionId);
     return { interactionId, agentId: agentId ?? null, status: normalized.status };
+  }
+
+  /**
+   * Live transcript segment (ADR-0052). `accepted: false` when the tenant has not opted in or the
+   * interaction is unknown or ended; the text is never logged, audited or persisted in the DB.
+   */
+  async transcript(connectorId: string, raw: unknown): Promise<{ accepted: boolean }> {
+    this.hubPrincipal();
+    const tx = this.db.current();
+    const tenantId = this.db.tenantId();
+    await this.activeConnector(tx, connectorId);
+    const segment = TranscriptSegmentSchema.safeParse(raw);
+    if (!segment.success)
+      throw new DomainError('VERBIS_VALIDATION_FAILED', 'Transcript segment is invalid');
+    const interaction = await tx.interaction.findFirst({
+      where: { tenantId, connectorId, externalId: segment.data.platformInteractionId },
+      select: { id: true, status: true },
+    });
+    if (interaction === null) return { accepted: false };
+    return this.transcripts.receive({ ...interaction, connectorId }, segment.data);
   }
 
   /** Platform user → Verbis user (cti identity → externalId → email; ambiguous ⇒ nobody). */

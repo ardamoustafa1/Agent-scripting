@@ -29,6 +29,8 @@ const GrantSchema = z.strictObject({
 });
 export type RuntimeGrant = z.infer<typeof GrantSchema>;
 export const room = (tenantId: string, id: string): string => `runtime:${tenantId}:${id}`;
+/** The session owner's sockets only: live transcript text never reaches observers (ADR-0052). */
+export const ownerRoom = (tenantId: string, id: string): string => `${room(tenantId, id)}:owner`;
 /** Gap/duplicates are explicit: consumers replace snapshot then apply only higher sequence events. */
 export function reconnectPlan(current: number, after: number, eventSequences: readonly number[]) {
   const complete =

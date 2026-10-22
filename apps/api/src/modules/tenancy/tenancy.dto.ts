@@ -36,6 +36,10 @@ export const SessionSettingsSchema = z
   })
   .meta({ id: 'SessionSettings' });
 
+export const LiveTranscriptSettingsSchema = z
+  .strictObject({ enabled: z.boolean() })
+  .meta({ id: 'LiveTranscriptSettings' });
+
 export const TenantSettingsSchema = z
   .looseObject({
     defaultLocale: LocaleSchema.optional(),
@@ -55,6 +59,8 @@ export const TenantSettingsSchema = z
     authz: z.strictObject({ separationOfDuties: z.boolean() }).optional(),
     /** Hosts allowed to frame agent-web (Genesys, Avaya, CRM); everything else is DENY. */
     embedding: EmbeddingSettingsSchema.optional(),
+    /** Live transcript and script triggers (ADR-0052), off unless a tenant admin opts in. */
+    liveTranscript: LiveTranscriptSettingsSchema.optional(),
   })
   .meta({ id: 'TenantSettings' });
 
@@ -90,6 +96,7 @@ export const UpdateTenantSettingsSchema = z
     classifications: AdminClassificationSchema.optional(),
     audit: AdminRetentionSchema.optional(),
     authz: z.strictObject({ separationOfDuties: z.boolean() }).optional(),
+    liveTranscript: LiveTranscriptSettingsSchema.optional(),
   })
   .refine((value) => Object.keys(value).length > 0, 'at least one setting is required')
   .meta({ id: 'UpdateTenantSettings' });

@@ -1793,6 +1793,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/connector-hub/connectors/{id}/transcript-segments': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Hub: live transcript segment (text only); discarded unless the tenant opted in
+     * @description Requires: update:Connector
+     */
+    post: operations['ConnectorHub.transcript'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/connectors': {
     parameters: {
       query?: never;
@@ -3780,6 +3800,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/sessions/{id}/desktop/prompts/{triggerId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Writer accepts or dismisses a transcript trigger prompt; never navigates by itself
+     * @description Requires: update:Session
+     */
+    post: operations['AgentDesktop.resolvePrompt'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/sessions/{id}/desktop/telemetry': {
     parameters: {
       query?: never;
@@ -3794,6 +3834,26 @@ export interface paths {
      * @description Requires: update:Session
      */
     post: operations['AgentDesktop.telemetry'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/sessions/{id}/desktop/transcript': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Owner-only live transcript window of the call (sealed in Redis, never persisted)
+     * @description Requires: read:Session
+     */
+    get: operations['AgentDesktop.transcript'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -5358,6 +5418,9 @@ export interface components {
         sort: string;
       };
     };
+    ConnectorTranscriptIngest: {
+      segment: unknown;
+    };
     CreateAssignment: {
       /**
        * Format: uuid
@@ -6240,6 +6303,9 @@ export interface components {
       /** @constant */
       namespace: '/launch';
     };
+    LiveTranscriptSettings: {
+      enabled: boolean;
+    };
     Location: {
       /**
        * Format: uuid
@@ -6910,6 +6976,7 @@ export interface components {
           };
         };
       }[];
+      triggers?: components['schemas']['ScriptTrigger'][];
     };
     ScriptI18n: {
       defaultLocale: string;
@@ -7001,6 +7068,28 @@ export interface components {
       stickyKey?: string;
       /** Format: date-time */
       at?: string;
+    };
+    ScriptTrigger: {
+      id: string;
+      name: string;
+      /** @default true */
+      enabled: boolean;
+      phrases: {
+        [key: string]: string[];
+      };
+      /**
+       * @default customer
+       * @enum {string}
+       */
+      speaker: 'customer' | 'agent' | 'any';
+      pages?: string[];
+      /** @default once */
+      repeat:
+        | 'once'
+        | {
+            cooldownSeconds: number;
+          };
+      actions: components['schemas']['TriggerAction'][];
     };
     ScriptVersion: {
       /**
@@ -7416,8 +7505,18 @@ export interface components {
     };
     SimulatorAction: {
       /** @enum {string} */
-      action: 'connect' | 'hold' | 'resume' | 'transfer' | 'customerMessage' | 'wrapup' | 'end';
+      action:
+        | 'connect'
+        | 'hold'
+        | 'resume'
+        | 'transfer'
+        | 'customerMessage'
+        | 'utterance'
+        | 'wrapup'
+        | 'end';
       message?: string;
+      /** @enum {string} */
+      speaker?: 'customer' | 'agent';
       transferToPlatformUserId?: string;
     };
     SimulatorState: {
@@ -7603,6 +7702,7 @@ export interface components {
         separationOfDuties: boolean;
       };
       embedding?: components['schemas']['EmbeddingSettings'];
+      liveTranscript?: components['schemas']['LiveTranscriptSettings'];
     } & {
       [key: string]: unknown;
     };
@@ -7615,6 +7715,46 @@ export interface components {
       autoStart: boolean;
       onElapsed: components['schemas']['Action'][];
     };
+    TranscriptLine: {
+      segmentId: string;
+      /** @enum {string} */
+      speaker: 'customer' | 'agent';
+      text: string;
+      final: boolean;
+      /** Format: date-time */
+      at: string;
+      language?: string;
+    };
+    TranscriptPrompt: {
+      triggerId: string;
+      segmentId: string;
+      /** @enum {string} */
+      speaker: 'customer' | 'agent';
+      /** Format: date-time */
+      firedAt: string;
+      actions: components['schemas']['TriggerAction'][];
+    };
+    TriggerAction:
+      | {
+          /** @constant */
+          type: 'suggestPage';
+          pageId: string;
+        }
+      | {
+          /** @constant */
+          type: 'alert';
+          messageKey: string;
+          /**
+           * @default info
+           * @enum {string}
+           */
+          tone: 'info' | 'success' | 'warning' | 'danger';
+        }
+      | {
+          /** @constant */
+          type: 'markNotice';
+          noticeId: string;
+        };
     TrustCenter: {
       /** Format: date-time */
       generatedAt: string;
@@ -7866,6 +8006,7 @@ export interface components {
       authz?: {
         separationOfDuties: boolean;
       };
+      liveTranscript?: components['schemas']['LiveTranscriptSettings'];
     };
     User: {
       /**
@@ -12627,6 +12768,43 @@ export interface operations {
             secrets: {
               [key: string]: string;
             };
+          };
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'ConnectorHub.transcript': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ConnectorTranscriptIngest'];
+      };
+    };
+    responses: {
+      /** @description Accepted or discarded */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            accepted: boolean;
           };
         };
       };
@@ -20235,6 +20413,10 @@ export interface operations {
             };
             /** @enum {string} */
             writeback: 'none' | 'queued' | 'success';
+            transcript: {
+              enabled: boolean;
+            };
+            prompts: components['schemas']['TranscriptPrompt'][];
           };
         };
       };
@@ -20465,6 +20647,71 @@ export interface operations {
       };
     };
   };
+  'AgentDesktop.resolvePrompt': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        triggerId: string;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          expectedSequence: number;
+          /** Format: uuid */
+          tabId: string;
+          writeToken: string;
+          /** @enum {string} */
+          resolution: 'accepted' | 'dismissed';
+        };
+      };
+    };
+    responses: {
+      /** @description Authoritative state */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            state:
+              'launching' | 'active' | 'paused' | 'wrapup' | 'completed' | 'abandoned' | 'expired';
+            sequence: number;
+            readOnly: boolean;
+            snapshot: {
+              /** @default {} */
+              variables: {
+                [key: string]: components['schemas']['JsonValue'];
+              };
+              /** @default null */
+              currentPage: string | null;
+              /** @default [] */
+              history: string[];
+              /** @default {} */
+              timers: {
+                [key: string]: number;
+              };
+            };
+          };
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
   'AgentDesktop.telemetry': {
     parameters: {
       query?: never;
@@ -20521,6 +20768,40 @@ export interface operations {
                 [key: string]: number;
               };
             };
+          };
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'AgentDesktop.transcript': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Transcript window, oldest first */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            enabled: boolean;
+            lines: components['schemas']['TranscriptLine'][];
           };
         };
       };
