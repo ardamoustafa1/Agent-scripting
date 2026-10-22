@@ -1,0 +1,51 @@
+/* Conversation triggers editor (ADR-0052); design tokens only. */
+.tg-form {
+  display: grid;
+  gap: var(--vb-space-4);
+  max-inline-size: 48rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.tg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--vb-space-3);
+}
+.tg-hint {
+  margin: 0;
+  font-size: var(--vb-font-size-sm);
+  color: var(--vb-color-text-muted);
+}
+.tg-subhead {
+  margin: var(--vb-space-2) 0 0;
+  font-size: var(--vb-font-size-md);
+}
+.tg-actions {
+  display: grid;
+  gap: var(--vb-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tg-action {
+  display: grid;
+  gap: var(--vb-space-3);
+  padding: var(--vb-space-4);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  background: var(--vb-color-surface);
+}
+.tg-try {
+  display: grid;
+  gap: var(--vb-space-3);
+  max-inline-size: 48rem;
+  margin-block-start: var(--vb-space-6);
+  padding-block-start: var(--vb-space-4);
+  border-block-start: 1px solid var(--vb-color-border);
+}
+.tg-hits {
+  margin: 0;
+  padding-inline-start: var(--vb-space-5);
+}

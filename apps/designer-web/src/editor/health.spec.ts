@@ -93,6 +93,8 @@ describe('categoryOf', () => {
     ['PAGE_UNREACHABLE', 'flow'],
     ['SUBFLOW_CYCLE', 'flow'],
     ['RULE_REF_BROKEN', 'flow'],
+    ['TRIGGER_PAGE_NOT_IN_FLOW', 'flow'],
+    ['TRIGGER_PHRASES_MISSING', 'flow'],
     ['VARIABLE_UNDEFINED', 'data'],
     ['VERBIS_EXPRESSION', 'data'],
     ['VERBIS_COMPONENT_PROPS', 'data'],
@@ -167,6 +169,7 @@ describe('issueTarget', () => {
     expect(issueTarget(document, '/flow/nodes/0')).toEqual({ mode: 'flow' });
     expect(issueTarget(document, '/subflows/0/edges/1')).toEqual({ mode: 'flow' });
     expect(issueTarget(document, '/rules/0/when')).toEqual({ mode: 'rules' });
+    expect(issueTarget(document, '/triggers/0/actions/1/pageId')).toEqual({ mode: 'triggers' });
     expect(issueTarget(document, '/variables/2')).toEqual({ mode: 'variables' });
   });
 

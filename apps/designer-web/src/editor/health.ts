@@ -70,6 +70,7 @@ export function categoryOf(code: string): HealthCategory {
     code.startsWith('SUBFLOW_') ||
     code.startsWith('PAGE_') ||
     code.startsWith('TIMER_') ||
+    code.startsWith('TRIGGER_') ||
     code === 'RULE_REF_BROKEN' ||
     code === 'NODE_REF_BROKEN'
   )
@@ -243,7 +244,8 @@ export function scriptHealth(issues: readonly EditorIssue[], fieldProblems = 0):
 }
 
 export type IssueTarget =
-  { mode: 'screen'; pageId: string; nodeId?: string } | { mode: 'flow' | 'rules' | 'variables' };
+  | { mode: 'screen'; pageId: string; nodeId?: string }
+  | { mode: 'flow' | 'rules' | 'triggers' | 'variables' };
 
 /** Where in the editor an issue's JSON Pointer lives, so the panel can take the designer there. */
 export function issueTarget(document: ScriptDocument, path: string): IssueTarget | undefined {
@@ -251,6 +253,7 @@ export function issueTarget(document: ScriptDocument, path: string): IssueTarget
   const [root, index] = segments;
   if (root === 'flow' || root === 'subflows') return { mode: 'flow' };
   if (root === 'rules') return { mode: 'rules' };
+  if (root === 'triggers') return { mode: 'triggers' };
   if (root === 'variables') return { mode: 'variables' };
   if (root !== 'pages') return undefined;
   const page = document.pages[Number(index)];

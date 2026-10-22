@@ -50,6 +50,7 @@ import { Loading, Failure } from '../workspace/states.js';
 import { Canvas } from './canvas.js';
 import {
   type EDIT_ACTIONS,
+  EDITOR_MODES,
   editorCommands,
   isApplePlatform,
   shortcutLabel,
@@ -84,6 +85,9 @@ const FlowDesigner = lazy(() =>
 );
 const RuleManager = lazy(() =>
   import('../rules/manager.js').then((m) => ({ default: m.RuleManager })),
+);
+const TriggerManager = lazy(() =>
+  import('../triggers/manager.js').then((m) => ({ default: m.TriggerManager })),
 );
 const VariableManager = lazy(() =>
   import('../flow/variable-manager.js').then((m) => ({ default: m.VariableManager })),
@@ -564,7 +568,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
           <Select
             label={t('designer.flow.tool')}
             value={mode}
-            options={['screen', 'flow', 'rules', 'variables', 'preview'].map((value) => ({
+            options={EDITOR_MODES.map((value) => ({
               value,
               label: t(`designer.flow.tools.${value}`),
             }))}
@@ -751,7 +755,7 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
       </header>
       <div className="ed-modebar">
         <nav className="ed-mode-shortcuts" aria-label={t('designer.flow.tool')}>
-          {['screen', 'flow', 'rules', 'variables', 'preview'].map((value) => (
+          {EDITOR_MODES.map((value) => (
             <Button
               key={value}
               size="sm"
@@ -891,6 +895,12 @@ export function Editor({ version, scriptId }: { version: Version; scriptId: stri
         {mode === 'rules' && (
           <RuleManager store={store} readOnly={version.state !== 'draft' || state.writeSuspended} />
         )}{' '}
+        {mode === 'triggers' && (
+          <TriggerManager
+            store={store}
+            readOnly={version.state !== 'draft' || state.writeSuspended}
+          />
+        )}
         {mode === 'variables' && (
           <VariableManager
             store={store}

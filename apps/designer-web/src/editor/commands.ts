@@ -17,7 +17,14 @@ export const EDIT_ACTIONS = [
   'ungroup',
 ] as const;
 export type EditAction = (typeof EDIT_ACTIONS)[number];
-export const EDITOR_MODES = ['screen', 'flow', 'rules', 'variables', 'preview'] as const;
+export const EDITOR_MODES = [
+  'screen',
+  'flow',
+  'rules',
+  'triggers',
+  'variables',
+  'preview',
+] as const;
 const VIEWPORTS = ['base', 'sm', 'md', 'lg', 'xl'] as const;
 
 export const SHORTCUTS: Record<EditAction, readonly string[]> = {
