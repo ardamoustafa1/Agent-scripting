@@ -3957,6 +3957,9 @@ export const tr: Catalog = {
       i18nTranslationMissing: '{{count}} metin "{{locale}}" diline çevrilmemiş.',
       i18nLiteralText:
         '"{{prop}}" özelliği düz metin içeriyor; bunun yerine çeviri anahtarı kullanın.',
+      triggerPhrasesMissing: '"{{trigger}}" tetikleyicisinin dinleyeceği bir ifade yok.',
+      triggerNoticeRefBroken: '"{{node}}" bu scriptte zorunlu okunacak bir bildirim değil.',
+      triggerPageNotInFlow: '"{{page}}" sayfası ana akışın bir adımı değil, bu yüzden önerilemez.',
     },
   },
 };

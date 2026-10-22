@@ -11,6 +11,7 @@ export * from './schema/data-source.js';
 export * from './schema/page.js';
 export * from './schema/flow.js';
 export * from './schema/rule.js';
+export * from './schema/trigger.js';
 export * from './schema/document.js';
 export * from './json-schema.js';
 
@@ -42,6 +43,7 @@ export * from './tree/tree.js';
 
 export * from './schema/preview.js';
 export * from './merge.js';
+export * from './triggers.js';
 export { completionBypasses } from './validation/completion.js';
 export {
   suggestionTargets,

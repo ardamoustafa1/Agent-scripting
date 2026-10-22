@@ -45,6 +45,10 @@ export const VALIDATION_CODES = [
   'I18N_KEY_MISSING',
   'I18N_TRANSLATION_MISSING',
   'I18N_LITERAL_TEXT',
+  // Live transcript triggers (ADR-0052)
+  'TRIGGER_PHRASES_MISSING',
+  'TRIGGER_NOTICE_REF_BROKEN',
+  'TRIGGER_PAGE_NOT_IN_FLOW',
 ] as const;
 
 export type ValidationCode = (typeof VALIDATION_CODES)[number];

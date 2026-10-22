@@ -195,6 +195,35 @@ describe('mergeDocuments', () => {
     expect(result.document?.theme).toBeDefined();
   });
 
+  it('merges transcript triggers by id and reports a conflict on the same trigger', () => {
+    const page = firstPage(base).id;
+    const trigger = (id: string, phrase: string) => ({
+      id,
+      name: id,
+      enabled: true,
+      phrases: { tr: [phrase] },
+      speaker: 'customer' as const,
+      repeat: 'once' as const,
+      actions: [{ type: 'suggestPage' as const, pageId: page }],
+    });
+    const ours = clone(),
+      theirs = clone();
+    ours.triggers = [trigger('ours', 'iptal')];
+    theirs.triggers = [trigger('theirs', 'fatura')];
+    const merged = mergeDocuments(base, ours, theirs);
+    expect(merged.conflicts).toEqual([]);
+    expect(merged.document?.triggers?.map((t) => t.id).sort()).toEqual(['ours', 'theirs']);
+
+    const shared = clone();
+    shared.triggers = [trigger('shared', 'iptal')];
+    const left = structuredClone(shared),
+      right = structuredClone(shared);
+    left.triggers = [trigger('shared', 'kapat')];
+    right.triggers = [trigger('shared', 'sonlandır')];
+    expect(mergeDocuments(shared, left, right).conflicts.length).toBeGreaterThan(0);
+    expect(mergeDocuments(base, clone(), clone()).document?.triggers).toBeUndefined();
+  });
+
   it('merges subflows and data sources, and keeps a one-sided deletion of an untouched item', () => {
     const ours = clone(),
       theirs = clone();

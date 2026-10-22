@@ -280,6 +280,14 @@ export function mergeDocuments(
       list(t['testScenarios']),
       (s) => String(s['id']),
     );
+  if (o['triggers'] !== undefined || t['triggers'] !== undefined || b['triggers'] !== undefined)
+    merged['triggers'] = m.keyed(
+      '/triggers',
+      list(b['triggers']),
+      list(o['triggers']),
+      list(t['triggers']),
+      (trigger) => String(trigger['id']),
+    );
   const parsed = ScriptDocumentSchema.safeParse(merged);
   return {
     document: parsed.success ? parsed.data : null,

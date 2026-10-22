@@ -463,6 +463,13 @@
             ],
             "additionalProperties": false
           }
+        },
+        "triggers": {
+          "maxItems": 100,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ScriptTrigger"
+          }
         }
       },
       "required": [
@@ -2487,6 +2494,173 @@
         "messages"
       ],
       "additionalProperties": false
+    },
+    "ScriptTrigger": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "enabled": {
+          "default": true,
+          "type": "boolean"
+        },
+        "phrases": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          },
+          "additionalProperties": {
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          }
+        },
+        "speaker": {
+          "default": "customer",
+          "type": "string",
+          "enum": [
+            "customer",
+            "agent",
+            "any"
+          ]
+        },
+        "pages": {
+          "maxItems": 100,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+          }
+        },
+        "repeat": {
+          "default": "once",
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "once"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "cooldownSeconds": {
+                  "type": "integer",
+                  "minimum": 10,
+                  "maximum": 3600
+                }
+              },
+              "required": [
+                "cooldownSeconds"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "actions": {
+          "minItems": 1,
+          "maxItems": 3,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TriggerAction"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "phrases",
+        "actions"
+      ],
+      "additionalProperties": false
+    },
+    "TriggerAction": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "suggestPage"
+            },
+            "pageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "type",
+            "pageId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "alert"
+            },
+            "messageKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z][a-zA-Z0-9]*(\\.[a-zA-Z0-9]+)*$"
+            },
+            "tone": {
+              "default": "info",
+              "type": "string",
+              "enum": [
+                "info",
+                "success",
+                "warning",
+                "danger"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "messageKey"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "markNotice"
+            },
+            "noticeId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "type",
+            "noticeId"
+          ],
+          "additionalProperties": false
+        }
+      ]
     }
   },
   "$id": "https://schemas.verbis.io/script-document/1.0.0.json"

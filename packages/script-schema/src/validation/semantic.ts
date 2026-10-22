@@ -228,6 +228,11 @@ export function validateSemantics(
   ]);
   checkDuplicates(
     report,
+    'trigger',
+    (doc.triggers ?? []).map((trigger, i) => ({ id: trigger.id, path: ['triggers', i, 'id'] })),
+  );
+  checkDuplicates(
+    report,
     'timer',
     doc.pages.flatMap((page, p) =>
       page.timers.map((timer, t) => ({ id: timer.id, path: ['pages', p, 'timers', t, 'id'] })),
@@ -434,8 +439,14 @@ export function validateSemantics(
     [`flow:${doc.flow.id}`, 'rules'],
     (context) => contextEdges.get(context) ?? [],
   );
+  // A page the agent can be sent to by a transcript trigger is reachable too.
+  const triggerTargets = new Set(
+    (doc.triggers ?? []).flatMap((trigger) =>
+      trigger.actions.flatMap((action) => (action.type === 'suggestPage' ? [action.pageId] : [])),
+    ),
+  );
   doc.pages.forEach((page, i) => {
-    if (!reached.has(`page:${page.id}`))
+    if (!reached.has(`page:${page.id}`) && !triggerTargets.has(page.id))
       report('warning', 'PAGE_UNREACHABLE', toPointer(['pages', i]), { page: page.id });
   });
 
@@ -507,5 +518,44 @@ export function validateSemantics(
     )
       report('error', 'SCENARIO_INVALID', path);
   }
+
+  // ── Live transcript triggers (ADR-0052) ────────────────────────────────────
+  const notices = new Set(
+    collected.nodes.filter((visit) => visit.node.props['mustRead'] === true).map((v) => v.node.id),
+  );
+  (doc.triggers ?? []).forEach((trigger, t) => {
+    if (Object.values(trigger.phrases).every((phrases) => phrases.length === 0))
+      report('error', 'TRIGGER_PHRASES_MISSING', toPointer(['triggers', t, 'phrases']), {
+        trigger: trigger.id,
+      });
+    (trigger.pages ?? []).forEach((pageId, p) => {
+      if (!pages.has(pageId))
+        report('error', 'PAGE_REF_BROKEN', toPointer(['triggers', t, 'pages', p]), {
+          page: pageId,
+        });
+    });
+    trigger.actions.forEach((action, a) => {
+      const at = (field: string): string => toPointer(['triggers', t, 'actions', a, field]);
+      if (action.type === 'suggestPage' && !pages.has(action.pageId))
+        report('error', 'PAGE_REF_BROKEN', at('pageId'), { page: action.pageId });
+      // The agent can only be sent to a step of the main flow (the runtime refuses others).
+      else if (
+        action.type === 'suggestPage' &&
+        !doc.flow.nodes.some((node) => node.type === 'page' && node.page === action.pageId)
+      )
+        report('error', 'TRIGGER_PAGE_NOT_IN_FLOW', at('pageId'), { page: action.pageId });
+      if (action.type === 'markNotice' && !notices.has(action.noticeId))
+        report('error', 'TRIGGER_NOTICE_REF_BROKEN', at('noticeId'), { node: action.noticeId });
+      if (
+        action.type === 'alert' &&
+        defaultMessages !== undefined &&
+        !(action.messageKey in defaultMessages)
+      )
+        report('error', 'I18N_KEY_MISSING', at('messageKey'), {
+          key: action.messageKey,
+          locale: doc.i18n.defaultLocale,
+        });
+    });
+  });
   return issues;
 }

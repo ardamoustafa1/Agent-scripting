@@ -712,3 +712,95 @@ it('treats row, item and icon identity keys as metadata, not translation referen
   ]);
   expect(issues).toEqual([]);
 });
+
+describe('transcript triggers', () => {
+  const notice: JsonPatchOperation = {
+    op: 'add',
+    path: '/pages/0/layout/children/-',
+    value: {
+      id: 'notice-recording',
+      type: 'scriptText',
+      props: { textKey: 'common.next', mustRead: true },
+    },
+  };
+  const triggers = (value: unknown[]): JsonPatchOperation => ({
+    op: 'add',
+    path: '/triggers',
+    value,
+  });
+  const base = {
+    id: 'cancel-intent',
+    name: 'Cancel',
+    phrases: { tr: ['iptal'] },
+    actions: [{ type: 'suggestPage', pageId: 'home' }],
+  };
+
+  const flowPage = (id: string): JsonPatchOperation => ({
+    op: 'add',
+    path: '/flow/nodes/-',
+    value: { id: `n-${id}`, type: 'page', page: id },
+  });
+
+  it('accepts valid triggers and counts a suggested page as reachable', () => {
+    expect(
+      check([
+        notice,
+        page('retention'),
+        flowPage('retention'),
+        { op: 'replace', path: '/flow/edges/0/to', value: 'n-retention' },
+        { op: 'add', path: '/flow/edges/-', value: { id: 'e2', from: 'n-retention', to: 'n-end' } },
+        triggers([
+          { ...base, actions: [{ type: 'suggestPage', pageId: 'retention' }] },
+          {
+            ...base,
+            id: 'price',
+            pages: ['home'],
+            actions: [
+              { type: 'alert', messageKey: 'common.next', tone: 'warning' },
+              { type: 'markNotice', noticeId: 'notice-recording' },
+            ],
+          },
+        ]),
+      ]),
+    ).toEqual([]);
+    expect(codes(check([page('orphan')]))).toEqual(['PAGE_UNREACHABLE']);
+  });
+
+  it('only suggests steps of the main flow', () => {
+    const issues = check([
+      page('detour'),
+      triggers([{ ...base, actions: [{ type: 'suggestPage', pageId: 'detour' }] }]),
+    ]);
+    expect(issues.map((issue) => [issue.code, issue.path])).toEqual([
+      ['TRIGGER_PAGE_NOT_IN_FLOW', '/triggers/0/actions/0/pageId'],
+    ]);
+  });
+
+  it('reports duplicate ids and triggers without phrases', () => {
+    const issues = check([triggers([base, { ...base, phrases: { tr: [], en: [] } }])]);
+    expect(codes(issues)).toEqual(['DUPLICATE_ID', 'TRIGGER_PHRASES_MISSING']);
+    expect(issues[1]?.path).toBe('/triggers/1/phrases');
+  });
+
+  it('reports broken page, notice and message references', () => {
+    const issues = check([
+      triggers([
+        {
+          ...base,
+          pages: ['nowhere'],
+          actions: [
+            { type: 'suggestPage', pageId: 'missing' },
+            { type: 'markNotice', noticeId: 'btn-next' },
+            { type: 'alert', messageKey: 'no.such.key' },
+          ],
+        },
+      ]),
+    ]);
+    expect(issues.map((issue) => [issue.code, issue.path])).toEqual([
+      ['PAGE_REF_BROKEN', '/triggers/0/pages/0'],
+      ['PAGE_REF_BROKEN', '/triggers/0/actions/0/pageId'],
+      ['TRIGGER_NOTICE_REF_BROKEN', '/triggers/0/actions/1/noticeId'],
+      ['I18N_KEY_MISSING', '/triggers/0/actions/2/messageKey'],
+    ]);
+  });
+});

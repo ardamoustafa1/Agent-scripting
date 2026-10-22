@@ -10,6 +10,7 @@ import { PageSchema } from './page.js';
 import { TestScenarioSchema } from './preview.js';
 import { LocaleSchema, I18nKeySchema, ToneTokenSchema } from './primitives.js';
 import { RuleSchema } from './rule.js';
+import { TRIGGER_LIMITS, TriggerSchema } from './trigger.js';
 import { VariableSchema } from './variable.js';
 
 export const ChannelTypeSchema = z.enum([
@@ -75,6 +76,8 @@ export const ScriptDocumentSchema = z
     i18n: I18nSchema,
     componentRegistry: z.array(ComponentRegistryEntrySchema).default([]),
     testScenarios: z.array(TestScenarioSchema).max(20).optional(),
+    /** Live transcript phrase rules (ADR-0052, 2026-10-22). */
+    triggers: z.array(TriggerSchema).max(TRIGGER_LIMITS.maxTriggers).optional(),
   })
   .meta({
     id: 'ScriptDocument',

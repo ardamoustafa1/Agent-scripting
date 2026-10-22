@@ -3925,6 +3925,10 @@ export const en = {
       i18nKeyMissing: 'Text "{{key}}" is missing in "{{locale}}".',
       i18nTranslationMissing: '{{count}} texts are not translated to "{{locale}}".',
       i18nLiteralText: 'Property "{{prop}}" contains text; use a translation key instead.',
+      triggerPhrasesMissing: 'Trigger "{{trigger}}" has no phrase to listen for.',
+      triggerNoticeRefBroken: '"{{node}}" is not a must-read notice in this script.',
+      triggerPageNotInFlow:
+        'Page "{{page}}" is not a step of the main flow, so it cannot be suggested.',
     },
   },
 } as const;
