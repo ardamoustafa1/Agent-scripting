@@ -5,7 +5,13 @@ import { z } from 'zod';
 
 import { asSubject } from '@verbis/authz';
 import { walkNodes, ScriptDocumentSchema, validateScriptDocument } from '@verbis/script-schema';
-import { AiConfigSchema, type AiConfig, type AiRequest } from '@verbis/shared-types';
+import {
+  AiConfigSchema,
+  KNOWLEDGE_LIMITS,
+  articlePlainText,
+  type AiConfig,
+  type AiRequest,
+} from '@verbis/shared-types';
 
 import { requestContext } from '../../common/context/request-context.js';
 import { uuidv7 } from '../../common/crypto/uuid.js';
@@ -23,6 +29,7 @@ import { OutboxWriter } from '../../infra/outbox/outbox.writer.js';
 import { AuditService } from '../audit/audit.service.js';
 import { AuthzService } from '../authz/authz.service.js';
 import { INTEGRATION_VAULT } from '../integrations/integration-engine.service.js';
+import { KnowledgeService } from '../knowledge/knowledge.service.js';
 import { RuntimeEngineService } from '../runtime/runtime-engine.service.js';
 import { TranscriptStore } from '../runtime/transcript.store.js';
 import { ScriptsService } from '../scripts/scripts.service.js';
@@ -42,6 +49,17 @@ export function cost(input: number, output: number, config: AiConfig): number {
     (input * config.inputMicroUsdPerMillion + output * config.outputMicroUsdPerMillion) / 1_000_000,
   );
 }
+/** Sources of the `answer` task (ADR-0057): best published matches, bounded text. */
+export const ANSWER_SOURCES = { articles: 5, articleChars: 4_000, totalChars: 12_000 } as const;
+/** Agent tasks run inside the agent's own interaction session. */
+const AGENT_TASKS: readonly AiRequest['task'][] = [
+  'reply',
+  'objection',
+  'summary',
+  'navigate',
+  'notices',
+  'answer',
+];
 const RedactorSchema = z.strictObject({
   text: z.string().max(240000),
   count: z.number().int().nonnegative(),
@@ -60,6 +78,7 @@ export class AiService {
     @Inject(ScriptsService) private readonly scripts: ScriptsService,
     @Inject(AI_PROVIDER) private readonly provider: LlmProvider,
     @Inject(TranscriptStore) private readonly transcripts: TranscriptStore,
+    @Inject(KnowledgeService) private readonly knowledge: KnowledgeService,
   ) {}
   private endpoints() {
     return z.array(EndpointSchema).parse(JSON.parse(this.env.AI_ENDPOINTS_JSON));
@@ -192,70 +211,97 @@ export class AiService {
       const endpoint = this.endpoints().find((e) => e.id === config.endpointId);
       if (!endpoint || !endpoint.models.includes(config.model) || !config.secretRef)
         throw new DomainError('VERBIS_AI_UNAVAILABLE');
-      const agent = ['reply', 'objection', 'summary', 'navigate', 'notices'].includes(input.task);
+      const agent = AGENT_TASKS.includes(input.task);
       let document = input.document;
       let text = input.text;
       const objections: string[] = [];
       let dispositions: string[] = [];
       let pages: { id: string; name: string }[] = [];
       let notices: NoticeChoice[] = [];
+      let articles: { key: string; title: string; text: string }[] = [];
       if (agent) {
         if (!config.agentEnabled || !input.sessionId || input.file || input.document)
           throw new ForbiddenError();
         const row = await this.runtime.row(input.sessionId);
         this.runtime.authorize(row, true);
-        // A voice call has text only through the opted-in live transcript (ADR-0052).
-        const spoken =
-          row.interaction?.channelType === 'voice' &&
-          row.interactionId !== null &&
-          z.object({ enabled: z.literal(true) }).safeParse(settings['liveTranscript']).success
-            ? await this.transcripts.read(tenant.id, row.interactionId)
-            : [];
-        if (
-          row.kind !== 'interaction' ||
-          !row.interaction ||
-          (input.task !== 'summary' &&
-            !['chat', 'email'].includes(row.interaction.channelType) &&
-            spoken.length === 0)
-        )
-          throw new ForbiddenError();
-        if (input.task !== 'summary' && !['active', 'paused'].includes(row.state))
-          throw new ForbiddenError();
-        if (input.task === 'summary' && !['wrapup', 'completed', 'abandoned'].includes(row.state))
-          throw new ForbiddenError();
-        document = this.runtime.document(row);
-        const interaction = this.runtime.interaction(row);
-        text = JSON.stringify({
-          transcript:
-            spoken.length > 0
-              ? spoken.map((line) => ({ from: line.speaker, text: line.text, at: line.at }))
-              : (interaction['channel.chat.transcript'] ??
-                interaction['transcript'] ??
-                interaction['email.body'] ??
-                ''),
-          operatorContext: input.text,
-        });
-        const snapshot = await this.runtime.snapshot(row);
-        if (input.task === 'navigate')
-          pages = ScriptDocumentSchema.parse(document)
-            .pages.filter((page) => page.id !== snapshot.currentPage)
-            .map((page) => ({ id: page.id, name: page.name }));
-        if (input.task === 'notices')
-          notices = noticeChoices(ScriptDocumentSchema.parse(document), input.locale);
-        walkNodes(ScriptDocumentSchema.parse(document), ({ node, pageId }) => {
-          if (pageId === snapshot.currentPage && node.type === 'objectionHandler')
-            objections.push(node.id);
-        });
-        const campaign = row.interaction.campaignId
-          ? await tx.campaign.findFirst({
-              where: { id: row.interaction.campaignId, tenantId: tenant.id, deletedAt: null },
-              select: { outcomeSet: true },
-            })
-          : null;
-        dispositions = z
-          .array(z.looseObject({ code: z.string() }))
-          .parse(campaign?.outcomeSet ?? [])
-          .map((x) => x.code);
+        if (input.task === 'answer') {
+          // The agent's own question and the tenant's articles only: no conversation text.
+          const question = input.text.trim();
+          if (
+            row.kind !== 'interaction' ||
+            !['active', 'paused', 'wrapup'].includes(row.state) ||
+            question === '' ||
+            question.length > KNOWLEDGE_LIMITS.maxQuestion
+          )
+            throw new ForbiddenError();
+          let budget: number = ANSWER_SOURCES.totalChars;
+          articles = (
+            await this.knowledge.retrieve(tx, tenant.id, question, ANSWER_SOURCES.articles)
+          ).flatMap((article) => {
+            const text = articlePlainText(article.body).slice(
+              0,
+              Math.min(ANSWER_SOURCES.articleChars, budget),
+            );
+            if (budget <= 0) return [];
+            budget -= text.length;
+            return [{ key: article.key, title: article.title, text }];
+          });
+          text = JSON.stringify({ question });
+          document = undefined;
+        } else {
+          // A voice call has text only through the opted-in live transcript (ADR-0052).
+          const spoken =
+            row.interaction?.channelType === 'voice' &&
+            row.interactionId !== null &&
+            z.object({ enabled: z.literal(true) }).safeParse(settings['liveTranscript']).success
+              ? await this.transcripts.read(tenant.id, row.interactionId)
+              : [];
+          if (
+            row.kind !== 'interaction' ||
+            !row.interaction ||
+            (input.task !== 'summary' &&
+              !['chat', 'email'].includes(row.interaction.channelType) &&
+              spoken.length === 0)
+          )
+            throw new ForbiddenError();
+          if (input.task !== 'summary' && !['active', 'paused'].includes(row.state))
+            throw new ForbiddenError();
+          if (input.task === 'summary' && !['wrapup', 'completed', 'abandoned'].includes(row.state))
+            throw new ForbiddenError();
+          document = this.runtime.document(row);
+          const interaction = this.runtime.interaction(row);
+          text = JSON.stringify({
+            transcript:
+              spoken.length > 0
+                ? spoken.map((line) => ({ from: line.speaker, text: line.text, at: line.at }))
+                : (interaction['channel.chat.transcript'] ??
+                  interaction['transcript'] ??
+                  interaction['email.body'] ??
+                  ''),
+            operatorContext: input.text,
+          });
+          const snapshot = await this.runtime.snapshot(row);
+          if (input.task === 'navigate')
+            pages = ScriptDocumentSchema.parse(document)
+              .pages.filter((page) => page.id !== snapshot.currentPage)
+              .map((page) => ({ id: page.id, name: page.name }));
+          if (input.task === 'notices')
+            notices = noticeChoices(ScriptDocumentSchema.parse(document), input.locale);
+          walkNodes(ScriptDocumentSchema.parse(document), ({ node, pageId }) => {
+            if (pageId === snapshot.currentPage && node.type === 'objectionHandler')
+              objections.push(node.id);
+          });
+          const campaign = row.interaction.campaignId
+            ? await tx.campaign.findFirst({
+                where: { id: row.interaction.campaignId, tenantId: tenant.id, deletedAt: null },
+                select: { outcomeSet: true },
+              })
+            : null;
+          dispositions = z
+            .array(z.looseObject({ code: z.string() }))
+            .parse(campaign?.outcomeSet ?? [])
+            .map((x) => x.code);
+        }
       } else {
         if (input.file && input.task !== 'draft') throw new ForbiddenError();
         if (input.sessionId) throw new ForbiddenError();
@@ -288,10 +334,22 @@ export class AiService {
         dispositions,
         pages,
         notices,
+        articles,
       };
     });
     const id = uuidv7(),
       month = new Date().toISOString().slice(0, 7) + '-01';
+    // No published article matches: nothing to ground an answer in, so no model call and no spend.
+    if (input.task === 'answer' && prepared.articles.length === 0)
+      return {
+        callId: id,
+        task: input.task,
+        requiresHumanApproval: true as const,
+        value: { answer: null, articleKeys: [], reason: 'No published article matches.' },
+        inputTokens: 0,
+        outputTokens: 0,
+        maskedCount: 0,
+      };
     let maskedCount = 0;
     let inputTokens: number | undefined;
     let outputTokens: number | undefined;
@@ -308,6 +366,7 @@ export class AiService {
         dispositionCodes: prepared.dispositions,
         pageChoices: prepared.pages,
         noticeChoices: prepared.notices,
+        articleChoices: prepared.articles,
       });
       if (original.length > 200000) throw new Error('INPUT_LIMIT');
       const patterns = maskPatterns(original);
@@ -396,22 +455,30 @@ export class AiService {
         JSON.parse(result.text) as unknown,
         prepared.document,
       );
-      if (['reply', 'objection', 'summary', 'navigate', 'notices'].includes(input.task)) {
+      let suggestion = value;
+      if (AGENT_TASKS.includes(input.task)) {
         const proposal = z
           .looseObject({
             pageId: z.string().nullable().optional(),
             noticeIds: z.array(z.string()).optional(),
             objectionNodeId: z.string().nullable().optional(),
             disposition: z.string().nullable().optional(),
+            articleKeys: z.array(z.string()).optional(),
           })
           .parse(value);
         if (
           (proposal.objectionNodeId && !prepared.objections.includes(proposal.objectionNodeId)) ||
           (proposal.disposition && !prepared.dispositions.includes(proposal.disposition)) ||
           (proposal.pageId && !prepared.pages.some((page) => page.id === proposal.pageId)) ||
-          proposal.noticeIds?.some((id) => !prepared.notices.some((notice) => notice.id === id))
+          proposal.noticeIds?.some((id) => !prepared.notices.some((notice) => notice.id === id)) ||
+          proposal.articleKeys?.some(
+            (key) => !prepared.articles.some((article) => article.key === key),
+          )
         )
           throw new Error('UNAPPROVED_REFERENCE');
+        // An answer that cites no article is not grounded in the knowledge base: show none.
+        if (input.task === 'answer' && proposal.articleKeys?.length === 0)
+          suggestion = { ...proposal, answer: null };
       }
       await this.finish(
         id,
@@ -427,7 +494,7 @@ export class AiService {
         callId: id,
         task: input.task,
         requiresHumanApproval: true as const,
-        value,
+        value: suggestion,
         inputTokens,
         outputTokens,
         maskedCount,

@@ -360,6 +360,7 @@
     "adminWorkspace.enum.resource.connector",
     "adminWorkspace.enum.resource.idp",
     "adminWorkspace.enum.resource.integration",
+    "adminWorkspace.enum.resource.knowledge",
     "adminWorkspace.enum.resource.report",
     "adminWorkspace.enum.resource.role",
     "adminWorkspace.enum.resource.screen",
@@ -740,6 +741,23 @@
     "agent.desktop.interim",
     "agent.desktop.keepDraft",
     "agent.desktop.knowledge",
+    "agent.desktop.knowledgeBase.answerCheck",
+    "agent.desktop.knowledgeBase.answerFailed",
+    "agent.desktop.knowledgeBase.answerTitle",
+    "agent.desktop.knowledgeBase.ask",
+    "agent.desktop.knowledgeBase.asking",
+    "agent.desktop.knowledgeBase.back",
+    "agent.desktop.knowledgeBase.failed",
+    "agent.desktop.knowledgeBase.fromPlatform",
+    "agent.desktop.knowledgeBase.hint",
+    "agent.desktop.knowledgeBase.none",
+    "agent.desktop.knowledgeBase.notFound",
+    "agent.desktop.knowledgeBase.results",
+    "agent.desktop.knowledgeBase.search",
+    "agent.desktop.knowledgeBase.searching",
+    "agent.desktop.knowledgeBase.sources",
+    "agent.desktop.knowledgeBase.updated",
+    "agent.desktop.knowledgeBase.useLastLine",
     "agent.desktop.liveEmpty",
     "agent.desktop.liveTranscript",
     "agent.desktop.logout",
@@ -758,12 +776,15 @@
     "agent.desktop.probablySaid",
     "agent.desktop.progress",
     "agent.desktop.progressLabel",
+    "agent.desktop.prompts.articleMissing",
     "agent.desktop.prompts.dismiss",
     "agent.desktop.prompts.go",
     "agent.desktop.prompts.heard.agent",
     "agent.desktop.prompts.heard.customer",
     "agent.desktop.prompts.ok",
+    "agent.desktop.prompts.openArticle",
     "agent.desktop.prompts.region",
+    "agent.desktop.prompts.suggestArticle",
     "agent.desktop.prompts.suggestPage",
     "agent.desktop.readOnly",
     "agent.desktop.recent",
@@ -776,12 +797,14 @@
     "agent.desktop.retry",
     "agent.desktop.savingDraft",
     "agent.desktop.script",
+    "agent.desktop.searchKnowledge",
     "agent.desktop.sessionRateLimited",
     "agent.desktop.sessionUnavailable",
     "agent.desktop.shortcutBack",
     "agent.desktop.shortcutFocus",
     "agent.desktop.shortcutHelp",
     "agent.desktop.shortcutHelpKeys",
+    "agent.desktop.shortcutKnowledge",
     "agent.desktop.shortcutNext",
     "agent.desktop.shortcutNextAnywhere",
     "agent.desktop.shortcutTabs",
@@ -1111,6 +1134,15 @@
     "components.gaps.campaign",
     "components.gaps.customer",
     "components.invalid",
+    "components.knowledge.back",
+    "components.knowledge.loadFailed",
+    "components.knowledge.missing",
+    "components.knowledge.none",
+    "components.knowledge.results",
+    "components.knowledge.search",
+    "components.knowledge.searching",
+    "components.knowledge.title",
+    "components.knowledge.unavailable",
     "components.media",
     "components.mustRead",
     "components.next",
@@ -1122,6 +1154,7 @@
     "components.properties.acknowledged",
     "components.properties.altKey",
     "components.properties.arrayVariable",
+    "components.properties.articles",
     "components.properties.blocks",
     "components.properties.captionsUrl",
     "components.properties.chartType",
@@ -1168,6 +1201,7 @@
     "components.properties.rowKey",
     "components.properties.rows",
     "components.properties.scheduledAt",
+    "components.properties.searchable",
     "components.properties.secure",
     "components.properties.size",
     "components.properties.step",
@@ -1590,6 +1624,7 @@
     "designer.editor.componentNames.image",
     "designer.editor.componentNames.keyValueList",
     "designer.editor.componentNames.knowledgeLink",
+    "designer.editor.componentNames.knowledgePanel",
     "designer.editor.componentNames.lookup",
     "designer.editor.componentNames.maskedInput",
     "designer.editor.componentNames.modal",
@@ -2163,6 +2198,57 @@
     "designer.integrations.unsavedHelp",
     "designer.integrations.usage",
     "designer.integrations.wizard",
+    "designer.knowledge.archive",
+    "designer.knowledge.articleTitle",
+    "designer.knowledge.body",
+    "designer.knowledge.bodyHelp",
+    "designer.knowledge.create",
+    "designer.knowledge.empty",
+    "designer.knowledge.emptyHelp",
+    "designer.knowledge.errors.conflict",
+    "designer.knowledge.errors.invalid",
+    "designer.knowledge.errors.keyTaken",
+    "designer.knowledge.errors.saveError",
+    "designer.knowledge.key",
+    "designer.knowledge.keyHelp",
+    "designer.knowledge.leave",
+    "designer.knowledge.locale",
+    "designer.knowledge.locales.en",
+    "designer.knowledge.locales.tr",
+    "designer.knowledge.more",
+    "designer.knowledge.notes.archived",
+    "designer.knowledge.notes.draft",
+    "designer.knowledge.notes.published",
+    "designer.knowledge.picker.add",
+    "designer.knowledge.picker.addShort",
+    "designer.knowledge.picker.limit",
+    "designer.knowledge.picker.missing",
+    "designer.knowledge.picker.noResults",
+    "designer.knowledge.picker.none",
+    "designer.knowledge.picker.notPublished",
+    "designer.knowledge.picker.remove",
+    "designer.knowledge.picker.removeShort",
+    "designer.knowledge.picker.search",
+    "designer.knowledge.preview",
+    "designer.knowledge.previewEmpty",
+    "designer.knowledge.publish",
+    "designer.knowledge.republish",
+    "designer.knowledge.save",
+    "designer.knowledge.saveFirst",
+    "designer.knowledge.search",
+    "designer.knowledge.status",
+    "designer.knowledge.statuses.all",
+    "designer.knowledge.statuses.archived",
+    "designer.knowledge.statuses.draft",
+    "designer.knowledge.statuses.published",
+    "designer.knowledge.stay",
+    "designer.knowledge.subtitle",
+    "designer.knowledge.tags",
+    "designer.knowledge.tagsHelp",
+    "designer.knowledge.title",
+    "designer.knowledge.unsaved",
+    "designer.knowledge.unsavedHelp",
+    "designer.knowledge.updated",
     "designer.lifecycle.aVersion",
     "designer.lifecycle.aWeight",
     "designer.lifecycle.ab",
@@ -2864,6 +2950,7 @@
     "designer.triggers.actions",
     "designer.triggers.add",
     "designer.triggers.addAction",
+    "designer.triggers.article",
     "designer.triggers.cooldown",
     "designer.triggers.defaultName",
     "designer.triggers.disabledName",
@@ -2903,6 +2990,7 @@
     "designer.triggers.tryTitle",
     "designer.triggers.types.alert",
     "designer.triggers.types.markNotice",
+    "designer.triggers.types.suggestArticle",
     "designer.triggers.types.suggestPage",
     "designer.value.fixedValue",
     "designer.value.formula",
@@ -2996,6 +3084,7 @@
     "designer.workspace.description",
     "designer.workspace.descriptions.campaigns",
     "designer.workspace.descriptions.integrations",
+    "designer.workspace.descriptions.knowledge",
     "designer.workspace.descriptions.releases",
     "designer.workspace.descriptions.screens",
     "designer.workspace.descriptions.scripts",
@@ -3064,6 +3153,7 @@
     "designer.workspace.nav.analytics",
     "designer.workspace.nav.campaigns",
     "designer.workspace.nav.integrations",
+    "designer.workspace.nav.knowledge",
     "designer.workspace.nav.releases",
     "designer.workspace.nav.screens",
     "designer.workspace.nav.scripts",
@@ -3718,6 +3808,7 @@
     "adminWorkspace.enum.resource.connector",
     "adminWorkspace.enum.resource.idp",
     "adminWorkspace.enum.resource.integration",
+    "adminWorkspace.enum.resource.knowledge",
     "adminWorkspace.enum.resource.report",
     "adminWorkspace.enum.resource.role",
     "adminWorkspace.enum.resource.screen",
@@ -4098,6 +4189,23 @@
     "agent.desktop.interim",
     "agent.desktop.keepDraft",
     "agent.desktop.knowledge",
+    "agent.desktop.knowledgeBase.answerCheck",
+    "agent.desktop.knowledgeBase.answerFailed",
+    "agent.desktop.knowledgeBase.answerTitle",
+    "agent.desktop.knowledgeBase.ask",
+    "agent.desktop.knowledgeBase.asking",
+    "agent.desktop.knowledgeBase.back",
+    "agent.desktop.knowledgeBase.failed",
+    "agent.desktop.knowledgeBase.fromPlatform",
+    "agent.desktop.knowledgeBase.hint",
+    "agent.desktop.knowledgeBase.none",
+    "agent.desktop.knowledgeBase.notFound",
+    "agent.desktop.knowledgeBase.results",
+    "agent.desktop.knowledgeBase.search",
+    "agent.desktop.knowledgeBase.searching",
+    "agent.desktop.knowledgeBase.sources",
+    "agent.desktop.knowledgeBase.updated",
+    "agent.desktop.knowledgeBase.useLastLine",
     "agent.desktop.liveEmpty",
     "agent.desktop.liveTranscript",
     "agent.desktop.logout",
@@ -4116,12 +4224,15 @@
     "agent.desktop.probablySaid",
     "agent.desktop.progress",
     "agent.desktop.progressLabel",
+    "agent.desktop.prompts.articleMissing",
     "agent.desktop.prompts.dismiss",
     "agent.desktop.prompts.go",
     "agent.desktop.prompts.heard.agent",
     "agent.desktop.prompts.heard.customer",
     "agent.desktop.prompts.ok",
+    "agent.desktop.prompts.openArticle",
     "agent.desktop.prompts.region",
+    "agent.desktop.prompts.suggestArticle",
     "agent.desktop.prompts.suggestPage",
     "agent.desktop.readOnly",
     "agent.desktop.recent",
@@ -4134,12 +4245,14 @@
     "agent.desktop.retry",
     "agent.desktop.savingDraft",
     "agent.desktop.script",
+    "agent.desktop.searchKnowledge",
     "agent.desktop.sessionRateLimited",
     "agent.desktop.sessionUnavailable",
     "agent.desktop.shortcutBack",
     "agent.desktop.shortcutFocus",
     "agent.desktop.shortcutHelp",
     "agent.desktop.shortcutHelpKeys",
+    "agent.desktop.shortcutKnowledge",
     "agent.desktop.shortcutNext",
     "agent.desktop.shortcutNextAnywhere",
     "agent.desktop.shortcutTabs",
@@ -4469,6 +4582,15 @@
     "components.gaps.campaign",
     "components.gaps.customer",
     "components.invalid",
+    "components.knowledge.back",
+    "components.knowledge.loadFailed",
+    "components.knowledge.missing",
+    "components.knowledge.none",
+    "components.knowledge.results",
+    "components.knowledge.search",
+    "components.knowledge.searching",
+    "components.knowledge.title",
+    "components.knowledge.unavailable",
     "components.media",
     "components.mustRead",
     "components.next",
@@ -4480,6 +4602,7 @@
     "components.properties.acknowledged",
     "components.properties.altKey",
     "components.properties.arrayVariable",
+    "components.properties.articles",
     "components.properties.blocks",
     "components.properties.captionsUrl",
     "components.properties.chartType",
@@ -4526,6 +4649,7 @@
     "components.properties.rowKey",
     "components.properties.rows",
     "components.properties.scheduledAt",
+    "components.properties.searchable",
     "components.properties.secure",
     "components.properties.size",
     "components.properties.step",
@@ -4948,6 +5072,7 @@
     "designer.editor.componentNames.image",
     "designer.editor.componentNames.keyValueList",
     "designer.editor.componentNames.knowledgeLink",
+    "designer.editor.componentNames.knowledgePanel",
     "designer.editor.componentNames.lookup",
     "designer.editor.componentNames.maskedInput",
     "designer.editor.componentNames.modal",
@@ -5521,6 +5646,57 @@
     "designer.integrations.unsavedHelp",
     "designer.integrations.usage",
     "designer.integrations.wizard",
+    "designer.knowledge.archive",
+    "designer.knowledge.articleTitle",
+    "designer.knowledge.body",
+    "designer.knowledge.bodyHelp",
+    "designer.knowledge.create",
+    "designer.knowledge.empty",
+    "designer.knowledge.emptyHelp",
+    "designer.knowledge.errors.conflict",
+    "designer.knowledge.errors.invalid",
+    "designer.knowledge.errors.keyTaken",
+    "designer.knowledge.errors.saveError",
+    "designer.knowledge.key",
+    "designer.knowledge.keyHelp",
+    "designer.knowledge.leave",
+    "designer.knowledge.locale",
+    "designer.knowledge.locales.en",
+    "designer.knowledge.locales.tr",
+    "designer.knowledge.more",
+    "designer.knowledge.notes.archived",
+    "designer.knowledge.notes.draft",
+    "designer.knowledge.notes.published",
+    "designer.knowledge.picker.add",
+    "designer.knowledge.picker.addShort",
+    "designer.knowledge.picker.limit",
+    "designer.knowledge.picker.missing",
+    "designer.knowledge.picker.noResults",
+    "designer.knowledge.picker.none",
+    "designer.knowledge.picker.notPublished",
+    "designer.knowledge.picker.remove",
+    "designer.knowledge.picker.removeShort",
+    "designer.knowledge.picker.search",
+    "designer.knowledge.preview",
+    "designer.knowledge.previewEmpty",
+    "designer.knowledge.publish",
+    "designer.knowledge.republish",
+    "designer.knowledge.save",
+    "designer.knowledge.saveFirst",
+    "designer.knowledge.search",
+    "designer.knowledge.status",
+    "designer.knowledge.statuses.all",
+    "designer.knowledge.statuses.archived",
+    "designer.knowledge.statuses.draft",
+    "designer.knowledge.statuses.published",
+    "designer.knowledge.stay",
+    "designer.knowledge.subtitle",
+    "designer.knowledge.tags",
+    "designer.knowledge.tagsHelp",
+    "designer.knowledge.title",
+    "designer.knowledge.unsaved",
+    "designer.knowledge.unsavedHelp",
+    "designer.knowledge.updated",
     "designer.lifecycle.aVersion",
     "designer.lifecycle.aWeight",
     "designer.lifecycle.ab",
@@ -6222,6 +6398,7 @@
     "designer.triggers.actions",
     "designer.triggers.add",
     "designer.triggers.addAction",
+    "designer.triggers.article",
     "designer.triggers.cooldown",
     "designer.triggers.defaultName",
     "designer.triggers.disabledName",
@@ -6261,6 +6438,7 @@
     "designer.triggers.tryTitle",
     "designer.triggers.types.alert",
     "designer.triggers.types.markNotice",
+    "designer.triggers.types.suggestArticle",
     "designer.triggers.types.suggestPage",
     "designer.value.fixedValue",
     "designer.value.formula",
@@ -6354,6 +6532,7 @@
     "designer.workspace.description",
     "designer.workspace.descriptions.campaigns",
     "designer.workspace.descriptions.integrations",
+    "designer.workspace.descriptions.knowledge",
     "designer.workspace.descriptions.releases",
     "designer.workspace.descriptions.screens",
     "designer.workspace.descriptions.scripts",
@@ -6422,6 +6601,7 @@
     "designer.workspace.nav.analytics",
     "designer.workspace.nav.campaigns",
     "designer.workspace.nav.integrations",
+    "designer.workspace.nav.knowledge",
     "designer.workspace.nav.releases",
     "designer.workspace.nav.screens",
     "designer.workspace.nav.scripts",
@@ -6718,7 +6898,7 @@
   ],
   "empty": [],
   "missing": [],
-  "literalKeyCount": 1378,
+  "literalKeyCount": 1443,
   "dynamic": [
     {
       "file": "apps/admin-web/src/auth/auth-section.tsx",
@@ -7154,55 +7334,55 @@
     },
     {
       "file": "apps/agent-web/src/desktop/live-transcript.tsx",
-      "line": 53
+      "line": 62
     },
     {
       "file": "apps/agent-web/src/desktop/live-transcript.tsx",
-      "line": 82
+      "line": 102
     },
     {
       "file": "apps/agent-web/src/desktop/live-transcript.tsx",
-      "line": 123
+      "line": 171
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 392
+      "line": 425
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 405
+      "line": 438
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 430
+      "line": 463
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 466
+      "line": 499
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 490
+      "line": 523
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 551
+      "line": 584
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 672
+      "line": 709
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 834
+      "line": 885
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 862
+      "line": 914
     },
     {
       "file": "apps/agent-web/src/desktop/session-view.tsx",
-      "line": 864
+      "line": 916
     },
     {
       "file": "apps/agent-web/src/desktop/workspace.tsx",
@@ -7350,11 +7530,11 @@
     },
     {
       "file": "apps/designer-web/src/editor/canvas.tsx",
-      "line": 310
+      "line": 315
     },
     {
       "file": "apps/designer-web/src/editor/canvas.tsx",
-      "line": 439
+      "line": 444
     },
     {
       "file": "apps/designer-web/src/editor/commands.ts",
@@ -7506,71 +7686,67 @@
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 134
+      "line": 136
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 196
+      "line": 198
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 275
+      "line": 277
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 276
+      "line": 278
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 280
+      "line": 282
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 295
+      "line": 297
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 301
+      "line": 303
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 313
+      "line": 315
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 324
+      "line": 326
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 343
+      "line": 345
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 358
+      "line": 360
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 478
+      "line": 480
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 545
+      "line": 549
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 546
+      "line": 550
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 553
+      "line": 557
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 720
-    },
-    {
-      "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 783
+      "line": 724
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
@@ -7578,27 +7754,31 @@
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 829
+      "line": 811
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 848
+      "line": 843
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 854
+      "line": 862
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 918
+      "line": 868
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 993
+      "line": 932
     },
     {
       "file": "apps/designer-web/src/editor/inspector.tsx",
-      "line": 1037
+      "line": 1007
+    },
+    {
+      "file": "apps/designer-web/src/editor/inspector.tsx",
+      "line": 1051
     },
     {
       "file": "apps/designer-web/src/editor/layers.tsx",
@@ -7987,6 +8167,34 @@
     {
       "file": "apps/designer-web/src/integrations/sql-form.tsx",
       "line": 25
+    },
+    {
+      "file": "apps/designer-web/src/knowledge/editor.tsx",
+      "line": 168
+    },
+    {
+      "file": "apps/designer-web/src/knowledge/editor.tsx",
+      "line": 170
+    },
+    {
+      "file": "apps/designer-web/src/knowledge/editor.tsx",
+      "line": 179
+    },
+    {
+      "file": "apps/designer-web/src/knowledge/editor.tsx",
+      "line": 207
+    },
+    {
+      "file": "apps/designer-web/src/knowledge/editor.tsx",
+      "line": 252
+    },
+    {
+      "file": "apps/designer-web/src/knowledge/list.tsx",
+      "line": 80
+    },
+    {
+      "file": "apps/designer-web/src/knowledge/list.tsx",
+      "line": 113
     },
     {
       "file": "apps/designer-web/src/lifecycle/assignment-insights.tsx",
@@ -8594,15 +8802,15 @@
     },
     {
       "file": "apps/designer-web/src/triggers/manager.tsx",
-      "line": 354
+      "line": 356
     },
     {
       "file": "apps/designer-web/src/triggers/manager.tsx",
-      "line": 419
+      "line": 439
     },
     {
       "file": "apps/designer-web/src/triggers/manager.tsx",
-      "line": 462
+      "line": 482
     },
     {
       "file": "apps/designer-web/src/workspace/create-dialog.tsx",
@@ -8618,23 +8826,19 @@
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 184
+      "line": 188
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 192
+      "line": 196
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 247
+      "line": 251
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 255
-    },
-    {
-      "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 284
+      "line": 259
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
@@ -8642,27 +8846,31 @@
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 291
+      "line": 292
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 351
+      "line": 295
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 380
+      "line": 355
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 396
+      "line": 384
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 447
+      "line": 400
     },
     {
       "file": "apps/designer-web/src/workspace/shell.tsx",
-      "line": 449
+      "line": 451
+    },
+    {
+      "file": "apps/designer-web/src/workspace/shell.tsx",
+      "line": 453
     },
     {
       "file": "apps/designer-web/src/workspace/welcome-tour.tsx",
@@ -8755,6 +8963,14 @@
     {
       "file": "packages/components/src/inputs.tsx",
       "line": 484
+    },
+    {
+      "file": "packages/components/src/knowledge.tsx",
+      "line": 72
+    },
+    {
+      "file": "packages/components/src/knowledge.tsx",
+      "line": 74
     },
     {
       "file": "packages/components/src/layout.tsx",

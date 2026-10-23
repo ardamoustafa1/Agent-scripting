@@ -30,6 +30,7 @@ export const LIBRARY_COMPONENT_TYPES = [
   'objectionHandler',
   'checklist',
   'knowledgeLink',
+  'knowledgePanel',
   'currencyInput',
   'multiSelect',
   'checkboxGroup',

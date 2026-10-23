@@ -298,6 +298,29 @@ Bağlanabilir alanlar: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `pla
   "props": {}
 }
 ```
+## knowledgePanel
+
+Kategori: `script`
+
+Olaylar: `onPress`, `onChange`, `onBlur`, `onRead`, `onSuccess`, `onError`, `onElapsed`, `onClear`
+
+Bağlanabilir alanlar: `labelKey`, `descriptionKey`, `searchable`, `disabled`
+
+| Özellik | Editör | Bağlanabilir |
+| --- | --- | --- |
+| `labelKey` | i18nKey | ✓ |
+| `descriptionKey` | i18nKey | ✓ |
+| `articles` | knowledgeArticles | — |
+| `searchable` | boolean | ✓ |
+| `disabled` | boolean | ✓ |
+
+```json
+{
+  "id": "demo-knowledgepanel",
+  "type": "knowledgePanel",
+  "props": {}
+}
+```
 ## text
 
 Kategori: `script`

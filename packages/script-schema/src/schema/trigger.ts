@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { NodeIdSchema } from '../ids.js';
+import { KnowledgeArticleKeySchema, NodeIdSchema } from '../ids.js';
 
 import { I18nKeySchema, LocaleSchema } from './primitives.js';
 
@@ -21,7 +21,8 @@ export type TriggerTone = z.infer<typeof TriggerToneSchema>;
 
 /**
  * What the agent is offered when a trigger fires. Nothing runs by itself: a page suggestion waits
- * for the agent's click and a notice hint never acknowledges the notice.
+ * for the agent's click, a notice hint never acknowledges the notice and an article suggestion
+ * (ADR-0057) opens only when the agent asks for it.
  */
 export const TriggerActionSchema = z
   .discriminatedUnion('type', [
@@ -32,6 +33,7 @@ export const TriggerActionSchema = z
       tone: TriggerToneSchema.default('info'),
     }),
     z.strictObject({ type: z.literal('markNotice'), noticeId: NodeIdSchema }),
+    z.strictObject({ type: z.literal('suggestArticle'), articleKey: KnowledgeArticleKeySchema }),
   ])
   .meta({ id: 'TriggerAction' });
 export type TriggerAction = z.infer<typeof TriggerActionSchema>;

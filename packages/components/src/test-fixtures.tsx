@@ -5,7 +5,7 @@ import { en, tr } from '@verbis/i18n';
 import { NodeSchema, ScriptDocumentSchema, type NodeInput } from '@verbis/script-schema';
 
 import { createComponentRegistry, LIBRARY_DEFINITIONS } from './catalog.js';
-import { ComponentProvider } from './environment.js';
+import { ComponentProvider, type KnowledgePort } from './environment.js';
 
 function flat(input: object, prefix = 'components'): Record<string, string> {
   return Object.fromEntries(
@@ -25,6 +25,12 @@ export function sampleProps(type: string): Record<string, unknown> {
     descriptionKey: 'components.sample.description',
   };
   if (['tcknInput', 'vknInput', 'ibanInput', 'creditCardInput'].includes(type)) return common;
+  if (type === 'knowledgePanel')
+    return {
+      labelKey: 'components.knowledge.title',
+      descriptionKey: 'components.sample.description',
+      articles: ['refund-policy', 'card-loss'],
+    };
   if (['scriptText', 'richContent', 'text', 'heading', 'alert', 'callout'].includes(type))
     return {
       ...common,
@@ -258,6 +264,28 @@ export function createFixtureRuntime(type: string): Runtime {
     },
   });
 }
+/** Synthetic knowledge base for stories and fixtures (ADR-0057); no tenant content. */
+const SAMPLE_ARTICLES = [
+  {
+    key: 'refund-policy',
+    title: 'Refund policy',
+    body: 'Refunds are made within 14 days.\n\n## Steps\n1. Verify the customer\n2. Record the request',
+  },
+  {
+    key: 'card-loss',
+    title: 'Lost card',
+    body: 'Block the card at once.\n- A new card arrives in five days',
+  },
+];
+export const sampleKnowledge: KnowledgePort = {
+  article: (key) => Promise.resolve(SAMPLE_ARTICLES.find((article) => article.key === key) ?? null),
+  search: (query) =>
+    Promise.resolve(
+      SAMPLE_ARTICLES.filter((article) =>
+        `${article.title} ${article.body}`.toLowerCase().includes(query.toLowerCase()),
+      ).map(({ key, title, body }) => ({ key, title, snippet: body.slice(0, 80) })),
+    ),
+};
 export function ComponentExample({
   type,
   props = {},
@@ -305,6 +333,7 @@ export function ComponentExample({
         knowledgeOrigins: [],
         features: ['signature'],
         now: () => Date.now(),
+        knowledge: sampleKnowledge,
         scheduleCallback: () => Promise.resolve(),
       }}
     >

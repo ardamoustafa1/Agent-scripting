@@ -298,6 +298,29 @@ Bindable props: `labelKey`, `titleKey`, `descriptionKey`, `hintKey`, `placeholde
   "props": {}
 }
 ```
+## knowledgePanel
+
+Category: `script`
+
+Events: `onPress`, `onChange`, `onBlur`, `onRead`, `onSuccess`, `onError`, `onElapsed`, `onClear`
+
+Bindable props: `labelKey`, `descriptionKey`, `searchable`, `disabled`
+
+| Property | Editor | Bindable |
+| --- | --- | --- |
+| `labelKey` | i18nKey | ✓ |
+| `descriptionKey` | i18nKey | ✓ |
+| `articles` | knowledgeArticles | — |
+| `searchable` | boolean | ✓ |
+| `disabled` | boolean | ✓ |
+
+```json
+{
+  "id": "demo-knowledgepanel",
+  "type": "knowledgePanel",
+  "props": {}
+}
+```
 ## text
 
 Category: `script`

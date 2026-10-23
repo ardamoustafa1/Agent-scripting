@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -7,6 +8,7 @@ import { UiProvider } from '@verbis/ui';
 
 import { Desktop, type Prompt, type TranscriptLine } from './api.js';
 import { AgentController, mergeLine, promptNotices, TRANSCRIPT_LINES } from './controller.js';
+import { desktopKnowledge } from './knowledge.js';
 import { LivePrompts, LiveTranscript, VISIBLE_PROMPTS } from './live-transcript.js';
 
 import type { DraftVault } from './vault.js';
@@ -65,6 +67,13 @@ const hint: Prompt = {
   speaker: 'agent',
   firedAt: '2026-10-22T10:00:02.000Z',
   actions: [{ type: 'alert', messageKey: 'hint.price', tone: 'info' }],
+};
+const article: Prompt = {
+  triggerId: 'refund-intent',
+  segmentId: 's4',
+  speaker: 'customer',
+  firedAt: '2026-10-22T10:00:04.000Z',
+  actions: [{ type: 'suggestArticle', articleKey: 'refund-policy' }],
 };
 const noticeOnly: Prompt = {
   triggerId: 'recording',
@@ -134,6 +143,24 @@ async function mount(prompts: Prompt[], stored: TranscriptLine[] = []) {
         return Promise.resolve(Response.json({ ticket: 'synthetic' }));
       if (path.endsWith('/desktop/transcript'))
         return Promise.resolve(Response.json({ enabled: true, lines: stored }));
+      if (path.endsWith('/desktop/knowledge/refund-policy'))
+        return Promise.resolve(
+          Response.json({
+            key: 'refund-policy',
+            title: 'Refund policy',
+            body: 'Refunds within 14 days.',
+            tags: [],
+            locale: 'en',
+            updatedAt: '2026-10-22T10:00:00.000Z',
+          }),
+        );
+      if (path.includes('/desktop/knowledge/'))
+        return Promise.resolve(
+          Response.json(
+            { code: 'VERBIS_RESOURCE_NOT_FOUND', correlationId: 'synthetic' },
+            { status: 404 },
+          ),
+        );
       if (path.endsWith('/commands') || path.includes('/desktop/prompts/'))
         return Promise.resolve(Response.json({ ...desktop.view, sequence: ++sequence }));
       return Promise.resolve(Response.json(desktop));
@@ -154,28 +181,76 @@ async function mount(prompts: Prompt[], stored: TranscriptLine[] = []) {
   const run = async (work: () => Promise<unknown>) => {
     await work();
   };
+  const client = new QueryClient(),
+    knowledge = desktopKnowledge(id, 'synthetic-csrf'),
+    opened = vi.fn();
   const View = () => {
     const state = controller.getSnapshot();
     return (
-      <UiProvider i18n={i18n}>
-        <LivePrompts
-          controller={controller}
-          prompts={state.prompts}
-          lines={state.transcript}
-          disabled={false}
-          run={run}
-        />
-      </UiProvider>
+      <QueryClientProvider client={client}>
+        <UiProvider i18n={i18n}>
+          <LivePrompts
+            controller={controller}
+            knowledge={knowledge}
+            onOpenArticle={opened}
+            prompts={state.prompts}
+            lines={state.transcript}
+            disabled={false}
+            run={run}
+          />
+        </UiProvider>
+      </QueryClientProvider>
     );
   };
   const ui = render(<View />);
   const rerender = () => {
     ui.rerender(<View />);
   };
-  return { controller, requests, rerender };
+  return { controller, requests, rerender, opened };
 }
 
 describe('LivePrompts', () => {
+  it('offers a suggested article by its title and opens it in the side panel (ADR-0057)', async () => {
+    const f = await mount([article]);
+    await screen.findByText('Related article: “Refund policy”.');
+    fireEvent.click(screen.getByRole('button', { name: 'Open the article' }));
+    expect(f.opened).toHaveBeenCalledWith('refund-policy');
+    await waitFor(() => {
+      expect(f.controller.getSnapshot().prompts).toEqual([]);
+    });
+    expect(
+      f.requests.find((r) => r.path.endsWith('/desktop/prompts/refund-intent'))?.body,
+    ).toMatchObject({ resolution: 'accepted' });
+    expect(f.requests.some((r) => r.path.endsWith('/commands'))).toBe(false);
+  });
+
+  it('keeps a page suggestion open when the article on the same card is read', async () => {
+    const both = {
+      ...suggest,
+      actions: [
+        ...suggest.actions,
+        { type: 'suggestArticle' as const, articleKey: 'refund-policy' },
+      ],
+    };
+    const f = await mount([both]);
+    fireEvent.click(await screen.findByRole('button', { name: 'Open the article' }));
+    expect(f.opened).toHaveBeenCalledWith('refund-policy');
+    expect(f.requests.some((r) => r.path.includes('/desktop/prompts/'))).toBe(false);
+    screen.getByRole('button', { name: 'Go to Retention' });
+  });
+
+  it('says so when the suggested article is not published, and can be declined', async () => {
+    const f = await mount([
+      { ...article, actions: [{ type: 'suggestArticle', articleKey: 'withdrawn' }] },
+    ]);
+    await screen.findByText('The suggested article is not published right now.');
+    expect(screen.queryByRole('button', { name: 'Open the article' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Not now' }));
+    await waitFor(() => {
+      expect(f.controller.getSnapshot().prompts).toEqual([]);
+    });
+  });
+
   it('quotes what was said, shows the script hint and offers the suggested step', async () => {
     const f = await mount([suggest]);
     act(() => {

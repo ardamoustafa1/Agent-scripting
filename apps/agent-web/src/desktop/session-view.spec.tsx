@@ -248,7 +248,14 @@ it('loads the actual authorized session, exposes progress and shortcut help, and
   expect(screen.getByRole('progressbar').getAttribute('aria-valuenow')).toBe('100');
   fireEvent.keyDown(document, { ctrlKey: true, key: '/' });
   const help = screen.getByRole('dialog', { name: i18n.t('agent.desktop.shortcuts') });
-  for (const action of ['next', 'nextAnywhere', 'back', 'focusMode', 'switchInteraction'])
+  for (const action of [
+    'next',
+    'nextAnywhere',
+    'back',
+    'focusMode',
+    'searchKnowledge',
+    'switchInteraction',
+  ])
     expect(within(help).getByText(i18n.t(`agent.desktop.${action}`))).toBeDefined();
   fireEvent.keyDown(help, { key: 'Escape' });
   await waitFor(() => {
@@ -436,8 +443,28 @@ it('shows a transferred interaction, toggles voice context, edits notes and repo
     button: 0,
     ctrlKey: false,
   });
-  expect(await screen.findByText(i18n.t('agent.desktop.empty'))).toBeDefined();
+  // No platform items: the tab offers the tenant's own knowledge base only (ADR-0057).
+  expect(
+    await screen.findByRole('searchbox', { name: i18n.t('agent.desktop.knowledgeBase.search') }),
+  ).toBeDefined();
+  expect(screen.queryByText(i18n.t('agent.desktop.knowledgeBase.fromPlatform'))).toBeNull();
   expect(f.vault).toBeDefined();
+});
+it('opens the knowledge base with Alt+K and puts the caret in its search box', async () => {
+  await mount('active', 'voice');
+  expect(screen.queryByRole('complementary')).toBeNull();
+  fireEvent.keyDown(document, { key: '˚', code: 'KeyK', altKey: true });
+  const box = await screen.findByRole('searchbox', {
+    name: i18n.t('agent.desktop.knowledgeBase.search'),
+  });
+  await waitFor(() => {
+    expect(document.activeElement).toBe(box);
+  });
+  expect(
+    screen
+      .getByRole('tab', { name: i18n.t('agent.desktop.knowledge') })
+      .getAttribute('aria-selected'),
+  ).toBe('true');
 });
 it('renders typed required wrap-up fields, blocks payment/object requirements and records callback time', async () => {
   const f = await mount('wrapup', 'email', false, {

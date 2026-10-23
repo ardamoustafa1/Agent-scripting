@@ -5315,7 +5315,8 @@ Locally redacted, quota-reserved AI suggestion; SSO and instance permission requ
                 "objection",
                 "summary",
                 "navigate",
-                "notices"
+                "notices",
+                "answer"
               ]
             },
             "locale": {
@@ -5407,7 +5408,8 @@ Locally redacted, quota-reserved AI suggestion; SSO and instance permission requ
                   "objection",
                   "summary",
                   "navigate",
-                  "notices"
+                  "notices",
+                  "answer"
                 ]
               },
               "requiresHumanApproval": {
@@ -22789,6 +22791,575 @@ Requires: update:IdentityProvider
 }
 ```
 
+## GET /v1/knowledge-articles
+
+List knowledge articles in every state
+
+Requires: read:KnowledgeArticle
+
+```json
+{
+  "operationId": "Knowledge.list",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "default": 25,
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100
+      }
+    },
+    {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "maxLength": 2048
+      }
+    },
+    {
+      "name": "sort",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "default": "-updatedAt",
+        "type": "string",
+        "enum": [
+          "updatedAt",
+          "-updatedAt",
+          "title",
+          "-title"
+        ]
+      }
+    },
+    {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "description": "Title, key or tag contains (Turkish-insensitive)",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "description": "Title, key or tag contains (Turkish-insensitive)"
+    },
+    {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "published",
+          "archived"
+        ]
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "A page of articles",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/KnowledgeArticlePage"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## POST /v1/knowledge-articles
+
+Create a draft article (the key is immutable afterwards)
+
+Requires: create:KnowledgeArticle
+
+```json
+{
+  "operationId": "Knowledge.create",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": false,
+      "description": "Makes the POST safely retryable for 24 hours (same key + same body ⇒ same response).",
+      "schema": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9._:-]{8,255}$"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/CreateKnowledgeArticle"
+        }
+      }
+    }
+  },
+  "responses": {
+    "201": {
+      "description": "Created",
+      "headers": {
+        "location": {
+          "description": "URL of the article",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "etag": {
+          "description": "Current version",
+          "schema": {
+            "type": "string"
+          }
+        }
+      },
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/KnowledgeArticle"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## GET /v1/knowledge-articles/by-key/{key}
+
+A draft or published article by its key (designer preview)
+
+Requires: read:KnowledgeArticle
+
+```json
+{
+  "operationId": "Knowledge.byKey",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "key",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Article",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/KnowledgeArticle"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## GET /v1/knowledge-articles/search
+
+Ranked full-text search over draft and published articles (Turkish-aware)
+
+Requires: read:KnowledgeArticle
+
+```json
+{
+  "operationId": "Knowledge.search",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [],
+  "responses": {
+    "200": {
+      "description": "Best matches first",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/KnowledgeSearchResult"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## GET /v1/knowledge-articles/{id}
+
+Get a knowledge article
+
+Requires: read:KnowledgeArticle
+
+```json
+{
+  "operationId": "Knowledge.get",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Article",
+      "headers": {
+        "etag": {
+          "description": "Current version",
+          "schema": {
+            "type": "string"
+          }
+        }
+      },
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/KnowledgeArticle"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## PATCH /v1/knowledge-articles/{id}
+
+Edit an article (optimistic locking); a published article changes for agents at once
+
+Requires: update:KnowledgeArticle
+
+```json
+{
+  "operationId": "Knowledge.update",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    },
+    {
+      "name": "If-Match",
+      "in": "header",
+      "required": true,
+      "description": "Current ETag (optimistic locking).",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/UpdateKnowledgeArticle"
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Updated",
+      "headers": {
+        "etag": {
+          "description": "New version",
+          "schema": {
+            "type": "string"
+          }
+        }
+      },
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/KnowledgeArticle"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## POST /v1/knowledge-articles/{id}/archive
+
+Archive an article; agents no longer see it
+
+Requires: publish:KnowledgeArticle
+
+```json
+{
+  "operationId": "Knowledge.archive",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    },
+    {
+      "name": "If-Match",
+      "in": "header",
+      "required": true,
+      "description": "Current ETag (optimistic locking).",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Archived",
+      "headers": {
+        "etag": {
+          "description": "New version",
+          "schema": {
+            "type": "string"
+          }
+        }
+      },
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/KnowledgeArticle"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## POST /v1/knowledge-articles/{id}/publish
+
+Publish a draft or archived article to agents
+
+Requires: publish:KnowledgeArticle
+
+```json
+{
+  "operationId": "Knowledge.publish",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    },
+    {
+      "name": "If-Match",
+      "in": "header",
+      "required": true,
+      "description": "Current ETag (optimistic locking).",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Published",
+      "headers": {
+        "etag": {
+          "description": "New version",
+          "schema": {
+            "type": "string"
+          }
+        }
+      },
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/KnowledgeArticle"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## POST /v1/launch-intents
 
 Connector-hub: create a short-lived single-use launch intent (client credentials + mTLS)
@@ -29556,6 +30127,137 @@ Requires: read:Session
         "application/json": {
           "schema": {
             "$ref": "#/components/schemas/AgentFeedbackResult"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## POST /v1/sessions/{id}/desktop/knowledge/search
+
+Owner-only ranked search over published knowledge articles
+
+Requires: read:Session
+
+```json
+{
+  "operationId": "KnowledgeDesktop.search",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/KnowledgeSearchQuery"
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Best matches first",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/KnowledgeSearchResult"
+          }
+        }
+      }
+    },
+    "default": {
+      "description": "Error (RFC 7807)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## GET /v1/sessions/{id}/desktop/knowledge/{key}
+
+Owner-only published knowledge article by key
+
+Requires: read:Session
+
+```json
+{
+  "operationId": "KnowledgeDesktop.article",
+  "security": [
+    {
+      "internalJwt": []
+    },
+    {
+      "sessionCookie": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "key",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+      }
+    },
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "UUIDv7 identifier"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Article",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/KnowledgeArticleView"
           }
         }
       }
@@ -37344,7 +38046,8 @@ Requires: update:User
             "idp",
             "audit",
             "report",
-            "session"
+            "session",
+            "knowledge"
           ]
         },
         "additionalProperties": {
@@ -38064,6 +38767,46 @@ Requires: update:User
         "additionalProperties": false
       }
     ]
+  },
+  "CreateKnowledgeArticle": {
+    "type": "object",
+    "properties": {
+      "key": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      },
+      "body": {
+        "default": "",
+        "type": "string",
+        "maxLength": 20000
+      },
+      "tags": {
+        "maxItems": 10,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        }
+      },
+      "locale": {
+        "default": "tr",
+        "type": "string",
+        "pattern": "^[a-z]{2,3}(-[A-Z][a-zA-Z0-9]{1,7})?$"
+      }
+    },
+    "required": [
+      "key",
+      "title"
+    ],
+    "additionalProperties": false
   },
   "CreateLocation": {
     "type": "object",
@@ -40191,6 +40934,263 @@ Requires: update:User
   },
   "JsonValue": {
     "$ref": "#/components/schemas/Inline113ae44d83"
+  },
+  "KnowledgeArticle": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
+      "key": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      },
+      "body": {
+        "type": "string",
+        "maxLength": 20000
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "locale": {
+        "type": "string",
+        "pattern": "^[a-z]{2,3}(-[A-Z][a-zA-Z0-9]{1,7})?$"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "published",
+          "archived"
+        ]
+      },
+      "publishedAt": {
+        "anyOf": [
+          {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+      },
+      "createdBy": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+      },
+      "updatedBy": {
+        "type": "string"
+      },
+      "version": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 9007199254740991
+      }
+    },
+    "required": [
+      "id",
+      "key",
+      "title",
+      "body",
+      "tags",
+      "locale",
+      "status",
+      "publishedAt",
+      "createdAt",
+      "createdBy",
+      "updatedAt",
+      "updatedBy",
+      "version"
+    ],
+    "additionalProperties": false
+  },
+  "KnowledgeArticlePage": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/KnowledgeArticle"
+        }
+      },
+      "page": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sort": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "limit",
+          "nextCursor",
+          "sort"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "data",
+      "page"
+    ],
+    "additionalProperties": false
+  },
+  "KnowledgeArticleView": {
+    "type": "object",
+    "properties": {
+      "key": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+      },
+      "title": {
+        "type": "string"
+      },
+      "body": {
+        "type": "string"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "locale": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+      }
+    },
+    "required": [
+      "key",
+      "title",
+      "body",
+      "tags",
+      "locale",
+      "updatedAt"
+    ],
+    "additionalProperties": false
+  },
+  "KnowledgeSearchHit": {
+    "type": "object",
+    "properties": {
+      "key": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+      },
+      "title": {
+        "type": "string"
+      },
+      "snippet": {
+        "type": "string"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "locale": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "published",
+          "archived"
+        ]
+      },
+      "updatedAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+      }
+    },
+    "required": [
+      "key",
+      "title",
+      "snippet",
+      "tags",
+      "locale",
+      "status",
+      "updatedAt"
+    ],
+    "additionalProperties": false
+  },
+  "KnowledgeSearchQuery": {
+    "type": "object",
+    "properties": {
+      "q": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      },
+      "limit": {
+        "default": 10,
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20
+      }
+    },
+    "required": [
+      "q"
+    ],
+    "additionalProperties": false
+  },
+  "KnowledgeSearchResult": {
+    "type": "object",
+    "properties": {
+      "results": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/KnowledgeSearchHit"
+        }
+      }
+    },
+    "required": [
+      "results"
+    ],
+    "additionalProperties": false
   },
   "LaunchEmbedded": {
     "type": "object",
@@ -46292,6 +47292,26 @@ Requires: update:User
           "noticeId"
         ],
         "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "suggestArticle"
+          },
+          "articleKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+          }
+        },
+        "required": [
+          "type",
+          "articleKey"
+        ],
+        "additionalProperties": false
       }
     ]
   },
@@ -46738,7 +47758,8 @@ Requires: update:User
             "idp",
             "audit",
             "report",
-            "session"
+            "session",
+            "knowledge"
           ]
         },
         "additionalProperties": {
@@ -47182,6 +48203,34 @@ Requires: update:User
             "additionalProperties": false
           }
         ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "UpdateKnowledgeArticle": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      },
+      "body": {
+        "type": "string",
+        "maxLength": 20000
+      },
+      "tags": {
+        "maxItems": 10,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        }
+      },
+      "locale": {
+        "type": "string",
+        "pattern": "^[a-z]{2,3}(-[A-Z][a-zA-Z0-9]{1,7})?$"
       }
     },
     "additionalProperties": false

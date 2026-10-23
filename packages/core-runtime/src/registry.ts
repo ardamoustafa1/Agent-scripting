@@ -29,7 +29,17 @@ export interface RendererProps {
 export interface DesignerProperty {
   key: string;
   labelKey: string;
-  control: 'text' | 'number' | 'boolean' | 'select' | 'json' | 'i18nKey' | 'variable' | 'asset';
+  control:
+    | 'text'
+    | 'number'
+    | 'boolean'
+    | 'select'
+    | 'json'
+    | 'i18nKey'
+    | 'variable'
+    | 'asset'
+    /** Keys of tenant knowledge articles (ADR-0057), picked from the knowledge base. */
+    | 'knowledgeArticles';
   options?: readonly string[];
   bindable?: boolean;
   sensitive?: boolean;

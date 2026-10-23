@@ -167,6 +167,14 @@ describe('evaluateTriggers', () => {
     ]);
   });
 
+  it('keeps an article suggestion on any page (ADR-0057)', () => {
+    const article = trigger({ actions: [{ type: 'suggestArticle', articleKey: 'refund-policy' }] });
+    expect(
+      evaluateTriggers([article], line('iptal etmek'), { currentPage: 'retention', history: [] })[0]
+        ?.actions,
+    ).toEqual([{ type: 'suggestArticle', articleKey: 'refund-policy' }]);
+  });
+
   it('returns every trigger that matches, in document order', () => {
     const second = trigger({
       id: 'price',
@@ -211,5 +219,12 @@ describe('TriggerSchema', () => {
     expect(bad({ phrases: { TR: ['x'] } })).toBe(false);
     expect(bad({ repeat: { cooldownSeconds: 5 } })).toBe(false);
     expect(bad({ repeat: { cooldownSeconds: 3_601 } })).toBe(false);
+    expect(bad({ actions: [{ type: 'suggestArticle', articleKey: 'iade-politikasi' }] })).toBe(
+      true,
+    );
+    expect(bad({ actions: [{ type: 'suggestArticle', articleKey: 'İade Politikası' }] })).toBe(
+      false,
+    );
+    expect(bad({ actions: [{ type: 'suggestArticle', articleKey: 'a'.repeat(65) }] })).toBe(false);
   });
 });

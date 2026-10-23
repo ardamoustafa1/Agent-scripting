@@ -2398,6 +2398,134 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/knowledge-articles': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * List knowledge articles in every state
+     * @description Requires: read:KnowledgeArticle
+     */
+    get: operations['Knowledge.list'];
+    put?: never;
+    /**
+     * Create a draft article (the key is immutable afterwards)
+     * @description Requires: create:KnowledgeArticle
+     */
+    post: operations['Knowledge.create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/knowledge-articles/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get a knowledge article
+     * @description Requires: read:KnowledgeArticle
+     */
+    get: operations['Knowledge.get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Edit an article (optimistic locking); a published article changes for agents at once
+     * @description Requires: update:KnowledgeArticle
+     */
+    patch: operations['Knowledge.update'];
+    trace?: never;
+  };
+  '/v1/knowledge-articles/{id}/archive': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Archive an article; agents no longer see it
+     * @description Requires: publish:KnowledgeArticle
+     */
+    post: operations['Knowledge.archive'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/knowledge-articles/{id}/publish': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Publish a draft or archived article to agents
+     * @description Requires: publish:KnowledgeArticle
+     */
+    post: operations['Knowledge.publish'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/knowledge-articles/by-key/{key}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * A draft or published article by its key (designer preview)
+     * @description Requires: read:KnowledgeArticle
+     */
+    get: operations['Knowledge.byKey'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/knowledge-articles/search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Ranked full-text search over draft and published articles (Turkish-aware)
+     * @description Requires: read:KnowledgeArticle
+     */
+    get: operations['Knowledge.search'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/launch-intents': {
     parameters: {
       query?: never;
@@ -3794,6 +3922,46 @@ export interface paths {
      * @description Requires: read:Session
      */
     post: operations['AgentDesktop.feedback'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/sessions/{id}/desktop/knowledge/{key}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Owner-only published knowledge article by key
+     * @description Requires: read:Session
+     */
+    get: operations['KnowledgeDesktop.article'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/sessions/{id}/desktop/knowledge/search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Owner-only ranked search over published knowledge articles
+     * @description Requires: read:Session
+     */
+    post: operations['KnowledgeDesktop.search'];
     delete?: never;
     options?: never;
     head?: never;
@@ -5673,6 +5841,15 @@ export interface components {
             };
           };
         };
+    CreateKnowledgeArticle: {
+      key: string;
+      title: string;
+      /** @default  */
+      body: string;
+      tags?: string[];
+      /** @default tr */
+      locale: string;
+    };
     CreateLocation: {
       /** @description Stable kebab-case identifier; immutable after creation */
       code: string;
@@ -6211,6 +6388,61 @@ export interface components {
       scimBaseUrl: string;
     };
     JsonValue: components['schemas']['Inline113ae44d83'];
+    KnowledgeArticle: {
+      /** Format: uuid */
+      id: string;
+      key: string;
+      title: string;
+      body: string;
+      tags: string[];
+      locale: string;
+      /** @enum {string} */
+      status: 'draft' | 'published' | 'archived';
+      publishedAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      createdBy: string;
+      /** Format: date-time */
+      updatedAt: string;
+      updatedBy: string;
+      version: number;
+    };
+    KnowledgeArticlePage: {
+      data: components['schemas']['KnowledgeArticle'][];
+      page: {
+        limit: number;
+        nextCursor: string | null;
+        sort: string;
+      };
+    };
+    KnowledgeArticleView: {
+      key: string;
+      title: string;
+      body: string;
+      tags: string[];
+      locale: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    KnowledgeSearchHit: {
+      key: string;
+      title: string;
+      snippet: string;
+      tags: string[];
+      locale: string;
+      /** @enum {string} */
+      status: 'draft' | 'published' | 'archived';
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    KnowledgeSearchQuery: {
+      q: string;
+      /** @default 10 */
+      limit: number;
+    };
+    KnowledgeSearchResult: {
+      results: components['schemas']['KnowledgeSearchHit'][];
+    };
     LaunchEmbedded: {
       /**
        * Format: uuid
@@ -7754,6 +7986,11 @@ export interface components {
           /** @constant */
           type: 'markNotice';
           noticeId: string;
+        }
+      | {
+          /** @constant */
+          type: 'suggestArticle';
+          articleKey: string;
         };
     TrustCenter: {
       /** Format: date-time */
@@ -7950,6 +8187,12 @@ export interface components {
               defaultRoles: string[];
             };
           };
+    };
+    UpdateKnowledgeArticle: {
+      title?: string;
+      body?: string;
+      tags?: string[];
+      locale?: string;
     };
     UpdateLocation: {
       name: string;
@@ -11036,7 +11279,8 @@ export interface operations {
             | 'objection'
             | 'summary'
             | 'navigate'
-            | 'notices';
+            | 'notices'
+            | 'answer';
           /**
            * @default tr
            * @enum {string}
@@ -11082,7 +11326,8 @@ export interface operations {
               | 'objection'
               | 'summary'
               | 'navigate'
-              | 'notices';
+              | 'notices'
+              | 'answer';
             /** @constant */
             requiresHumanApproval: true;
             value: unknown;
@@ -17557,6 +17802,287 @@ export interface operations {
       };
     };
   };
+  'Knowledge.list': {
+    parameters: {
+      query?: {
+        limit?: number;
+        cursor?: string;
+        sort?: 'updatedAt' | '-updatedAt' | 'title' | '-title';
+        /** @description Title, key or tag contains (Turkish-insensitive) */
+        q?: string;
+        status?: 'draft' | 'published' | 'archived';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A page of articles */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['KnowledgeArticlePage'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Knowledge.create': {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Makes the POST safely retryable for 24 hours (same key + same body ⇒ same response). */
+        'Idempotency-Key'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateKnowledgeArticle'];
+      };
+    };
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          /** @description URL of the article */
+          location?: string;
+          /** @description Current version */
+          etag?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['KnowledgeArticle'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Knowledge.get': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Article */
+      200: {
+        headers: {
+          /** @description Current version */
+          etag?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['KnowledgeArticle'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Knowledge.update': {
+    parameters: {
+      query?: never;
+      header: {
+        /** @description Current ETag (optimistic locking). */
+        'If-Match': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateKnowledgeArticle'];
+      };
+    };
+    responses: {
+      /** @description Updated */
+      200: {
+        headers: {
+          /** @description New version */
+          etag?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['KnowledgeArticle'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Knowledge.archive': {
+    parameters: {
+      query?: never;
+      header: {
+        /** @description Current ETag (optimistic locking). */
+        'If-Match': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Archived */
+      200: {
+        headers: {
+          /** @description New version */
+          etag?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['KnowledgeArticle'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Knowledge.publish': {
+    parameters: {
+      query?: never;
+      header: {
+        /** @description Current ETag (optimistic locking). */
+        'If-Match': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Published */
+      200: {
+        headers: {
+          /** @description New version */
+          etag?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['KnowledgeArticle'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Knowledge.byKey': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Article */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['KnowledgeArticle'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'Knowledge.search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Best matches first */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['KnowledgeSearchResult'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
   'Launch.create': {
     parameters: {
       query?: never;
@@ -20634,6 +21160,73 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['AgentFeedbackResult'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'KnowledgeDesktop.article': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Article */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['KnowledgeArticleView'];
+        };
+      };
+      /** @description Error (RFC 7807) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ProblemDetails'];
+        };
+      };
+    };
+  };
+  'KnowledgeDesktop.search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['KnowledgeSearchQuery'];
+      };
+    };
+    responses: {
+      /** @description Best matches first */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['KnowledgeSearchResult'];
         };
       };
       /** @description Error (RFC 7807) */

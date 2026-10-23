@@ -3,6 +3,7 @@ import { GripVertical } from 'lucide-react';
 import { memo, startTransition, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ComponentProvider } from '@verbis/components';
 import {
   Runtime,
   ScriptRenderer,
@@ -11,6 +12,8 @@ import {
 } from '@verbis/core-runtime';
 import { walkNodes } from '@verbis/script-schema';
 import { Alert, Button } from '@verbis/ui';
+
+import { previewEnvironment } from '../knowledge/api.js';
 
 import { useNodeHeat } from './heatmap.js';
 import { editorRegistry, useEditor, type EditorState, type EditorStore } from './store.js';
@@ -50,7 +53,9 @@ export function Frame({ node, children }: NodeDecorationProps) {
 const CanvasRuntime = memo(function CanvasRuntime({ runtime }: { runtime: Runtime }) {
   return (
     <NodeDecorationContext.Provider value={Frame}>
-      <ScriptRenderer runtime={runtime} autoStart={false} />
+      <ComponentProvider environment={previewEnvironment}>
+        <ScriptRenderer runtime={runtime} autoStart={false} />
+      </ComponentProvider>
     </NodeDecorationContext.Provider>
   );
 });

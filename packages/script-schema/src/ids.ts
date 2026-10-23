@@ -21,5 +21,17 @@ export const IdentifierSchema = z
 
 export type Identifier = z.infer<typeof IdentifierSchema>;
 
+/**
+ * Key of a tenant knowledge article (ADR-0057): stable kebab-case, unique per tenant. Scripts
+ * reference articles by key, as they reference data sources, so they stay portable.
+ */
+export const KnowledgeArticleKeySchema = z
+  .string()
+  .min(1)
+  .max(64)
+  .regex(/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/, 'Article keys must be kebab-case (e.g. "refund-policy")');
+
+export type KnowledgeArticleKey = z.infer<typeof KnowledgeArticleKeySchema>;
+
 /** Script id (UUIDv7, CLAUDE.md §4). */
 export const ScriptIdSchema = z.uuid({ version: 'v7' });

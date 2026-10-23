@@ -48,10 +48,16 @@ import {
 import { agentScreenReady, agentLaunchFailed, agentPageTransition } from '../observability.js';
 
 import { AgentAiPanel } from './ai-panel.js';
-import { api, Desktop } from './api.js';
+import { api, Desktop, type TranscriptLine } from './api.js';
 import { AgentController, promptNotices } from './controller.js';
 import { FailureNotice } from './failure-notice.js';
 import { classifyAgentFailure, type AgentFailure } from './failure.js';
+import {
+  EMPTY_KNOWLEDGE,
+  KnowledgeTab,
+  desktopKnowledge,
+  type KnowledgeState,
+} from './knowledge.js';
 import { LivePrompts, LiveTranscript } from './live-transcript.js';
 import { describeTarget, pageFocusTarget, shortcutIntent } from './navigation.js';
 import { type DraftVault } from './vault.js';
@@ -179,6 +185,7 @@ function Interaction({
   const { t } = useTranslation(),
     s = useSyncExternalStore(c.subscribe, c.getSnapshot, c.getSnapshot);
   useRuntimePaths(c.runtime, ['runtime.page', 'runtime.errors', 'runtime.read.*', 'vars.*']);
+  const knowledge = useMemo(() => desktopKnowledge(c.id, csrf), [c, csrf]);
   const componentEnvironment = useMemo<ComponentEnvironment>(
     () => ({
       mediaOrigins: [],
@@ -186,6 +193,7 @@ function Interaction({
       knowledgeOrigins: [],
       features: [],
       now: Date.now,
+      knowledge,
       ...(c.desktop.secureCapture
         ? {
             secureCapture: {
@@ -197,10 +205,13 @@ function Interaction({
           }
         : {}),
     }),
-    [c],
+    [c, knowledge],
   );
   // A voice call with a live transcript opens with the side panel, where the transcript lives.
   const [side, setSide] = useState(() => c.getSnapshot().transcriptEnabled),
+    [sideTab, setSideTab] = useState('customer'),
+    [knowledgeState, setKnowledgeState] = useState<KnowledgeState>(EMPTY_KNOWLEDGE),
+    [knowledgeFocus, setKnowledgeFocus] = useState(false),
     [help, setHelp] = useState(false),
     [failure, setFailure] = useState<AgentFailure | null>(null),
     [subCodes, setSubCodes] = useState<string[]>([]),
@@ -244,6 +255,13 @@ function Interaction({
   const pageId = typeof shown === 'string' ? shown : null;
   const currentTitle = pageId === null ? '' : pageTitle(c.runtime.document, pageId, message);
   const trail = stepTrail(c.runtime.document, s.view.snapshot.history, pageId, message);
+  // A tab that is not offered any more (no notices, transcript off) falls back to the summary.
+  const tabValue =
+    (sideTab === 'compliance' && checklist.length === 0) ||
+    (sideTab === 'live' && !s.transcriptEnabled) ||
+    (sideTab === 'transcript' && c.desktop.interaction.channel !== 'chat')
+      ? 'customer'
+      : sideTab;
   // A new page: put the caret in its first field (or on its title) and say where the agent is.
   useEffect(() => {
     if (shownPage.current === pageId) return;
@@ -291,6 +309,16 @@ function Interaction({
     },
     [c, csrf],
   );
+  // Alt+K or a transcript suggestion: show the knowledge tab, with an article or the search box.
+  const openKnowledge = useCallback((key?: string) => {
+    setSide(true);
+    setSideTab('knowledge');
+    if (key === undefined) setKnowledgeFocus(true);
+    else setKnowledgeState((previous) => ({ ...previous, open: key }));
+  }, []);
+  const knowledgeFocused = useCallback(() => {
+    setKnowledgeFocus(false);
+  }, []);
   useEffect(() => {
     const prevent = (event: BeforeUnloadEvent) => {
       if (
@@ -341,6 +369,11 @@ function Interaction({
         setHelp((v) => !v);
         return;
       }
+      if (intent.type === 'knowledge') {
+        event.preventDefault();
+        openKnowledge();
+        return;
+      }
       if (intent.type !== 'next' && intent.type !== 'back') return;
       // Notes and the assistant are not part of the script: they never move the conversation.
       if (event.target instanceof Element && event.target.closest('.ag-sidebar')) return;
@@ -356,7 +389,7 @@ function Interaction({
     return () => {
       document.removeEventListener('keydown', key);
     };
-  }, [active, c, s.readOnly, s.view.state, s.online, page, next, run]);
+  }, [active, c, s.readOnly, s.view.state, s.online, page, next, run, openKnowledge]);
   const Channel =
     c.desktop.interaction.channel === 'voice'
       ? Phone
@@ -618,6 +651,8 @@ function Interaction({
             <>
               <LivePrompts
                 controller={c}
+                knowledge={knowledge}
+                onOpenArticle={openKnowledge}
                 prompts={s.prompts}
                 lines={s.transcript}
                 disabled={busy || s.readOnly || !s.online || s.view.state !== 'active'}
@@ -661,6 +696,8 @@ function Interaction({
             <AgentAiPanel controller={c} csrf={csrf} />
             <Tabs
               label={t('agent.desktop.sidebar')}
+              value={tabValue}
+              onValueChange={setSideTab}
               items={[
                 {
                   value: 'customer',
@@ -718,7 +755,21 @@ function Interaction({
                 {
                   value: 'knowledge',
                   label: t('agent.desktop.knowledge'),
-                  content: <ContextList value={c.desktop.interaction.context['knowledge']} />,
+                  content: (
+                    <KnowledgeTab
+                      sessionId={c.id}
+                      csrf={csrf}
+                      knowledge={knowledge}
+                      state={knowledgeState}
+                      onState={setKnowledgeState}
+                      focusRequested={knowledgeFocus}
+                      onFocused={knowledgeFocused}
+                      lastCustomerLine={lastCustomerLine(s.transcript)}
+                      platformItems={
+                        <PlatformKnowledge value={c.desktop.interaction.context['knowledge']} />
+                      }
+                    />
+                  ),
                 },
                 {
                   value: 'objections',
@@ -853,6 +904,7 @@ function Interaction({
               ['shortcutNextAnywhere', 'nextAnywhere'],
               ['shortcutBack', 'back'],
               ['shortcutFocus', 'focusMode'],
+              ['shortcutKnowledge', 'searchKnowledge'],
               ['shortcutTabs', 'switchInteraction'],
               ['shortcutHelpKeys', 'shortcuts'],
             ] as const
@@ -879,6 +931,23 @@ function ContextList({ value }: { value: unknown }) {
       ))}
     </ol>
   );
+}
+
+/** Connector-provided knowledge items, shown under the tenant's own articles. */
+function PlatformKnowledge({ value }: { value: unknown }) {
+  const { t } = useTranslation();
+  if (!Array.isArray(value) || value.length === 0) return null;
+  return (
+    <>
+      <h3 className="ag-knowledge-sources">{t('agent.desktop.knowledgeBase.fromPlatform')}</h3>
+      <ContextList value={value} />
+    </>
+  );
+}
+
+/** The customer's last final line of a voice call, to start a knowledge search from. */
+function lastCustomerLine(lines: readonly TranscriptLine[]): string | null {
+  return lines.findLast((line) => line.speaker === 'customer' && line.final)?.text ?? null;
 }
 
 function formatValue(value: unknown) {

@@ -28,11 +28,13 @@ const EXPECTED: Record<SystemRoleKey, Partial<Record<(typeof RESOURCES)[number],
     script: ['read', 'create', 'update', 'delete'],
     screen: ['read', 'create', 'update', 'delete'],
     integration: ['read'],
+    knowledge: ['read', 'create', 'update'],
   },
   script_approver: {
     campaign: ['read'],
     script: ['read', 'approve', 'publish'],
     screen: ['read'],
+    knowledge: ['read', 'publish'],
   },
   integration_engineer: {
     integration: [...RESOURCE_ACTIONS.integration],

@@ -1,9 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
+import { ComponentProvider } from '@verbis/components';
 import { ScriptRenderer, type Runtime } from '@verbis/core-runtime';
 import type { I18nInstance } from '@verbis/i18n';
 import { UiProvider, applyTheme, type Theme } from '@verbis/ui';
+
+import { previewEnvironment } from '../knowledge/api.js';
 
 import { AgentFrame } from './agent-frame.js';
 import '@verbis/components/agent-shell.css';
@@ -135,11 +138,13 @@ export function DevicePreview({
           <UiProvider theme={theme} i18n={i18n}>
             <main aria-label={title}>
               <h1 className="vb-sr-only">{title}</h1>
-              {agentFrame ? (
-                <AgentFrame runtime={runtime} />
-              ) : (
-                <ScriptRenderer runtime={runtime} autoStart={false} />
-              )}
+              <ComponentProvider environment={previewEnvironment}>
+                {agentFrame ? (
+                  <AgentFrame runtime={runtime} />
+                ) : (
+                  <ScriptRenderer runtime={runtime} autoStart={false} />
+                )}
+              </ComponentProvider>
             </main>
           </UiProvider>,
           body,

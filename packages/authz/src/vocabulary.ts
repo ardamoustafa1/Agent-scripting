@@ -17,6 +17,7 @@ export const RESOURCES = [
   'audit',
   'report',
   'session',
+  'knowledge',
 ] as const;
 export type Resource = (typeof RESOURCES)[number];
 
@@ -48,6 +49,7 @@ export const RESOURCE_SUBJECT = {
   audit: 'Audit',
   report: 'Report',
   session: 'Session',
+  knowledge: 'KnowledgeArticle',
 } as const satisfies Record<Resource, string>;
 export type ResourceSubject = (typeof RESOURCE_SUBJECT)[Resource];
 
@@ -75,6 +77,7 @@ export const RESOURCE_ACTIONS: Readonly<Record<Resource, readonly Action[]>> = {
   audit: ['read', 'export'],
   report: ['read', 'export', 'manage'],
   session: ['read', 'create', 'update', 'reveal', 'manage'],
+  knowledge: ['read', 'create', 'update', 'publish', 'manage'],
 };
 
 /**

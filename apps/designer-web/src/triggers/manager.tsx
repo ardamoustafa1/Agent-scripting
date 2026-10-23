@@ -20,9 +20,9 @@ import {
 } from '@verbis/ui';
 
 import { useEditor, type EditorStore } from '../editor/store.js';
+import { ArticlePicker } from '../knowledge/picker.js';
 
 import './styles.css';
-
 import {
   actionMessageKeys,
   alertKey,
@@ -37,7 +37,7 @@ import {
 } from './model.js';
 
 const SPEAKERS = ['customer', 'agent', 'any'] as const;
-const ACTION_TYPES = ['suggestPage', 'alert', 'markNotice'] as const;
+const ACTION_TYPES = ['suggestPage', 'alert', 'markNotice', 'suggestArticle'] as const;
 const TONES = ['info', 'success', 'warning', 'danger'] as const;
 
 /**
@@ -343,17 +343,20 @@ function ActionEditor({
 }) {
   const { t } = useTranslation();
   const number = index + 1;
+  // An article suggestion needs its article: the action changes once one is picked.
+  const [pickingArticle, setPickingArticle] = useState(false);
   return (
     <div className="tg-action" role="group" aria-label={t('designer.triggers.action', { number })}>
       <Select
         label={t('designer.triggers.actionType', { number })}
-        value={action.type}
+        value={pickingArticle ? 'suggestArticle' : action.type}
         disabled={readOnly}
         options={ACTION_TYPES.map((value) => ({
           value,
           label: t(`designer.triggers.types.${value}`),
         }))}
         onValueChange={(value) => {
+          setPickingArticle(value === 'suggestArticle' && action.type !== 'suggestArticle');
           if (value === action.type) return;
           if (value === 'alert')
             onChange({ type: 'alert', messageKey: alertKey(document, triggerId), tone: 'info' });
@@ -364,6 +367,7 @@ function ActionEditor({
         }}
       />
       {action.type === 'suggestPage' &&
+        !pickingArticle &&
         (pages.length === 0 ? (
           <p className="tg-hint">{t('designer.triggers.noFlowPages')}</p>
         ) : (
@@ -378,6 +382,7 @@ function ActionEditor({
           />
         ))}
       {action.type === 'markNotice' &&
+        !pickingArticle &&
         (notices.length === 0 ? (
           <p className="tg-hint">{t('designer.triggers.noNotices')}</p>
         ) : (
@@ -391,7 +396,22 @@ function ActionEditor({
             }}
           />
         ))}
-      {action.type === 'alert' && (
+      {(action.type === 'suggestArticle' || pickingArticle) && (
+        <ArticlePicker
+          label={t('designer.triggers.article')}
+          value={action.type === 'suggestArticle' ? [action.articleKey] : []}
+          max={1}
+          removable={false}
+          disabled={readOnly}
+          onChange={(keys) => {
+            const [articleKey] = keys;
+            if (articleKey === undefined) return;
+            setPickingArticle(false);
+            onChange({ type: 'suggestArticle', articleKey });
+          }}
+        />
+      )}
+      {action.type === 'alert' && !pickingArticle && (
         <>
           {locales.map((locale) => (
             <Textarea

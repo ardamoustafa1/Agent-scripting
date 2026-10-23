@@ -51,6 +51,8 @@ describe('shortcutIntent', () => {
     ],
     ['Alt+F while typing', key({ key: 'ƒ', code: 'KeyF', altKey: true }), singleLine, null],
     ['Ctrl+Alt+F', key({ code: 'KeyF', altKey: true, ctrlKey: true }), at(), null],
+    ['Alt+K (knowledge base)', key({ key: '˚', code: 'KeyK', altKey: true }), at(), 'knowledge'],
+    ['Alt+K while typing', key({ key: '˚', code: 'KeyK', altKey: true }), singleLine, null],
     ['anything during IME composition', key({ key: 'Enter', isComposing: true }), at(), null],
     ['anything inside a dialog', key({ key: 'Enter', ctrlKey: true }), at({ dialog: true }), null],
   ])('%s', (_, event, target, expected) => {

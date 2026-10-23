@@ -62,6 +62,8 @@ export const SYSTEM_ROLES: Readonly<Record<SystemRoleKey, SystemRoleDefinition>>
         conditions: { campaignIds: { $in: CAMPAIGNS } },
       },
       { action: 'read', subject: 'Integration' },
+      // Knowledge articles are tenant-wide reference content (ADR-0057); approvers publish them.
+      { action: ['read', 'create', 'update'], subject: 'KnowledgeArticle' },
     ],
     { scopedBy: ['campaignIds'] },
   ),
@@ -76,6 +78,7 @@ export const SYSTEM_ROLES: Readonly<Record<SystemRoleKey, SystemRoleDefinition>>
         conditions: { campaignIds: { $in: CAMPAIGNS } },
       },
       { action: 'read', subject: 'Screen', conditions: { campaignIds: { $in: CAMPAIGNS } } },
+      { action: ['read', 'publish'], subject: 'KnowledgeArticle' },
     ],
     { scopedBy: ['campaignIds'] },
   ),

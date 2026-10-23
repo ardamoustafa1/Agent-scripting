@@ -137,3 +137,62 @@
     scroll-behavior: auto;
   }
 }
+/* In-script knowledge panel (ADR-0057). */
+.vc-knowledge {
+  display: grid;
+  gap: var(--vb-space-3);
+  padding: var(--vb-space-4);
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-md);
+  background: var(--vb-color-surface);
+}
+.vc-knowledge-title {
+  margin: 0;
+  font-size: var(--vb-font-size-md);
+}
+.vc-knowledge-muted {
+  margin: 0;
+  color: var(--vb-color-text-muted);
+}
+.vc-knowledge-search,
+.vc-knowledge-reader {
+  display: grid;
+  gap: var(--vb-space-2);
+}
+.vc-knowledge-reader h4 {
+  margin: 0;
+}
+.vc-knowledge-reader > button {
+  justify-self: start;
+}
+.vc-knowledge-results {
+  display: grid;
+  gap: var(--vb-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.vc-knowledge-hit {
+  display: grid;
+  gap: var(--vb-space-1);
+  inline-size: 100%;
+  min-block-size: 24px;
+  padding: var(--vb-space-2) var(--vb-space-3);
+  color: var(--vb-color-text);
+  text-align: start;
+  font: inherit;
+  background: transparent;
+  border: 1px solid var(--vb-color-border);
+  border-radius: var(--vb-radius-sm);
+  cursor: pointer;
+}
+.vc-knowledge-hit:hover {
+  background: var(--vb-color-surface-raised);
+}
+.vc-knowledge-hit:focus-visible {
+  outline: 2px solid var(--vb-color-focus);
+  outline-offset: 2px;
+}
+.vc-knowledge-hit span {
+  color: var(--vb-color-text-muted);
+}

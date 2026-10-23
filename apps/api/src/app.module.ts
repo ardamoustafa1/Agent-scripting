@@ -23,6 +23,7 @@ import { ComplianceModule } from './modules/compliance/compliance.module.js';
 import { ConnectorsModule } from './modules/connectors/connectors.module.js';
 import { IdentityModule } from './modules/identity/identity.module.js';
 import { IntegrationsModule } from './modules/integrations/integrations.module.js';
+import { KnowledgeModule } from './modules/knowledge/knowledge.module.js';
 import { LaunchModule } from './modules/launch/launch.module.js';
 import { RoutingModule } from './modules/routing/routing.module.js';
 import { RuntimeModule } from './modules/runtime/runtime.module.js';
@@ -51,6 +52,7 @@ export const FEATURE_MODULES: readonly Type[] = [
   AnalyticsModule,
   ComplianceModule,
   AdminModule,
+  KnowledgeModule,
 ];
 
 /** Every controller, in a stable order (OpenAPI generation, route catalogue tests). */

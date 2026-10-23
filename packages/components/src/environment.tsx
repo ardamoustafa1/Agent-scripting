@@ -2,6 +2,26 @@ import { createContext, useContext, type ReactNode } from 'react';
 
 import { safeEmbedUrl } from '@verbis/core-runtime';
 
+/** A published knowledge article (ADR-0057) as the host serves it. */
+export interface KnowledgeArticleContent {
+  key: string;
+  title: string;
+  body: string;
+}
+export interface KnowledgeHit {
+  key: string;
+  title: string;
+  snippet: string;
+}
+/**
+ * The host's knowledge base, reached through the agent's own session (or the designer's
+ * authoring API in previews). Scripts carry article keys only, never URLs or content.
+ */
+export interface KnowledgePort {
+  /** Null when the article does not exist or is not published. */
+  article: (key: string, signal: AbortSignal) => Promise<KnowledgeArticleContent | null>;
+  search: (query: string, signal: AbortSignal) => Promise<readonly KnowledgeHit[]>;
+}
 export interface ComponentEnvironment {
   /** Origins are trusted tenant policy from the BFF, never script props. HTTPS only. */
   mediaOrigins: readonly string[];
@@ -16,6 +36,7 @@ export interface ComponentEnvironment {
     sessionId: string;
     confirmReceipt: (variable: string, receipt: string, signal: AbortSignal) => Promise<void>;
   };
+  knowledge?: KnowledgePort;
   scheduleCallback?: (request: {
     scheduledAt: string;
     timeZone: string;

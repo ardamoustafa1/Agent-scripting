@@ -67,6 +67,7 @@ export const ADMIN_ENUMS = {
     'audit',
     'report',
     'session',
+    'knowledge',
   ],
   action: [
     'read',
